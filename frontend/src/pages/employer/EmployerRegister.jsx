@@ -1,0 +1,226 @@
+import { useSearchParams, useNavigate } from "react-router-dom"
+import { useEffect, useState } from "react";
+import { BiLoaderAlt } from "react-icons/bi";
+import { FiEye } from "react-icons/fi";
+import { FiEyeOff } from "react-icons/fi";
+
+import Footer from "../../components/others/Footer";
+import PublicNavBar from "../../components/navBars/PublicNavBar";
+import Overlay from "../../components/overlay/OverlayMobile";
+import Translucent from "../../components/overlay/Translucent";
+import ConfirmationBox from "../../components/popUps/ConfirmationBox";
+import PrimaryButton from "../../components/buttons/PrimaryButton";
+
+import axios from "axios";
+
+export default function EmployerRegister() {
+    const [searchParams] = useSearchParams();
+    const navigate = useNavigate();
+
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
+    const [isTokenVerified, setIsTokenVerified] = useState(false);
+    const [showPopUp, setShowPopUp] = useState(false);
+    const [invitation, setInvitation] = useState({});
+    const [errors, setErrors] = useState({});
+    const [employerInfo, setEmployerInfo] = useState({
+        firstName: "",
+        lastName: "",
+        emailAddress: "",
+        password: "",
+        confirmPass: "",
+    })
+
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[^A-Za-z0-9]).{12,}$/;
+    const token = searchParams.get("token");
+
+    useEffect(() => {
+        
+        async function verifyToken() {
+            try {
+                setIsLoading(true);
+
+                const response = await axios.get(
+                    `/api/employer/invitations/verify/${token}`,
+                );
+
+                setIsTokenVerified(true)
+                setInvitation(response.data);
+                setIsLoading(false);
+                setEmployerInfo((prev) => ({
+                    ...prev,
+                    emailAddress: response.data.email
+                }));
+
+            } catch (err) {
+                setErrors({general: "Invalid or expired invitation token."});
+                setIsTokenVerified(false)
+                setIsLoading(false);
+                console.log(errors)
+            }
+        }    
+
+            verifyToken();
+
+    }, [])
+
+    async function handleSubmit(e) {
+        e.preventDefault();
+
+        if (!passwordRegex.test(employerInfo.password)) {
+            setErrors({
+                invalidPass: "Password must be 12+ characters with uppercase, lowercase, and special characters."                
+            })
+            return
+        }
+
+        if (employerInfo.password !== employerInfo.confirmPass) {
+            setErrors({
+                confirmPass: "Password did not match"
+            })
+            return
+        }
+
+        try {
+            await axios.post(`/api/employer/registerCoEmployer/${token}`, employerInfo,
+                {withCredentials: true}
+            )
+            setShowPopUp(true);
+
+        } catch (error) {
+            const issue = error.response?.data?.issue;
+            const message = error.response?.data?.message || "An error occurred";
+
+            if (issue) {
+                setErrors({ [issue]: message }); 
+            } else {
+                setErrors({ general: "Unable to connect to the server. Please try again." });
+            }
+        }
+    }
+
+    function closePopUp() {
+        setShowPopUp(false);
+        navigate("/employer/login");
+    }
+
+    function handlePass(e) {
+        setShowPassword(!showPassword);
+    }
+
+    function handleConfirmPass(e) {
+        setShowConfirmPassword(!showConfirmPassword);
+    }
+
+    if (isLoading) {
+            return (
+                <div className="w-full h-screen flex justify-center items-center flex-col">
+                    <BiLoaderAlt size={30} className="animate-spin" />
+                    <p className="text-center">Please wait...</p>
+                </div>
+            )
+        }
+
+    if (!isTokenVerified) {
+        return (
+            <div className="w-full h-screen flex justify-center items-center flex-col gap-10">
+                <p className="text-center">Invalid or expired invitation token.</p>
+                <PrimaryButton to="/employer/login">Go to website</PrimaryButton>
+            </div>
+        )
+    }
+
+    return (
+        <>
+            <div className="w-full min-h-screen bg-[#F9FAFB] relative px-6">
+                <PublicNavBar />
+                <Overlay />
+
+                {showPopUp && (
+                    <>
+                        <Translucent />
+                        <ConfirmationBox onClick={closePopUp} text="Account registered successfully" />
+                    </>
+                )}
+
+                <h1 className="my-6 text-center font-bold">You are invited to join {invitation.companyName}</h1>
+
+                <form className="w-full bg-white rounded-3xl shadow-lg p-6 mb-6" onSubmit={handleSubmit}>
+                    <h2 className="text-center font-bold">Create your Account</h2>
+
+                    <div className="w-full">
+                        <label className="block" htmlFor="firstName">First Name</label>
+                        <input className="block w-full" 
+                            type="text"
+                            value={employerInfo.firstName}
+                            onChange={(e) => setEmployerInfo({...employerInfo, firstName: e.target.value})}
+                            required
+                            placeholder="Enter first name"
+                        />
+                    </div>
+
+                    <div className="w-full">
+                        <label className="block" htmlFor="lastName">Last Name</label>
+                        <input className="block w-full" 
+                            type="text"
+                            value={employerInfo.lastName}
+                            onChange={(e) => setEmployerInfo({...employerInfo, lastName: e.target.value})}
+                            required
+                            placeholder="Enter last name"
+                        />
+                    </div>
+
+                    <div className="w-full">
+                        <label className="block" htmlFor="email">Email Address</label>
+                        <input className="block w-full" 
+                            type="email"
+                            value={invitation.email}
+                            readOnly
+                            required
+                                />
+                    </div>
+
+                    <div className="w-full">
+                        <label className="block" htmlFor="password">Password</label>
+                        <div className="w-full relative">
+                            <input className="block w-full" 
+                                type={showPassword ? "text" : "password"}
+                                value={employerInfo.password}
+                                onChange={(e) => setEmployerInfo({...employerInfo, password: e.target.value})}
+                                required
+                                placeholder="Enter your password" 
+                            />
+                            <div onClick={handlePass} className="absolute top-1/2 -translate-y-1/2 right-2">
+                                {showPassword ? <FiEyeOff /> : <FiEye />}
+                            </div>
+                        </div>
+                        {errors.invalidPass && <p className="text-red-600 text-[13px] italic">{errors.invalidPass}</p>}
+                    </div>
+
+                    <div className="w-full relative">
+                        <label className="block" htmlFor="confirmPass">Confirm Password</label>
+                        <div className="w-full relative">
+                            <input className="block w-full" 
+                                type={showConfirmPassword ? "text" : "password"} 
+                                value={employerInfo.confirmPass}
+                                onChange={(e) => setEmployerInfo({...employerInfo, confirmPass: e.target.value})}
+                                required
+                                placeholder="Re-type your password" 
+                            />
+                            <div onClick={handleConfirmPass} className="absolute top-1/2 -translate-y-1/2 right-2">
+                                {showConfirmPassword ? <FiEyeOff /> : <FiEye />}
+                            </div>
+                        </div>
+                        {errors.confirmPass && <p className="text-red-600 text-[13px] italic">{errors.confirmPass}</p>}
+                    </div>
+
+                    <PrimaryButton type="submit" className="w-full">Register</PrimaryButton>
+                </form>
+
+            </div>
+
+            <Footer />
+        </>
+    )
+}

@@ -1,0 +1,52 @@
+import { Link, useLocation } from 'react-router-dom';
+import webLogo from '../../assets/WellMatch_Logo.png'
+import SecondaryButton from '../buttons/SecondaryButton';
+
+export default function PublicNavBar() {
+    const { pathname } = useLocation();
+
+    const isEmployerSite = pathname.startsWith("/employer");
+    const isRegisterPage =
+        pathname.includes("/register") || pathname.includes("/invite");
+
+    const switchSiteLabel = isEmployerSite ? "Applicant Site" : "Employer Site";
+    const switchSiteLink = isEmployerSite
+        ? "/applicant/login"
+        : "/employer/login";
+
+    const buttonLabel = isRegisterPage ? "Sign in" : "Register";
+    const buttonLink = isRegisterPage
+        ? isEmployerSite
+        ? "/employer/login"
+        : "/applicant/login"
+        : isEmployerSite
+        ? "/employer/register"
+        : "/applicant/register";
+
+    const logoLink = isEmployerSite ? "/employer/login" : "/applicant/login";
+
+    return (
+        <nav className="fixed left-0 top-0 z-20 flex h-16 w-full items-center justify-between bg-white px-5 shadow-sm">
+            <Link to={logoLink}>
+                <img
+                className="h-9 w-auto object-contain"
+                src={webLogo}
+                alt="WellMatch Logo"
+                />
+            </Link>
+
+            <div className="flex items-center gap-4">
+                <Link
+                to={switchSiteLink}
+                className="text-sm font-medium text-gray-700 hover:text-green-600"
+                >
+                {switchSiteLabel}
+                </Link>
+
+                <SecondaryButton to={buttonLink}>
+                {buttonLabel}
+                </SecondaryButton>
+            </div>
+        </nav>
+    );
+}
