@@ -34,3 +34,11 @@ export function isAdmin(req, res, next) {
 
     next();
 }
+
+export function isApplicant(req, res, next) {
+    if (!["applicant"].includes(req.user.userType)) {
+        return res.status(403).json({message: "Forbidden Access"});
+    }
+
+    next();
+}
