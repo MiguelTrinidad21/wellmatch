@@ -1,34 +1,39 @@
 import database from "../../configs/database.js";
 import cloudinary from "../../configs/cloudinary.js";
-import { uploadToCloudinary } from "../../helpers/uploadToCloudinary.js";
-
+import { uploadResume } from "../../helpers/uploadToCloudinary.js";
 
 export default async function updateCompanyImages(req, res) {
     const companyID = req.user.companyID;
 
     try {
-        const { prevCompanyName, companyName, companyLocation } = req.body;
+        const { companyName, companyLocation } = req.body;
 
         const profilePhoto = req.files?.profilePhoto?.[0];
         const coverPhoto = req.files?.coverPhoto?.[0];
 
-        if (prevCompanyName !== companyName) {
-            const [existingCompany] = await database.query(`
-                SELECT LOWER(companyName) FROM companies
-                WHERE companyName = ?`,
-                [companyName.toLowerCase()]
-            )
-
-            if (existingCompany[0]) {
-                return res.status(409).json({
-                    message: "Company name is already taken",
-                    issue: "companyName",
-                    field: "companyName"
-                })
-            }
+        if (!companyName && !companyLocation && !profilePhoto && !coverPhoto) {
+            return res.status(400).json({
+                message: "No changes provided to update."
+            });
         }
+
         
+        const [existingCompany] = await database.query(`
+            SELECT LOWER(companyName) FROM companies
+            WHERE companyName = ?`,
+            [companyName.toLowerCase()]
+        )
+
+        if (existingCompany[0]) {
+            return res.status(409).json({
+                message: "Company name is already taken",
+                issue: "companyName",
+                field: "companyName"
+            })
+        }
+
         
+
         const [companyRows] = await database.query(
             `
             SELECT 

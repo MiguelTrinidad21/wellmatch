@@ -10,7 +10,7 @@ export default function GuestRoute() {
 
     if (
         currentUser?.userType === "applicant") {
-        return <Navigate to="/applicant/jobs" replace />;
+        return <Navigate to="/applicant/home" replace />;
     }
 
     if (currentUser?.userType === "employer" ||

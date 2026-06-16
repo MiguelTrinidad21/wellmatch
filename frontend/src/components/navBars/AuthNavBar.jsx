@@ -2,10 +2,13 @@ import { IoMdMenu } from "react-icons/io";
 import webLogo from '../../assets/WellMatch_Logo.png'
 import { Link } from "react-router-dom";
 import EmployerSideMenu from "./EmployerSideMenu";
+import ApplicantSideMenu from "./ApplicantSideMenu";
 import { sideBarStore } from "../../zustand/stateHandlers";
+import { userStore } from "../../zustand/userState";
 
 export default function AuthNavBar() {
     const { sideBarStatus, toggleSideBar } = sideBarStore();
+    const { currentUser } = userStore();
     
 
     return (
@@ -22,7 +25,13 @@ export default function AuthNavBar() {
                 <IoMdMenu size={30} onClick={toggleSideBar} />
             </nav>
 
-            {sideBarStatus && <EmployerSideMenu />}
+            {sideBarStatus && 
+                (currentUser.userType === "applicant" ? 
+                    <ApplicantSideMenu />
+                :   
+                    <EmployerSideMenu />
+                )
+            }
         </>
     )
 }

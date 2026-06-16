@@ -133,7 +133,7 @@ export default function EmployerRegister() {
 
     return (
         <>
-            <div className="w-full min-h-screen bg-[#F9FAFB] relative px-6">
+            <div className="w-full min-h-screen bg-[#F3F4F6] relative px-6">
                 <PublicNavBar />
                 <Overlay />
 
@@ -178,7 +178,8 @@ export default function EmployerRegister() {
                             value={invitation.email}
                             readOnly
                             required
-                                />
+                        />
+                        {errors.emailAddress && <p className="text-red-600 text-[13px] italic">{errors.emailAddress}</p>}
                     </div>
 
                     <div className="w-full">

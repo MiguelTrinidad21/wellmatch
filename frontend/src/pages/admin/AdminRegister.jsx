@@ -29,12 +29,13 @@ export default function AdminRegister() {
     const [isSearchingLocation, setIsSearchingLocation] = useState(false);
     const [isLocationSelected, setIsLocationSelected] = useState(false);
     const [lastSelectedLocation, setLastSelectedLocation] = useState("");
+    
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [showPopUp, setShowPopUp] = useState(false);
     const [errors, setErrors] = useState({});
     
-
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[^A-Za-z0-9]).{12,}$/;
 
     useEffect(() => {
         if (isLocationSelected && lastSelectedLocation === adminInfo.companyLocation) {
@@ -108,6 +109,13 @@ export default function AdminRegister() {
         e.preventDefault();
         setErrors({});
 
+        if (!passwordRegex.test(adminInfo.password)) {
+            setErrors({
+                invalidPass: "Password must be 12+ characters with uppercase, lowercase, and special characters."                
+            })
+            return
+        }
+
         if (adminInfo.password !== adminInfo.confirmPassword) {
             setErrors({ confirmPassword: "Passwords do not match" });
             return;
@@ -136,13 +144,13 @@ export default function AdminRegister() {
 
     return (
         <>
-            <div className="w-full min-h-screen bg-[#F9FAFB] relative px-6">
+            <div className="w-full min-h-screen bg-[#F3F4F6] relative px-6">
                 <PublicNavBar />
                 <Overlay />
                 {showPopUp && (
                     <>
                         <Translucent />
-                        <ConfirmationBox onClick={closePopUp} text="Account registered successfully" />
+                        <ConfirmationBox buttonText="Sign in" onClick={closePopUp} text="Account registered successfully" />
                     </>
                 )}
 
@@ -196,9 +204,9 @@ export default function AdminRegister() {
                         />
                         <div onClick={handlePass} className="absolute top-1/2 -translate-y-1/2 right-2">
                             {showPassword ? <FiEyeOff /> : <FiEye />}
-                        </div>
-                        
+                        </div>                        
                     </div>
+                    {errors.invalidPass && <p className="text-red-600 text-[13px] italic">{errors.invalidPass}</p>}
 
                     <label className="block" htmlFor="confirmPass">Confirm Password</label>
                     <div className="relative">

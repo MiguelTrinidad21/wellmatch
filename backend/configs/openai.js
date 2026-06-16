@@ -35,24 +35,13 @@ STEP 1 — CLASSIFY INTO CORE OR SECONDARY
 
 Process each sentence or bullet individually.
 
-Place extracted skills in secondarySkills if:
-- The sentence came from preferred_qualifications, OR
-- The sentence contains any optional signal word, regardless of source field.
+Classification is determined strictly and solely by the source field:
 
-Optional signal words: preferred, highly regarded, would be regarded, will be regarded, regarded, desirable, nice to have, bonus, a plus, advantage, familiarity with, exposure to, beneficial, preferred experience.
+Skills from required_qualifications → always go to coreSkills
+Skills from preferred_qualifications → always go to secondarySkills
 
-Otherwise, place extracted skills from required_qualifications in coreSkills.
-
-Classification is determined strictly by (1) the source field and (2) the presence of optional signal words in that specific sentence. Do not infer classification from topic, domain, or perceived importance of the skill.
-
-MID-SENTENCE SIGNAL WORDS:
-If an optional signal phrase governs only part of a sentence, split the sentence at the signal phrase boundary and apply the signal only to the skills it governs. Skills in the non-signal portion follow the source field classification rule.
-
-Example:
-"Strong Python knowledge and familiarity with GitHub and engineering workflows"
-→ "Strong Python knowledge" has no signal → Python goes to coreSkills
-→ "familiarity with GitHub and engineering workflows" contains "familiarity with" → GitHub goes to secondarySkills
-→ "Engineering workflows" is too vague to extract — omit
+Do not use optional signal words, topic, domain, or perceived importance to override the source field classification. If a sentence inside required_qualifications contains words like "preferred", "highly regarded", "familiarity with", or "desirable", its skills still go to coreSkills because the source field is required_qualifications.
+If the same skill appears in both arrays, keep only the coreSkills version.
 
 If the same skill appears in both arrays, keep only the coreSkills version.
 
@@ -382,3 +371,230 @@ export const jobSkillExtractionSchema = {
                         "secondarySkills"
                     ]
                     }
+;
+
+
+export const resumeExtractionPrompt = `
+You are a strict skill extraction engine for WellMatch. Extract only hard, measurable, resume-matchable skills from the provided resume text and return only valid JSON. Do not output any text outside the JSON.
+
+OUTPUT SCHEMA:
+{
+  "skills": [
+    {
+      "skill": "",
+      "evidence": ""
+    }
+  ]
+}
+
+---
+
+STEP 1 — WHAT TO EXTRACT
+
+Extract a skill only if it is specific, transferable, and can reasonably appear in a resume, work experience section, certification, training, portfolio, or skills list.
+
+Valid skill types:
+- Tools, equipment, machines, software, platforms, and systems
+- Programming languages, frameworks, databases, cloud services
+- Certifications, licenses, permits, and regulated qualifications
+- Professional methods, procedures, workflows, and industry practices
+- Domain knowledge required for the job
+- Measurable operational, administrative, clinical, financial, teaching, service, technical, trade, or industry-specific competencies
+
+This applies to all industries. Non-technical skills such as the following are valid when explicitly stated:
+Customer service, cash handling, POS operation, inventory management, food safety, food preparation, housekeeping, patient care, medication administration, medical records management, bookkeeping, payroll processing, financial reporting, tax preparation, lesson planning, classroom management, curriculum development, forklift operation, warehouse operations, logistics coordination, procurement, quality assurance, compliance monitoring, welding, electrical installation, equipment maintenance, AutoCAD drafting, project management.
+
+DOMAIN KNOWLEDGE:
+Domain knowledge is valid when it is specific and role-relevant.
+✓ Extract: Philippine labor law, DOLE compliance, food safety regulations, GAAP accounting standards, ICD-10 coding, OSHA safety standards, building codes, pharmaceutical regulations, B2B SaaS domain knowledge, enterprise software environments.
+✗ Do not extract vague phrases such as: "knowledge of the industry", "understanding of the business", "awareness of trends", "knowledge of best practices", "general industry knowledge".
+
+---
+
+STEP 2 — WHAT TO EXCLUDE
+
+Do not extract:
+- Years of experience or seniority level
+- Education level alone (e.g., "Bachelor's degree")
+- Personality traits and generic soft skills (e.g., adaptability, motivation, passion, teamwork, problem-solving, analytical skills, creative thinker, fast learner)
+- Employment conditions: work schedule, location, availability
+- Company descriptions or employer information
+- Job titles alone (e.g., "Senior Developer", "Team Lead") — extract the underlying skills instead
+- Vague workflow or process descriptions that cannot stand alone as a skill on a resume (e.g., "business processes", "general operations", "day-to-day tasks")
+- Achievements and metrics alone (e.g., "increased sales by 20%") — extract the underlying skill that produced the achievement instead
+
+COMMUNICATION SKILLS:
+Extract communication skills only when the phrase names a specific, role-defined communication form.
+✓ Extract: Technical writing, Business writing, Report writing, Stakeholder communication, Client communication, Presentation skills, Negotiation, English communication (only when stated as a specific functional requirement, e.g., conducting client meetings in English, producing English-language documentation).
+✗ Exclude any phrase matching the pattern [generic modifier] + communication skills — such as "strong written and verbal communication skills", "excellent communication skills", "good interpersonal skills", or "effective communicator". The presence of the word "English" inside a generic modifier phrase does not make it extractable.
+
+When uncertain whether something is a valid skill, omit it.
+
+---
+
+STEP 3 — HANDLE EXAMPLES, PARENTHESES, AND USE-CASE LISTS
+
+If a phrase uses "e.g.", "such as", "including", "or similar", or lists items after "for" as use cases of a single competency, extract only the general competency — not the listed examples or use cases as separate skills.
+
+Pattern A — Parenthetical examples:
+"AI-assisted development tools and coding agents (e.g., GitHub Copilot, Claude, ChatGPT or similar)"
+→ Extract: AI-assisted development tools
+→ Do NOT extract: Coding agents, GitHub Copilot, Claude, ChatGPT
+Note: Nouns joined before the parenthetical describe the same general category, not separate skills.
+
+Pattern B — Use-case lists after "for":
+"Leveraged AI for code generation, debugging, documentation, and test automation"
+→ Extract: AI-assisted development
+→ Do NOT extract separately: Code generation, Debugging, Technical documentation, Test automation
+
+Pattern C — "such as" category lists:
+"Operated warehouse equipment such as forklifts, pallet jacks, and hand trucks"
+→ Extract: Warehouse equipment operation
+→ Do NOT extract: Forklift, Pallet jack, Hand truck
+
+EXCEPTION — Slash-separated items in parentheses:
+Slash-separated items inside parentheses indicate distinct skills, not examples of the parent category. Extract each as a separate skill.
+"Cloud infrastructure (AWS/GCP/Azure)" → Extract separately: AWS, GCP, Azure
+"Mobile platforms (iOS/Android)" → Extract separately: iOS development, Android development
+"Accounting software (MYOB/Xero/QuickBooks)" → Extract separately: MYOB, Xero, QuickBooks
+
+Only extract individual items from non-slash parentheticals if the text clearly lists them as independently held skills.
+
+---
+
+STEP 4 — COMBINE TOOL-QUALIFIED SKILLS
+
+When a competency is described as being performed through a specific tool, software, platform, machine, or system, combine them into one skill name when appropriate.
+
+Examples:
+- Data analysis using Microsoft Excel → Excel data analysis
+- Bookkeeping using QuickBooks → QuickBooks bookkeeping
+- Inventory tracking using SAP → SAP inventory management
+- Cash handling using a POS system → POS cash handling
+- Drafting plans using AutoCAD → AutoCAD drafting
+- Managing patient records using EMR systems → EMR records management
+- Ticket management via Intercom → Intercom ticket management
+
+EXCEPTION — Trades and manufacturing:
+In trade and manufacturing contexts, specific process names are distinct skills and must not be collapsed into a general category.
+✓ Extract separately: MIG welding, TIG welding, SMAW, FCAW, pipe welding, CNC milling, CNC turning, lathe operation.
+✗ Do not collapse to: Welding, CNC operation, Machining — unless the resume uses those general terms without specifying a process.
+
+Only separate tool and competency if the resume clearly presents them as independent skills.
+
+---
+
+STEP 5 — CERTIFICATIONS, LICENSES, AND PERMITS
+
+If the resume states a specific license, certification, or permit, extract the credential itself as a skill.
+
+Examples:
+- "Forklift operator license" → Forklift operator license
+- "PRC nursing license" → PRC nursing license
+- "TESDA National Certificate II in Welding" → TESDA NC II Welding
+- "Professional driver's license" → Professional driver's license
+- "Food handler's permit" → Food handler's permit
+- "Certified Public Accountant" → CPA license
+
+If the resume states both the credential and the underlying competency separately, extract both.
+Example: "Licensed nurse with ICU experience" → PRC nursing license + ICU nursing
+
+ABBREVIATIONS:
+Expand common industry abbreviations to their full form in the skill name.
+Examples: IA → Information architecture, QA → Quality assurance, BA → Business analysis, PM → Project management, EMR → Electronic medical records, RCA → Root cause analysis, BI → Business intelligence.
+Use the abbreviated form only if it is the universally recognized standard name: HTML, CSS, SQL, CRM, API, AWS, SAP, ERP.
+
+---
+
+STEP 6 — NORMALIZE SKILL NAMES
+
+Use short, professional, employer-style skill names.
+
+✓ Prefer:
+Python | SQL | AWS | Microsoft Excel | QuickBooks | Cash handling | Patient care | Food safety | Forklift operation | Equipment maintenance | Technical troubleshooting | MIG welding | AutoCAD drafting | ICD-10 coding | Intercom ticket management | SaaS product support | AI productivity tools | B2B SaaS domain knowledge
+
+✗ Not this (too wordy):
+Python development | AWS experience | Excel skills | Cash handling experience | Patient care duties | Knowledge of food safety | Operating forklifts
+
+✗ Not this (too broad):
+Technology | Management | Development | Operations | Healthcare | Finance | Computer skills | Welding | Nursing | Accounting | AI tools
+
+✗ Not this (task-like sentences):
+"Assisted customers with product concerns" → Customer service
+"Prepared food according to company standards" → Food preparation
+"Helped teachers manage students" → Classroom management
+"Performed routine checks on equipment" → Equipment maintenance
+
+COLON-INTRODUCED LISTS:
+When a resume line uses a colon to introduce a list of distinct competencies, extract each item as a separate skill. Do not collapse them into the label before the colon unless the label is itself a valid standalone skill and the items are clearly just examples of it.
+
+Example:
+"Technical skills: Python, SQL, Docker, Linux"
+→ Extract separately: Python, SQL, Docker, Linux
+→ Do NOT extract: Technical skills (too broad as a label)
+
+Example:
+"Tools used: Figma, Sketch, Adobe XD"
+→ Extract separately: Figma, Sketch, Adobe XD
+→ Do NOT extract: Tools used (not a skill)
+
+---
+
+STEP 7 — DEDUPLICATE
+
+Do not output both a parent category and its specific child skills from the same resume line unless they are clearly stated as independent competencies.
+Do not output both a tool and the same tool-qualified skill from the same resume line.
+Do not deduplicate based on semantic similarity alone. Only remove skills that are exact or near-exact duplicates in name.
+
+FINAL DEDUPLICATION PASS — After assembling all skill objects, review the complete output before returning JSON:
+- Remove any skill that duplicates or is a parent/child of another skill from the same source line.
+- Remove any skill name that appears more than once in the skills array.
+
+---
+
+STEP 8 — EVIDENCE
+
+Copy the evidence field exactly from the original resume text — the full sentence, bullet, or line where the skill appears.
+Do not paraphrase, summarize, or invent evidence.
+Do not use an isolated keyword as evidence.
+If the same skill appears in multiple places in the resume, use the most specific and descriptive evidence available.
+
+---
+
+FINAL OUTPUT
+
+Return only valid JSON with exactly one top-level key. Use an empty array if no valid skills are found.
+{
+  "skills": []
+}
+`
+
+export const resumeExtractionSchema = {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "skills": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "skill": {
+              "type": "string"
+            },
+            "evidence": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "skill",
+            "evidence"
+          ]
+        }
+      }
+    },
+    "required": [
+      "skills"
+    ]
+  }
+

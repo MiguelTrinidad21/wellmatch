@@ -1,6 +1,4 @@
 import express from "express";
-import bcrypt from 'bcryptjs'
-import jwt from "jsonwebtoken"
 
 import { 
     registerAdmin, 
@@ -32,6 +30,8 @@ import {
     closeJob
  } from "../controllers/employer/jobControllers.js";
 
+ import { editDetails } from "../controllers/employer/employerAccountSettings.js";
+
 const router = express.Router();
 
 router.post("/register", registerAdmin);
@@ -60,6 +60,8 @@ router.get("/jobs/:jobID", verifyToken, isEmployer, getSpecificJob);
 
 router.patch("/editCompany", verifyToken, handleMulterUpload, updateCompanyImages);
 router.patch("/job/close/:jobID", verifyToken, isEmployer, closeJob)
+router.patch("/editPersonalDetails", verifyToken, isEmployer, editDetails)
+
 router.put("/updateJob/:jobID", verifyToken, isEmployer, updateJobInfo)
 
 export default router;

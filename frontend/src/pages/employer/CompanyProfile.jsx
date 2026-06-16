@@ -111,7 +111,7 @@ export default function CompanyProfile() {
 
     return (
         <>
-            <div className="w-full min-h-screen p-6 bg-[#F9FAFB] relative">
+            <div className="w-full min-h-screen p-6 bg-[#F3F4F6] relative">
                 {editCompany && 
                     <>
                         <Translucent />

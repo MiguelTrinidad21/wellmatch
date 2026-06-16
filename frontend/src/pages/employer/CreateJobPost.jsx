@@ -168,7 +168,7 @@ export default function CreateJobPost({ mode = "create" }) {
 
     return (
         <>
-            <div className="w-full px-6 min-h-screen bg-[#F9FAFB]">
+            <div className="w-full px-6 min-h-screen bg-[#F3F4F6]">
                 <AuthNavBar />
                 <Overlay />
 

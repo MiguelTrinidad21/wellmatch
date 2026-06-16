@@ -92,14 +92,14 @@ export default function InviteEmployer() {
 
     return (
         <>
-            <div className="w-full h-screen px-6">
+            <div className="w-full h-screen px-6 bg-[#F3F4F6]">
                 <AuthNavBar />
                 <Overlay />
 
                 {showPopUp && 
                     <> 
                         <Translucent />
-                        <ConfirmationBox onClick={closePopUp} text="Email sent successfully" />
+                        <ConfirmationBox buttonText="Close" onClick={closePopUp} text="Email sent successfully" />
                     </>
                 }
 

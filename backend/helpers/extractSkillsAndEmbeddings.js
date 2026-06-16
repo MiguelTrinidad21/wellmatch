@@ -182,62 +182,68 @@ async function generateSkillsEmbeddings(extractedSkills) {
 }
 
 async function saveJobSkillEmbeddings(jobID, jobSkillsEmbeddings) {
-    const rows = [];
-
-    for (const item of jobSkillsEmbeddings.coreSkills) {
-        for (const acceptableSkill of item.acceptableSkills) {
-            rows.push({
-                jobID,
-                skillType: "core",
-                parentSkill: item.skill,
-                matchRule: item.matchRule,
-                acceptableSkill: acceptableSkill.skill,
-                evidence: item.evidence,
-                skillEmbedding: acceptableSkill.skillEmbedding,
-                evidenceEmbedding: acceptableSkill.evidenceEmbedding
-            });
+    try {
+        const rows = [];
+    
+        for (const item of jobSkillsEmbeddings.coreSkills) {
+            for (const acceptableSkill of item.acceptableSkills) {
+                rows.push({
+                    jobID,
+                    skillType: "core",
+                    parentSkill: item.skill,
+                    matchRule: item.matchRule,
+                    acceptableSkill: acceptableSkill.skill,
+                    evidence: item.evidence,
+                    skillEmbedding: acceptableSkill.skillEmbedding,
+                    evidenceEmbedding: acceptableSkill.evidenceEmbedding
+                });
+            }
         }
-    }
-
-    for (const item of jobSkillsEmbeddings.secondarySkills) {
-        for (const acceptableSkill of item.acceptableSkills) {
-            rows.push({
-                jobID,
-                skillType: "secondary",
-                parentSkill: item.skill,
-                matchRule: item.matchRule,
-                acceptableSkill: acceptableSkill.skill,
-                evidence: item.evidence,
-                skillEmbedding: acceptableSkill.skillEmbedding,
-                evidenceEmbedding: acceptableSkill.evidenceEmbedding
-            });
+    
+        for (const item of jobSkillsEmbeddings.secondarySkills) {
+            for (const acceptableSkill of item.acceptableSkills) {
+                rows.push({
+                    jobID,
+                    skillType: "secondary",
+                    parentSkill: item.skill,
+                    matchRule: item.matchRule,
+                    acceptableSkill: acceptableSkill.skill,
+                    evidence: item.evidence,
+                    skillEmbedding: acceptableSkill.skillEmbedding,
+                    evidenceEmbedding: acceptableSkill.evidenceEmbedding
+                });
+            }
         }
-    }
-
-    for (const row of rows) {
-        await database.query(`
-            INSERT INTO jobSkillEmbeddings (
-                jobID,
-                skillType,
-                parentSkill,
-                matchRule,
-                acceptableSkill,
-                evidence,
-                skillEmbedding,
-                evidenceEmbedding
-            )
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-        `,
-        [
-            row.jobID,
-            row.skillType,
-            row.parentSkill,
-            row.matchRule,
-            row.acceptableSkill,
-            row.evidence,
-            JSON.stringify(row.skillEmbedding),
-            JSON.stringify(row.evidenceEmbedding)
-        ]);
+    
+        for (const row of rows) {
+            await database.query(`
+                INSERT INTO jobSkillEmbeddings (
+                    jobID,
+                    skillType,
+                    parentSkill,
+                    matchRule,
+                    acceptableSkill,
+                    evidence,
+                    skillEmbedding,
+                    evidenceEmbedding
+                )
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            `,
+            [
+                row.jobID,
+                row.skillType,
+                row.parentSkill,
+                row.matchRule,
+                row.acceptableSkill,
+                row.evidence,
+                JSON.stringify(row.skillEmbedding),
+                JSON.stringify(row.evidenceEmbedding)
+            ]);
+        }
+        
+    } catch (error) {
+        console.error("Saving job skill embedding failed:", error);
+        throw error;
     }
 }
 

@@ -15,6 +15,7 @@ export default function EditCompany({ handleEditCompanyBox }) {
     const [profilePicName, setProfilePicName] = useState("");
     const [profilePhoto, setProfilePhoto] = useState(null);
     const [coverPhoto, setCoverPhoto] = useState(null);
+    const [prevCompanyName, setPrevCompanyName] = useState(companyInfo.companyName)
     const [companyName, setCompanyName] = useState(companyInfo.companyName);
     const [companyLocation, setCompanyLocation] = useState(companyInfo.location);
     const [errors, setErrors] = useState({});
@@ -101,6 +102,7 @@ export default function EditCompany({ handleEditCompanyBox }) {
 
         const formData = new FormData();
 
+        formData.append("prevCompanyName", prevCompanyName)
         formData.append("companyName", companyName);
         formData.append("companyLocation", companyLocation);
 
@@ -165,6 +167,7 @@ export default function EditCompany({ handleEditCompanyBox }) {
                             type="text"
                             value={companyName}
                             onChange={(e) => setCompanyName(e.target.value)}
+                            required
                             className={`block w-full border ${errors.company ? 'border-red-600' : 'border-gray-300'}`}
                         />
                         {errors?.companyName?.companyName || errors?.companyName?.companyName ? (
@@ -184,6 +187,7 @@ export default function EditCompany({ handleEditCompanyBox }) {
                             value={companyLocation}
                             onChange={(e) => setCompanyLocation(e.target.value)} 
                             autoComplete="off"
+                            required
                             className="block w-full overflow-x-scroll"
                         />
 
