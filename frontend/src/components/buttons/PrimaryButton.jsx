@@ -10,7 +10,7 @@ export default function PrimaryButton({
     disabled
  }) {
 
-    const baseStyle = "text-md text-white font-semibold bg-[#10B981] py-2 px-3 rounded-full";
+    const baseStyle = "text-md text-white font-semibold bg-[#10B981] py-2 px-3 rounded-full active:scale-[0.98]";
 
     if (to) {
         return (

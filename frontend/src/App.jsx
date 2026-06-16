@@ -15,6 +15,8 @@ import CreateJobPost from './pages/employer/CreateJobPost';
 import JobDescription from './pages/employer/JobDescription';
 import YearsRequired from './pages/employer/YearsRequired';
 import AccountSettings from './pages/employer/AccountSettings';
+import RecommendedJobs from './pages/applicant/RecommendedJobs';
+import RelatedJobs from './pages/applicant/RelatedJobs';
 
 import { useEffect } from 'react';
 import { userStore } from './zustand/userState';
@@ -78,6 +80,15 @@ function App() {
           <ProtectedRoute allowedUserTypes={["admin"]} redirectTo={"/employer/login"}/>
         }>
           <Route path='/employer/companyProfile/invite' element={<InviteEmployer />} />
+        </Route>
+
+        
+
+        <Route element={
+          <ProtectedRoute allowedUserTypes={["applicant"]} redirectTo={"/applicant/login"}/>
+        }>
+          <Route path='/applicant/home' element={<RecommendedJobs />} />
+          <Route path='/applicant/searchJobs' element={<RelatedJobs />} />
         </Route>
         
         <Route path='/employer/register/invite' element={<EmployerRegister />} />        

@@ -35,11 +35,12 @@ export default function Jobs() {
 
     useEffect(() => {
         async function checkEmployer() {
+            setLoading(true);
+
             try {
                 // console.log(currentUser);
                 if (!currentUser || Object.keys(currentUser).length === 0) {
                     setVerified(false);
-                    setLoading(false);
                     return;
                 }
 
@@ -121,18 +122,24 @@ export default function Jobs() {
         }
     }
 
+    useEffect(() => {
+        if (!loading && !verified) {
+            navigate("/forbidden", { replace: true });
+        }
+    }, [loading, verified, navigate]);
+
     if (loading) {
         return <Loading />
     }
 
     if (!verified) {
-        navigate("/forbidden");
+        return null;
     }
 
 
     return (
         <>
-            <div className="w-full min-h-screen bg-[#F9FAFB] relative p-6">
+            <div className="w-full min-h-screen bg-[#F3F4F6] relative p-6">
                 <AuthNavBar />
                 <Overlay />
 

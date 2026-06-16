@@ -73,7 +73,7 @@ export default function EmployerSignIn() {
 
     return (
         <>
-            <div className="w-full min-h-screen relative bg-[#F9FAFB] px-6">
+            <div className="w-full min-h-screen relative bg-[#F3F4F6] px-6">
                 <PublicNavBar />
                 <Overlay />
 
