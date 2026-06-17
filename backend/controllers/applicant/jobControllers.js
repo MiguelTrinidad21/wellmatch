@@ -21,6 +21,10 @@ function parseEmbedding(embedding) {
 
 export async function getRecommendedJobs(req, res) {
     const { id } = req.user;
+    const { page = 1, limit = 5 } = req.query;
+
+    const currentPage = Math.max(Number(page) || 1, 1);
+    const pageLimit = Math.min(Math.max(Number(limit) || 5, 1), 20);
 
     try {
         const [resumeRows] = await database.query(
@@ -41,6 +45,12 @@ export async function getRecommendedJobs(req, res) {
             return res.status(200).json({
                 resumeStatus: "missing",
                 recommendedJobs: [],
+                pagination: {
+                    totalJobs: 0,
+                    totalPages: 0,
+                    currentPage,
+                    limit: pageLimit
+                },
                 message: "No resume uploaded yet."
             });
         }
@@ -51,6 +61,12 @@ export async function getRecommendedJobs(req, res) {
             return res.status(200).json({
                 resumeStatus: "processing",
                 recommendedJobs: [],
+                pagination: {
+                    totalJobs: 0,
+                    totalPages: 0,
+                    currentPage,
+                    limit: pageLimit
+                },
                 message: "Your resume is still being analyzed."
             });
         }
@@ -59,6 +75,12 @@ export async function getRecommendedJobs(req, res) {
             return res.status(200).json({
                 resumeStatus: "failed",
                 recommendedJobs: [],
+                pagination: {
+                    totalJobs: 0,
+                    totalPages: 0,
+                    currentPage,
+                    limit: pageLimit
+                },
                 message: "Resume processing failed. Please upload your resume again."
             });
         }
@@ -106,7 +128,7 @@ export async function getRecommendedJobs(req, res) {
             `
         );
 
-        const recommendedJobs = jobRows
+        const sortedRecommendedJobs = jobRows
             .map((job) => {
                 const jobEmbedding = JSON.parse(job.concatJobSkillsEmbedding);
 
@@ -122,10 +144,24 @@ export async function getRecommendedJobs(req, res) {
                 };
             })
             .sort((a, b) => b.similarityScore - a.similarityScore);
+        
+        const totalJobs = sortedRecommendedJobs.length;
+        const totalPages = Math.ceil(totalJobs / pageLimit);
+
+        const startIndex = (currentPage - 1) * pageLimit;
+        const endIndex = startIndex + pageLimit;
+
+        const paginatedJobs = sortedRecommendedJobs.slice(startIndex, endIndex);
 
         return res.status(200).json({
             resumeStatus: "active",
-            recommendedJobs
+            sortedRecommendedJobs: paginatedJobs,
+            pagination: {
+                totalJobs,
+                totalPages,
+                currentPage,
+                limit: pageLimit
+            }
         });
 
     } catch (error) {
@@ -139,11 +175,28 @@ export async function getRecommendedJobs(req, res) {
 
 export async function searchJobs(req, res) {
     try {
-        const { jobTitle, location } = req.query;
+        const {
+            jobTitle = "",
+            location = "",
+            page = 1,
+            limit = 5
+        } = req.query;
+
+        const trimmedJobTitle = jobTitle.trim();
+        const trimmedLocation = location.trim();
+
+        const currentPage = Math.max(Number(page) || 1, 1);
+        const pageLimit = Math.min(Math.max(Number(limit) || 5, 1), 20);
+
+        if (!trimmedJobTitle) {
+            return res.status(400).json({
+                message: "Job title is required"
+            });
+        }
 
         const embeddingResponse = await openai.embeddings.create({
             model: "text-embedding-3-large",
-            input: jobTitle,
+            input: trimmedJobTitle,
             dimensions: 1024
         });
 
@@ -151,38 +204,58 @@ export async function searchJobs(req, res) {
 
         let allJobs;
 
-        if (location) {
-            const splitLocation = location.trim().toLowerCase().split(", ");
+        if (trimmedLocation) {
+            const cityOrRegion = trimmedLocation
+                .toLowerCase()
+                .split(",")[0]
+                .trim();
 
-            [allJobs] = await database.query(`
-                SELECT j.*, c.companyName, c.profilePhotoURL, c.coverPhotoURL
+            [allJobs] = await database.query(
+                `
+                SELECT 
+                    j.*, 
+                    c.companyName, 
+                    c.profilePhotoURL, 
+                    c.coverPhotoURL
                 FROM jobs j
                 INNER JOIN companies c
-                ON j.companyID = c.companyID
-                WHERE status = 'open'
-                AND location LIKE ?
-                AND jobSearchEmbedding IS NOT NULL
+                    ON j.companyID = c.companyID
+                WHERE j.status = 'open'
+                    AND LOWER(j.location) LIKE ?
+                    AND j.jobSearchEmbedding IS NOT NULL
                 `,
-                [`${splitLocation[0]}`]
+                [`%${cityOrRegion}%`]
             );
-
         } else {
-            [allJobs] = await database.query(`
-                SELECT j.*, c.companyName, c.profilePhotoURL, c.coverPhotoURL
+            [allJobs] = await database.query(
+                `
+                SELECT 
+                    j.*, 
+                    c.companyName, 
+                    c.profilePhotoURL, 
+                    c.coverPhotoURL
                 FROM jobs j
                 INNER JOIN companies c
-                ON j.companyID = c.companyID
-                WHERE status = 'open'
-                AND jobSearchEmbedding IS NOT NULL
+                    ON j.companyID = c.companyID
+                WHERE j.status = 'open'
+                    AND j.jobSearchEmbedding IS NOT NULL
                 `
             );
         }
 
-        if (allJobs.length === 0 ) {
-            return res.status(200).json({relatedJobs: []})
+        if (allJobs.length === 0) {
+            return res.status(200).json({
+                relatedJobs: [],
+                pagination: {
+                    totalJobs: 0,
+                    totalPages: 0,
+                    currentPage,
+                    limit: pageLimit
+                }
+            });
         }
 
-        const relatedJobs = allJobs
+        const sortedRelatedJobs = allJobs
             .map((job) => {
                 const jobEmbedding = JSON.parse(job.jobSearchEmbedding);
 
@@ -199,10 +272,24 @@ export async function searchJobs(req, res) {
             })
             .sort((a, b) => b.similarityScore - a.similarityScore);
 
+        const totalJobs = sortedRelatedJobs.length;
+        const totalPages = Math.ceil(totalJobs / pageLimit);
+
+        const startIndex = (currentPage - 1) * pageLimit;
+        const endIndex = startIndex + pageLimit;
+
+        const paginatedJobs = sortedRelatedJobs.slice(startIndex, endIndex);
+
         return res.status(200).json({
-            relatedJobs
+            relatedJobs: paginatedJobs,
+            pagination: {
+                totalJobs,
+                totalPages,
+                currentPage,
+                limit: pageLimit
+            }
         });
-        
+
     } catch (error) {
         console.error("Getting related jobs failed:", error);
 
@@ -210,7 +297,32 @@ export async function searchJobs(req, res) {
             message: "Internal server error"
         });
     }
+}
 
+export async function getSpecificJob(req, res) {
+    const { jobID } = req.params;
 
-    
+    try {
+        const [[specificJob]] = await database.query(`
+            SELECT 
+                j.*,
+                c.companyID,
+                c.companyName,
+                c.profilePhotoURL,
+                c.coverPhotoURL
+            FROM jobs j
+            INNER JOIN companies c
+            ON j.companyID = c.companyID
+            WHERE j.jobID = ?
+            LIMIT 1
+            `,
+            [jobID]
+        );
+
+        return res.status(200).json(specificJob);
+
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({message: "Fetching job failed"})
+    }
 }
