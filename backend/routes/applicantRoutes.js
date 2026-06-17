@@ -12,7 +12,7 @@ import  {
     isEmployer
 } from "../middlewares/authorizeUser.js"
 
-import { getRecommendedJobs, searchJobs } from "../controllers/applicant/jobControllers.js";
+import { getRecommendedJobs, searchJobs, getSpecificJob } from "../controllers/applicant/jobControllers.js";
 
 const router = express.Router();
 
@@ -21,6 +21,7 @@ router.get("/authorize", verifyToken, isApplicant, (req, res) => {
 })
 router.get("/recommendedJobs", verifyToken, isApplicant, getRecommendedJobs);
 router.get("/searchJobs", verifyToken, isApplicant, searchJobs);
+router.get("/viewJob/:jobID", verifyToken, isApplicant, getSpecificJob);
 
 
 router.post("/register", handleMulterResumeUpload, registerApplicant)
