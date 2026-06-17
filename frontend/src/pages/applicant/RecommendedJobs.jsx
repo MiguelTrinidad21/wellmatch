@@ -8,14 +8,18 @@ import { LuBriefcase } from "react-icons/lu";
 import { MdOutlineLocationOn } from "react-icons/md";
 import { PiMoneyWavy } from "react-icons/pi";
 import { FaRegBookmark } from "react-icons/fa";
+import { BiLoaderAlt } from "react-icons/bi";
 import { userStore } from "../../zustand/userState";
 import { jobSearchStore } from "../../zustand/jobSearching";
 import { useState, useEffect, useCallback } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
+import ReactPaginateModule from "react-paginate";
 
 
 export default function RecommendedJobs() {
+    const ReactPaginate = ReactPaginateModule.default || ReactPaginateModule;
+
     const navigate = useNavigate();
     const { currentUser } = userStore();
     const { 
@@ -35,6 +39,12 @@ export default function RecommendedJobs() {
     const [isSearchingLocation, setIsSearchingLocation] = useState(false);
     const [isLocationSelected, setIsLocationSelected] = useState(false);
     const [lastSelectedLocation, setLastSelectedLocation] = useState("");
+
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(0);
+    const [totalJobs, setTotalJobs] = useState(0);
+
+    const jobsPerPage = 5;
 
     useEffect(() => {
         async function checkApplicant() {
@@ -117,6 +127,11 @@ export default function RecommendedJobs() {
         setLocationSuggestions([]);
     }
 
+    function handlePageClick(event) {
+        const selectedPage = event.selected + 1;
+        fetchRecommendedJobs(selectedPage);
+    }
+
     async function handleSubmit(e) {
         try {
             e.preventDefault();
@@ -126,12 +141,14 @@ export default function RecommendedJobs() {
             const jobResults = await axios.get("/api/applicant/searchJobs", {
                 params: {
                     jobTitle: jobSearch.jobTitle,
-                    location: jobSearch.location
+                    location: jobSearch.location,
+                    page: 1,
+                    limit: jobsPerPage
                 },
                 withCredentials: true
             });
-
-            setJobSearchResults(jobResults.data?.relatedJobs);
+            console.log(jobResults.data)
+            setJobSearchResults(jobResults.data || []);
             navigate("/applicant/searchJobs");
         } catch (error) {
             console.log(error)
@@ -140,14 +157,21 @@ export default function RecommendedJobs() {
         }
     }
 
-    const fetchRecommendedJobs = useCallback(async () => {
+    const fetchRecommendedJobs = useCallback(async (page = 1) => {
         try {
             const response = await axios.get("/api/applicant/recommendedJobs", {
+                params:{
+                    page,
+                    limit: jobsPerPage
+                },
                 withCredentials: true
             });
             // console.log(response.data?.recommendedJobs)
             setResumeStatus(response.data?.resumeStatus);
-            setRecommendedJobs(response.data?.recommendedJobs || []);
+            setRecommendedJobs(response.data?.sortedRecommendedJobs || []);
+            setTotalJobs(response.data?.pagination?.totalJobs || 0);
+            setTotalPages(response.data?.pagination?.totalPages || 0);
+            setCurrentPage(response.data?.pagination?.currentPage || 1);
         } catch (error) {
             console.error("Fetching recommended jobs failed:", error);
         } finally {
@@ -156,7 +180,7 @@ export default function RecommendedJobs() {
     }, []);
 
     useEffect(() => {
-        fetchRecommendedJobs();
+        fetchRecommendedJobs(1);
     }, [fetchRecommendedJobs]);
 
     // Poll every 5 seconds ONLY while resume is processing
@@ -284,38 +308,65 @@ export default function RecommendedJobs() {
 
                 {(resumeStatus === "active") &&
                     <div className="w-full p-6">
-                        <h1 className="text-xl font-bold mb-2">Recommended Jobs</h1>
-                        <p className="text-sm text-gray-500 mb-4">Found {recommendedJobs.length} jobs for you</p>
+                        {isSearchingJob ? 
+                            <div className="w-full min-h-full flex flex-col justify-center items-center">
+                                <BiLoaderAlt size={25} className="animate-spin mb-3" />
+                                <p className="animate-pulse font-bold text-md">Finding relevant jobs</p>
+                            </div>
+                        :
+                            <>
+                                <h1 className="text-xl font-bold mb-2">Recommended Jobs</h1>
+                                <p className="text-sm text-gray-500 mb-4">Found {totalJobs} jobs for you</p>
 
-                        <div className="flex flex-col gap-6 w-full">
-                            {recommendedJobs.map((job) => {
-                                return (
-                                    <div key={job.jobID} className="w-full bg-white shadow-md rounded-2xl p-4 relative">
-                                        <button className="absolute top-4 right-4"><FaRegBookmark size={20} /></button>
+                                <div className="flex flex-col gap-6 w-full">
+                                    {recommendedJobs.map((job) => {
+                                        return (
+                                            <div key={job.jobID} className="w-full bg-white shadow-md rounded-2xl p-4 relative">
+                                                <button className="absolute top-4 right-4"><FaRegBookmark size={20} /></button>
 
-                                        <div className={`${job.profilePhotoURL === null && "hidden"} w-25 mb-3`}>
-                                            <img className={`${job.profilePhotoURL === null && "hidden"} w-full rounded-lg` } src={job.profilePhotoURL}  alt="" />
-                                        </div>
-                                        <h1 className="text-xl font-bold">{job.jobTitle}</h1>
-                                        <p className="text-md font-medium text-gray-500 mb-5">{job.companyName}</p>
-                                        <div className="relative w-full mb-2">
-                                            <MdOutlineLocationOn size={20} className="absolute top-1/2 -translate-y-1/2" />
-                                            <span className="pl-7">{job.location}</span>
-                                        </div>
-                                        <div className="relative w-full mb-2">
-                                            <LuBriefcase size={20} className="absolute top-1/2 -translate-y-1/2" />
-                                            <span className="pl-7">{job.workType}</span>
-                                        </div>
-                                        <div className="relative w-full mb-5">
-                                            <PiMoneyWavy size={20} className="absolute top-1/2 -translate-y-1/2" />
-                                            <span className="pl-7">{job.minSalary} - {job.maxSalary}</span>
-                                        </div>
+                                                <div className={`${job.profilePhotoURL === null && "hidden"} w-25 mb-3`}>
+                                                    <img className={`${job.profilePhotoURL === null && "hidden"} w-full rounded-lg` } src={job.profilePhotoURL}  alt="" />
+                                                </div>
+                                                <h1 className="text-xl font-bold">{job.jobTitle}</h1>
+                                                <p className="text-md font-medium text-gray-500 mb-5">{job.companyName}</p>
+                                                <div className="relative w-full mb-2">
+                                                    <MdOutlineLocationOn size={20} className="absolute top-1/2 -translate-y-1/2" />
+                                                    <span className="pl-7">{job.location}</span>
+                                                </div>
+                                                <div className="relative w-full mb-2">
+                                                    <LuBriefcase size={20} className="absolute top-1/2 -translate-y-1/2" />
+                                                    <span className="pl-7">{job.workType}</span>
+                                                </div>
+                                                <div className="relative w-full mb-5">
+                                                    <PiMoneyWavy size={20} className="absolute top-1/2 -translate-y-1/2" />
+                                                    <span className="pl-7">{job.minSalary.toLocaleString()} - {job.maxSalary.toLocaleString()}</span>
+                                                </div>
 
-                                        <PrimaryButton className="w-full">View Job Description</PrimaryButton>
-                                    </div>
-                                )
-                            })}
-                        </div>
+                                                <PrimaryButton to={`/applicant/viewJob/${job.jobID}`} className="w-full">View Job Description</PrimaryButton>
+                                            </div>
+                                        )
+                                    })}
+                                    {totalPages > 1 && (
+                                    <ReactPaginate
+                                        pageCount={totalPages}
+                                        forcePage={currentPage - 1}
+                                        onPageChange={handlePageClick}
+                                        previousLabel="<"
+                                        nextLabel=">"
+                                        breakLabel="..."
+                                        marginPagesDisplayed={2}
+                                        pageRangeDisplayed={3}
+                                        containerClassName="flex justify-center items-center gap-4 mt-8 w-full"
+                                        pageLinkClassName="px-4 py-3 rounded-lg text-lg"
+                                        activeLinkClassName="bg-[#2B2B2B] text-white"
+                                        previousLinkClassName="px-4 py-2 rounded-md bg-white shadow"
+                                        nextLinkClassName="px-4 py-2 rounded-md bg-white shadow"
+                                        disabledClassName="opacity-40 cursor-not-allowed"
+                                    />
+                                )}
+                                </div>                            
+                            </>
+                        }
                     </div>
                 }
             </div>

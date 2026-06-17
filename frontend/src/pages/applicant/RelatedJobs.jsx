@@ -14,9 +14,12 @@ import { jobSearchStore } from "../../zustand/jobSearching";
 import { useState, useEffect, useCallback } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
+import ReactPaginateModule from "react-paginate";
 
 
 export default function RelatedJobs() {
+    const ReactPaginate = ReactPaginateModule.default || ReactPaginateModule;
+    
     const navigate = useNavigate();
     const { currentUser } = userStore();
     const { 
@@ -35,9 +38,9 @@ export default function RelatedJobs() {
     const [isLocationSelected, setIsLocationSelected] = useState(false);
     const [lastSelectedLocation, setLastSelectedLocation] = useState("");
 
-    const [currentPage, setCurrentPage] = useState(1);
-    const [totalPages, setTotalPages] = useState(0);
-    const [totalJobs, setTotalJobs] = useState(0);
+    const [currentPage, setCurrentPage] = useState(jobSearchResults?.pagination?.currentPage);
+    const [totalPages, setTotalPages] = useState(jobSearchResults?.pagination?.totalPages);
+    const [totalJobs, setTotalJobs] = useState(jobSearchResults?.relatedJobs?.length);
 
     const jobsPerPage = 5;
 
@@ -137,11 +140,12 @@ export default function RelatedJobs() {
             });
 
             setJobSearchResults(jobResults.data?.relatedJobs || []);
-
+            console.log(jobResults.data)
             setTotalJobs(jobResults.data?.pagination?.totalJobs || 0);
             setTotalPages(jobResults.data?.pagination?.totalPages || 0);
             setCurrentPage(jobResults.data?.pagination?.currentPage || 1);
         } catch (error) {
+            console.log(error)
             console.error("Searching jobs failed:", error.response?.data || error.message);
         } finally {
             setIsSearchingJob(false);
@@ -161,7 +165,7 @@ export default function RelatedJobs() {
     
     useEffect(() => {
         if (!loading && !verified) {
-            navigate("/forbidden", { replace: true });
+            navigate("/forbidden");
         }
     }, [loading, verified, navigate]);
 
@@ -256,7 +260,7 @@ export default function RelatedJobs() {
                             <p className="text-sm text-gray-500 mb-4">Found {totalJobs} jobs for you</p>
 
                             <div className="flex flex-col gap-6 w-full">
-                                {jobSearchResults?.map((job) => {
+                                {jobSearchResults?.relatedJobs?.map((job) => {
                                     return (
                                         <div key={job.jobID} className="w-full bg-white shadow-md rounded-2xl p-4 relative">
                                             <button className="absolute top-4 right-4"><FaRegBookmark size={20} /></button>
@@ -276,13 +280,31 @@ export default function RelatedJobs() {
                                             </div>
                                             <div className="relative w-full mb-5">
                                                 <PiMoneyWavy size={20} className="absolute top-1/2 -translate-y-1/2" />
-                                                <span className="pl-7">{job.minSalary} - {job.maxSalary}</span>
+                                                <span className="pl-7">{job.minSalary.toLocaleString()} - {job.maxSalary.toLocaleString()}</span>
                                             </div>
 
-                                            <PrimaryButton className="w-full">View Job Description</PrimaryButton>
+                                            <PrimaryButton to={`/applicant/viewJob/${job.jobID}`} className="w-full">View Job Description</PrimaryButton>
                                         </div>
                                     )
                                 })}
+                                {totalPages > 1 && (
+                                    <ReactPaginate
+                                        pageCount={totalPages}
+                                        forcePage={currentPage - 1}
+                                        onPageChange={handlePageClick}
+                                        previousLabel="<"
+                                        nextLabel=">"
+                                        breakLabel="..."
+                                        marginPagesDisplayed={2}
+                                        pageRangeDisplayed={3}
+                                        containerClassName="flex justify-center items-center gap-4 mt-8 w-full"
+                                        pageLinkClassName="px-4 py-3 rounded-lg text-lg"
+                                        activeLinkClassName="bg-[#2B2B2B] text-white"
+                                        previousLinkClassName="px-4 py-2 rounded-md bg-white shadow"
+                                        nextLinkClassName="px-4 py-2 rounded-md bg-white shadow"
+                                        disabledClassName="opacity-40 cursor-not-allowed"
+                                    />
+                                )}
                             </div>                        
                         </>    
                     }
