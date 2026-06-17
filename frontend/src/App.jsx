@@ -17,6 +17,7 @@ import YearsRequired from './pages/employer/YearsRequired';
 import AccountSettings from './pages/employer/AccountSettings';
 import RecommendedJobs from './pages/applicant/RecommendedJobs';
 import RelatedJobs from './pages/applicant/RelatedJobs';
+import ViewJobInfo from './pages/applicant/ViewJobInfo';
 
 import { useEffect } from 'react';
 import { userStore } from './zustand/userState';
@@ -89,6 +90,7 @@ function App() {
         }>
           <Route path='/applicant/home' element={<RecommendedJobs />} />
           <Route path='/applicant/searchJobs' element={<RelatedJobs />} />
+          <Route path='/applicant/viewJob/:jobID' element={<ViewJobInfo />} />
         </Route>
         
         <Route path='/employer/register/invite' element={<EmployerRegister />} />        
