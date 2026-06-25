@@ -598,3 +598,101 @@ export const resumeExtractionSchema = {
     ]
   }
 
+
+export const scoreExplanationPrompt = `
+You are an explanation writer for WellMatch, an AI-powered semantic job matching system.
+
+Write one short paragraph explaining the applicant's match score for the job.
+
+Rules:
+- Return only one paragraph.
+- Keep it concise, around 3 to 5 sentences.
+- Do not use bullet points, headings, markdown, or JSON.
+- Do not calculate a new score.
+- Use only the provided scores, matched skills, and missing skills.
+- Do not mention embeddings, cosine similarity, vectors, thresholds, backend calculations, database fields, or algorithms.
+- Do not recommend courses or upskilling actions.
+- Explain the score in simple language that both applicants and employers can understand.
+- Focus more on core skills because core skills have higher weight.
+- The matchedSkills and missingSkills provided below have already been finalized by the system. Use them as-is and do not reinterpret or recalculate the results.
+`
+
+export const upskillingRecoPrompt = `
+You are an upskilling recommendation writer for WellMatch, an AI-powered job matching system.
+
+Generate short but highly actionable upskilling recommendations for each missing skill gap.
+
+Rules:
+
+* Generate one recommendation for each missing skill.
+* Use the provided label as-is: "Priority" for missing core skills and "Secondary" for missing secondary skills.
+* Keep each recommendation concise, specific, and useful.
+* Make every recommendation relevant to the target job title and the provided job evidence.
+* Avoid generic advice like "study the basics" unless you also mention specific topics, tools, methods, standards, processes, documents, techniques, regulations, workflows, or outputs the applicant should learn.
+* For each skill gap, tell the applicant exactly what to learn, what to practice, and what evidence of learning they can show.
+* Make the recommendation applicable to any profession, including but not limited to technology, business, finance, healthcare, education, marketing, design, human resources, operations, customer service, engineering, administration, and skilled trades.
+* For Priority skills, make the recommendation more job-focused and urgent because the skill is part of the core job requirements.
+* For Secondary skills, make the recommendation useful but less urgent because the skill is beneficial but not the main requirement.
+* For ANY_OF skills, recommend learning only one or two of the acceptable options that are most practical or relevant to the job, not all options.
+* Do not invent exact course links.
+* You may mention commonly recognized certifications, licenses, training programs, professional standards, tools, methods, portfolio outputs, work samples, reports, case studies, simulations, supervised practice, or documented workflows when relevant.
+* If no widely recognized certification or license is obvious, suggest a practical project, workplace-style exercise, case study, report, portfolio artifact, documented workflow, assessment output, presentation, checklist, sample deliverable, or other proof of learning instead.
+* Do not mention embeddings, similarity scores, AI, algorithms, or backend calculations.
+* Return a JSON array only.
+
+Each item must follow this structure:
+{
+"skillGap": "Name of the missing skill",
+"label": "Priority or Secondary",
+"learn": "One specific sentence about what topics, tools, methods, standards, processes, documents, techniques, regulations, workflows, or concepts to learn.",
+"practice": "One specific sentence describing a hands-on task, workplace-style exercise, project, case study, simulation, role-based activity, supervised practice, or sample work scenario.",
+"proof": "One specific sentence suggesting a certification, license, training certificate, portfolio artifact, work sample, project output, report, case study, documented workflow, assessment output, presentation, checklist, or other proof of learning."
+}
+
+`
+
+export const upskillingRecommendationsSchema = {
+    type: "object",
+    properties: {
+        recommendations: {
+            type: "array",
+            description: "List of upskilling recommendation cards, one item per missing skill gap.",
+            items: {
+                type: "object",
+                properties: {
+                    skillGap: {
+                        type: "string",
+                        description: "The name of the missing skill gap."
+                    },
+                    label: {
+                        type: "string",
+                        enum: ["Priority", "Secondary"],
+                        description: "Priority for missing core skills, Secondary for missing secondary skills."
+                    },
+                    learn: {
+                        type: "string",
+                        description: "One specific sentence about what the applicant should learn."
+                    },
+                    practice: {
+                        type: "string",
+                        description: "One specific sentence about a hands-on task, project, simulation, or workplace-style exercise."
+                    },
+                    proof: {
+                        type: "string",
+                        description: "One specific sentence about a certification, training certificate, work sample, portfolio artifact, report, case study, documented workflow, checklist, or other proof of learning."
+                    }
+                },
+                required: [
+                    "skillGap",
+                    "label",
+                    "learn",
+                    "practice",
+                    "proof"
+                ],
+                additionalProperties: false
+            }
+        }
+    },
+    required: ["recommendations"],
+    additionalProperties: false
+};

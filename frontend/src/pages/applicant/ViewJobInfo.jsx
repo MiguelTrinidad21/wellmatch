@@ -89,13 +89,13 @@ export default function ViewJobInfo() {
 
     return (
         <>
-            <div className="w-full min-h-screen bg-[#F3F4F6] relative">
+            <div className="w-full min-h-full bg-[#F3F4F6] relative">
                 <AuthNavBar />
                 <Overlay />
 
-                <div className="w-full min-h-full px-6">
+                <div className="w-full p-6">
 
-                    <div className=" w-full bg-white shadow-md my-6 rounded-2xl ">
+                    <div className=" w-full bg-white shadow-md  rounded-2xl ">
                         <div className="w-full rounded-tl-2xl rounded-tr-2xl ">
                             <img 
                                 src={selectedJob.coverPhotoURL ? selectedJob.coverPhotoURL : defaultPhoto} 
@@ -111,7 +111,7 @@ export default function ViewJobInfo() {
                                     alt="cover photo"
                                     className="w-20 object-cover rounded-sm"
                                 />
-                                <PrimaryButton to="/applicant/skillGapAnalysis/upload" className="absolute top-0 right-0 bg-[#2B2B2B]! text-[12px]">View Skill Gap Analysis</PrimaryButton>
+                                <PrimaryButton to={`/applicant/viewJob/${jobID}/chooseFile`} className="absolute top-0 right-0 bg-[#2B2B2B]! text-[12px]">View Skill Gap Analysis</PrimaryButton>
                             </div>
                             <div className="w-full mb-4">
                                 <h1 className="text-xl font-bold">{selectedJob.jobTitle}</h1>

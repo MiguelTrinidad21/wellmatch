@@ -152,7 +152,7 @@ export default function Jobs() {
                             buttonText="Close Job"
                             action={{closeJob, toggleWarning}}
                             error={closingError}
-                            isJobClosing={isJobClosing}
+                            isLoading={isJobClosing}
                         />
                     </>                    
                 }
