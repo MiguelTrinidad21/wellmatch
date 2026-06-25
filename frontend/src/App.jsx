@@ -18,6 +18,9 @@ import AccountSettings from './pages/employer/AccountSettings';
 import RecommendedJobs from './pages/applicant/RecommendedJobs';
 import RelatedJobs from './pages/applicant/RelatedJobs';
 import ViewJobInfo from './pages/applicant/ViewJobInfo';
+import SkillGapFileUploader from './pages/applicant/SkillGapFileUploader';
+import SkillGapAnalysisUI from './pages/applicant/SkillGapAnalysisUI';
+import MyProfile from './pages/applicant/MyProfile';
 
 import { useEffect } from 'react';
 import { userStore } from './zustand/userState';
@@ -91,6 +94,9 @@ function App() {
           <Route path='/applicant/home' element={<RecommendedJobs />} />
           <Route path='/applicant/searchJobs' element={<RelatedJobs />} />
           <Route path='/applicant/viewJob/:jobID' element={<ViewJobInfo />} />
+          <Route path='/applicant/viewJob/:jobID/chooseFile' element={<SkillGapFileUploader />} />
+          <Route path='/applicant/viewJob/:jobID/chooseFile/skillGapReport' element={<SkillGapAnalysisUI />} />
+          <Route path='/applicant/myProfile' element={<MyProfile />} />
         </Route>
         
         <Route path='/employer/register/invite' element={<EmployerRegister />} />        

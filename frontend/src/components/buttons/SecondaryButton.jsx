@@ -9,7 +9,7 @@ export default function SecondaryButton({
     className = ""
 }) {
 
-    const baseStyle = "text-sm text-[#10B981] outline-[3px] py-1 px-3 rounded-full flex items-center justify-center active:scale-[0.98]";
+    const baseStyle = "block text-sm font-semibold text-[#10B981] outline-[3px] py-1 px-3 rounded-full flex items-center justify-center active:scale-[0.98]";
     
     if (to) {
         return (

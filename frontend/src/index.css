@@ -9,7 +9,18 @@
 html,
 body,
 #root {
-  width: 100%;
+  min-width: 100%;
   min-height: 100%;
   overflow-x: hidden;
 }
+
+/* .resume-docx-preview .docx-wrapper {
+    padding: 0 !important;
+    background: transparent !important;
+    overflow: visible !important;
+    align-items: flex-start !important;
+}
+
+.resume-docx-preview section.docx {
+    margin-bottom: 16px !important;
+} */

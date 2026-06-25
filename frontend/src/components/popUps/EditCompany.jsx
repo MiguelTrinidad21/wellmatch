@@ -203,7 +203,7 @@ export default function EditCompany({ handleEditCompanyBox }) {
                                     <li
                                         key={place.placeId}
                                         onClick={() => {
-                                            setIsLocationSelected(!isLocationSelected)
+                                            setIsLocationSelected(true)
                                             handleSelectLocation(place)
                                         }}
                                         className="cursor-pointer px-4 py-2 text-sm hover:bg-gray-100"
@@ -304,7 +304,7 @@ export default function EditCompany({ handleEditCompanyBox }) {
 
             <div className="w-full flex justify-end gap-4">
                 <PrimaryButton disabled={isLoading} className={`bg-gray-200 text-black! px-4 border-2 border-gray-500 ${isLoading && "opacity-50"}`} onClick={cancelChanges}>Cancel</PrimaryButton>
-                <PrimaryButton disabled={isLoading} onClick={handleSubmit} className={`px-7 ${isLoading && "opacity-50"}`}>
+                <PrimaryButton disabled={isLoading} type="submit" className={`px-7 ${isLoading && "opacity-50"}`}>
                     {isLoading ? 
                         <>
                             <BiLoaderAlt className="animate-spin inline mr-3" />

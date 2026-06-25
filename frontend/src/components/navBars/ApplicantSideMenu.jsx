@@ -43,11 +43,11 @@ export default function ApplicantSideMenu() {
                     </div>
                     <div>{currentUser.firstName}&nbsp;{currentUser.lastName}</div>
 
-                    <div><Link to="/employer/jobs" onClick={toggleSideBar}><MdOutlineHome size={20} className="inline mr-4" /> Home</Link></div>
-                    <div><Link to="/employer/viewApplicants" to={toggleSideBar}><RxAvatar size={20} className="inline mr-4" /> My Profile</Link></div>
-                    <div><Link to="/employer/settings" onClick={toggleSideBar}><FaBookmark className="inline mr-4" /> Saved Jobs</Link></div>
-                    <div><Link to="/employer/companyProfile" onClick={toggleSideBar}><FaList className="inline mr-4" /> Job Applications</Link></div>
-                    <div><Link to="/employer/companyProfile" onClick={toggleSideBar}><FaGear className="inline mr-4" /> Account Settings</Link></div>
+                    <div><Link to="/applicant/home" onClick={toggleSideBar}><MdOutlineHome size={20} className="inline mr-4" /> Home</Link></div>
+                    <div><Link to="/applicant/myProfile" onClick={toggleSideBar}><RxAvatar size={20} className="inline mr-4" /> My Profile</Link></div>
+                    <div><Link to="/applicant/savedJobs" onClick={toggleSideBar}><FaBookmark className="inline mr-4" /> Saved Jobs</Link></div>
+                    <div><Link to="/applicant/applications" onClick={toggleSideBar}><FaList className="inline mr-4" /> Job Applications</Link></div>
+                    <div><Link to="/applicant/settings" onClick={toggleSideBar}><FaGear className="inline mr-4" /> Account Settings</Link></div>
 
                 </div>    
                 <button onClick={logoutApplicant} className="mt-7 font-bold text-red-600"><MdOutlineLogout size={20} className="inline mr-4 text-red-600" />Log out</button>

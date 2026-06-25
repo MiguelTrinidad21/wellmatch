@@ -14,7 +14,7 @@ export default function AuthNavBar() {
     return (
         <>
             <nav className="fixed left-0 top-0 z-20 flex h-16 w-full items-center justify-between bg-white px-5 shadow-sm">
-                <Link to="/employer/jobs">
+                <Link to="/">
                     <img
                     className="h-11 w-auto object-contain"
                     src={webLogo}
