@@ -7,11 +7,14 @@ export async function addWorkExp(req, res) {
     let {
         jobTitle,
         companyName,
-        startDate,
-        endDate
+        startMonth,        
+        startMonthLabel,   
+        startYear,
+        endMonth,          
+        endMonthLabel,     
+        endYear
     } = req.body;
 
-    endDate = (endDate === "") ? null : endDate;
 
     try {
         await database.query(`
@@ -29,8 +32,8 @@ export async function addWorkExp(req, res) {
                 id,
                 jobTitle,
                 companyName,
-                startDate,
-                endDate
+                `${startMonthLabel} ${startYear}`,
+                `${endMonthLabel} ${endYear}`
             ]
         );
 
@@ -94,11 +97,20 @@ export async function addCredential(req, res) {
     let {
         credentialTitle,
         issuedBy,
-        issueDate,
-        expiryDate
+        startMonth,        
+        startMonthLabel,   
+        startYear,
+        endMonth,          
+        endMonthLabel,     
+        endYear
     } = req.body;
 
-    expiryDate = (expiryDate === "") ? null : expiryDate;
+    let expiryDate;
+    if (!endMonth || !endMonthLabel || !endYear){
+        expiryDate = null;
+    } else {
+        expiryDate = `${endMonthLabel} ${endYear}`;
+    }
 
     try {
         await database.query(`
@@ -116,7 +128,7 @@ export async function addCredential(req, res) {
                 id,
                 credentialTitle,
                 issuedBy,
-                issueDate,
+                `${startMonthLabel} ${startYear}`,
                 expiryDate
             ]
         );
@@ -151,7 +163,7 @@ export async function getCredentials(req, res) {
 }
 
 export async function deleteCredential(req, res) {
-    const { id } = req.user;
+    const { id, email } = req.user;
     const { credID } = req.query;
 
     try {
@@ -177,29 +189,54 @@ export async function addEducation(req, res) {
     let {
         courseName,
         institution,
-        graduatedAt
+        year,
+        qualiComplete
     } = req.body;
+    console.log(qualiComplete)
 
-    graduatedAt = (graduatedAt === "") ? null : graduatedAt;
 
     try {
-        await database.query(`
-            INSERT INTO education (
-                applicantID,
-                courseName,
-                institution,
-                graduatedAt,
-                status
-            )
-            VALUES (?,?,?,?, 'active')
-            `,
-            [
-                id,
-                courseName,
-                institution,
-                graduatedAt
-            ]
-        );
+        if (qualiComplete) {
+            await database.query(`
+                INSERT INTO education (
+                    applicantID,
+                    courseName,
+                    institution,
+                    graduatedAt,
+                    status
+                )
+                VALUES (?,?,?,?, 'active')
+                `,
+                [
+                    id,
+                    courseName,
+                    institution,
+                    year
+                ]
+            );
+
+        } else {
+            await database.query(`
+                INSERT INTO education (
+                    applicantID,
+                    courseName,
+                    institution,
+                    willFinishAt,
+                    status
+                )
+                VALUES (?,?,?,?, 'active')
+                `,
+                [
+                    id,
+                    courseName,
+                    institution,
+                    year
+                ]
+            );
+
+        }
+
+
 
         return res.status(201).json({ message: "Education added successfully" });
         
@@ -256,33 +293,31 @@ export async function deleteEducation(req, res) {
 
 export async function updateInfo(req, res) {
     try {
-        const { id } = req.user;
+        const { id, email } = req.user;
 
         const {
             firstName,
             lastName,
-            email,
-            prevEmail,
             address
         } = req.body;
 
         const profilePhoto = req.file
 
-        if (prevEmail !== email) {
-            const [existingEmail] = await database.query(`
-                SELECT LOWER(email) FROM applicants
-                WHERE email = ?`,
-                [email.toLowerCase()]
-            )
+        // if (prevEmail !== email) {
+        //     const [existingEmail] = await database.query(`
+        //         SELECT LOWER(email) FROM applicants
+        //         WHERE email = ?`,
+        //         [email.toLowerCase()]
+        //     )
 
-            if (existingEmail[0]) {
-                return res.status(409).json({
-                    message: "Email address is already taken",
-                    issue: "email",
-                    field: "email"
-                })
-            }
-        }
+        //     if (existingEmail[0]) {
+        //         return res.status(409).json({
+        //             message: "Email address is already taken",
+        //             issue: "email",
+        //             field: "email"
+        //         })
+        //     }
+        // }
 
         const [applicantRows] = await database.query(
             `
@@ -326,7 +361,6 @@ export async function updateInfo(req, res) {
             SET
                 firstName = COALESCE(?, firstName),
                 lastName = COALESCE(?, lastName),
-                email = COALESCE(?, email),
                 address = COALESCE(?, address),
                 profilePhotoURL = COALESCE(?, profilePhotoURL),
                 profilePhotoPublicID = COALESCE(?, profilePhotoPublicID)
@@ -335,7 +369,6 @@ export async function updateInfo(req, res) {
             [
                 firstName || null,
                 lastName || null,
-                email|| null,
                 address || null,
                 profilePhotoURL,
                 profilePhotoPublicID,

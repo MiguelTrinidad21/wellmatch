@@ -8,10 +8,12 @@ import { LuBriefcase } from "react-icons/lu";
 import { MdOutlineLocationOn } from "react-icons/md";
 import { PiMoneyWavy } from "react-icons/pi";
 import { FaRegBookmark } from "react-icons/fa";
+import { FaBookmark } from "react-icons/fa";
 import { BiLoaderAlt } from "react-icons/bi";
 import { userStore } from "../../zustand/userState";
 import { jobSearchStore } from "../../zustand/jobSearching";
-import { useState, useEffect, useCallback } from "react";
+import { sideBarStore } from "../../zustand/stateHandlers";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import ReactPaginateModule from "react-paginate";
@@ -22,6 +24,7 @@ export default function RecommendedJobs() {
 
     const navigate = useNavigate();
     const { currentUser } = userStore();
+    const { setApplicantActiveLink } = sideBarStore();
     const { 
         jobSearchResults, 
         setJobSearchResults, 
@@ -38,11 +41,15 @@ export default function RecommendedJobs() {
     const [locationSuggestions, setLocationSuggestions] = useState([]);
     const [isSearchingLocation, setIsSearchingLocation] = useState(false);
     const [isLocationSelected, setIsLocationSelected] = useState(false);
-    const [lastSelectedLocation, setLastSelectedLocation] = useState("");
+    const [lastSelectedLocation, setLastSelectedLocation] = useState(jobSearch.location);
+    const prevLocationRef = useRef(jobSearch.location);
 
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(0);
     const [totalJobs, setTotalJobs] = useState(0);
+
+    const [isJobSaved, setIsJobSaved] = useState(false);
+    const [savedJobIDs, setSavedJobIDs] = useState(new Set());
 
     const jobsPerPage = 5;
 
@@ -72,14 +79,23 @@ export default function RecommendedJobs() {
         checkApplicant();
     }, [currentUser]);
 
+
     useEffect(() => {
-        if (isLocationSelected && lastSelectedLocation === jobSearch.location) {
+        setApplicantActiveLink("home")
+    }, [])
+
+    useEffect(() => {
+        const searchText = (jobSearch.location ?? "").trim();
+
+        if (prevLocationRef.current === jobSearch.location) {
             return;
-        } else {
-            setIsLocationSelected(false);
         }
 
-        const searchText = jobSearch.location.trim();
+        prevLocationRef.current = jobSearch.location;
+
+        if (isLocationSelected && (lastSelectedLocation === jobSearch.location)) {
+            return;
+        } 
 
         if (searchText.length < 3) {
             setLocationSuggestions([]);
@@ -109,7 +125,50 @@ export default function RecommendedJobs() {
         }, 500);
 
         return () => clearTimeout(delay);
-    }, [jobSearch.location, isLocationSelected]);
+    }, [jobSearch.location]);
+
+
+
+
+    useEffect(() => {
+        async function fetchSavedJobs() {
+            const res = await axios.get("/api/applicant/getSavedJobs", {
+                withCredentials: true
+            });
+
+            setSavedJobIDs(new Set(res.data.jobIDs));
+        }
+
+        fetchSavedJobs();
+    }, [isJobSaved])
+
+    async function saveJob(jobID) {
+        try {
+            await axios.post("/api/applicant/saveJob", { jobID }, {
+                withCredentials: true
+            })
+
+            setIsJobSaved(!isJobSaved);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    async function unsaveJob(jobID) {
+        try {
+            await axios.delete("/api/applicant/unsaveJob", {
+                params: {jobID},
+                withCredentials: true
+            })
+
+            setIsJobSaved(!isJobSaved);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+
+    
 
     function handleSelectLocation(place) {
         const formatted = [
@@ -126,11 +185,12 @@ export default function RecommendedJobs() {
         setIsLocationSelected(true);
         setLocationSuggestions([]);
     }
-
+ 
     function handlePageClick(event) {
         const selectedPage = event.selected + 1;
         fetchRecommendedJobs(selectedPage);
     }
+
 
     async function handleSubmit(e) {
         try {
@@ -216,13 +276,13 @@ export default function RecommendedJobs() {
                 <AuthNavBar />
                 <Overlay />
 
-                <div className="w-full bg-linear-to-t from-[#098B5F] to-[#10B981] flex items-center justify-center flex-col p-6">
-                    <h1 className="text-xl font-bold text-white mb-5">Find jobs that match your skills</h1>
+                <div className="w-full bg-linear-to-t from-[#098B5F] to-[#10B981] flex items-center justify-center flex-col p-6 md:px-15">
+                    <h1 className="text-xl font-bold text-white mb-5 md:text-3xl">Find jobs that match your skills</h1>
 
                     <form onSubmit={handleSubmit} >
                         <div className="relative w-full">
                             <input 
-                                className="bg-white rounded-md py-2 pl-12 pr-4 w-70 mb-2 block" 
+                                className="bg-white rounded-md py-2 pl-12 pr-4 w-70 mb-2 block md:w-88" 
                                 type="text"
                                 placeholder="Search job positions"
                                 value={jobSearch.jobTitle}
@@ -236,7 +296,7 @@ export default function RecommendedJobs() {
 
                         <div className="relative w-full">
                             <input 
-                                className="bg-white rounded-md py-2 pl-12 pr-4 w-70 block mb-2" 
+                                className="bg-white rounded-md py-2 pl-12 pr-4 w-70 block mb-2 md:w-88" 
                                 type="text"
                                 placeholder="Enter city or region"
                                 value={jobSearch.location}
@@ -278,97 +338,107 @@ export default function RecommendedJobs() {
                     </form>
                 </div>
 
-                {(resumeStatus === "processing") && 
-                    <div className="p-6">
-                        <h1 className="text-2xl font-bold">Recommended Jobs</h1>
-                        <p className="mt-2 text-gray-600">
-                            We are still analyzing your resume. Your recommended jobs will appear shortly.
-                        </p>
-                    </div>
-                }
+                <div className="w-full p-6 md:px-15 md:py-10">
+                    {(resumeStatus === "processing") && 
+                        <div className="">
+                            <h1 className="text-2xl font-bold">Recommended Jobs</h1>
+                            <p className="mt-2 text-gray-600 md:mt-0">
+                                We are still analyzing your resume. Your recommended jobs will appear shortly.
+                            </p>
+                        </div>
+                    }
 
-                {(resumeStatus === "failed") &&
-                    <div className="p-6">
-                        <h1 className="text-2xl font-bold">Resume Processing Failed</h1>
-                        <p className="mt-2 text-gray-600">
-                            We could not analyze your resume. Please upload your resume again.
-                        </p>
-                    </div>
-                }
+                    {(resumeStatus === "failed") &&
+                        <div className="">
+                            <h1 className="text-2xl font-bold">Resume Processing Failed</h1>
+                            <p className="mt-2 text-gray-600">
+                                We could not analyze your resume. Please upload your resume again.
+                            </p>
+                        </div>
+                    }
 
-                {(resumeStatus === "missing") &&
-                    <div className="p-6">
-                        <h1 className="text-2xl font-bold">Recommended Jobs</h1>
-                        <p className="mt-2 text-gray-600">
-                            Upload your resume first to get personalized job recommendations.
-                        </p>
-                    </div>
-                }
+                    {(resumeStatus === "missing") &&
+                        <div className="">
+                            <h1 className="text-2xl font-bold">Recommended Jobs</h1>
+                            <p className="mt-2 text-gray-600">
+                                Upload your resume first to get personalized job recommendations.
+                            </p>
+                        </div>
+                    }
 
 
-                {(resumeStatus === "active") &&
-                    <div className="w-full p-6">
-                        {isSearchingJob ? 
-                            <div className="w-full min-h-full flex flex-col justify-center items-center">
-                                <BiLoaderAlt size={25} className="animate-spin mb-3" />
-                                <p className="animate-pulse font-bold text-md">Finding relevant jobs</p>
-                            </div>
-                        :
-                            <>
-                                <h1 className="text-xl font-bold mb-2">Recommended Jobs</h1>
-                                <p className="text-sm text-gray-500 mb-4">Found {totalJobs} jobs for you</p>
+                    {(resumeStatus === "active") &&
+                        <div className="w-full ">
+                            {isSearchingJob ? 
+                                <div className="w-full min-h-full flex flex-col justify-center items-center">
+                                    <BiLoaderAlt size={25} className="animate-spin mb-3" />
+                                    <p className="animate-pulse font-bold text-md">Finding relevant jobs</p>
+                                </div>
+                            :
+                                <>
+                                    <div className="md:flex md:justify-between md:items-center md:mb-9">
+                                        <h1 className="text-xl font-bold mb-2 md:flex md:items-center md:mb-0 md:text-[22px]">Recommended Jobs</h1>
+                                        <p className="text-sm text-gray-500 font-semibold mb-4 md:flex md:items-center md:mb-0 md:text-[16px]">Found {totalJobs} jobs for you</p>
+                                    </div>
 
-                                <div className="flex flex-col gap-6 w-full">
-                                    {recommendedJobs.map((job) => {
-                                        return (
-                                            <div key={job.jobID} className="w-full bg-white shadow-md rounded-2xl p-4 relative">
-                                                <button className="absolute top-4 right-4"><FaRegBookmark size={20} /></button>
+                                    <div className="flex flex-col gap-6 w-full">
+                                        {recommendedJobs.map((job) => {
+                                            return (
+                                                <div key={job.jobID} className="w-full bg-white shadow-md rounded-2xl p-4 relative md:p-8">
+                                                    {
+                                                        savedJobIDs.has(job.jobID) ?
+                                                            <FaBookmark className="absolute top-4 right-4 text-green-700 md:top-8 md:right-8" size={20} onClick={() => unsaveJob(job.jobID)} />
+                                                        :
+                                                            <FaRegBookmark className="absolute top-4 right-4 md:top-7 md:right-8" size={20} onClick={() => saveJob(job.jobID)} />
+                                                    }
 
-                                                <div className={`${job.profilePhotoURL === null && "hidden"} w-25 mb-3`}>
-                                                    <img className={`${job.profilePhotoURL === null && "hidden"} w-full rounded-lg` } src={job.profilePhotoURL}  alt="" />
+                                                    <div className={`${job.profilePhotoURL === null && "hidden"} w-25 mb-3 md:w-30`}>
+                                                        <img className={`${job.profilePhotoURL === null && "hidden"} w-full rounded-lg` } src={job.profilePhotoURL}  alt="" />
+                                                    </div>
+                                                    <h1 className="text-xl font-bold">{job.jobTitle}</h1>
+                                                    <p className="text-md font-medium text-gray-500 mb-5">{job.companyName}</p>
+                                                    <div className="relative w-full mb-2">
+                                                        <MdOutlineLocationOn size={20} className="absolute top-1/2 -translate-y-1/2" />
+                                                        <span className="pl-7">{job.location}</span>
+                                                    </div>
+                                                    <div className="relative w-full mb-2">
+                                                        <LuBriefcase size={20} className="absolute top-1/2 -translate-y-1/2" />
+                                                        <span className="pl-7">{job.workType}</span>
+                                                    </div>
+                                                    <div className="relative w-full mb-5">
+                                                        <PiMoneyWavy size={20} className="absolute top-1/2 -translate-y-1/2" />
+                                                        <span className="pl-7">{job.minSalary.toLocaleString()} - {job.maxSalary.toLocaleString()}</span>
+                                                    </div>
+
+                                                    <PrimaryButton to={`/applicant/viewJob/${job.jobID}`} className="w-full">View Job Description</PrimaryButton>
                                                 </div>
-                                                <h1 className="text-xl font-bold">{job.jobTitle}</h1>
-                                                <p className="text-md font-medium text-gray-500 mb-5">{job.companyName}</p>
-                                                <div className="relative w-full mb-2">
-                                                    <MdOutlineLocationOn size={20} className="absolute top-1/2 -translate-y-1/2" />
-                                                    <span className="pl-7">{job.location}</span>
-                                                </div>
-                                                <div className="relative w-full mb-2">
-                                                    <LuBriefcase size={20} className="absolute top-1/2 -translate-y-1/2" />
-                                                    <span className="pl-7">{job.workType}</span>
-                                                </div>
-                                                <div className="relative w-full mb-5">
-                                                    <PiMoneyWavy size={20} className="absolute top-1/2 -translate-y-1/2" />
-                                                    <span className="pl-7">{job.minSalary.toLocaleString()} - {job.maxSalary.toLocaleString()}</span>
-                                                </div>
+                                            )
+                                        })}
+                                        {totalPages > 1 && (
+                                        <ReactPaginate
+                                            pageCount={totalPages}
+                                            forcePage={currentPage - 1}
+                                            onPageChange={handlePageClick}
+                                            previousLabel="<"
+                                            nextLabel=">"
+                                            breakLabel="..."
+                                            marginPagesDisplayed={2}
+                                            pageRangeDisplayed={3}
+                                            containerClassName="flex justify-center items-center gap-4 mt-6 w-full"
+                                            pageLinkClassName="px-4 py-3 rounded-lg text-lg"
+                                            activeLinkClassName="bg-[#2B2B2B] text-white"
+                                            previousLinkClassName="px-4 py-2 rounded-md bg-white shadow"
+                                            nextLinkClassName="px-4 py-2 rounded-md bg-white shadow"
+                                            disabledClassName="opacity-40 cursor-not-allowed"
+                                        />
+                                    )}
+                                    </div>                            
+                                </>
+                            }
+                        </div>
+                    }
+                </div>
 
-                                                <PrimaryButton to={`/applicant/viewJob/${job.jobID}`} className="w-full">View Job Description</PrimaryButton>
-                                            </div>
-                                        )
-                                    })}
-                                    {totalPages > 1 && (
-                                    <ReactPaginate
-                                        pageCount={totalPages}
-                                        forcePage={currentPage - 1}
-                                        onPageChange={handlePageClick}
-                                        previousLabel="<"
-                                        nextLabel=">"
-                                        breakLabel="..."
-                                        marginPagesDisplayed={2}
-                                        pageRangeDisplayed={3}
-                                        containerClassName="flex justify-center items-center gap-4 mt-8 w-full"
-                                        pageLinkClassName="px-4 py-3 rounded-lg text-lg"
-                                        activeLinkClassName="bg-[#2B2B2B] text-white"
-                                        previousLinkClassName="px-4 py-2 rounded-md bg-white shadow"
-                                        nextLinkClassName="px-4 py-2 rounded-md bg-white shadow"
-                                        disabledClassName="opacity-40 cursor-not-allowed"
-                                    />
-                                )}
-                                </div>                            
-                            </>
-                        }
-                    </div>
-                }
             </div>
 
             <Footer />

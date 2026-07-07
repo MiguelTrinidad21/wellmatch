@@ -158,10 +158,12 @@ export async function getSpecificJob(req, res) {
 
     try {
         const [jobToEdit] = await database.query(`
-            SELECT * 
-            FROM jobs
-            WHERE jobID = ?
-            AND companyID = ?
+            SELECT j.*, c.companyName 
+            FROM jobs j
+            INNER JOIN companies c
+            ON j.companyID = c.companyID
+            WHERE j.jobID = ?
+            AND j.companyID = ?
             LIMIT 1
             `,
             [jobID, companyID]
@@ -295,4 +297,45 @@ export async function closeJob(req, res) {
         console.error(error);
         return res.status(500).json({ message: "Closing job failed" });
     }
+}
+
+export async function viewJob(req, res) {
+    const { jobID } = req.params;
+
+    try {
+        const [[specificJob]] = await database.query(`
+            SELECT 
+                j.jobID,
+                j.jobTitle,
+                j.jobOverview,
+                j.jobDuties,
+                j.requiredQualifications,
+                j.preferredQualifications,
+                j.workingConditions,
+                j.jobBenefits,
+                j.location,
+                j.workPlaceOption,
+                j.workType,
+                j.minSalary,
+                j.maxSalary,                
+                c.companyID,
+                c.companyName,
+                c.profilePhotoURL,
+                c.coverPhotoURL
+            FROM jobs j
+            INNER JOIN companies c
+            ON j.companyID = c.companyID
+            WHERE j.jobID = ?
+            LIMIT 1
+            `,
+            [jobID]
+        );
+
+        return res.status(200).json(specificJob);
+
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({message: "Fetching job failed"})
+    }
+    
 }

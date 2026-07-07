@@ -92,7 +92,7 @@ export default function InviteEmployer() {
 
     return (
         <>
-            <div className="w-full h-screen px-6 bg-[#F3F4F6]">
+            <div className="w-full h-screen px-6 bg-[#F3F4F6] md:px-40 md:py-15">
                 <AuthNavBar />
                 <Overlay />
 
@@ -103,11 +103,11 @@ export default function InviteEmployer() {
                     </>
                 }
 
-                <h1 className="font-semibold text-2xl my-5">Invite your co-employer</h1>
-                <h2 className="text-lg font-medium mb-5">Enter your co-employer's email address to send them a registration link via email</h2>
+                <h1 className="font-bold text-2xl my-5">Invite your co-employer</h1>
+                <h2 className="text-lg font-medium mb-10">Enter your co-employer's email address to send them a registration link via email</h2>
 
                 <form onSubmit={handleSubmit}>
-                    <label htmlFor="email" className="block mb-3">Email</label>
+                    <label htmlFor="email" className="block mb-3 font-semibold">Email Address</label>
                     <input className="block border w-full text-md p-2 mb-3 rounded-md" 
                         type="email" 
                         placeholder="employer@gmail.com"
@@ -126,7 +126,7 @@ export default function InviteEmployer() {
                     <PrimaryButton className={`w-full mb-5 ${isSending && "opacity-50"}`} type="submit" disabled={isSending}>
                         {isSending ? 
                             <>
-                                <BiLoaderAlt className="animation-spin mr-3 inline" />
+                                <BiLoaderAlt className="animate-spin mr-3 inline" />
                                 Sending email...
                             </>
                         : "Send Email"}

@@ -19,18 +19,45 @@ import {
     getCompanyMembers
  } from "../controllers/employer/getCompanyInfo.js"; 
 
-import handleMulterUpload from "../middlewares/handleCompanyPhotos.js";
-import updateCompanyImages from "../controllers/employer/updateCompany.js";
-import { sendEmployerInvitationEmail } from "../controllers/employer/inviteEmployer.js";
 import { 
     postJob, 
     getJobs,
     getSpecificJob,
     updateJobInfo,
-    closeJob
- } from "../controllers/employer/jobControllers.js";
+    closeJob,
+    viewJob
+} from "../controllers/employer/jobControllers.js";
 
- import { editDetails } from "../controllers/employer/employerAccountSettings.js";
+import { 
+    updatePersonalDetails,
+    changePassword,
+    deleteAccount
+} from "../controllers/employer/employerAccountSettings.js";
+
+import { 
+    updateStatus,
+    rejectApplicant,
+    rejectAllApplicants 
+} from "../controllers/employer/updateJobApplications.js";
+
+import {
+    getJobInfo,
+    getSkillGapReport,
+    getCandidateHistory
+} from "../controllers/employer/skillGapController.js"
+
+import {
+    getEmployerInfo,
+    changePermission,
+    removeEmployer
+} from "../controllers/employer/manageEmployers.js"
+
+import handleMulterUpload from "../middlewares/handleCompanyPhotos.js";
+import updateCompanyImages from "../controllers/employer/updateCompany.js";
+import { sendEmployerInvitationEmail } from "../controllers/employer/inviteEmployer.js";
+import { fetchApplicants } from "../controllers/employer/viewingApplicants.js";
+import { viewResume } from "../controllers/employer/resumeViewer.js";
+
 
 const router = express.Router();
 
@@ -54,14 +81,28 @@ router.get("/companyMembers", verifyToken, isEmployer, getCompanyMembers);
 router.get("/invitations/verify/:token", verifyInvitationToken);
 router.get("/getJobs", verifyToken, isEmployer, getJobs);
 router.get("/jobs/:jobID", verifyToken, isEmployer, getSpecificJob);
-
-
-
+router.get("/fetchApplicants", verifyToken, isEmployer, fetchApplicants);
+router.get("/applications/skillGapReport", verifyToken, isEmployer, getSkillGapReport);
+router.get("/applications/candidateHistory", verifyToken, isEmployer, getCandidateHistory);
+router.get("/getAppliedJob", verifyToken, isEmployer, getJobInfo);
+router.get("/viewResume/:resumeID", verifyToken, isEmployer, viewResume)
+router.get("/viewJob/:jobID", verifyToken, isEmployer, viewJob)
+router.get("/getEmployerInfo", verifyToken, isAdmin, getEmployerInfo)
 
 router.patch("/editCompany", verifyToken, handleMulterUpload, updateCompanyImages);
 router.patch("/job/close/:jobID", verifyToken, isEmployer, closeJob)
-router.patch("/editPersonalDetails", verifyToken, isEmployer, editDetails)
+router.patch("/updatePersonalDetails", verifyToken, isEmployer, updatePersonalDetails)
+router.patch("/changePassword", verifyToken, isEmployer, changePassword)
+router.patch("/updateApplicationStatus", verifyToken, isEmployer, updateStatus)
+router.patch("/rejectApplicant", verifyToken, isEmployer, rejectApplicant)
+router.patch("/applications/rejectAll", verifyToken, isEmployer, rejectAllApplicants)
+router.patch("/editPermission", verifyToken, isAdmin, changePermission)
 
 router.put("/updateJob/:jobID", verifyToken, isEmployer, updateJobInfo)
+
+router.delete("/deleteAccount", verifyToken, isEmployer, deleteAccount)
+router.delete("/removeEmployer", verifyToken, isEmployer, removeEmployer)
+
+
 
 export default router;

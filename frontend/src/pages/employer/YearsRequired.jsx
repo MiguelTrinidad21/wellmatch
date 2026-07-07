@@ -123,7 +123,7 @@ export default function YearsRequired({ mode = "create" }) {
 
     return (
         <>
-            <div className="w-full px-6 min-h-screen bg-[#F3F4F6]">
+            <div className="w-full min-h-screen bg-[#F3F4F6]">
                 <AuthNavBar />
                 <Overlay />
                 
@@ -138,49 +138,53 @@ export default function YearsRequired({ mode = "create" }) {
                     </>
                 }
 
-                <h1 className="text-2xl font-bold my-6 text-center">Post Your Job Ad</h1>
+                <div className="w-full p-6 md:py-10 md:px-15">
+                    <h1 className="text-2xl font-bold mb-6 text-center">Post Your Job Ad</h1>
 
-                <form onSubmit={handleSubmit} className="w-full rounded-2xl bg-white p-6 shadow-md mb-7">
-                    <h2 className="font-semibold text-md mb-5">What is the minimum years of experience do you require?</h2>
+                    <form onSubmit={handleSubmit} className="w-full rounded-2xl bg-white p-6 shadow-md mb-7 m-auto md:w-100 md:text-lg">
+                        <h2 className="font-semibold mb-5">What is the minimum years of experience do you require?</h2>
 
 
-                    <div className="flex flex-col gap-4 mb-5">
-                        {experienceOptions.map((option) => (
-                            <label
-                                key={option.value}
-                                className="flex items-center gap-4 text-md cursor-pointer"
-                            >
-                            <input
-                                type="radio"
-                                name="yearsRequired"
-                                value={option.value}
-                                checked={createdJob.yearsRequired === option.value}
-                                onChange={(e) =>
-                                    setCreatedJob({yearsRequired: e.target.value})
-                                }
-                            />
+                        <div className="flex flex-col gap-4 mb-5">
+                            {experienceOptions.map((option) => (
+                                <label
+                                    key={option.value}
+                                    className="flex items-center gap-4 cursor-pointer"
+                                >
+                                <input
+                                    type="radio"
+                                    name="yearsRequired"
+                                    value={option.value}
+                                    checked={createdJob.yearsRequired === option.value}
+                                    onChange={(e) =>
+                                        setCreatedJob({yearsRequired: e.target.value})
+                                    }
+                                />
 
-                            <span>{option.label}</span>
-                            </label>
-                        ))}
-                    </div>
+                                <span>{option.label}</span>
+                                </label>
+                            ))}
+                        </div>
 
-                    {submitError && <p className="text-sm text-red-600">*{submitError}</p>}
+                        {submitError && <p className="text-sm text-red-600">*{submitError}</p>}
 
-                    <div className="flex justify-between w-full">
-                        <PrimaryButton disabled={isPosting} to="/employer/createJob/description" className={`bg-white text-black! border-2 border-gray-400 ${isPosting && "opacity-50"}`}><span className="flex items-center justify-center gap-2"><FaArrowLeftLong />Back</span></PrimaryButton>
-                        <PrimaryButton disabled={isPosting} className={`${isPosting && "opacity-50"}`} type="submit" className="px-8">
-                            {isPosting ? (
-                                <>
-                                    <BiLoaderAlt className="animation-spin mr-3 inline" />
-                                    {isEditMode ? "Saving" : "Posting"}
-                                </>
-                            ) : (
-                                isEditMode ? "Save Changes" : "Post"
-                            )}
-                        </PrimaryButton>
-                    </div>
-                </form>
+                        <div className="flex justify-between w-full mt-10 ">
+                            <PrimaryButton disabled={isPosting} to={isEditMode ? `/employer/jobs/${jobID}/edit/description` : "/employer/createJob/description"} className={`bg-white text-black! border-2 border-gray-400 ${isPosting && "opacity-50"}`}><span className="flex items-center justify-center gap-2"><FaArrowLeftLong />Back</span></PrimaryButton>
+                            <PrimaryButton disabled={isPosting} className={`${isPosting && "opacity-50"} px-6`} type="submit">
+                                {isPosting ? (
+                                    <>
+                                        <BiLoaderAlt className="animation-spin mr-3 inline" />
+                                        {isEditMode ? "Saving" : "Posting"}
+                                    </>
+                                ) : (
+                                    isEditMode ? "Save Changes" : "Post"
+                                )}
+                            </PrimaryButton>
+                        </div>
+                    </form>
+
+                </div>
+
 
             </div>
 

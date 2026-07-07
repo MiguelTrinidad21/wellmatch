@@ -168,7 +168,7 @@ export default function ApplicantRegister() {
 
     return (
         <>
-            <div className="w-full min-h-screen bg-[#F3F4F6] relative px-6">
+            <div className="w-full min-h-screen bg-[#F3F4F6] relative p-6 md:p-15">
                 <PublicNavBar />
                 <Overlay />
 
@@ -179,10 +179,10 @@ export default function ApplicantRegister() {
                     </>
                 )}
 
-                <form onSubmit={handleSubmit} className="my-6 w-full bg-white rounded-3xl shadow-lg p-6">
-                    <h2 className="text-center font-bold">Register Account</h2>
+                <form onSubmit={handleSubmit} className="m-auto w-full bg-white rounded-3xl shadow-lg p-6 md:w-100 ">
+                    <h2 className="text-center text-xl font-bold mb-5 md:text-2xl">Register Account</h2>
 
-                    <label className="block" htmlFor="firstName">First Name</label>
+                    <label className="block font-medium mb-1" htmlFor="firstName">First Name</label>
                     <input 
                         type="text"
                         id="firstName"
@@ -190,10 +190,10 @@ export default function ApplicantRegister() {
                         onChange={(e) => setApplicantInfo({...applicantInfo, firstName: e.target.value})}
                         placeholder="Enter first name"
                         required
-                        className="block w-full"
+                        className="p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-gray-600"
                     />
 
-                    <label className="block" htmlFor="lastName">Last Name</label>
+                    <label className="block font-medium mb-1" htmlFor="lastName">Last Name</label>
                     <input 
                         type="text"
                         id="lastName"
@@ -201,20 +201,20 @@ export default function ApplicantRegister() {
                         onChange={(e) => setApplicantInfo({...applicantInfo, lastName: e.target.value})}
                         placeholder="Enter last name"
                         required
-                        className="block w-full"
+                        className="p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-gray-600"
                     />
 
-                    <label className="block" htmlFor="address">Address</label>
+                    <label className="block font-medium mb-1" htmlFor="address">Address</label>
                     <div className="relative">
                         <input 
                             type="text"
                             id="address"
                             value={applicantInfo.address}
                             onChange={(e) => setApplicantInfo({...applicantInfo, address: e.target.value})}
-                            placeholder="Enter address"
+                            placeholder="e.g. Tarlac City, Tarlac"
                             required
                             autoComplete="off"
-                            className="block w-full overflow-x-scroll"
+                            className="p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-gray-600 overflow-x-scroll"
                         />
 
                         {isSearchingLocation && (
@@ -244,19 +244,19 @@ export default function ApplicantRegister() {
                         )}
                     </div>
 
-                    <label className="block" htmlFor="email">Email Address</label>
+                    <label className="block font-medium mb-1" htmlFor="email">Email Address</label>
                     <input 
                         type="email"
                         id="email"
                         value={applicantInfo.email}
                         onChange={(e) => setApplicantInfo({...applicantInfo, email: e.target.value})}
-                        placeholder="Enter email address"
+                        placeholder="name@example.com"
                         required
-                        className="block w-full"
+                        className={`p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-gray-600 ${errors.email ? "border-red-600 focus:border-red-600 mb-1!" : "border-gray-300"}`}
                     />
-                    {errors.email && <p className="text-red-600 text-[13px] italic">{errors.email}</p>}
+                    {errors.email && <p className="text-red-600 text-[13px] mb-4">* {errors.email}</p>}
 
-                    <label className="block" htmlFor="password">Password</label>
+                    <label className="block font-medium mb-1" htmlFor="password">Password</label>
                     <div className="relative">
                         <input 
                             type={showPassword ? "text" : "password"} 
@@ -265,34 +265,34 @@ export default function ApplicantRegister() {
                             onChange={(e) => setApplicantInfo({...applicantInfo, password: e.target.value})}
                             placeholder="Enter password"
                             required
-                            className="block w-full"
+                            className={`p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-gray-600 ${errors.invalidPass ? "focus:border-red-600 border-red-600 mb-1!" : "border-gray-300"}`}
                         />
                         <div onClick={handlePass} className="absolute top-1/2 -translate-y-1/2 right-2">
                             {showPassword ? <FiEyeOff /> : <FiEye />}
                         </div>               
                     </div>
-                    {errors.invalidPass && <p className="text-red-600 text-[13px] italic">{errors.invalidPass}</p>}
+                    {errors.invalidPass && <p className="text-red-600 text-[13px] mb-4">* {errors.invalidPass}</p>}
 
-                    <label className="block" htmlFor="confirmPass">Confirm Password</label>
+                    <label className="block font-medium mb-1" htmlFor="confirmPass">Confirm Password</label>
                     <div className="relative">
                         <input 
                             type={showConfirmPassword ? "text" : "password"}
                             id='confirmPass'
                             value={applicantInfo.confirmPass}
                             onChange={(e) => setApplicantInfo({...applicantInfo, confirmPass: e.target.value})}
-                            placeholder="Enter password"
+                            placeholder="Re-enter password"
                             required
-                            className={`block w-full border ${errors.password ? 'border-red-600' : 'border-gray-300'}`}
+                            className={`p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-gray-600 ${errors.confirmPassword ? 'border-red-600 focus:border-red-600 mb-1!' : 'border-gray-300'}`}
                         />
                         <div onClick={handleConfirmPass} className="absolute top-1/2 -translate-y-1/2 right-2">
                             {showConfirmPassword ? <FiEyeOff /> : <FiEye />}
                         </div>
                     </div>
-                    {errors.confirmPassword && <p className="text-red-600 text-[13px] italic">{errors.confirmPassword}</p>}
+                    {errors.confirmPassword && <p className="text-red-600 text-[13px] mb-4">* {errors.confirmPassword}</p>}
                     
 
-                    <h3>Resume</h3>
-                    <p className="text-gray-500 text-xs">Accepted file types: docx and pdf (5MB limit)</p>
+                    <h3 className="block font-medium mb-1">Resume</h3>
+                    <p className="text-gray-500 text-xs mb-2">Accepted file types: docx and pdf (5MB limit)</p>
                     
                     {resumeFileName && (
                         <p className="mb-2 text-sm font-medium text-gray-700">
@@ -300,14 +300,14 @@ export default function ApplicantRegister() {
                         </p>
                     )}
 
-                    {errors.noResume && <p className="text-red-600 text-[13px] italic my-2">{errors.noResume}</p>}
-                    {errors.fileType && <p className="text-red-600 text-[13px] italic my-2">{errors.fileType}</p>}
-                    {errors.fileSize && <p className="text-red-600 text-[13px] italic my-2">{errors.fileSize}</p>}
+                    {errors.noResume && <p className="text-red-600 text-[13px] my-2">* {errors.noResume}</p>}
+                    {errors.fileType && <p className="text-red-600 text-[13px] my-2">* {errors.fileType}</p>}
+                    {errors.fileSize && <p className="text-red-600 text-[13px] my-2">* {errors.fileSize}</p>}
 
-                    <div>
-                        <label className="cursor-pointer text-black font-semibold bg-[#86EFAC] rounded-full py-2 px-5 inline-flex mb-5" htmlFor="resume">
+                    <div className="mb-5">
+                        <label className="cursor-pointer text-black text-sm font-semibold bg-[#86EFAC] rounded-lg py-2 px-5 inline-flex mb-5" htmlFor="resume">
                             <MdFileUpload className="h-6 mr-3" />
-                            {resumeFileName ? "Change Resume" : "  Upload"}
+                            {resumeFileName ? "Change" : "  Upload"}
                             <input 
                                 type="file"
                                 id="resume"

@@ -30,7 +30,7 @@ export default function JobDescription({ mode = "create" }) {
     useEffect(() => {
         async function checkEmployer() {
             try {
-                console.log(currentUser);
+                // console.log(currentUser);
                 if (!currentUser || Object.keys(currentUser).length === 0) {
                     setVerified(false);
                     setLoading(false);
@@ -42,7 +42,7 @@ export default function JobDescription({ mode = "create" }) {
                         employerID: currentUser.employerID
                     }
                 });
-                console.log(createdJob)
+                // console.log(createdJob)
                 setVerified(true);
             } catch (error) {
                 console.log(error);
@@ -107,112 +107,115 @@ export default function JobDescription({ mode = "create" }) {
 
     return (
         <>
-            <div className="w-full px-6 min-h-screen bg-[#F3F4F6]">
+            <div className="w-full min-h-screen bg-[#F3F4F6]">
                 <AuthNavBar />
                 <Overlay />
 
-                <h1 className="text-2xl font-bold my-6 text-center">Write your job description</h1>
+                <div className="w-full p-6 md:px-15 md:py-10">
+                    <h1 className="text-2xl font-bold mt-6 mb-12 text-center">Write your job description</h1>
 
-                <form onSubmit={handleNext} className="w-full rounded-2xl bg-white p-6 shadow-md mb-7">
-                    <div className="w-full mb-6">
-                        <div className="relative flex items-center w-max gap-2">
-                            <label className="font-semibold text-lg mb-1" htmlFor="jobOverview">Job Overview</label>
-                            <Tooltip  text="Provide a brief overview of the role, its primary purpose, and how it contributes to the organization." />
+                    <form onSubmit={handleNext} className="w-full rounded-2xl bg-white p-6 shadow-md mb-7 md:p-10">
+                        <div className="w-full mb-6">
+                            <div className="relative flex items-center w-max gap-2">
+                                <label className="font-semibold text-lg mb-1" htmlFor="jobOverview">Job Overview</label>
+                                <Tooltip  text="Provide a brief overview of the role, its primary purpose, and how it contributes to the organization." />
+                            </div>
+                            <textarea 
+                                className="w-full text-md p-2 bg-[#F9FAFB] border-2 border-[#E5E7EB] rounded-xl appearance-none h-32 placeholder:italic"
+                                id="jobTitle"
+                                value={createdJob.jobOverview}
+                                onChange={(e) => setCreatedJob({jobOverview: e.target.value})}
+                                required                             
+                            />
+                            {errors?.issue === "Job Overview" && 
+                                <p className="text-sm text-red-600 italic">{errors.message}</p>
+                            }
                         </div>
-                        <textarea 
-                            className="w-full text-md p-2 bg-[#F9FAFB] border-2 border-[#E5E7EB] rounded-xl appearance-none h-32 placeholder:italic"
-                            id="jobTitle"
-                            value={createdJob.jobOverview}
-                            onChange={(e) => setCreatedJob({jobOverview: e.target.value})}
-                            required                             
-                        />
-                        {errors?.issue === "Job Overview" && 
-                            <p className="text-sm text-red-600 italic">{errors.message}</p>
-                        }
-                    </div>
 
-                    <div className="w-full mb-6">
-                        <div className="relative flex items-center w-max gap-2">
-                            <label className="block font-semibold text-lg mb-1" htmlFor="duties">Job Responsibilities</label>
-                            <Tooltip text="List the main duties and responsibilities of the position." />
+                        <div className="w-full mb-6">
+                            <div className="relative flex items-center w-max gap-2">
+                                <label className="block font-semibold text-lg mb-1" htmlFor="duties">Job Responsibilities</label>
+                                <Tooltip text="List the main duties and responsibilities of the position." />
+                            </div>
+                            <TextEditor 
+                                value={createdJob.jobDuties} 
+                                func={(value) => setCreatedJob({jobDuties: value})} 
+                            />
+                            {errors?.issue === "Job Responsibilities" && 
+                                <p className="text-sm text-red-600 italic">{errors.message}</p>
+                            }
                         </div>
-                        <TextEditor 
-                            value={createdJob.jobDuties} 
-                            func={(value) => setCreatedJob({jobDuties: value})} 
-                        />
-                        {errors?.issue === "Job Responsibilities" && 
-                            <p className="text-sm text-red-600 italic">{errors.message}</p>
-                        }
-                    </div>
 
-                    <div className="w-full mb-6">
-                        <div className="relative flex items-center w-max gap-2">
-                            <label className="block font-semibold text-lg mb-1" htmlFor="duties">Required Qualifications</label>
-                            <Tooltip text="Specify the minimum qualifications necessary to perform the job successfully." />
+                        <div className="w-full mb-6">
+                            <div className="relative flex items-center w-max gap-2">
+                                <label className="block font-semibold text-lg mb-1" htmlFor="duties">Required Qualifications</label>
+                                <Tooltip text="Specify the minimum qualifications necessary to perform the job successfully." />
+                            </div>
+                            <TextEditor 
+                                value={createdJob.requiredQualifications} 
+                                func={(value) => setCreatedJob({ requiredQualifications: value })} 
+                            />
+                            {errors?.issue === "Required Qualifications" && 
+                                <p className="text-sm text-red-600 italic">{errors.message}</p>
+                            }
                         </div>
-                        <TextEditor 
-                            value={createdJob.requiredQualifications} 
-                            func={(value) => setCreatedJob({ requiredQualifications: value })} 
-                        />
-                        {errors?.issue === "Required Qualifications" && 
-                            <p className="text-sm text-red-600 italic">{errors.message}</p>
-                        }
-                    </div>
 
-                    <div className="w-full mb-6">
-                        <div className="relative flex items-center w-max gap-2">
-                            <label className="block font-semibold text-lg mb-1" htmlFor="duties">Preferred Qualifications</label>
-                            <Tooltip text="List additional qualifications, skills, certifications, or experiences that are desirable but not required. (Optional)" />
+                        <div className="w-full mb-6">
+                            <div className="relative flex items-center w-max gap-2">
+                                <label className="block font-semibold text-lg mb-1" htmlFor="duties">Preferred Qualifications</label>
+                                <Tooltip text="List additional qualifications, skills, certifications, or experiences that are desirable but not required. (Optional)" />
+                            </div>
+                            <TextEditor 
+                                value={createdJob.preferredQualifications} 
+                                func={(value) => setCreatedJob({
+                                    preferredQualifications: value
+                                })} 
+                            />
                         </div>
-                        <TextEditor 
-                            value={createdJob.preferredQualifications} 
-                            func={(value) => setCreatedJob({
-                                preferredQualifications: value
-                            })} 
-                        />
-                    </div>
 
-                    <div className="w-full mb-6">
-                        <div className="relative flex items-center w-max gap-2">
-                            <label className="block font-semibold text-lg mb-1" htmlFor="duties">Working Conditions</label>
-                            <Tooltip text="Describe the work setup, schedule, location, and any special working conditions associated with the role. (Optional)" />
+                        <div className="w-full mb-6">
+                            <div className="relative flex items-center w-max gap-2">
+                                <label className="block font-semibold text-lg mb-1" htmlFor="duties">Working Conditions</label>
+                                <Tooltip text="Describe the work setup, schedule, location, and any special working conditions associated with the role. (Optional)" />
+                            </div>
+                            <TextEditor 
+                                value={createdJob.workingConditions} 
+                                func={(value) => setCreatedJob({
+                                    workingConditions: value
+                                })} 
+                            />
                         </div>
-                        <TextEditor 
-                            value={createdJob.workingConditions} 
-                            func={(value) => setCreatedJob({
-                                workingConditions: value
-                            })} 
-                        />
-                    </div>
 
-                    <div className="w-full mb-6">
-                        <div className="relative flex items-center w-max gap-2">
-                            <label className="block font-semibold text-lg mb-1" htmlFor="duties">Job Benefits</label>
-                            <Tooltip text="Provide information about the compensation package, employee benefits, and other perks offered for the position. (Optional)" />
+                        <div className="w-full mb-6">
+                            <div className="relative flex items-center w-max gap-2">
+                                <label className="block font-semibold text-lg mb-1" htmlFor="duties">Job Benefits</label>
+                                <Tooltip text="Provide information about the compensation package, employee benefits, and other perks offered for the position. (Optional)" />
+                            </div>
+                            <TextEditor 
+                                value={createdJob.jobBenefits} 
+                                func={(value) => setCreatedJob({
+                                    jobBenefits: value
+                                })} 
+                            />
                         </div>
-                        <TextEditor 
-                            value={createdJob.jobBenefits} 
-                            func={(value) => setCreatedJob({
-                                jobBenefits: value
-                            })} 
-                        />
-                    </div>
 
-                    {errors?.issue !== "" && <p className="text-center text-red-600 italic text-sm mb-5">Please fill out {errors?.issue} section before proceeding</p>}
+                        {errors?.issue !== "" && <p className="text-center text-red-600 italic text-sm mb-5">Please fill out {errors?.issue} section before proceeding</p>}
 
-                    <div className="flex justify-between w-full">
-                        <PrimaryButton
-                            to={isEditMode ? `/employer/jobs/${jobID}/edit` : "/employer/createJob"}
-                            className="bg-white text-black! border-2 border-gray-400"
-                        >
-                            <span className="flex items-center justify-center gap-2">
-                                <FaArrowLeftLong />Back
-                            </span>
-                        </PrimaryButton>
-                        <PrimaryButton type="submit" className="px-8">Next</PrimaryButton>
-                    </div>
-                    
-                </form>
+                        <div className="flex justify-between w-full">
+                            <PrimaryButton
+                                to={isEditMode ? `/employer/jobs/${jobID}/edit` : "/employer/createJob"}
+                                className="bg-white text-black! border-2 border-gray-400"
+                            >
+                                <span className="flex items-center justify-center gap-2">
+                                    <FaArrowLeftLong />Back
+                                </span>
+                            </PrimaryButton>
+                            <PrimaryButton type="submit" className="px-8">Next</PrimaryButton>
+                        </div>
+                        
+                    </form>
+                </div>
+
             </div>
         
             <Footer />

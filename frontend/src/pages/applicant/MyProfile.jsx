@@ -10,15 +10,17 @@ import EducationForm from "../../components/popUps/EducationForm";
 import AddResumeForm from "../../components/popUps/AddResumeForm"
 import Translucent from "../../components/overlay/Translucent";
 import DeleteItemBox from "../../components/popUps/DeleteItemBox"
-import defaultCover from "../../assets/defaultCover.jpg"
+import defaultProfile from "../../assets/defaultProfile.jpg"
 import { MdOutlineEmail } from "react-icons/md";
 import { SlLocationPin } from "react-icons/sl";
 import { FaCheck } from "react-icons/fa6";
 import { FiEdit } from "react-icons/fi";
 import { FiDownload } from "react-icons/fi";
+import { IoMdAdd } from "react-icons/io";
 import { FaTrashCan } from "react-icons/fa6";
 import { FaEllipsisVertical } from "react-icons/fa6";
 import { userStore } from "../../zustand/userState";
+import { sideBarStore } from "../../zustand/stateHandlers";
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
@@ -27,6 +29,7 @@ import axios from "axios";
 export default function MyProfile() {
     const navigate = useNavigate();
     const { currentUser, handleCurrentUser } = userStore();
+    const { setApplicantActiveLink } = sideBarStore();
 
     const [verified, setVerified] = useState(false);
     const [loading, setLoading] = useState(true);
@@ -147,6 +150,10 @@ export default function MyProfile() {
             console.log(error);
         }
     }
+
+    useEffect(() => {
+        setApplicantActiveLink("profile")
+    }, [])
 
     useEffect(() => {
         async function checkApplicant() {
@@ -345,36 +352,47 @@ export default function MyProfile() {
                 }
 
 
-                <div className="w-full p-6">
-                    <section className="flex gap-2 relative w-full mb-10">
-                        <div className="w-19 h-19 shrink-0">
-                            <img className="w-full h-full rounded-full object-cover" src={`${currentUser.profilePhoto ? currentUser.profilePhoto : defaultCover}`} alt="" />
+                <div className="w-full p-6 md:p-15">
+                    <section className="flex gap-2 relative w-full mb-10 md:gap-10 md:mb-15">
+                        <div className="w-19 h-19 shrink-0 md:w-30 md:h-30">
+                            <img className="w-full h-full rounded-full object-cover" src={`${currentUser.profilePhoto ? currentUser.profilePhoto : defaultProfile}`} alt="" />
                         </div>
-                        <div className="pr-5 flex flex-col min-w-0">
-                            <h1 className="text-lg font-bold wrap-break-word">{`${currentUser.firstName} ${currentUser.lastName}`}</h1>
-                            <div className="relative w-full">
-                                <MdOutlineEmail className="absolute top-1/2 -translate-y-1/2 left-0" />
-                                <p className="pl-6 wrap-break-word">{currentUser.email}</p>
+                        <div className="pr-5 flex flex-col min-w-0 md:gap-4 md:pr-42">
+                            <h1 className="text-lg font-bold wrap-break-word md:text-3xl">{`${currentUser.firstName} ${currentUser.lastName}`}</h1>
+                            <div className="relative w-full text-gray-700 font-medium">
+                                <MdOutlineEmail className=" absolute top-1/2 -translate-y-1/2 left-0 md:w-7 md:h-7" />
+                                <p className="pl-6 wrap-break-word md:pl-10 md:text-xl">{currentUser.email}</p>
                             </div>
-                            <div className="relative w-full">
-                                <SlLocationPin className="absolute top-1/2 -translate-y-1/2 left-0" />
-                                <p className="pl-6 wrap-break-word">{currentUser.address}</p>
+                            <div className="relative w-full text-gray-700 font-medium">
+                                <SlLocationPin className="absolute top-1/2 -translate-y-1/2 left-0 md:w-7 md:h-7" />
+                                <p className="pl-6 wrap-break-word md:pl-10 md:text-xl">{currentUser.address}</p>
                             </div>
                         </div>
-                        <FiEdit size={20} onClick={() => toggleForm(setOpenEditForm)} className=" text-green-600 font-bold absolute top-0 right-0" />
+
+                        <PrimaryButton onClick={() => toggleForm(setOpenEditForm)} className="hidden rounded-lg px-5 md:flex md:items-center md:gap-2 md:absolute md:top-0 md:right-0 ">
+                            <FiEdit size={20} />
+                            Edit details
+                        </PrimaryButton>
+                        <FiEdit size={20} onClick={() => toggleForm(setOpenEditForm)} className=" text-green-600 font-bold absolute top-0 right-0 md:hidden" />
                     </section>
 
-                    <section className="w-full mb-5">
-                        <h1 className="text-lg font-bold mb-2">Work Experience</h1>
-                        <div className="w-full flex flex-col gap-3">
+                    <section className="w-full p-5 mb-6 bg-white rounded-2xl shadow-md md:mb-10">
+                        <div className="md:flex md justify-between md:items-center md:mb-5">
+                            <h1 className="text-xl text-center font-bold text-green-600 mb-3 md:text-2xl md:mb-0">Work Experience</h1>
+                            <PrimaryButton onClick={() => toggleForm(setOpenWorkForm)} className="hidden rounded-lg md:flex md:items-center md:gap-2">
+                                <IoMdAdd size={20} />
+                                Add work
+                            </PrimaryButton>
+                        </div>
+                        <div className="w-full flex flex-col gap-5 md:grid md:grid-cols-2 md:gap-5">
                             {   
-                                workExp?.length === 0 ? <p className="text-gray-400 mb-2">Add your previous work experience</p>
+                                workExp?.length === 0 ? <p className="text-gray-400 mb-2 text-center">Add your previous work experience</p>
                             :
                                 workExp?.map((work) => (
-                                    <div key={work.workExpID} className="relative w-full bg-white shadow-md rounded-2xl p-4">
+                                    <div key={work.workExpID} className="relative w-full bg-[#F3F4F6] shadow-md rounded-2xl p-4">
                                         <h2 className="font-bold mb-1 text-lg">{work.jobTitle}</h2>
                                         <p className="text-gray-500 font-medium mb-3">{work.companyName}</p>
-                                        <p className="text-gray-500 text-sm">{`${new Date(work.startDate).toLocaleDateString('en-us', dateOptions)} - ${work.endDate ? new Date(work.endDate).toLocaleDateString('en-us', dateOptions) : "Present"}`}</p>
+                                        <p className="text-gray-500 text-sm">{`${work.startDate} - ${work.endDate}`}</p>
                                         <button onClick={() => {
                                             setWorkExpID(work.workExpID);
                                             toggleWarning(setDeleteWorkExp);
@@ -386,23 +404,32 @@ export default function MyProfile() {
                             }
                         </div>
 
-                        <PrimaryButton className="mt-3" onClick={() => toggleForm(setOpenWorkForm)}>Add work experience</PrimaryButton>
+                        <PrimaryButton className="mt-5 md:hidden w-full flex items-center gap-2 justify-center" onClick={() => toggleForm(setOpenWorkForm)}>
+                            <IoMdAdd size={20} />
+                            Add experience
+                        </PrimaryButton>
 
                     </section>
 
-                    <hr className="w-full h-0.5 border-none bg-gray-300 my-2" />
+                    
+                    <section className="w-full p-5 mb-6 bg-white rounded-2xl shadow-md md:mb-10">
+                        <div className="md:flex md justify-between md:items-center md:mb-5">
+                            <h1 className="text-xl text-center text-green-600 font-bold mb-3 md:text-2xl md:mb-0 ">Certifications and Licenses</h1>
+                            <PrimaryButton onClick={() => toggleForm(setOpenCredentialForm)} className="hidden rounded-lg md:flex md:items-center md:gap-2">
+                                <IoMdAdd size={20} />
+                                Add credentials
+                            </PrimaryButton>
 
-                    <section className="w-full mb-5">
-                        <h1 className="text-lg font-bold mb-2">Certifications and Licenses</h1>
-                        <div className="w-full flex flex-col gap-3">
+                        </div>
+                        <div className="w-full flex flex-col gap-5 md:grid md:grid-cols-2 md:gap-5">
                             {   
-                                credentials?.length === 0 ? <p className="text-gray-400 mb-2">Add your certifications</p>
+                                credentials?.length === 0 ? <p className="text-gray-400 mb-2 text-center">Add your certifications</p>
                             :
                                 credentials?.map((cred) => (
-                                    <div key={cred.credentialID} className="relative w-full bg-white shadow-md rounded-2xl p-4">
+                                    <div key={cred.credentialID} className="relative w-full bg-[#F3F4F6] shadow-md rounded-2xl p-4">
                                         <h2 className="font-bold mb-1 text-lg">{cred.credentialTitle}</h2>
                                         <p className="text-gray-500 font-medium mb-3">{cred.issuedBy}</p>
-                                        <p className="text-gray-500 text-sm">{`${new Date(cred.issueDate).toLocaleDateString('en-us', dateOptions)} - ${cred.expiryDate ? new Date(cred.expiryDate).toLocaleDateString('en-us', dateOptions) : "No expiry"}`}</p>
+                                        <p className="text-gray-500 text-sm">{`${cred.issueDate} - ${cred.expiryDate ? cred.expiryDate : "No expiry"}`}</p>
                                         <button onClick={() => {
                                             setCredID(cred.credentialID);
                                             toggleWarning(setDeleteCredential);
@@ -413,22 +440,33 @@ export default function MyProfile() {
                                 ))
                             }
                         </div>
-                        <PrimaryButton className="mt-3" onClick={() => toggleForm(setOpenCredentialForm)}>Add credentials</PrimaryButton>
+                        <PrimaryButton className="mt-5 md:hidden w-full flex items-center gap-2 justify-center" onClick={() => toggleForm(setOpenCredentialForm)}>
+                            <IoMdAdd size={20} />
+                            Add credentials
+                        </PrimaryButton>                       
+                        
                     </section>
 
-                    <hr className="w-full h-0.5 border-none bg-gray-300 my-2" />
+                    
 
-                    <section className="w-full mb-5">
-                        <h1 className="text-lg font-bold mb-2">Education</h1>
-                        <div className="w-full flex flex-col gap-3">
+                    <section className="w-full p-5 mb-6 bg-white rounded-2xl shadow-md md:mb-10">
+                        <div className="md:flex md justify-between md:items-center md:mb-5">
+                        <h1 className="text-xl text-center text-green-600 font-bold mb-3 md:text-2xl md:mb-0">Education</h1>
+                        <PrimaryButton onClick={() => toggleForm(setOpenEducationForm)} className="hidden rounded-lg md:flex md:items-center md:gap-2">
+                            <IoMdAdd size={20} />
+                            Add education
+                        </PrimaryButton>                        
+
+                        </div>
+                        <div className="w-full flex flex-col gap-5 md:grid md:grid-cols-2 md:gap-5">
                             {   
-                                education?.length === 0 ? <p className="text-gray-400 mb-2">Add education</p>
+                                education?.length === 0 ? <p className="text-gray-400 mb-2 text-center">Add education</p>
                             :
                                 education?.map((item) => (
-                                    <div key={item.educationID} className="relative w-full bg-white shadow-md rounded-2xl p-4">
+                                    <div key={item.educationID} className="relative w-full bg-[#F3F4F6] shadow-md rounded-2xl p-4">
                                         <h2 className="font-bold mb-1 text-lg">{item.courseName}</h2>
                                         <p className="text-gray-500 font-medium mb-3">{item.institution}</p>
-                                        <p className="text-gray-500 text-sm">{`Graduated ${new Date(item.graduatedAt).toLocaleDateString('en-us', dateOptions)}`}</p>
+                                        <p className="text-gray-500 text-sm">{item.graduatedAt ? `Graduated ${item.graduatedAt}` : `Expected finish ${item.willFinishAt}`}</p>
                                         <button onClick={() => {
                                             setEducID(item.educationID);
                                             toggleWarning(setDeleteEduc);
@@ -439,19 +477,28 @@ export default function MyProfile() {
                                 ))
                             }
                         </div>
-                        <PrimaryButton className="mt-3" onClick={() => toggleForm(setOpenEducationForm)}>Add education</PrimaryButton>
+                        <PrimaryButton className="mt-5 md:hidden w-full flex items-center gap-2 justify-center" onClick={() => toggleForm(setOpenEducationForm)}>
+                            <IoMdAdd size={20} />
+                            Add education
+                        </PrimaryButton>                           
                     </section>
 
-                    <hr className="w-full h-0.5 border-none bg-gray-300 my-2" />
+                    
 
-                    <section className="w-full mb-5">
-                        <h1 className="text-lg font-bold mb-2">Resumés</h1>
-                        <div className="w-full flex flex-col gap-3">
+                    <section className="w-full p-5 mb-5 bg-white rounded-2xl shadow-md">
+                        <div className="md:flex md justify-between md:items-center md:mb-5">
+                            <h1 className="text-xl text-center text-green-600 font-bold mb-3 md:text-2xl md:mb-0">Resumés</h1>
+                            <PrimaryButton onClick={() => toggleForm(setOpenResumeForm)} className="hidden rounded-lg md:flex md:items-center md:gap-2">
+                                <IoMdAdd size={20} />
+                                Add resume
+                            </PrimaryButton> 
+                        </div>
+                        <div className="w-full flex flex-col gap-5 md:grid md:grid-cols-2 md:gap-5">
                             {   
-                                resumes?.length === 0 ? <p className="text-gray-400 mb-2">Add a new resumé</p>
+                                resumes?.length === 0 ? <p className="text-gray-400 mb-2 text-center">Add a new resumé</p>
                             :
                                 resumes?.map((item) => (
-                                    <div key={item.resumeID} className="relative w-full bg-white shadow-md rounded-2xl p-4">
+                                    <div key={item.resumeID} className="relative w-full bg-[#F3F4F6] shadow-md rounded-2xl p-4">
                                         {
                                             item.isDefault == 1 && 
                                             <div className="mb-2 px-3 rounded-sm bg-[#F0FDF4] w-fit border-2 border-[#4A9E69]">
@@ -472,7 +519,7 @@ export default function MyProfile() {
                                                 
                                                 {
                                                     (resumeMenuID === item.resumeID && showResumeMenu) &&
-                                                    <div className="min-w-38 absolute top-full right-0 bg-[#F3F4F6] rounded-lg shadow-lg p-2 flex flex-col gap-2">
+                                                    <div className="min-w-38 absolute top-full right-0 bg-white rounded-lg shadow-lg p-2 flex flex-col gap-2">
                                                         {
                                                             item.isDefault != 1 &&
                                                             <div 
@@ -512,7 +559,10 @@ export default function MyProfile() {
                                 ))
                             }
                         </div>
-                        <PrimaryButton className="mt-3" onClick={() => toggleForm(setOpenResumeForm)}>Add resumé</PrimaryButton>
+                        <PrimaryButton className="mt-5 md:hidden w-full flex items-center gap-2 justify-center" onClick={() => toggleForm(setOpenResumeForm)}>
+                            <IoMdAdd size={20} />
+                            Add resume
+                        </PrimaryButton>                        
                     </section>
 
                 </div>

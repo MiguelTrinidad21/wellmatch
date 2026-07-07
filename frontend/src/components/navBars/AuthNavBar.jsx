@@ -13,10 +13,10 @@ export default function AuthNavBar() {
 
     return (
         <>
-            <nav className="fixed left-0 top-0 z-20 flex h-16 w-full items-center justify-between bg-white px-5 shadow-sm">
+            <nav className="fixed left-0 top-0 z-20 flex h-16 w-full items-center justify-between bg-white px-5 shadow-sm md:pr-15 md:pl-14 md:h-18">
                 <Link to="/">
                     <img
-                    className="h-11 w-auto object-contain"
+                    className="h-11 w-auto object-contain md:h-12"
                     src={webLogo}
                     alt="WellMatch Logo"
                     />
@@ -25,12 +25,12 @@ export default function AuthNavBar() {
                 <IoMdMenu size={30} onClick={toggleSideBar} />
             </nav>
 
-            {sideBarStatus && 
-                (currentUser.userType === "applicant" ? 
-                    <ApplicantSideMenu />
+            { 
+                currentUser.userType === "applicant" ? 
+                    <ApplicantSideMenu status={sideBarStatus} />
                 :   
-                    <EmployerSideMenu />
-                )
+                    <EmployerSideMenu status={sideBarStatus} />
+                
             }
         </>
     )

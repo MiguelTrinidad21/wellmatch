@@ -17,8 +17,7 @@ function formatReport(report) {
 }
 
 export async function skillGapController(req, res) {
-    const { jobID } = req.params;
-    const { resumeID } = req.body;
+    const { jobID, resumeID } = req.params;
 
     if (!resumeID || !jobID) {
         return res.status(400).json({

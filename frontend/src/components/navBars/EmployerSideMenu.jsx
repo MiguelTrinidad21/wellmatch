@@ -3,18 +3,22 @@ import { FiBriefcase } from "react-icons/fi";
 import { FaList } from "react-icons/fa";
 import { FaGear } from "react-icons/fa6";
 import { MdOutlineLogout } from "react-icons/md";
+import { FaPlus } from "react-icons/fa6";
 import { IoClose } from "react-icons/io5";
 import { sideBarStore, jobCreationStore } from "../../zustand/stateHandlers";
 import { userStore } from "../../zustand/userState";
+import { companyStore } from "../../zustand/stateHandlers";
 import { Link, useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 import PrimaryButton from "../buttons/PrimaryButton";
 import defaultCover from "../../assets/defaultCover.jpg"
 import axios from "axios";
 
-export default function EmployerSideMenu() {
-    const { toggleSideBar } = sideBarStore();
+export default function EmployerSideMenu({ status }) {
+    const { toggleSideBar, employerActiveLink, setEmployerActiveLink } = sideBarStore();
     const { clearCreatedJob } = jobCreationStore();
-    const { currentUser, handleCurrentUser } = userStore();
+    const { currentUser, logoutUser } = userStore();
+    const { companyInfo, setCompanyInfo } = companyStore();
     const navigate = useNavigate();
     
     async function logoutEmployer() {
@@ -22,39 +26,102 @@ export default function EmployerSideMenu() {
             await axios.post("/api/employer/logout", {}, {
                 withCredentials: true
             })
-            handleCurrentUser(null);
             toggleSideBar()
+            logoutUser();
+            setEmployerActiveLink("jobs")
             navigate("/employer/login");
-        } catch {
-            
+
+        } catch (error) {
+            console.log(error)
         }
     }
 
+    useEffect(() => {
+
+        async function fetchCompany() {
+            try {
+                const result = await axios.get("/api/employer/company", {
+                    params: {
+                        companyID: currentUser.companyID
+                    },
+                    withCredentials: true
+                });
+                setCompanyInfo(result.data);
+
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
+        fetchCompany();
+    }, [currentUser?.companyID])
+
+
     return (
         <>
-            <div onClick={toggleSideBar} className="fixed inset-0 z-30 opacity-50 bg-gray-600"></div>
-            <aside className="p-5 pt-7 fixed top-0 right-0 w-[70%] h-full z-40 bg-[#F9FAFB]">
-                <IoClose className="absolute top-2 right-2" size={35} onClick={toggleSideBar} />
+            <div onClick={toggleSideBar} className={`fixed inset-0 z-30 bg-gray-800/50 transition-opacity duration-300 ${status ? "opacity-100 visible" : "opacity-0 invisible"}`}></div>
+            <aside className={`p-5 pt-7 fixed top-0 right-0 ${status ? "translate-x-0" : "translate-x-full"} transition-transform duration-300 ease-out w-[70%] h-full z-40 bg-[#F9FAFB] md:w-[50%] md:p-10`}>
+                <div className="absolute top-3 right-3 bg-[#D7F1E0] p-2 rounded-full" >
+                    <IoClose size={25} onClick={toggleSideBar} />
+                </div>
 
                 <div className="w-full">
-                    <div className="w-25 h-25 rounded-full">
-                        <img className="w-full h-full object-cover rounded-full" src={currentUser.companyPhoto ? `${currentUser.companyPhoto}` : defaultCover} alt="Company Logo" />
+                    <div className="w-25 h-25 m-auto mt-7 mb-3 rounded-lg">
+                        <img className="w-full h-full object-cover rounded-lg" src={companyInfo.profilePhotoURL ? `${companyInfo.profilePhotoURL}` : defaultCover} alt="Company Logo" />
                     </div>
-                    <div>{currentUser.firstName}&nbsp;{currentUser.lastName}</div>
-                    <div>{currentUser.companyName}</div>
+                    <div className="font-bold text-center text-xl mb-1">{currentUser.firstName}&nbsp;{currentUser.lastName}</div>
+                    <div className="font-medium text-center mb-3">{companyInfo.companyName}</div>
+                    <hr className="h-px bg-gray-300 border-none mb-3"/>
 
-                    <div><Link to="/employer/jobs" onClick={toggleSideBar}><FiBriefcase className="inline mr-4" /> Jobs</Link></div>
-                    <div><Link to="/employer/viewApplicants" to={toggleSideBar}><FaList className="inline mr-4" /> Applicants</Link></div>
-                    <div><Link to="/employer/settings" onClick={toggleSideBar}><FaGear className="inline mr-4" /> Account Settings</Link></div>
-                    <div><Link to="/employer/companyProfile" onClick={toggleSideBar}><RxAvatar className="inline mr-4" /> Company Profile</Link></div>
+                    <div onClick={() => setEmployerActiveLink("jobs")} className={`mb-2 rounded-xl py-2.25 px-2.5 ${employerActiveLink === "jobs" ? "bg-[#D7F1E0]" : "hover:bg-[#D7F1E0] transition-colors duration-200 ease-in"}`}>
+                        <Link className="flex gap-3 items-center md:gap-5" to="/employer/jobs" onClick={toggleSideBar}>
+                            <span className={`rounded-xl p-2 ${employerActiveLink === "jobs" ? "bg-[#109D5C] text-white" : "text-green-700 bg-[#D7F1E0]"}`}>
+                                <FiBriefcase />
+                            </span>
+                            <span className={`${employerActiveLink === "jobs" ? "font-bold" : "font-mediun"}`}>Jobs</span>
+                            
+                        </Link>
+                    </div>                    
+
+                    <div onClick={() => setEmployerActiveLink("applicants")} className={`mb-2 rounded-xl py-2.25 px-2.5 ${employerActiveLink === "applicants" ? "bg-[#D7F1E0]" : "hover:bg-[#D7F1E0] transition-colors duration-200 ease-in"}`}>
+                        <Link className="flex gap-3 items-center md:gap-5" to="/employer/jobs/selectFirst/applicants" onClick={toggleSideBar}>
+                            <span className={`rounded-xl p-2 ${employerActiveLink === "applicants" ? "bg-[#109D5C] text-white" : "text-green-700 bg-[#D7F1E0]"}`}>
+                                <FaList />
+                            </span>
+                            <span className={`${employerActiveLink === "applicants" ? "font-bold" : "font-mediun"}`}>Applicants</span>                        
+                        </Link>
+                    </div>
+
+                    <div onClick={() => setEmployerActiveLink("company")} className={`mb-2 rounded-xl py-2.25 px-2.5 ${employerActiveLink === "company" ? "bg-[#D7F1E0]" : "hover:bg-[#D7F1E0] transition-colors duration-200 ease-in"}`}>
+                        <Link className="flex gap-3 items-center md:gap-5" to="/employer/companyProfile" onClick={toggleSideBar}>
+                            <span className={`rounded-xl p-2 ${employerActiveLink === "company" ? "bg-[#109D5C] text-white" : "text-green-700 bg-[#D7F1E0]"}`}>
+                                <RxAvatar size={17} />
+                            </span>
+                            <span className={`${employerActiveLink === "company" ? "font-bold" : "font-mediun"}`}>Company Profile</span>                           
+                        </Link>
+                    </div>
+
+                    <div onClick={() => setEmployerActiveLink("settings")} className={`rounded-xl py-2.25 px-2.5 ${employerActiveLink === "settings" ? "bg-[#D7F1E0]" : "hover:bg-[#D7F1E0] transition-colors duration-200 ease-in"}`}>
+                        <Link className="flex gap-3 items-center md:gap-5" to="/employer/settings" onClick={toggleSideBar}>
+                            <span className={`rounded-xl p-2 ${employerActiveLink === "settings" ? "bg-[#109D5C] text-white" : "text-green-700 bg-[#D7F1E0]"}`}>
+                                <FaGear />
+                            </span>
+                            <span className={`${employerActiveLink === "settings" ? "font-bold" : "font-mediun"}`}>Account Settings</span>                    
+                        </Link>
+                    </div>                    
+                    
+                    <hr className="h-px bg-gray-300 border-none my-4"/>
                     <PrimaryButton onClick={() => {
                         clearCreatedJob();
                         toggleSideBar();
-                    }} className="w-full block text-center">
-                        <Link to="/employer/createJob">Create Job Post</Link>
+                    }} className="w-full block text-center rounded-lg">
+                        <Link className="flex gap-3 items-center justify-center md:gap-5" to="/employer/createJob">
+                            <FaPlus />
+                            Create Job Post
+                        </Link>
                     </PrimaryButton>
                 </div>    
-                <button onClick={logoutEmployer} className="mt-7"><MdOutlineLogout className="inline mr-4" />Log out</button>
+                <button onClick={logoutEmployer} className="mt-7 text-red-600 font-bold text-lg"><MdOutlineLogout className="inline mr-4" />Log out</button>
             </aside>
         </>
     )

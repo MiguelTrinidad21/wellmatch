@@ -6,7 +6,7 @@ import Translucent from "../overlay/Translucent";
 import axios from "axios";
 
 
-export default function CredentialsForm({ toggleForm, refresh }) {
+export default function AddResumeForm({ toggleForm, refresh }) {
     const [resume, setResume] = useState(null);
     const [resumeFileName, setResumeFileName] = useState("");
     const [isLoading, setIsLoading] = useState(false);
@@ -51,10 +51,10 @@ export default function CredentialsForm({ toggleForm, refresh }) {
         <>
             <Translucent />
         
-            <div className="w-[85%] p-5 bg-[#F3F4F6] fixed top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 z-50 rounded-2xl">
-                <IoClose onClick={toggleForm} size={20} className="absolute top-2 right-2" />
+            <div className="w-[85%] p-5 bg-[#F3F4F6] fixed top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 z-50 rounded-2xl md:w-100 md:p-7 md:pt-10">
+                <IoClose onClick={toggleForm} size={20} className="absolute top-2 right-2 md:top-4 md:right-4 md:h-7 md:w-7" />
 
-                <h1 className="font-bold text-lg mb-3 text-center">Add resumé</h1>
+                <h1 className="font-bold text-xl mb-3 text-center">Add resumé</h1>
                 <p className="mb-3">Add up to 5 resumés. Accepted file type: pdf and docx (5MB limit)</p>
                 
                 <div className="mb-3 w-full h-50 flex flex-col justify-center items-center border-2 border-gray-500 border-dashed rounded-2xl ">

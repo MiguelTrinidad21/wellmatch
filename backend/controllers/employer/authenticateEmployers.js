@@ -34,7 +34,7 @@ export async function registerAdmin(req, res) {
             await connection.rollback();
 
             return res.status(409).json({
-                message: "*Email address is already registered",
+                message: "Email address is already taken",
                 issue: "email"
             });
         }
@@ -58,15 +58,16 @@ export async function registerAdmin(req, res) {
         const [employerResult] = await connection.query(
             `
             INSERT INTO employers 
-                (email, password, firstName, lastName)
+                (email, password, firstName, lastName, status)
             VALUES 
-                (?, ?, ?, ?)
+                (?, ?, ?, ?, ?)
             `,
             [
                 normalizedEmail,
                 hashedPassword,
                 firstName,
-                lastName
+                lastName,
+                "active"
             ]
         );
 
@@ -369,10 +370,11 @@ export async function registerCoEmployer(req, res) {
                     email,
                     password,
                     firstName,
-                    lastName
+                    lastName,
+                    status
                 )
-                VALUES (?, ?, ?, ?)`,
-                [normalizedEmail, hashedPassword, firstName, lastName]
+                VALUES (?, ?, ?, ?, ?)`,
+                [normalizedEmail, hashedPassword, firstName, lastName, "active"]
             );
     
             await connection.query(`

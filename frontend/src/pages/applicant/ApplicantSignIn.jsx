@@ -54,55 +54,62 @@ export default function ApplicantSignIn() {
 
     return (
         <>
-            <div className="w-screen h-screen relative bg-[#F3F4F6] px-6">
+            <div className="w-screen h-screen relative bg-[#F3F4F6] px-6 md:px-15">
                 <PublicNavBar />
                 <Overlay />
 
-                <div className="w-full text-center py-10">
-                    <h1>Bridge the Gap</h1>
-                    <h2>Match your profile to top roles and level up</h2>
+                <div className="grid grid-cols-1 w-full justify-items-center">
+                    <div className="w-full text-center my-10">
+                        <h1 className="text-3xl font-extrabold bg-linear-to-r from-[#166534] via-[#16A34A] to-[#4ADE80] bg-clip-text text-transparent mb-2 md:text-5xl md:mb-5">BRIDGE THE GAP</h1>
+                        <h2 className="font-semibold md:text-xl">Match your profile to top roles and level up</h2>
+                    </div>
+
+
+                    <form onSubmit={handleSubmit} className="w-full bg-white rounded-3xl shadow-lg p-6 md:w-100">
+                        <h2 className="text-center font-bold text-xl mb-4 md:text-2xl">Sign in</h2>
+
+                        <label className="block mb-1 font-medium" htmlFor="email">Email Address</label>
+                        <input 
+                            type="email"
+                            id="email"
+                            value={applicantCredentials.email}
+                            onChange={(e) => setApplicantCredentials({...applicantCredentials, email: e.target.value})}
+                            placeholder="Enter email address"
+                            required
+                            className={`p-2 rounded-md block w-full border-2 mb-4 md:mb-6 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-gray-600 ${errors.email ? 'border-red-600 focus:border-red-600 mb-1!' : 'border-gray-300'}`}
+                        />
+                        {errors.email && <p className="text-red-600 text-[13px] mb-4">* {errors.email}</p>}
+
+                        <label className="block mb-1 font-medium" htmlFor="password">Password</label>
+                        <div className="relative">
+                            <input 
+                                type={showPassword ? "text" : "password"} 
+                                id='password'
+                                value={applicantCredentials.password}
+                                onChange={(e) => setApplicantCredentials({...applicantCredentials, password: e.target.value})}
+                                placeholder="Enter password"
+                                required
+                                className={`p-2 rounded-md block w-full border-2 mb-4 md:mb-6 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-gray-600 ${errors.password ? 'border-red-600 focus:border-red-600 mb-1!' : 'border-gray-300'}`}
+                            />
+                            <div onClick={handlePass} className="absolute top-1/2 -translate-y-1/2 right-2">
+                                {showPassword ? <FiEyeOff /> : <FiEye />}
+                            </div>                        
+                        </div>
+                        {errors.password && <p className="text-red-600 text-[13px] mb-4">* {errors.password}</p>}
+
+                        <PrimaryButton type="submit" className="w-full mb-6">Sign in</PrimaryButton>
+
+                        <p className="text-center text-sm mt-5">
+                            <Link to="/applicant/register">Don't have an account?
+                                <span className="font-bold text-[#10B981]">&nbsp;&nbsp;Register here</span>
+                            </Link>
+                        </p>
+
+                    </form>
+                        
+
                 </div>
 
-                <form onSubmit={handleSubmit} className="w-full bg-white rounded-3xl shadow-lg p-6">
-                    <h2 className="text-center font-bold">Log in</h2>
-
-                    <label className="block" htmlFor="email">Email Address</label>
-                    <input 
-                        type="email"
-                        id="email"
-                        value={applicantCredentials.email}
-                        onChange={(e) => setApplicantCredentials({...applicantCredentials, email: e.target.value})}
-                        placeholder="Enter email address"
-                        required
-                        className={`block w-full border ${errors.email ? 'border-red-600' : 'border-gray-300'}`}
-                    />
-                    {errors.email && <p className="text-red-600 text-[13px] italic">{errors.email}</p>}
-
-                    <label className="block" htmlFor="password">Password</label>
-                    <div className="relative">
-                        <input 
-                            type={showPassword ? "text" : "password"} 
-                            id='password'
-                            value={applicantCredentials.password}
-                            onChange={(e) => setApplicantCredentials({...applicantCredentials, password: e.target.value})}
-                            placeholder="Enter password"
-                            required
-                            className={`block w-full border ${errors.password ? 'border-red-600' : 'border-gray-300'}`}
-                        />
-                        <div onClick={handlePass} className="absolute top-1/2 -translate-y-1/2 right-2">
-                            {showPassword ? <FiEyeOff /> : <FiEye />}
-                        </div>                        
-                    </div>
-                    {errors.password && <p className="text-red-600 text-[13px] italic">{errors.password}</p>}
-
-                    <PrimaryButton type="submit" className="w-full">Sign in</PrimaryButton>
-                </form>
-                
-                <p className="text-center text-sm mt-5">
-                    <Link to="/applicant/register">Don't have an account?
-                        <span className="font-bold text-[#10B981]">&nbsp;&nbsp;Register here</span>
-                    </Link>
-                </p>
             </div>
             <Footer />
         </>

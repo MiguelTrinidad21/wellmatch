@@ -29,14 +29,16 @@ export async function registerApplicant(req, res) {
     const normalizedEmail = email.trim().toLowerCase();
 
     try {
-        const [existingApplicant] = await database.query(
-            `SELECT applicantID FROM applicants WHERE email = ? LIMIT 1`,
+        const [existingApplicant] = await database.query(`
+            SELECT applicantID, status 
+            FROM applicants 
+            WHERE email = ?`,
             [normalizedEmail]
         );
 
         if (existingApplicant.length > 0) {
             return res.status(409).json({
-                message: "*Email address is already registered",
+                message: "Email address is already taken",
                 issue: "email"
             });
         }
@@ -61,9 +63,9 @@ export async function registerApplicant(req, res) {
         const [applicantResult] = await connection.query(
             `
             INSERT INTO applicants 
-                (email, password, firstName, lastName, address, createdAt)
+                (email, password, firstName, lastName, address, createdAt, status)
             VALUES 
-                (?, ?, ?, ?, ?, NOW())
+                (?, ?, ?, ?, ?, NOW(), 'active')
             `,
             [
                 normalizedEmail,
