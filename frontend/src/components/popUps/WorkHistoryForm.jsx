@@ -2,6 +2,8 @@ import { IoClose } from "react-icons/io5";
 import PrimaryButton from "../buttons/PrimaryButton";
 import { useState } from "react";
 import Translucent from "../overlay/Translucent";
+import YearSelector from "../others/YearSelector";
+import MonthSelector from "../others/MonthSelector";
 import axios from "axios";
 
 
@@ -10,8 +12,12 @@ export default function WorkHistoryForm({ toggleForm, refresh }) {
     const [workInfo, setWorkInfo] = useState({
         jobTitle: "",
         companyName: "",
-        startDate: "",
-        endDate: ""
+        startMonth: null,        
+        startMonthLabel: null,   
+        startYear: null,
+        endMonth: null,          
+        endMonthLabel: null,     
+        endYear: null
     })
 
     const [errors, setErrors] = useState("");
@@ -20,8 +26,10 @@ export default function WorkHistoryForm({ toggleForm, refresh }) {
         setWorkInfo({
             jobTitle: "",
             companyName: "",
-            startDate: "",
-            endDate: ""
+            startMonth: null,
+            startYear: null,
+            endMonth: null,
+            endYear: null
         })
 
         toggleForm();
@@ -29,17 +37,20 @@ export default function WorkHistoryForm({ toggleForm, refresh }) {
 
     async function handleSubmit(e) {
         e.preventDefault();
+        const { startMonth, startYear, endMonth, endYear } = workInfo;
 
-        const { startDate, endDate } = workInfo;
-
-        if (startDate === "0000-00-00") {
-            setErrors("Enter your starting date");
+        if (!startMonth || !startYear || !endMonth || !endYear) {
+            setErrors("Please fill out all blank fields");
             return;
         }
 
-        if (new Date(startDate).getTime() > new Date(endDate).getTime()) {
-            setErrors("End date should be greater than start date");
-            return
+
+        const start = new Date(startYear, startMonth);
+        const end = new Date(endYear, endMonth);
+
+        if (start >= end) {
+            setErrors("Start date must be before end date");
+            return;
         }
 
         try {
@@ -49,8 +60,10 @@ export default function WorkHistoryForm({ toggleForm, refresh }) {
 
             refresh();
             toggleForm();
+            setErrors("");
         } catch (error) {
             console.log(error);
+            setErrors("An error occurred. Please try again");
         }
     }
 
@@ -58,16 +71,16 @@ export default function WorkHistoryForm({ toggleForm, refresh }) {
         <>
             <Translucent />
         
-            <div className="w-[85%] p-5 bg-[#F3F4F6] fixed top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 z-50 rounded-2xl">
-                <IoClose onClick={toggleForm} size={20} className="absolute top-2 right-2" />
+            <div className="w-[85%] p-5 bg-[#F3F4F6] fixed top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 z-50 rounded-2xl md:w-100 md:p-7 md:pt-10">
+                <IoClose onClick={toggleForm} size={20} className="absolute top-2 right-2 md:top-4 md:right-4 md:h-7 md:w-7" />
 
-                <h1 className="font-bold text-lg mb-3 text-center">Work History</h1>
+                <h1 className="font-bold text-xl mb-3 text-center">Work History</h1>
 
                 <form onSubmit={handleSubmit} className="w-full">
                     <div className="flex flex-col w-full mb-4">
-                        <label htmlFor="title">Job Title</label>
+                        <label className="font-medium" htmlFor="title">Job Title</label>
                         <input 
-                            className="w-full p-2 border border-gray-400 rounded-md mt-1"
+                            className="w-full p-2 border border-gray-400 rounded-md mt-1 bg-white"
                             type="text"
                             required
                             id="title"
@@ -77,9 +90,9 @@ export default function WorkHistoryForm({ toggleForm, refresh }) {
                     </div>
 
                     <div className="flex flex-col w-full mb-4">
-                        <label htmlFor="company">Company Name</label>
+                        <label className="font-medium" htmlFor="company">Company Name</label>
                         <input 
-                            className="w-full p-2 border border-gray-400 rounded-md mt-1"
+                            className="w-full p-2 border border-gray-400 rounded-md mt-1 bg-white"
                             type="text"
                             required
                             id="company"
@@ -88,32 +101,31 @@ export default function WorkHistoryForm({ toggleForm, refresh }) {
                         />
                     </div>
 
-                    <div className="grid grid-cols-2 gap-3 w-full mb-4">
-                        <div className="">
-                            <label htmlFor="startDate">Start Date</label>
-                            <input 
-                                className="text-sm w-full p-2 border border-gray-400 rounded-md mt-1"
-                                type="date"
-                                required
-                                id="startDate"
-                                value={workInfo.startDate}
-                                onChange={(e) => setWorkInfo({...workInfo, startDate: e.target.value})}                       
-                            />
-                        </div>
-
-                        <div className="">
-                            <label htmlFor="endDate">End Date</label>
-                            <input 
-                                className="text-sm w-full p-2 border border-gray-400 rounded-md mt-1"
-                                type="date"
-                                id="endDate"
-                                value={workInfo.endDate}
-                                onChange={(e) => setWorkInfo({...workInfo, endDate: e.target.value})}                       
-                            />
-                        </div>
+                    <div className="w-full mb-4">
+                        <p className="font-medium mb-1">Start Date</p>
+                        <div className="grid grid-cols-2 gap-3">
+                            <MonthSelector onChange={(value, label) => setWorkInfo((prev) => ({
+                                ...prev, 
+                                startMonth: value,
+                                startMonthLabel: label})
+                            )}/>
+                            <YearSelector isChecked={true} onChange={(startYear) => setWorkInfo((prev) => ({ ...prev, startYear }))} />
+                        </div>      
                     </div>
 
-                    {errors && <p>{errors}</p>}
+                    <div className="w-full mb-4">
+                        <p className="font-medium mb-1">End Date</p>
+                        <div className="grid grid-cols-2 gap-3">
+                            <MonthSelector onChange={(value, label) => setWorkInfo((prev) => ({
+                                ...prev, 
+                                endMonth: value,
+                                endMonthLabel: label})
+                            )}/>
+                            <YearSelector isChecked={true} onChange={(endYear) => setWorkInfo((prev) => ({ ...prev, endYear }))} />
+                        </div>      
+                    </div>
+
+                    {errors && <p className="text-red-600 text-sm text-center mb-4">{errors}</p>}
 
                     <div className="w-full flex flex-col">
                         <PrimaryButton type="submit" className="w-full">Add</PrimaryButton>

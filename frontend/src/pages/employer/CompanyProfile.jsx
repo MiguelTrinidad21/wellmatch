@@ -6,10 +6,13 @@ import Overlay from "../../components/overlay/OverlayMobile";
 import Translucent from "../../components/overlay/Translucent";
 import EditCompany from "../../components/popUps/EditCompany";
 import Loading from "../../components/others/Loading";
+import WarningBox from "../../components/popUps/DeleteItemBox";
+import ConfirmationBox from "../../components/popUps/ConfirmationBox"
 import defaultCover from "../../assets/defaultCover.jpg"
 import { IoMdAdd } from "react-icons/io";
 import { MdClose } from "react-icons/md";
 import { FiEdit } from "react-icons/fi";
+import { SlLocationPin } from "react-icons/sl";
 import { useState, useEffect } from "react";
 import { userStore } from "../../zustand/userState";
 import { companyStore } from "../../zustand/stateHandlers";
@@ -27,11 +30,18 @@ export default function CompanyProfile() {
     const [loading, setLoading] = useState(true);
     const [editCompany, setEditCompany] = useState(false);
 
+    const [showDelete, setShowDelete] = useState(false);
+    const [showConfirm, setShowConfirm] = useState(false);
+    const [isRemoving, setIsRemoving] = useState(false);
+    const [isRemoved, setIsRemoved] = useState(false);
+    const [memberID, setMemberID] = useState(null);
+
+    const [errors, setErrors] = useState("");
 
     useEffect(() => {
         async function checkEmployer() {
             try {
-                console.log(currentUser);
+
                 if (!currentUser || Object.keys(currentUser).length === 0) {
                     setVerified(false);
                     setLoading(false);
@@ -66,9 +76,9 @@ export default function CompanyProfile() {
                     },
                     withCredentials: true
                 });
-
-                setCompanyInfo(result.data);
                 console.log(result.data)
+                setCompanyInfo(result.data);
+
             } catch (error) {
                 console.error(error);
             }
@@ -81,10 +91,13 @@ export default function CompanyProfile() {
         async function getMembers() {
             try {
                 const allMembers = await axios.get("/api/employer/companyMembers", {
-                    params: {companyID: currentUser.companyID},
+                    params: {
+                        companyID: currentUser.companyID,
+                        employerID: currentUser.id
+                    },
                     withCredentials: true
                 });
-                console.log(allMembers.data.companyMembers)
+                // console.log(allMembers.data.companyMembers)
                 setCompanyMembers(allMembers.data.companyMembers);
             } catch (error) {
                 console.error(error);
@@ -93,10 +106,28 @@ export default function CompanyProfile() {
 
 
         getMembers()
-    }, [currentUser?.companyID])
+    }, [currentUser?.companyID, isRemoved])
 
     function handleEditCompanyBox() {
         setEditCompany(!editCompany);
+    }
+
+    async function removeEmployer() {
+        setIsRemoving(true);
+        try {
+            await axios.delete("/api/employer/removeEmployer", {
+                params: { memberID, companyID: companyInfo.companyID },
+                withCredentials: true
+            })
+            setShowDelete(false);
+            setShowConfirm(true)
+            setIsRemoved(!isRemoved);
+
+        } catch (error) {
+            console.log(error);
+        } finally {
+            setIsRemoving(false);
+        }
     }
 
 
@@ -111,7 +142,7 @@ export default function CompanyProfile() {
 
     return (
         <>
-            <div className="w-full min-h-screen p-6 bg-[#F3F4F6] relative">
+            <div className="w-full min-h-screen p-6 bg-[#F3F4F6] relative md:py-10 md:px-40">
                 {editCompany && 
                     <>
                         <Translucent />
@@ -119,6 +150,26 @@ export default function CompanyProfile() {
                             handleEditCompanyBox={handleEditCompanyBox}
                         />
                     </>
+                }
+
+                {
+                    showDelete &&
+                    <WarningBox
+                        heading="Remove this employer?"
+                        bodyText="This employer will be removed from your company profile, and their employer account will be permanently deleted. They will lose access to your company's job postings, applicants, and other employer features. This action cannot be undone."
+                        buttonText="Remove"
+                        isLoading={isRemoving}
+                        toggleFunction={() => setShowDelete(false)}
+                        deleteFunction={removeEmployer}
+                    />
+                }
+
+                {
+                    showConfirm &&
+                    <ConfirmationBox 
+                        text="Employer account removed successfully"
+                        onClick={() => setShowConfirm(false)}
+                    />
                 }
                 
                 <AuthNavBar />
@@ -139,11 +190,14 @@ export default function CompanyProfile() {
                         </div>
                         <div>
                             <h1 className="font-bold text-2xl mb-2">{companyInfo.companyName}</h1>
-                            <p>{companyInfo.location}</p>
+                            <p className="flex items-center gap-2 text-gray-500 font-semibold">
+                                <SlLocationPin />
+                                {companyInfo.location}
+                            </p>
                         </div>
                     </div>
                     {currentUser.role === "Admin Employer" &&
-                        <PrimaryButton onClick={handleEditCompanyBox} className="mt-6 w-full flex justify-center items-center gap-2 text-sm font-bold">
+                        <PrimaryButton onClick={handleEditCompanyBox} className="mt-6 w-full flex justify-center items-center gap-2 text-sm font-bold md:text-[1rem]">
                             <FiEdit size={15} />Edit Details
                         </PrimaryButton>
                     }
@@ -153,13 +207,13 @@ export default function CompanyProfile() {
 
                 <div className="w-full mb-2">
                     <div className="flex justify-between">
-                        <h1 className="font-bold text-[1.1rem]">Company employers</h1>
+                        <h1 className="font-bold text-[1.1rem] md:text-xl">Company employers</h1>
                         {currentUser.role === "Admin Employer" && 
-                            <PrimaryButton to="/employer/companyProfile/invite" className="flex items-center gap-1 text-[0.80rem] font-semibold"><IoMdAdd size={18} />Invite</PrimaryButton>
+                            <PrimaryButton to="/employer/companyProfile/invite" className="flex items-center gap-1 text-[0.80rem] font-semibold md:text-[1rem]"><IoMdAdd size={18} />Invite</PrimaryButton>
                         }
                     </div>
                 </div>
-                <p>{companyMembers?.length}&nbsp;members</p>
+                <p className="text-gray-500 font-semibold">{`${companyMembers?.length} ${companyMembers.length > 1 ? "members" : "member"}`}</p>
 
                 <div className="w-full flex flex-col gap-6 mt-6">
                     
@@ -167,12 +221,29 @@ export default function CompanyProfile() {
                         if (currentUser.role === "Admin Employer") {
                             return (
                                 <div key={member.compMemID} className="w-full rounded-xl shadow-md bg-white p-4">
+                                    <p className="font-semibold text-green-600 text-sm mb-5 md:text-[1rem]">{member.role}</p>
                                     <h1 className="font-bold text-lg mb-1">{member.firstName}&nbsp;{member.lastName}</h1>
-                                    <p className="text-sm">{member.role}</p>
+                                    <p className="text-gray-500">{member.email}</p>
 
                                     <div className="w-full flex justify-end gap-4 mt-4">
-                                        <button className="font-bold text-red-600 text-sm">Remove</button>
-                                        <SecondaryButton className="font-bold">Edit Permission</SecondaryButton>
+                                        {
+                                            currentUser.id !== member.compMemID &&
+                                            <>
+                                                <PrimaryButton onClick={() => {
+                                                    setMemberID(member.compMemID)
+                                                    setShowDelete(true)
+                                                }} className="font-bold bg-red-600 text-sm!">Remove</PrimaryButton>
+                                                <PrimaryButton to={`/employer/companyProfile/editPermission/${member.compMemID}`} className="text-sm">
+                                                    Edit Permission
+                                                </PrimaryButton>                                                
+                                                {/* {
+                                                    member.role === "Employer" &&
+                                                    <PrimaryButton to={`/employer/companyProfile/editPermission/${member.compMemID}`} className="text-sm">
+                                                        Edit Permission
+                                                    </PrimaryButton>                                            
+                                                } */}
+                                            </>
+                                        }
                                     </div>
                                 </div>
                             )

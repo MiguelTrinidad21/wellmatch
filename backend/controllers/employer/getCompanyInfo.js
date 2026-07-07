@@ -23,18 +23,18 @@ export async function getCompany(req, res) {
 }
 
 export async function getCompanyMembers(req, res) {
-    const companyID = req.query.companyID;
+    const { companyID, employerID} = req.query;
 
     try {
         const [companyMembers] = await database.query(`
-            SELECT cm.compMemID, e.email, e.firstName, e.lastName, cm.role, cm.joinedAt
+            SELECT cm.compMemID, e.employerID, e.email, e.firstName, e.lastName, cm.role, cm.joinedAt
             FROM employers e
             INNER JOIN companyMembers cm
             ON e.employerID = cm.employerID
             WHERE cm.companyID = ?
             AND cm.status = "active"
-            ORDER BY cm.joinedAt ASC`,
-            [companyID]
+            ORDER BY (e.employerID = ?) DESC, cm.joinedAt ASC`,
+            [companyID, employerID]
         );
 
         if (companyMembers.length === 0) {

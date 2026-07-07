@@ -5,10 +5,13 @@ import { IoClose } from "react-icons/io5";
 import "react-pdf/dist/Page/AnnotationLayer.css";
 import "react-pdf/dist/Page/TextLayer.css";
 import workerSrc from "pdfjs-dist/build/pdf.worker.min.mjs?url";
+import { MdDownload } from "react-icons/md";
 
 pdfjs.GlobalWorkerOptions.workerSrc = workerSrc;
 
-const ResumeViewerModal = ({ resumeID, onClose }) => {
+const ResumeViewerModal = ({ resumeID, onClose, user }) => {
+    const isApplicant = user === "applicant"
+
     const [fileUrl, setFileUrl] = useState(null);
     const [origFileName, setOrigFileName] = useState(null);
     const [blob, setBlob] = useState(null);
@@ -43,10 +46,18 @@ const ResumeViewerModal = ({ resumeID, onClose }) => {
                 setLoading(true);
                 const token = localStorage.getItem('token');
 
-                // ✅ Only ever talks to YOUR backend, never Cloudinary directly
-                const response = await fetch(`/api/applicant/viewResume/${resumeID}`, {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
+                let response;
+
+                if (isApplicant) {
+                    response = await fetch(`/api/applicant/viewResume/${resumeID}`, {
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    });
+
+                } else {
+                    response = await fetch(`/api/employer/viewResume/${resumeID}`, {
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    });                    
+                }
 
                 if (!response.ok) throw new Error(`Error: ${response.status}`);
 
@@ -64,7 +75,7 @@ const ResumeViewerModal = ({ resumeID, onClose }) => {
 
             } catch (err) {
                 console.error('❌ Error:', err.message);
-                setError('Failed to load resume. Please try again.');
+                setError('Network timed out. Please try again.');
             } finally {
                 setLoading(false);
             }
@@ -98,8 +109,8 @@ const ResumeViewerModal = ({ resumeID, onClose }) => {
             <div className="bg-white rounded-xl w-[95%] max-w-4xl h-[90vh] flex flex-col shadow-2xl">
 
                 {/* Header */}
-                <div className="relative px-6 py-4 border-b flex justify-between">
-                    <h2 className="font-semibold text-gray-800 text-sm">
+                <div className="relative px-6 py-4 border-b flex justify-between bg-green-600 rounded-tl-xl rounded-tr-xl text-white">
+                    <h2 className="font-semibold text-sm">
                         {origFileName ?? 'Loading...'}
                     </h2>
                     <button
@@ -157,9 +168,10 @@ const ResumeViewerModal = ({ resumeID, onClose }) => {
                         <a
                             href={fileUrl}
                             download={origFileName}
-                            className="bg-green-500 text-white px-4 py-2 rounded-lg text-sm hover:bg-green-600"
+                            className="bg-green-500 text-white px-4 py-2 rounded-lg text-sm hover:bg-green-600 flex items-center gap-2 font-semibold"
                         >
-                            ⬇ Download
+                            <MdDownload />
+                            Download
                         </a>
                     </div>
                 )}

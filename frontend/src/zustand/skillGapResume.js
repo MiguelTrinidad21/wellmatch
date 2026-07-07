@@ -6,13 +6,16 @@ export const resumeStore = create(
         (set) => ({
             resumeToAnalyze: null,
             selectedOption: "select",
-
+            selectedYears: "",
+            
             setSelectedOption: (value) => set({ selectedOption: value }),
+            setSelectedYears: (value) => set({ selectedYears: value }),
             setResumeToAnalyze: (value) => set({ resumeToAnalyze: value }),
 
             clearResumeToAnalyze: () => set({
                 resumeToAnalyze: null,
-                selectedOption: "select"
+                selectedOption: "select",
+                selectedYears: ""
             })
         }),
         {

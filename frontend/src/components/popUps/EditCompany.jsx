@@ -3,12 +3,14 @@ import { MdFileUpload } from "react-icons/md";
 import { BiLoaderAlt } from "react-icons/bi";
 import { useState, useEffect, useRef } from "react";
 import { companyStore } from "../../zustand/stateHandlers";
+import { userStore } from "../../zustand/userState";
 import PrimaryButton from "../buttons/PrimaryButton";
 import axios from "axios";
 
 
 export default function EditCompany({ handleEditCompanyBox }) {
     const {companyInfo, setCompanyInfo} = companyStore();
+    const { currentUser, handleCurrentUser } = userStore();
 
     const [isLoading, setIsLoading] = useState(false);
     const [coverPicName, setCoverPicName] = useState("");
@@ -128,6 +130,11 @@ export default function EditCompany({ handleEditCompanyBox }) {
 
             const cleanFields = result.data.cleanFields;
             setCompanyInfo({...companyInfo, ...cleanFields});
+            handleCurrentUser({
+                ...currentUser, 
+                companyPhoto: cleanFields.profilePhotoURL,
+                companyName: cleanFields.companyName
+            })
             
             setIsLoading(false);
             handleEditCompanyBox();
@@ -153,34 +160,37 @@ export default function EditCompany({ handleEditCompanyBox }) {
     }
 
     return (
-        <div className="w-[90%] z-40 fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 p-5 bg-[#F9FAFB] rounded-2xl">
-            <MdClose onClick={cancelChanges} size={30} className="absolute top-3 right-3" />
+        <div className="w-[90%] max-h-[98%] overflow-y-auto z-40 fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 p-5 bg-[#F9FAFB] rounded-2xl md:w-100">
+            <div className="relative">
+            <MdClose onClick={cancelChanges} size={30} className="fixed top-3 right-3" />
+
+            </div>
 
             <form className="mt-5" onSubmit={handleSubmit}>
 
                 <div className="w-full">
-                    <h1 className="font-bold text-xl">Company Details</h1>
+                    <h1 className="font-bold text-xl mb-2">Company Details</h1>
 
                     <div className="mb-3">
-                        <label htmlFor="companyName">Company Name</label>
+                        <label className="font-semibold block mb-1" htmlFor="companyName">Company Name</label>
                         <input 
                             type="text"
                             value={companyName}
                             onChange={(e) => setCompanyName(e.target.value)}
                             required
-                            className={`block w-full border ${errors.company ? 'border-red-600' : 'border-gray-300'}`}
+                            className={`text-sm p-2 rounded-md block w-full border-2 mb-4 bg-slate-100 outline-none transition-colors duration-200 ease-in-out focus:border-gray-600 ${errors?.companyName?.companyName ? 'border-red-600 focus:border-red-600 mb-1!' : 'border-gray-300'}`}
                         />
                         {errors?.companyName?.companyName || errors?.companyName?.companyName ? (
-                            <p className="text-red-600 text-[13px] italic">
-                                {errors?.companyName?.companyName || errors?.companyName?.companyName}
+                            <p className="text-red-600 text-[13px] mb-4">
+                                * {errors?.companyName?.companyName || errors?.companyName?.companyName}
                             </p>
                         ) : null}
                     </div>
 
 
 
-                    <label htmlFor="companyLocation">Location</label>
-                    <div>
+                    <label className="font-semibold block mb-1" htmlFor="companyLocation">Location</label>
+                    <div className="relative">
                         <input 
                             type="text"
                             id="companyLocation"
@@ -188,7 +198,7 @@ export default function EditCompany({ handleEditCompanyBox }) {
                             onChange={(e) => setCompanyLocation(e.target.value)} 
                             autoComplete="off"
                             required
-                            className="block w-full overflow-x-scroll"
+                            className="block w-full overflow-x-scroll text-sm p-2 rounded-md border-2 border-gray-300 mb-4 bg-slate-100 outline-none transition-colors duration-200 ease-in-out focus:border-gray-600"
                         />
 
                         {isSearchingLocation && (
@@ -198,7 +208,7 @@ export default function EditCompany({ handleEditCompanyBox }) {
                         )}
 
                         {locationSuggestions.length > 0 && (
-                            <ul className="absolute left-0 z-30 mt-1 max-h-60 w-full overflow-y-auto rounded-lg border bg-white shadow-lg">
+                            <ul className="absolute left-0 z-30 max-h-60 w-full overflow-y-auto rounded-lg border bg-white shadow-lg">
                                 {locationSuggestions.map((place) => (
                                     <li
                                         key={place.placeId}
@@ -219,13 +229,13 @@ export default function EditCompany({ handleEditCompanyBox }) {
                     </div>
                 </div>
 
-                <hr className="my-5 border-t-2 border-gray-300" />
+                <hr className="mt-5 mb-4 border-t-2 border-gray-300" />
 
                 <div className="w-full">
-                    <h1 className="font-bold text-xl">Company Photos</h1>
+                    <h1 className="font-bold text-xl mb-2">Company Photos</h1>
 
-                    <div className="w-full mb-10">
-                        <p>Company Logo</p>
+                    <div className="w-full mb-5">
+                        <p className="font-semibold">Company Logo</p>
 
                         {profilePicName ? (
                             <p className="mb-2 text-sm font-medium text-gray-700">
@@ -239,9 +249,9 @@ export default function EditCompany({ handleEditCompanyBox }) {
                             </p>
                         ) : null}
 
-                        <label className="cursor-pointer text-[#10B981] font-semibold border-3 border-[#10B981] rounded-full py-2 px-3 inline-flex" htmlFor="logo">
+                        <label className="cursor-pointer bg-green-300 text-black font-semibold rounded-md py-1 px-2 inline-flex md:py-2" htmlFor="logo">
                             <MdFileUpload size={20} className="h-6 mr-3" />                    
-                            {profilePicName ? "Change Photo" : "  Select Photo"}
+                            {profilePicName ? "Change Profile" : "  Select Profile"}
                             
                             <input 
                                 type="file" 
@@ -260,8 +270,8 @@ export default function EditCompany({ handleEditCompanyBox }) {
                         </label>
                     </div>
 
-                    <div className="w-full mb-10">
-                        <p>Cover Photo</p>
+                    <div className="w-full mb-5">
+                        <p className="font-semibold">Cover Photo</p>
 
                         {coverPicName ? (
                             <p className="mb-2 text-sm font-medium text-gray-700">{coverPicName}</p>
@@ -275,9 +285,9 @@ export default function EditCompany({ handleEditCompanyBox }) {
                             </p>
                         ) : null}
 
-                        <label className="cursor-pointer text-[#10B981] font-semibold border-3 border-[#10B981] rounded-full py-2 px-3 inline-flex" htmlFor="coverPhoto">
+                        <label className="cursor-pointer bg-green-300 text-black font-semibold rounded-md py-1 px-2 inline-flex md:py-2" htmlFor="coverPhoto">
                             <MdFileUpload size={20} className="h-6 mr-3" />                    
-                            {coverPicName ? "Change Photo" : "  Select Photo"}
+                            {coverPicName ? "Change Cover" : "  Select Cover"}
 
                             <input 
                                 type="file" 
@@ -300,19 +310,19 @@ export default function EditCompany({ handleEditCompanyBox }) {
 
 
                 </div>
+                <div className="w-full flex justify-end gap-4">
+                    <PrimaryButton disabled={isLoading} className={`bg-gray-200 text-black! px-4 border-2 border-gray-500 ${isLoading && "opacity-50"}`} onClick={cancelChanges}>Cancel</PrimaryButton>
+                    <PrimaryButton disabled={isLoading} type="submit" className={`px-7 ${isLoading && "opacity-50"}`}>
+                        {isLoading ? 
+                            <>
+                                <BiLoaderAlt className="animate-spin inline mr-3" />
+                                Saving...
+                            </>
+                        : "Save"}
+                    </PrimaryButton>
+                </div>
             </form>
 
-            <div className="w-full flex justify-end gap-4">
-                <PrimaryButton disabled={isLoading} className={`bg-gray-200 text-black! px-4 border-2 border-gray-500 ${isLoading && "opacity-50"}`} onClick={cancelChanges}>Cancel</PrimaryButton>
-                <PrimaryButton disabled={isLoading} type="submit" className={`px-7 ${isLoading && "opacity-50"}`}>
-                    {isLoading ? 
-                        <>
-                            <BiLoaderAlt className="animate-spin inline mr-3" />
-                            Saving...
-                        </>
-                    : "Save"}
-                </PrimaryButton>
-            </div>
             
         </div>
     )

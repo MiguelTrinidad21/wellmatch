@@ -101,7 +101,7 @@ export default function SkillGapFileUploader() {
         try {
             if (selectedOption === "select") {
                 setResumeToAnalyze(selectedResume)
-                navigate(`/applicant/viewJob/${jobID}/chooseFile/skillGapReport`);
+                navigate(`/applicant/viewJob/${jobID}/${selectedResume.resumeID}/skillGapReport`);
             } else {
                 setIsUploading(true);
                 console.log(selectedOption)
@@ -112,9 +112,10 @@ export default function SkillGapFileUploader() {
                 const uploadResponse = await axios.post("/api/applicant/uploadResume", formData, {
                     withCredentials: true,
                 })
-                setResumeToAnalyze(uploadResponse.data.resumeToAnalyze);
+                const uploadedResumeData = uploadResponse.data.resumeToAnalyze;
+                setResumeToAnalyze(uploadedResumeData);
                 setErrors({issue: ""})
-                navigate(`/applicant/viewJob/${jobID}/chooseFile/skillGapReport`);
+                navigate(`/applicant/viewJob/${jobID}/${resumeToAnalyze.resumeID}/skillGapReport`);
             }
             
         } catch (error) {
@@ -146,13 +147,13 @@ export default function SkillGapFileUploader() {
                 <AuthNavBar />
                 <Overlay />
                 
-                <div className="w-full min-h-[calc(100vh-64px)] p-6 flex flex-col justify-center items-center gap-5">
+                <div className="w-full min-h-[calc(100vh-64px)] p-6 flex flex-col justify-center items-center gap-5 md:px-15">
                     <div className="relative w-full flex items-center justify-center gap-3">
                         <h1 className="inline font-bold text-xl ">Skill Gap Analysis</h1>
                         <IoMdInformationCircleOutline size={20} />
                     </div>
 
-                    <div className="bg-white shadow-md rounded-2xl p-6 w-full">
+                    <div className="bg-white shadow-md rounded-2xl p-6 w-full md:w-100">
                         <h2 className="font-semibold text-lg mb-3">Choose Resume</h2>
                         <p className="text-sm mb-3 text-gray-400">
                             Click{" "}
@@ -229,7 +230,7 @@ export default function SkillGapFileUploader() {
 
                             </div>
 
-                            <div className="flex flex-col gap-2">
+                            <div className="flex flex-col gap-2 mb-5">
                                 <label className="flex items-center gap-2 cursor-pointer">
                                     <input
                                         type="radio"

@@ -3,21 +3,32 @@ import PrimaryButton from "../buttons/PrimaryButton";
 import { useState } from "react";
 import Translucent from "../overlay/Translucent";
 import axios from "axios";
+import YearSelector from "../others/YearSelector";
 
 
 export default function EducationForm({ toggleForm, refresh }) {
+    const [isChecked, setIsChecked] = useState(false);
 
-    const [educationInfo, setCredentialInfo] = useState({
+    const [educationInfo, setEducationInfo] = useState({
         courseName: "",
         institution: "",
-        graduatedAt: ""
+        year: null,
+        qualiComplete: false
     })
 
+
+    function handleCheckboxChange(event) {
+        const checked = event.target.checked;
+        setIsChecked(checked);
+        setEducationInfo({...educationInfo, qualiComplete: checked})
+    };
+
     function cancelForm() {
-        setCredentialInfo({
+        setEducationInfo({
             courseName: "",
             institution: "",
-            graduatedAt: ""
+            year: null,
+            qualiComplete: false
         })
 
         toggleForm();
@@ -25,14 +36,6 @@ export default function EducationForm({ toggleForm, refresh }) {
     
     async function handleSubmit(e) {
         e.preventDefault();
-
-        const { graduatedAt } = educationInfo;
-
-        if (graduatedAt === "0000-00-00") {
-            setErrors("Enter your graduation date");
-            return;
-        }
-
 
         try {
             await axios.post("/api/applicant/addEducation", educationInfo, {
@@ -50,10 +53,10 @@ export default function EducationForm({ toggleForm, refresh }) {
         <>
             <Translucent />
         
-            <div className="w-[85%] p-5 bg-[#F3F4F6] fixed top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 z-50 rounded-2xl">
-                <IoClose onClick={toggleForm} size={20} className="absolute top-2 right-2" />
+            <div className="w-[85%] p-5 bg-[#F3F4F6] fixed top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 z-50 rounded-2xl md:w-100 md:p-7 md:pt-10">
+                <IoClose onClick={toggleForm} size={20} className="absolute top-2 right-2 md:top-4 md:right-4 md:h-7 md:w-7" />
 
-                <h1 className="font-bold text-lg mb-3 text-center">Education</h1>
+                <h1 className="font-bold text-xl mb-3 text-center">Education</h1>
 
                 <form onSubmit={handleSubmit} className="w-full">
                     <div className="flex flex-col w-full mb-4">
@@ -64,7 +67,7 @@ export default function EducationForm({ toggleForm, refresh }) {
                             required
                             id="title"
                             value={educationInfo.courseName}
-                            onChange={(e) => setCredentialInfo({...educationInfo, courseName: e.target.value})}                       
+                            onChange={(e) => setEducationInfo({...educationInfo, courseName: e.target.value})}                       
                         />
                     </div>
 
@@ -76,21 +79,26 @@ export default function EducationForm({ toggleForm, refresh }) {
                             required
                             id="company"
                             value={educationInfo.institution}
-                            onChange={(e) => setCredentialInfo({...educationInfo, institution: e.target.value})}                       
+                            onChange={(e) => setEducationInfo({...educationInfo, institution: e.target.value})}                       
                         />
                     </div>
 
+                    <div className="w-full mb-4 flex gap-2 items-center">
+                        <input 
+                            className="w-4 h-4 border border-gray-400 rounded-md"
+                            type="checkbox"
+                            id="option"
+                            checked={isChecked}
+                            onChange={handleCheckboxChange}                   
+                        />
+                        <label htmlFor="option" className={isChecked ? "font-semibold duration-100 ease-out" : undefined}>Qaulification Complete</label>
+                    </div>
+
+
                     <div className="flex flex-col w-full mb-4">
                         <div className="">
-                            <label htmlFor="graduatedAt">Graduated At</label>
-                            <input 
-                                className="text-sm w-full p-2 border border-gray-400 rounded-md mt-1"
-                                type="date"
-                                required
-                                id="graduatedAt"
-                                value={educationInfo.graduatedAt}
-                                onChange={(e) => setCredentialInfo({...educationInfo, graduatedAt: e.target.value})}                       
-                            />
+                            <p className="font-medium">{isChecked ? "Finished " : "Expected finish " }<span className="text-gray-500">(optional)</span></p>
+                            <YearSelector isChecked={isChecked} onChange={(year) => setEducationInfo((prev) => ({ ...prev, year }))} />
                         </div>
                     </div>
 

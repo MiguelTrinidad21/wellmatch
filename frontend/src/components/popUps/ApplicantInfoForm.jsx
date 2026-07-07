@@ -13,8 +13,6 @@ export default function ApplicantInfoForm({ toggleForm }) {
 
     const [firstName, setFirstName] = useState(currentUser.firstName);
     const [lastName, setLastName] = useState(currentUser.lastName);
-    const [email, setEmail] = useState(currentUser.email);
-    const [prevEmail, setPrevEmail] = useState(currentUser.email);
     const [address, setAddress] = useState(currentUser.address);
     const [profilePicName, setProfilePicName] = useState("");
     const [profilePhoto, setProfilePhoto] = useState(null);
@@ -92,10 +90,8 @@ export default function ApplicantInfoForm({ toggleForm }) {
 
         const formData = new FormData();
 
-        formData.append("firstName", firstName)
+        formData.append("firstName", firstName);
         formData.append("lastName", lastName);
-        formData.append("email", email);
-        formData.append("prevEmail", prevEmail);
         formData.append("address", address);
 
         if (profilePhoto) {
@@ -144,10 +140,10 @@ export default function ApplicantInfoForm({ toggleForm }) {
         <>
             <Translucent />
         
-            <div className="w-[85%] p-5 bg-[#F3F4F6] fixed top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 z-50 rounded-2xl">
-                <IoClose onClick={toggleForm} size={20} className="absolute top-2 right-2" />
+            <div className="w-[85%] p-5 bg-[#F3F4F6] fixed top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 z-50 rounded-2xl md:w-100 md:p-7 md:pt-10">
+                <IoClose onClick={toggleForm} size={20} className="absolute top-2 right-2 md:top-4 md:right-4 md:h-7 md:w-7" />
 
-                <h1 className="font-bold text-xl mb-3 text-center">Update Information</h1>
+                <h1 className="font-bold text-xl mb-3 text-center ">Update Information</h1>
 
                 <form onSubmit={handleSubmit} className="w-full">
                     <div className="flex flex-col w-full mb-4">
@@ -172,19 +168,6 @@ export default function ApplicantInfoForm({ toggleForm }) {
                             value={lastName}
                             onChange={(e) => setLastName(e.target.value)}                       
                         />
-                    </div>
-
-                    <div className="flex flex-col w-full mb-4">
-                        <label className="font-semibold" htmlFor="email">Email Address</label>
-                        <input 
-                            className="w-full p-2 border border-gray-400 rounded-md mt-1"
-                            type="text"
-                            required
-                            id="email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}                       
-                        />
-                        {errors.email && <p className="text-[11px] text-red-600">Email address is already taken</p>}
                     </div>
 
                     <div className="flex flex-col w-full mb-4">
@@ -228,7 +211,7 @@ export default function ApplicantInfoForm({ toggleForm }) {
                         </div>
                     </div>
 
-                    <div className="w-full mb-5">
+                    <div className="w-full mb-10">
                         <p className="font-semibold">Profile Photo</p>
 
                         {profilePicName ? (
@@ -243,7 +226,7 @@ export default function ApplicantInfoForm({ toggleForm }) {
                             </p>
                         ) : null}
 
-                        <label className="cursor-pointer text-[#10B981] font-semibold border-3 border-[#10B981] rounded-full py-2 px-3 inline-flex" htmlFor="profile">
+                        <label className="cursor-pointer bg-green-300 text-black font-semibold rounded-md py-2 px-3 inline-flex" htmlFor="profile">
                             <MdFileUpload size={20} className="h-6 mr-3" />                    
                             {profilePicName ? "Change Photo" : "  Select Photo"}
                             

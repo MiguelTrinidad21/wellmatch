@@ -144,7 +144,7 @@ export default function AdminRegister() {
 
     return (
         <>
-            <div className="w-full min-h-screen bg-[#F3F4F6] relative px-6">
+            <div className="w-full min-h-screen bg-[#F3F4F6] relative p-6 md:p-15">
                 <PublicNavBar />
                 <Overlay />
                 {showPopUp && (
@@ -154,10 +154,10 @@ export default function AdminRegister() {
                     </>
                 )}
 
-                <form className="w-full bg-white rounded-3xl shadow-lg p-6 mt-6" onSubmit={handleSubmit}>
-                    <h2 className="text-center font-bold">Register Account</h2>
+                <form className="w-full m-auto bg-white rounded-3xl shadow-lg p-6 md:w-100" onSubmit={handleSubmit}>
+                    <h2 className="text-center text-xl font-bold mb-4 md:text-2xl">Register Account</h2>
 
-                    <label className="block" htmlFor="firstName">First Name</label>
+                    <label className="block font-medium mb-1" htmlFor="firstName">First Name</label>
                     <input 
                         type="text"
                         id="firstName"
@@ -165,10 +165,10 @@ export default function AdminRegister() {
                         onChange={(e) => setAdminInfo({...adminInfo, firstName: e.target.value})}
                         placeholder="Enter first name"
                         required
-                        className="block w-full"
+                        className="p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-gray-600"
                     />
 
-                    <label className="block" htmlFor="lastName">Last Name</label>
+                    <label className="block font-medium mb-1" htmlFor="lastName">Last Name</label>
                     <input 
                         type="text"
                         id="lastName"
@@ -176,10 +176,10 @@ export default function AdminRegister() {
                         onChange={(e) => setAdminInfo({...adminInfo, lastName: e.target.value})}
                         placeholder="Enter last name"
                         required
-                        className="block w-full"
+                        className="p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-gray-600"
                     />
 
-                    <label className="block" htmlFor="email">Email Address</label>
+                    <label className="block font-medium mb-1" htmlFor="email">Email Address</label>
                     <input 
                         type="email"
                         id="email"
@@ -187,11 +187,11 @@ export default function AdminRegister() {
                         onChange={(e) => setAdminInfo({...adminInfo, emailAddress: e.target.value})}
                         placeholder="Enter email address"
                         required
-                        className={`block w-full border ${errors.email ? 'border-red-600' : 'border-gray-300'}`}
+                        className={`p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-gray-600 ${errors.email ? 'border-red-600 focus:border-red-600 mb-1!' : 'border-gray-300'}`}
                     />
-                    {errors.email && <p className="text-red-600 text-[13px] italic">{errors.email}</p>}
+                    {errors.email && <p className="text-red-600 text-[13px] mb-4">* {errors.email}</p>}
 
-                    <label className="block" htmlFor="password">Password</label>
+                    <label className="block font-medium mb-1" htmlFor="password">Password</label>
                     <div className="relative">
                         <input 
                             type={showPassword ? "text" : "password"} 
@@ -200,15 +200,15 @@ export default function AdminRegister() {
                             onChange={(e) => setAdminInfo({...adminInfo, password: e.target.value})}
                             placeholder="Enter password"
                             required
-                            className="block w-full"
+                            className={`p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-gray-600 ${errors.invalidPass ? 'border-red-600 focus:border-red-600 mb-1!' : 'border-gray-300'}`}
                         />
                         <div onClick={handlePass} className="absolute top-1/2 -translate-y-1/2 right-2">
                             {showPassword ? <FiEyeOff /> : <FiEye />}
                         </div>                        
                     </div>
-                    {errors.invalidPass && <p className="text-red-600 text-[13px] italic">{errors.invalidPass}</p>}
+                    {errors.invalidPass && <p className="text-red-600 text-[13px] mb-4">* {errors.invalidPass}</p>}
 
-                    <label className="block" htmlFor="confirmPass">Confirm Password</label>
+                    <label className="block font-medium mb-1" htmlFor="confirmPass">Confirm Password</label>
                     <div className="relative">
                         <input 
                             type={showConfirmPassword ? "text" : "password"}
@@ -217,15 +217,15 @@ export default function AdminRegister() {
                             onChange={(e) => setAdminInfo({...adminInfo, confirmPassword: e.target.value})}
                             placeholder="Enter password"
                             required
-                            className={`block w-full border ${errors.password ? 'border-red-600' : 'border-gray-300'}`}
+                            className={`p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-gray-600 ${errors.confirmPassword ? 'border-red-600 focus:border-red-600 mb-1!' : 'border-gray-300'}`}
                         />
                         <div onClick={handleConfirmPass} className="absolute top-1/2 -translate-y-1/2 right-2">
                             {showConfirmPassword ? <FiEyeOff /> : <FiEye />}
                         </div>
                     </div>
-                    {errors.confirmPassword && <p className="text-red-600 text-[13px] italic">{errors.confirmPassword}</p>}
+                    {errors.confirmPassword && <p className="text-red-600 text-[13px] mb-4">* {errors.confirmPassword}</p>}
 
-                    <label className="block" htmlFor="companyName">Company Name</label>
+                    <label className="block font-medium mb-1" htmlFor="companyName">Company Name</label>
                     <input 
                         type="text"
                         id="companyName"
@@ -233,11 +233,11 @@ export default function AdminRegister() {
                         onChange={(e) => setAdminInfo({...adminInfo, companyName: e.target.value})}
                         placeholder="Enter company name"
                         required
-                        className={`block w-full border ${errors.company ? 'border-red-600' : 'border-gray-300'}`}
+                        className={`p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-gray-600 ${errors.company ? 'border-red-600 focus:border-red-600 mb-1!' : 'border-gray-300'}`}
                     />
-                    {errors.company && <p className="text-red-600 text-[13px] italic">{errors.company}</p>}
+                    {errors.company && <p className="text-red-600 text-[13px] mb-4">* {errors.company}</p>}
 
-                    <label className="block" htmlFor="companyLocation">Company Location</label>
+                    <label className="block font-medium mb-1" htmlFor="companyLocation">Company Location</label>
                     <div className="relative">
                         <input
                             type="text"
@@ -249,7 +249,7 @@ export default function AdminRegister() {
                             placeholder="Enter company location"
                             required
                             autoComplete="off"
-                            className="block w-full overflow-x-scroll"
+                            className="p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-gray-600 overflow-x-scroll"
                         />
 
                         {isSearchingLocation && (

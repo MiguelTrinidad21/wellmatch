@@ -1,7 +1,7 @@
 import AuthNavBar from "../../components/navBars/AuthNavBar";
 import Overlay from "../../components/overlay/OverlayMobile";
 import Footer from "../../components/others/Footer"
-import Loading from "../../components/others/Loading"
+import SkillGapLoader from "../../components/others/SkillGapLoader";
 import MatchScore from "../../components/others/MatchScore";
 import PrimaryButton from "../../components/buttons/PrimaryButton";
 import JobSkillEvidence from "../../components/popUps/JobSkillEvidence";
@@ -11,7 +11,7 @@ import { useState, useEffect, useRef } from "react";
 import { useNavigate, Link, useParams } from "react-router-dom";
 import { userStore } from "../../zustand/userState";
 import { resumeStore } from "../../zustand/skillGapResume";
-import defaultCover from "../../assets/defaultCover.jpg"
+import defaultProfile from "../../assets/defaultProfile.jpg"
 import { MdOutlineEmail } from "react-icons/md";
 import { SlLocationPin } from "react-icons/sl";
 import { IoIosCheckmark } from "react-icons/io";
@@ -26,10 +26,19 @@ export default function SkillGapAnalysisUI() {
     
     const { resumeToAnalyze, selectedOption } = resumeStore();
     const { currentUser } = userStore();
-    const { jobID } = useParams();
+    const { jobID, resumeID } = useParams();
+
+    const leftColRef = useRef(null);
+    const [leftColHeight, setLeftColHeight] = useState(null);
     
     const [verified, setVerified] = useState(false);
 
+    const [showEvidence, setShowEvidence] = useState(false);
+    const [evidenceStatus, setEvidenceStatus] = useState("");
+    const [resumeSkill, setResumeSkill] = useState("");
+    const [resumeEvidence, setResumeEvidence] = useState("");
+    const [jobSkill, setJobSkill] = useState("");
+    const [jobEvidence, setJobEvidence] = useState("");
     const [ activeMatchEvidenceIndex, setActiveMatchEvidenceIndex] = useState(null);
     const [ activeMissingEvidenceIndex, setActiveMissingEvidenceIndex] = useState(null);
 
@@ -68,6 +77,33 @@ export default function SkillGapAnalysisUI() {
     }, [currentUser]);
 
     useEffect(() => {
+        if (!leftColRef.current) return;
+
+        const el = leftColRef.current;
+
+        const updateHeight = () => {
+            // Only lock height on md+ screens (two-column layout)
+            if (window.innerWidth >= 768) {
+                setLeftColHeight(el.offsetHeight);
+            } else {
+                setLeftColHeight(null);
+            }
+        };
+
+        updateHeight();
+
+        const resizeObserver = new ResizeObserver(updateHeight);
+        resizeObserver.observe(el);
+
+        window.addEventListener("resize", updateHeight);
+
+        return () => {
+            resizeObserver.disconnect();
+            window.removeEventListener("resize", updateHeight);
+        };
+    }, [skillGapLoaded, jobLoaded]);
+
+    useEffect(() => {
         if (!loading && !verified) {
             navigate("/forbidden");
         }
@@ -81,8 +117,7 @@ export default function SkillGapAnalysisUI() {
             try {
 
                 const skillGapReport = await axios.post(
-                    `/api/applicant/${jobID}/resumeSelected/skillgap`,
-                    resumeToAnalyze,
+                    `/api/applicant/${jobID}/${resumeID}/skillgap`,
                     {
                         withCredentials: true
                     }
@@ -122,7 +157,7 @@ export default function SkillGapAnalysisUI() {
 
 
     if (loading) {
-        return <Loading />
+        return <SkillGapLoader />
     }
 
     if (!verified) {
@@ -147,31 +182,47 @@ export default function SkillGapAnalysisUI() {
                     <>
                         <Translucent />
                         <ResumeViewerModal
-                        resumeID={resumeToAnalyze.resumeID}
+                        resumeID={resumeID}
                         onClose={() => setShowResumeViewer(false)}
+                        user="applicant"
                         />
                     </>
                 }
 
-                <div className="w-full min-h-[calc(100vh-64px)] p-6">
-                    <div className="w-full grid grid-cols-1 gap-4">
+                {
+                    showEvidence &&
+                    <JobSkillEvidence
+                        status={evidenceStatus}
+                        resumeSkill={resumeSkill}
+                        resumeEvidence={resumeEvidence}
+                        jobSkill={jobSkill}
+                        jobEvidence={jobEvidence}
+                        toggleFunc={() => setShowEvidence(false)} 
+                    />     
+                }    
 
-                        <div className="w-full flex flex-col gap-4">
+                <div className="w-full min-h-[calc(100vh-64px)] p-6 md:p-15">                    
+                    <div className="w-full grid grid-cols-1 gap-4 md:grid-cols-2 md:items-start">
+
+                        <div ref={leftColRef} className="w-full flex flex-col gap-4">
                             <section className="rounded-2xl shadow-md bg-white p-4">
                                 <div className="flex gap-2 mb-4">
-                                    <div className="w-19">
-                                        <img className="w-full h-full rounded-full object-cover" src={`${currentUser.profilePhoto ? currentUser.profilePhoto : defaultCover}`} alt="" />
+                                    <div className="w-19 h-19 shrink-0">
+                                        <img className="w-full h-full rounded-full object-cover" src={`${currentUser.profilePhoto ? currentUser.profilePhoto : defaultProfile}`} alt="" />
                                     </div>
-                                    <div className="flex-1">
-                                        <h1 className="text-lg font-bold">{`${currentUser.firstName} ${currentUser.lastName}`}</h1>
-                                        <div className="relative w-full">
-                                            <MdOutlineEmail className="absolute top-1/2 -translate-y-1/2 left-0" />
-                                            <p className="pl-6">{currentUser.email}</p>
+                                    <div className="flex-1 min-w-0">
+                                        <h1 className="text-lg font-bold wrap-break-word">{`${currentUser.firstName} ${currentUser.lastName}`}</h1>
+                                         <div className="flex items-start gap-2 w-full">
+                                            <MdOutlineEmail className="shrink-0 mt-1" />
+                                            <p className="wrap-break-word min-w-0">{currentUser.email}</p>
                                         </div>
-                                        <div className="relative w-full">
-                                            <SlLocationPin className="absolute top-1/2 -translate-y-1/2 left-0" />
-                                            <p className="pl-6">{currentUser.address}</p>
-                                        </div>
+                                        {
+                                            currentUser.address &&
+                                            <div className="flex items-start gap-2 w-full">
+                                                <SlLocationPin className="shrink-0 mt-1" />
+                                                <p className="wrap-break-word min-w-0">{currentUser.address}</p>
+                                            </div>
+                                        }
                                     </div>
                                 </div>
 
@@ -187,7 +238,7 @@ export default function SkillGapAnalysisUI() {
 
                             </section>
 
-                            <section className="rounded-2xl shadow-md bg-white p-4 w-full max-h-90 overflow-y-auto">
+                            <section className="rounded-2xl shadow-md bg-white p-4 w-full">
                                 <h1 className="font-bold text-lg">Job Requirements</h1>
 
                                 <h2 className="font-semibold">Required</h2>
@@ -212,14 +263,14 @@ export default function SkillGapAnalysisUI() {
                             </section>
                         </div>
 
-                        <div className="w-full flex flex-col gap-4">
+                        <div style={leftColHeight ? { maxHeight: `${leftColHeight}px` } : undefined} className="w-full flex flex-col gap-4 md:overflow-y-auto md:pr-1">
                             <section className="rounded-2xl shadow-md bg-white p-4 w-full">
-                                <p className="text-sm text-gray-400">APPLYING FOR</p>
-                                <p className="font-bold text-lg">{selectedJob.jobTitle}</p>
+                                <p className="text-sm text-gray-500 font-medium">APPLYING FOR</p>
+                                <p className="font-bold text-lg ">{selectedJob.jobTitle}</p>
                             </section>
 
                             <section className="rounded-2xl shadow-md bg-white p-4 w-full">
-                                <p className="text-sm text-gray-400 mb-3">SCORES BREAKDOWN</p>
+                                <p className="text-sm text-gray-500 mb-3 font-medium">SCORES BREAKDOWN</p>
                                 <div className={`bg-[#F4F1F8] rounded-xl grid ${selectedJob.preferredQualifications ? "grid-cols-2" : "grid-cols-1"} p-4`}>
                                     <div className="text-center">
                                         <MatchScore 
@@ -252,75 +303,80 @@ export default function SkillGapAnalysisUI() {
                                         <h1 className="font-bold text-lg">Matched Skills</h1>
                                     </div>
 
-                                    <h2 className="text-[12px] font-bold mb-1 text-green-700">REQUIRED SKILLS</h2>
-                                    <div className="w-full flex flex-col gap-1 mb-4 ">
-                                        {skillGapAnalysis.matchedSkills
-                                            ?.filter((skill) => skill.skillType === "core")
-                                            .map((skill, index) => (
-                                                <div
-                                                    className="relative bg-[#F0FDF4] p-2 pl-4 rounded-md flex items-center gap-2 active:scale-[0.98] transition-transform duration-200 ease-in"
-                                                    key={`matched-core-${index}`} 
-                                                    onClick={() =>
-                                                        setActiveMatchEvidenceIndex(
-                                                             activeMatchEvidenceIndex === `matched-core-${index}` ? null : `matched-core-${index}`
-                                                        )
-                                                    }
-                                                >
-                                                    { activeMatchEvidenceIndex === `matched-core-${index}` &&
-                                                        <JobSkillEvidence
-                                                            status="matched"
-                                                            resumeSkill={skill.matchedResumeSkill}
-                                                            resumeEvidence={skill.resumeEvidence}
-                                                            jobSkill={skill.matchedJobSkill}
-                                                            jobEvidence={skill.jobEvidence}
-                                                            toggleFunc={() => setActiveMatchEvidenceIndex(null)} 
-                                                        />                                                   
-                                                    }
-                                                    <div className="flex justify-center items-center w-5 h-5 rounded-full bg-green-600 ">
-                                                        <IoIosCheckmark className="text-white" size={50} />
-                                                    </div>
-                                                    <p className="flex-1 font-bold text-[#4A9E69]">{skill.matchedJobSkill}</p>
-                                                </div>
-                                            ))
-                                        }
-                                    </div>
-
-                                    {selectedJob.preferredQualifications && 
-                                        <>
-                                            <h2 className="text-[12px] font-bold mb-1 text-green-700">PREFERRED SKILLS</h2>
-                                            <div className="w-full flex flex-col gap-1 mb-4 ">
-                                                {skillGapAnalysis.matchedSkills
-                                                    ?.filter((skill) => skill.skillType === "secondary")
-                                                    .map((skill, index) => (
-                                                        <div 
-                                                            key={`matched-second-${index}`}
-                                                            className="relative bg-[#F0FDF4] p-2 pl-4 rounded-md flex items-center gap-2 active:scale-[0.98] transition-transform duration-200 ease-in"
-                                                            onClick={() =>
-                                                                setActiveMatchEvidenceIndex(
-                                                                     activeMatchEvidenceIndex === `matched-second-${index}` ? null : `matched-second-${index}`
-                                                                )
+                                    {
+                                        skillGapAnalysis.matchedSkills?.length >= 1 ?
+                                            <>
+                                                {
+                                                    skillGapAnalysis.matchedSkills?.filter((skill) => skill.skillType === "core").length >= 1 &&
+                                                    <>
+                                                        <h2 className="text-[12px] font-bold mb-1 text-green-700">REQUIRED SKILLS</h2>
+                                                        <div className="w-full flex flex-col gap-1 mb-4 ">
+                                                            {skillGapAnalysis.matchedSkills
+                                                                ?.filter((skill) => skill.skillType === "core")
+                                                                .map((skill, index) => (
+                                                                    <div
+                                                                        className="relative bg-[#F0FDF4] p-2 pl-4 rounded-md flex items-center gap-2 active:scale-[0.98] transition-transform duration-200 ease-in"
+                                                                        key={`matched-core-${index}`} 
+                                                                        onClick={() => {
+                                                                             setActiveMatchEvidenceIndex(
+                                                                                activeMatchEvidenceIndex === `matched-core-${index}` ? null : `matched-core-${index}`
+                                                                            )                                                                       
+                                                                            setEvidenceStatus("matched");
+                                                                            setResumeSkill(skill.matchedResumeSkill);
+                                                                            setResumeEvidence(skill.resumeEvidence);
+                                                                            setJobSkill(skill.matchedJobSkill);
+                                                                            setJobEvidence(skill.jobEvidence);
+                                                                            setShowEvidence(true);
+                                                                        }}
+                                                                    >
+                                                                        <div className="flex justify-center items-center w-5 h-5 rounded-full bg-green-600 ">
+                                                                            <IoIosCheckmark className="text-white" size={50} />
+                                                                        </div>
+                                                                        <p className="flex-1 font-bold text-[#4A9E69]">{skill.matchedJobSkill}</p>
+                                                                    </div>
+                                                                ))
                                                             }
-                                                        >
-                                                            { activeMatchEvidenceIndex === `matched-second-${index}` &&
-                                                                <JobSkillEvidence
-                                                                    status="matched"
-                                                                    resumeSkill={skill.matchedResumeSkill}
-                                                                    resumeEvidence={skill.resumeEvidence}
-                                                                    jobSkill={skill.matchedJobSkill}
-                                                                    jobEvidence={skill.jobEvidence}
-                                                                    toggleFunc={() => setActiveMatchEvidenceIndex(null)} 
-                                                                />                                                   
-                                                            }
-
-                                                            <div className="flex justify-center items-center w-5 h-5 rounded-full bg-green-600 ">
-                                                                <IoIosCheckmark className="text-white" size={50} />
-                                                            </div>
-                                                            <p className="flex-1 font-bold text-[#4A9E69]">{skill.matchedJobSkill}</p>
-                                                        </div>
-                                                    ))
+                                                        </div>                                                                                                
+                                                    </>
                                                 }
-                                            </div>
-                                        </>
+
+                                                {
+                                                    skillGapAnalysis.matchedSkills?.filter((skill) => skill.skillType === "secondary").length >= 1 &&
+                                                    <>
+                                                        <h2 className="text-[12px] font-bold mb-1 text-green-700">PREFERRED SKILLS</h2>
+                                                        <div className="w-full flex flex-col gap-1 mb-4 ">
+                                                            {skillGapAnalysis.matchedSkills
+                                                                ?.filter((skill) => skill.skillType === "secondary")
+                                                                .map((skill, index) => (
+                                                                    <div 
+                                                                        key={`matched-second-${index}`}
+                                                                        className="relative bg-[#F0FDF4] p-2 pl-4 rounded-md flex items-center gap-2 active:scale-[0.98] transition-transform duration-200 ease-in"
+                                                                        onClick={() => {
+                                                                            setActiveMatchEvidenceIndex(
+                                                                                activeMatchEvidenceIndex === `matched-core-${index}` ? null : `matched-core-${index}`
+                                                                            )                                                                            
+                                                                            setEvidenceStatus("matched");
+                                                                            setResumeSkill(skill.matchedResumeSkill);
+                                                                            setResumeEvidence(skill.resumeEvidence);
+                                                                            setJobSkill(skill.matchedJobSkill);
+                                                                            setJobEvidence(skill.jobEvidence);
+                                                                            setShowEvidence(true);
+                                                                        }}
+                                                                    >
+                                                                        <div className="flex justify-center items-center w-5 h-5 rounded-full bg-green-600 ">
+                                                                            <IoIosCheckmark className="text-white" size={50} />
+                                                                        </div>
+                                                                        <p className="flex-1 font-bold text-[#4A9E69]">{skill.matchedJobSkill}</p>
+                                                                    </div>
+                                                                ))
+                                                            }
+                                                        </div>                                                    
+                                                    </>
+                                                }
+                                            </>
+
+                                        :
+                                            <p>No matched skills</p>
                                     }
                                     <p className="text-[12px] text-gray-400 italic">Click/tap badge for job requirement evidence</p>
                                 </div>
@@ -331,73 +387,78 @@ export default function SkillGapAnalysisUI() {
                                         <h1 className="font-bold text-lg">Skill Gaps</h1>
                                     </div>
 
-                                    <h2 className="text-[12px] font-bold mb-1 text-red-600">CORE GAPS - HIGH PRIORITY</h2>
-                                    <div className=" w-full flex flex-col gap-1 mb-4 ">
-                                        {skillGapAnalysis.missingSkills
-                                            ?.filter((skill) => skill.skillType === "core")
-                                            ?.map((skill, index) => (
-                                                <div 
-                                                    key={`missing-core-${index}`} 
-                                                    className="relative bg-[#FFF1F2] p-2 pl-4 rounded-md flex items-center gap-2 active:scale-[0.98] transition-transform duration-200 ease-in"
-                                                    onClick={() =>
-                                                        setActiveMissingEvidenceIndex(
-                                                             activeMissingEvidenceIndex === `missing-core-${index}` ? null : `missing-core-${index}`
-                                                        )
-                                                    }
-                                                >
-                                                    {activeMissingEvidenceIndex === `missing-core-${index}` &&
-                                                        <JobSkillEvidence
-                                                            status="missing"
-                                                            jobSkill={skill.parentSkill}
-                                                            jobEvidence={skill.jobEvidence}
-                                                            toggleFunc={() => setActiveMissingEvidenceIndex(null)} 
-                                                        />                                                   
-                                                    }
-                                                    <div className="flex justify-center items-center w-5 h-5 rounded-full bg-red-600 ">
-                                                        <IoMdClose className="text-white" />
-                                                    </div>
-                                                    <p className="flex-1 font-bold text-[#BE123C]">{skill.parentSkill}</p>
-                                                </div>
-                                                )
-                                            )
-                                        }
-                                    </div>
-
-                                    {selectedJob.preferredQualifications && 
+                                    {
+                                        skillGapAnalysis.missingSkills?.length >= 1 ?
                                         <>
-                                            <h2 className="text-[12px] font-bold mb-1 text-[#92400E]">SECONDARY - OPTIONAL</h2>
-                                            <div className="w-full flex flex-col gap-1 mb-4 ">
-                                                {skillGapAnalysis.missingSkills
-                                                    ?.filter((skill) => skill.skillType === "secondary")
-                                                    ?.map((skill, index) => (
-                                                        <div 
-                                                            key={`missing-second-${index}`} 
-                                                            className="relative bg-[#FFFBEB] p-2 pl-4 rounded-md flex items-center gap-2 active:scale-[0.97] transition-transform duration-200 ease-in"
-                                                            onClick={() =>
-                                                                setActiveMissingEvidenceIndex(
-                                                                    activeMissingEvidenceIndex === `missing-second-${index}` ? null : `missing-second-${index}`
+                                            {
+                                                skillGapAnalysis.missingSkills?.filter((skill) => skill.skillType === "core") &&
+                                                <>
+                                                    <h2 className="text-[12px] font-bold mb-1 text-red-600">CORE GAPS - HIGH PRIORITY</h2>
+                                                    <div className=" w-full flex flex-col gap-1 mb-4 ">
+                                                        {skillGapAnalysis.missingSkills
+                                                            ?.filter((skill) => skill.skillType === "core")
+                                                            ?.map((skill, index) => (
+                                                                <div 
+                                                                    key={`missing-core-${index}`} 
+                                                                    className="relative bg-[#FFF1F2] p-2 pl-4 rounded-md flex items-center gap-2 active:scale-[0.98] transition-transform duration-200 ease-in"
+                                                                    onClick={() => {
+                                                                        setActiveMissingEvidenceIndex(
+                                                                            activeMissingEvidenceIndex === `missing-core-${index}` ? null : `missing-core-${index}`
+                                                                        )                                                                            
+                                                                        setEvidenceStatus("missing");
+                                                                        setJobSkill(skill.parentSkill);
+                                                                        setJobEvidence(skill.jobEvidence);
+                                                                        setShowEvidence(true);
+                                                                    }}
+                                                                >
+                                                                    <div className="flex justify-center items-center w-5 h-5 rounded-full bg-red-600 ">
+                                                                        <IoMdClose className="text-white" />
+                                                                    </div>
+                                                                    <p className="flex-1 font-bold text-[#BE123C]">{skill.parentSkill}</p>
+                                                                </div>
                                                                 )
-                                                            }
-                                                        >
-                                                            {activeMissingEvidenceIndex === `missing-second-${index}` &&
-                                                                <JobSkillEvidence
-                                                                    status="missing"
-                                                                    jobSkill={skill.parentSkill}
-                                                                    jobEvidence={skill.jobEvidence}
-                                                                    toggleFunc={() => setActiveMissingEvidenceIndex(null)} 
-                                                                />                                                   
-                                                            }
+                                                            )
+                                                        }
+                                                    </div>                                                    
+                                                </>
+                                            }
 
-                                                            <div className="flex justify-center items-center w-5 h-5 rounded-full bg-[#F59E0B] ">
-                                                                <IoMdClose className="text-white" />
-                                                            </div>
-                                                            <p className="flex-1 font-bold text-[#92400E]">{skill.parentSkill}</p>
-                                                        </div>
-                                                        )
-                                                    )
-                                                }                
-                                            </div>
+                                            {
+                                                skillGapAnalysis.missingSkills?.filter((skill) => skill.skillType === "secondary") &&
+                                                <>
+                                                    <h2 className="text-[12px] font-bold mb-1 text-[#92400E]">SECONDARY - OPTIONAL</h2>
+                                                    <div className="w-full flex flex-col gap-1 mb-4 ">
+                                                        {skillGapAnalysis.missingSkills
+                                                            ?.filter((skill) => skill.skillType === "secondary")
+                                                            ?.map((skill, index) => (
+                                                                <div 
+                                                                    key={`missing-second-${index}`} 
+                                                                    className="relative bg-[#FFFBEB] p-2 pl-4 rounded-md flex items-center gap-2 active:scale-[0.97] transition-transform duration-200 ease-in"
+                                                                    onClick={() => {
+                                                                        setActiveMissingEvidenceIndex(
+                                                                            activeMissingEvidenceIndex === `missing-core-${index}` ? null : `missing-core-${index}`
+                                                                        )                                                                            
+                                                                        setEvidenceStatus("missing");
+                                                                        setJobSkill(skill.parentSkill);
+                                                                        setJobEvidence(skill.jobEvidence);
+                                                                        setShowEvidence(true);
+                                                                    }}
+                                                                >
+
+                                                                    <div className="flex justify-center items-center w-5 h-5 rounded-full bg-[#F59E0B] ">
+                                                                        <IoMdClose className="text-white" />
+                                                                    </div>
+                                                                    <p className="flex-1 font-bold text-[#92400E]">{skill.parentSkill}</p>
+                                                                </div>
+                                                                )
+                                                            )
+                                                        }                
+                                                    </div>                                                
+                                                </>
+                                            }
                                         </>
+                                    :
+                                        <p>No skill gaps detected</p>
                                     }
                                     <p className="text-[12px] text-gray-400 italic">Click/tap badge for job requirement evidence</p>
                                 </div>
@@ -415,7 +476,7 @@ export default function SkillGapAnalysisUI() {
                                 </div>
                             </section>
 
-                            <hr className="my-2 h-0.5 bg-[#BDBFC1] border-none" />
+                            <hr className="my-2 h-0.5 bg-gray-200 border-none" />
 
                             <h1 className="font-bold">UPSKILLING RECOMMENDATIONS</h1>
                             {

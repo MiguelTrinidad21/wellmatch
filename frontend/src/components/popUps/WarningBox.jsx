@@ -10,9 +10,9 @@ export default function WarningBox({
     isLoading
  }) {
     return (
-        <div className="rounded-2xl bg-[#F9FAFB] fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 p-5 w-75 z-40 ">
+        <div className="rounded-2xl bg-[#F9FAFB] fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 p-5 w-75 z-40 md:w-80">
             <h1 className="font-bold text-lg mb-2">{heading}</h1>
-            <p className="mb-4">{text}</p>
+            <p className="mb-10">{text}</p>
 
             {error && <p className="text-sm text-red-600">{error}</p>}
 

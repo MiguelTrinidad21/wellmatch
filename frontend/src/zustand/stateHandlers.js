@@ -3,7 +3,11 @@ import { persist, createJSONStorage } from "zustand/middleware";
 
 export const sideBarStore = create((set) => ({
     sideBarStatus: false,
-    toggleSideBar: () => set((state) => ({sideBarStatus: !state.sideBarStatus}))
+    applicantActiveLink: "home",
+    employerActiveLink: "jobs",
+    toggleSideBar: () => set((state) => ({sideBarStatus: !state.sideBarStatus})),
+    setApplicantActiveLink: (value) => set({applicantActiveLink: value}),
+    setEmployerActiveLink: (value) => set({employerActiveLink: value})
 }));
 
 

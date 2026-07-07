@@ -26,24 +26,24 @@ export default function PublicNavBar() {
     const logoLink = isEmployerSite ? "/employer/login" : "/applicant/login";
 
     return (
-        <nav className="fixed left-0 top-0 z-20 flex h-16 w-full items-center justify-between bg-white px-5 shadow-sm">
+        <nav className="fixed left-0 top-0 z-20 flex h-16 w-full items-center justify-between bg-white pr-5 pl-4 shadow-sm md:pr-15 md:pl-14 md:h-18">
             <Link to={logoLink}>
                 <img
-                className="h-9 w-auto object-contain"
+                className="h-9 w-auto object-contain md:h-12"
                 src={webLogo}
                 alt="WellMatch Logo"
                 />
             </Link>
 
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-4 md:gap-10">
                 <Link
                 to={switchSiteLink}
-                className="text-sm font-medium text-gray-700 hover:text-green-600"
+                className="text-sm font-medium text-gray-700 hover:text-green-600 md:text-[16px]"
                 >
                 {switchSiteLabel}
                 </Link>
 
-                <SecondaryButton to={buttonLink}>
+                <SecondaryButton className="md:text-[16px]!" to={buttonLink}>
                 {buttonLabel}
                 </SecondaryButton>
             </div>

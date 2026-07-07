@@ -326,3 +326,100 @@ export async function getSpecificJob(req, res) {
         return res.status(500).json({message: "Fetching job failed"})
     }
 }
+
+export async function saveJob(req, res) {
+    const { id } = req.user;
+    const {jobID} = req.body;
+    console.log(jobID)
+
+    try {
+        const [rows] = await database.query(`
+            SELECT *
+            FROM savedJobs
+            WHERE applicantID = ?
+            AND jobID = ?
+            LIMIT 1
+            `,
+            [id, jobID]
+        )
+
+        if (rows.length > 0) {
+            return res.status(409).json({ message: "Job post is already saved" });
+        }
+
+        await database.query(`
+            INSERT INTO savedJobs (
+                applicantID,
+                jobID,
+                savedAt
+            )
+            VALUES (?, ?, NOW())
+            `,
+            [id, jobID]
+        )
+
+        return res.status(201).json({ message: "Job post has saved successfully" });
+
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: "Saving job post failed;" })
+    }
+}
+
+export async function unsaveJob(req, res) {
+    const { id } = req.user;
+    const { jobID } = req.query;
+
+    try {
+
+        await database.query(`
+            DELETE FROM savedJobs
+            WHERE applicantID = ?
+            AND jobID = ?
+            `,
+            [id, jobID]
+        )
+
+        return res.status(200).json({ message: "Job post unsaved" });
+
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: "Unsaving job post failed;" })
+    }    
+}
+
+export async function getAllSavedJobs(req, res) {
+    const { id } = req.user;
+
+    try {
+
+        const [fullData] = await database.query(`
+            SELECT
+                s.*,
+                j.jobID,
+                j.jobTitle,
+                j.location,
+                j.jobOverview,
+                c.companyName
+            FROM savedJobs s
+            INNER JOIN jobs j
+                ON s.jobID = j.jobID
+            INNER JOIN companies c
+                ON j.companyID = c.companyID
+            WHERE s.applicantID = ?
+            `,
+            [id]
+        )
+
+        const jobIDList = fullData.map(row => row.jobID);
+
+        return res.status(200).json({ 
+            savedJobs: fullData,
+            jobIDs: jobIDList
+        });
+
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: "Fetching saved job post failed;" })
+    }   
+}

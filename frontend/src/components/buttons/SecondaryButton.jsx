@@ -6,14 +6,15 @@ export default function SecondaryButton({
     to, 
     onclick, 
     type = "button",
-    className = ""
+    className = "",
+    disabled
 }) {
 
-    const baseStyle = "block text-sm font-semibold text-[#10B981] outline-[3px] py-1 px-3 rounded-full flex items-center justify-center active:scale-[0.98]";
+    const baseStyle = "box-border block text-sm font-semibold text-[#10B981] border-[3px] py-1 px-3 rounded-full flex items-center justify-center active:scale-[0.98]";
     
     if (to) {
         return (
-            <Link to={to} className={`${baseStyle} ${className}`}>
+            <Link disabled={disabled} to={to} className={`${baseStyle} ${className}`}>
                 {children}
             </Link>
         )
@@ -24,6 +25,7 @@ export default function SecondaryButton({
         <button
             type={type}
             onClick={onclick}
+            disabled={disabled}
             className={`${baseStyle} ${className}`}    
         >
             {children}

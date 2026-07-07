@@ -1,5 +1,14 @@
 import express from "express";
+
+import handleApplicantPhotoUpload from "../middlewares/handleApplicantPhotos.js";
 import handleMulterResumeUpload from "../middlewares/handleResumes.js";
+import { skillGapController } from "../controllers/applicant/skillGapController.js";
+import { 
+    changeEmail, 
+    changePassword,
+    deleteAccount
+} from "../controllers/applicant/accountSettings.js";
+
 import { 
     registerApplicant, 
     loginApplicant,
@@ -15,7 +24,10 @@ import  {
 import { 
     getRecommendedJobs, 
     searchJobs, 
-    getSpecificJob 
+    getSpecificJob,
+    saveJob,
+    unsaveJob,
+    getAllSavedJobs
 } from "../controllers/applicant/jobControllers.js";
 
 import { 
@@ -27,7 +39,6 @@ import {
     deleteResume
 } from "../controllers/applicant/resumeControllers.js";
 
-import { skillGapController } from "../controllers/applicant/skillGapController.js";
 
 import { 
     addWorkExp,
@@ -42,7 +53,11 @@ import {
     updateInfo
 } from "../controllers/applicant/manageProfileInfo.js";
 
-import handleApplicantPhotoUpload from "../middlewares/handleApplicantPhotos.js";
+import { 
+    submitApplication, 
+    fetchApplications,
+    withdrawApplication
+} from "../controllers/applicant/jobApplicationControllers.js";
 
 
 const router = express.Router();
@@ -61,10 +76,13 @@ router.get("/viewResume/:resumeID", verifyToken, isApplicant, viewResume)
 router.get("/getWorkExp", verifyToken, isApplicant, getAllWorkExp)
 router.get("/getCredentials", verifyToken, isApplicant, getCredentials)
 router.get("/getEducation", verifyToken, isApplicant, getEducation)
+router.get("/applications", verifyToken, isApplicant, fetchApplications)
+router.get("/getSavedJobs", verifyToken, isApplicant, getAllSavedJobs)
+
 
 router.get("/debug-resume", debugResume)
 
-router.post("/:jobID/resumeSelected/skillgap", verifyToken, isApplicant, skillGapController);
+router.post("/:jobID/:resumeID/skillgap", verifyToken, isApplicant, skillGapController);
 router.post("/register", handleMulterResumeUpload, registerApplicant)
 router.post("/login", loginApplicant);
 router.post("/logout", logoutApplicant);
@@ -72,14 +90,22 @@ router.post("/uploadResume", verifyToken, isApplicant, handleMulterResumeUpload,
 router.post("/addWorkExp", verifyToken, isApplicant, addWorkExp)
 router.post("/addCredential", verifyToken, isApplicant, addCredential)
 router.post("/addEducation", verifyToken, isApplicant, addEducation)
+router.post("/submitApplication/:jobID", verifyToken, isApplicant, submitApplication)
+router.post("/saveJob", verifyToken, isApplicant, saveJob)
 
 router.patch("/editProfileInfo", verifyToken, isApplicant, handleApplicantPhotoUpload, updateInfo)
 router.patch("/resume/makeDefault", verifyToken, isApplicant, makeResumeDefault)
+router.patch("/changeEmail", verifyToken, isApplicant, changeEmail)
+router.patch("/changePassword", verifyToken, isApplicant, changePassword)
 
 
 router.delete("/delete/workExp", verifyToken, isApplicant, deleteWorkExp)
 router.delete("/delete/credential", verifyToken, isApplicant, deleteCredential)
 router.delete("/delete/education", verifyToken, isApplicant, deleteEducation)
 router.delete("/delete/resume", verifyToken, isApplicant, deleteResume)
+router.delete("/withdrawApplication/:applicationID", verifyToken, isApplicant, withdrawApplication)
+router.delete("/unsaveJob", verifyToken, isApplicant, unsaveJob)
+router.delete("/deleteAccount", verifyToken, isApplicant, deleteAccount)
+
 
 export default router;

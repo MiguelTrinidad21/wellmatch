@@ -1,8 +1,6 @@
 import ScrollToTop from './ScrollToTop';
-import ApplicantSignIn from './pages/applicant/ApplicantSignIn';
 import EmployerSignIn from './pages/employer/EmployerSignIn';
 import AdminRegister from './pages/admin/AdminRegister';
-import ApplicantRegister from './pages/applicant/ApplicantRegister';
 import Jobs from './pages/employer/Jobs';
 import GuestRoute from './components/others/GuestRoute';
 import ProtectedRoute from './components/others/ProtectedRoute';
@@ -15,12 +13,24 @@ import CreateJobPost from './pages/employer/CreateJobPost';
 import JobDescription from './pages/employer/JobDescription';
 import YearsRequired from './pages/employer/YearsRequired';
 import AccountSettings from './pages/employer/AccountSettings';
+import ViewApplicants from './pages/employer/ViewApplicants';
+import SkillGapReport from './pages/employer/SkillGapReport';
+import ViewJobDescription from './pages/employer/ViewJobDescription'
+import EditPermission from './pages/admin/EditPermission';
+
+import ApplicantRegister from './pages/applicant/ApplicantRegister';
+import ApplicantSignIn from './pages/applicant/ApplicantSignIn';
 import RecommendedJobs from './pages/applicant/RecommendedJobs';
 import RelatedJobs from './pages/applicant/RelatedJobs';
 import ViewJobInfo from './pages/applicant/ViewJobInfo';
 import SkillGapFileUploader from './pages/applicant/SkillGapFileUploader';
 import SkillGapAnalysisUI from './pages/applicant/SkillGapAnalysisUI';
 import MyProfile from './pages/applicant/MyProfile';
+import JobAppInitialStep from './pages/applicant/JobAppInitialStep';
+import JobAppFinalStep from './pages/applicant/JobAppFinalStep';
+import JobApplications from './pages/applicant/JobApplications';
+import SavedJobs from './pages/applicant/SavedJobs';
+import ApplicantAccountSettings from './pages/applicant/AccountSettings';
 
 import { useEffect } from 'react';
 import { userStore } from './zustand/userState';
@@ -68,7 +78,10 @@ function App() {
         }>    
           <Route path='/employer/jobs' element={<Jobs />} />
           <Route path='/employer/companyProfile' element={<CompanyProfile />} />
+          <Route path='/employer/companyProfile/editPermission/:memberID' element={<EditPermission />} />
           <Route path='/employer/settings' element={<AccountSettings />} />
+          <Route path='/employer/jobs/viewJob/:jobID' element={<ViewJobDescription />} />
+
 
           <Route path="/employer/createJob" element={<CreateJobPost mode="create" />} />
           <Route path="/employer/createJob/description" element={<JobDescription mode="create" />} />
@@ -77,6 +90,8 @@ function App() {
           <Route path="/employer/jobs/:jobID/edit" element={<CreateJobPost mode="edit" />} />
           <Route path="/employer/jobs/:jobID/edit/description" element={<JobDescription mode="edit" />} />
           <Route path="/employer/jobs/:jobID/edit/description/years" element={<YearsRequired mode="edit" />} />
+          <Route path="/employer/jobs/:jobID/applicants" element={<ViewApplicants />} />
+          <Route path="/employer/applications/skillGapReport/:applicantID/:jobID/:resumeID" element={<SkillGapReport />} />
 
         </Route>
 
@@ -95,8 +110,13 @@ function App() {
           <Route path='/applicant/searchJobs' element={<RelatedJobs />} />
           <Route path='/applicant/viewJob/:jobID' element={<ViewJobInfo />} />
           <Route path='/applicant/viewJob/:jobID/chooseFile' element={<SkillGapFileUploader />} />
-          <Route path='/applicant/viewJob/:jobID/chooseFile/skillGapReport' element={<SkillGapAnalysisUI />} />
+          <Route path='/applicant/viewJob/:jobID/:resumeID/skillGapReport' element={<SkillGapAnalysisUI />} />
           <Route path='/applicant/myProfile' element={<MyProfile />} />
+          <Route path='/applicant/viewJob/:jobID/apply' element={<JobAppInitialStep />} />
+          <Route path='/applicant/viewJob/:jobID/apply/submit' element={<JobAppFinalStep />} />
+          <Route path='/applicant/jobApplications' element={<JobApplications />} />
+          <Route path='/applicant/savedJobs' element={<SavedJobs />} />
+          <Route path='/applicant/settings' element={<ApplicantAccountSettings />} />
         </Route>
         
         <Route path='/employer/register/invite' element={<EmployerRegister />} />        

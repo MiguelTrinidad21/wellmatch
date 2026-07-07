@@ -27,6 +27,9 @@ export default function ViewJobInfo() {
     const [loading, setLoading] = useState(true);
     const [selectedJob, setSelectedJob] = useState({});
 
+    const [isJobSaved, setIsJobSaved] = useState(false);
+    const [savedJobIDs, setSavedJobIDs] = useState(new Set());
+
     useEffect(() => {
         async function checkApplicant() {
             try {
@@ -79,6 +82,43 @@ export default function ViewJobInfo() {
         getJob()
     }, [])
 
+    useEffect(() => {
+        async function fetchSavedJobs() {
+            const res = await axios.get("/api/applicant/getSavedJobs", {
+                withCredentials: true
+            });
+            console.log(res.data.jobIDs)
+            setSavedJobIDs(new Set(res.data.jobIDs));
+        }
+
+        fetchSavedJobs();
+    }, [isJobSaved])
+
+    async function saveJob(jobID) {
+        try {
+            await axios.post("/api/applicant/saveJob", { jobID }, {
+                withCredentials: true
+            })
+
+            setIsJobSaved(!isJobSaved);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    async function unsaveJob(jobID) {
+        try {
+            await axios.delete("/api/applicant/unsaveJob", {
+                params: {jobID},
+                withCredentials: true
+            })
+
+            setIsJobSaved(!isJobSaved);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     if (loading) {
         return <Loading />
     }
@@ -93,23 +133,23 @@ export default function ViewJobInfo() {
                 <AuthNavBar />
                 <Overlay />
 
-                <div className="w-full p-6">
+                <div className="w-full p-6 md:p-15">
 
-                    <div className=" w-full bg-white shadow-md  rounded-2xl ">
+                    <div className=" w-full m-auto bg-white shadow-md  rounded-2xl md:w-120">
                         <div className="w-full rounded-tl-2xl rounded-tr-2xl ">
                             <img 
                                 src={selectedJob.coverPhotoURL ? selectedJob.coverPhotoURL : defaultPhoto} 
                                 alt="cover photo"
-                                className="w-full h-45 object-cover rounded-tl-2xl rounded-tr-2xl"
+                                className="w-full h-45 object-cover rounded-tl-2xl rounded-tr-2xl md:h-55"
                             />
                         </div>
 
-                        <div className="p-4 w-full mb-3">
+                        <div className="p-4 w-full mb-3 md:p-7">
                             <div className="w-full relative mb-4">
                                 <img 
                                     src={selectedJob.profilePhotoURL ? selectedJob.profilePhotoURL : defaultPhoto} 
-                                    alt="cover photo"
-                                    className="w-20 object-cover rounded-sm"
+                                    alt="profile photo"
+                                    className="w-25 object-cover rounded-sm md:rounded-xl md:w-30"
                                 />
                                 <PrimaryButton to={`/applicant/viewJob/${jobID}/chooseFile`} className="absolute top-0 right-0 bg-[#2B2B2B]! text-[12px]">View Skill Gap Analysis</PrimaryButton>
                             </div>
@@ -118,31 +158,37 @@ export default function ViewJobInfo() {
                                 <p className="text-gray-500 mb-6">{selectedJob.companyName}</p>
                                 <div className="relative w-full mb-2">
                                     <MdOutlineLocationOn className="absolute top-1/2 -translate-y-1/2" />
-                                    <span className="pl-7 text-sm">{selectedJob.location}</span>
+                                    <span className="pl-7 text-sm md:text-[16px]">{selectedJob.location}</span>
                                 </div>
                                 <div className="relative w-full mb-2">
                                     <LuBriefcase className="absolute top-1/2 -translate-y-1/2" />
-                                    <span className="pl-7 text-sm">{selectedJob.workType}</span>
+                                    <span className="pl-7 text-sm md:text-[1rem]">{selectedJob.workType}</span>
                                 </div>
                                 <div className="relative w-full mb-2">
                                     {selectedJob.workPlaceOption === "On-site" ? <FaRegBuilding className="absolute top-1/2 -translate-y-1/2"/> 
                                     : selectedJob.workPlaceOption === "Remote" ? <AiOutlineLaptop className="absolute top-1/2 -translate-y-1/2" />
                                     : <TbBuildingCommunity className="absolute top-1/2 -translate-y-1/2" />                                
                                     }
-                                    <span className="pl-7 text-sm">{selectedJob.workPlaceOption}</span>
+                                    <span className="pl-7 text-sm md:text-[1rem]">{selectedJob.workPlaceOption}</span>
                                 </div>
                                 <div className="relative w-full mb-5">
                                     <PiMoneyWavy className="absolute top-1/2 -translate-y-1/2" />
-                                    <span className="pl-7 text-sm">{selectedJob?.minSalary?.toLocaleString()} - {selectedJob?.maxSalary?.toLocaleString()}</span>
+                                    <span className="pl-7 text-sm md:text-[1rem]">{selectedJob?.minSalary?.toLocaleString()} - {selectedJob?.maxSalary?.toLocaleString()}</span>
                                 </div>
                             </div>
                             <div>
-                                <PrimaryButton className="w-full mb-2">Apply Now</PrimaryButton>
-                                <SecondaryButton className="w-full py-2 font-bold!">Save</SecondaryButton>
+                                <PrimaryButton to={`/applicant/viewJob/${jobID}/apply`} className="w-full mb-2">Apply Now</PrimaryButton>
+                                {
+                                    savedJobIDs.has(selectedJob.jobID) ?
+                                        <SecondaryButton onclick={() => unsaveJob(selectedJob.jobID)} className="w-full py-2 font-bold! border-none bg-green-100">Saved</SecondaryButton>
+                                    :
+                                        <SecondaryButton onclick={() => saveJob(selectedJob.jobID)} className="w-full py-2 font-bold!">Save</SecondaryButton>
+                                }
+                                
                             </div>
                         </div>
 
-                        <div className="w-full px-4 pb-4">
+                        <div className="w-full px-4 pb-4 md:p-7">
                             <h1 className="text-lg font-bold text-center mb-2">Job Desciption</h1>
                             <p className="text-justify indent-8 text-[15px] mb-3">{selectedJob.jobOverview}</p>
 
