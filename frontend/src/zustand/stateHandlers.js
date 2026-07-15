@@ -1,14 +1,25 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from "zustand/middleware";
 
-export const sideBarStore = create((set) => ({
-    sideBarStatus: false,
-    applicantActiveLink: "Home",
-    employerActiveLink: "Jobs",
-    toggleSideBar: () => set((state) => ({sideBarStatus: !state.sideBarStatus})),
-    setApplicantActiveLink: (value) => set({applicantActiveLink: value}),
-    setEmployerActiveLink: (value) => set({employerActiveLink: value})
-}));
+export const sideBarStore = create(
+    persist(
+        (set) => ({
+            sideBarStatus: false,
+            applicantActiveLink: "Home",
+            employerActiveLink: "Jobs",
+            toggleSideBar: () => set((state) => ({sideBarStatus: !state.sideBarStatus})),
+            setApplicantActiveLink: (value) => set({applicantActiveLink: value}),
+            setEmployerActiveLink: (value) => set({employerActiveLink: value})
+        }),
+        {
+            name: "wellmatch-sideBar",
+            storage: createJSONStorage(() => localStorage),
+            partialize: (state) => ({
+                applicantActiveLink: state.applicantActiveLink,
+                employerActiveLink: state.employerActiveLink,
+            })            
+        }
+));
 
 
 export const companyStore = create((set) => ({

@@ -27,14 +27,14 @@ export default function ApplicantSideBar() {
     }
 
     return (
-        <aside className="hidden lg:block fixed top-0 left-0 bg-[#F4F8F5] text-gray-700 lg:w-65 xl:w-75 h-screen px-5">
+        <aside className="hidden lg:block fixed top-0 left-0 bg-[#F7F8FA] text-gray-700 lg:w-65 xl:w-75 h-screen px-5">
             <div className="w-full mt-5 mb-10">
                 <img src={webLogo} alt="" className="h-15 w-auto m-auto object-contain" />
             </div>
              
             <div className="w-full">
-                <div onClick={() => setApplicantActiveLink("Home")} className={`mb-2 cursor-pointer rounded-xl py-2.25 px-2.5 ${applicantActiveLink === "Home" ? "bg-green-600 text-white" : "hover:bg-[#D7F1E0] text-gray-700 transition-colors duration-200 ease-in"}`}>
-                    <Link className="flex gap-3 items-center md:gap-4 " to="/applicant/home" >
+                <div onClick={() => setApplicantActiveLink("Home")} className={`mb-2 cursor-pointer rounded-xl ${applicantActiveLink === "Home" ? "bg-green-600 text-white" : "hover:bg-[#D7F1E0] text-gray-700 transition-colors duration-200 ease-in"}`}>
+                    <Link className="flex gap-3 items-center md:gap-4 py-2.25 px-2.5" to="/applicant/home" >
                         <span className="rounded-xl p-1.5 bg-[#EBF9F0] text-green-700">
                             <MdOutlineHome size={25} />                       
                         </span>                        
@@ -42,8 +42,8 @@ export default function ApplicantSideBar() {
                     </Link>
                 </div>
 
-                <div onClick={() => setApplicantActiveLink("My Profile")} className={`mb-2 cursor-pointer rounded-xl py-2.25 px-2.5 ${applicantActiveLink === "My Profile" ? "bg-green-600 text-white" : "hover:bg-[#D7F1E0] text-gray-700 transition-colors duration-200 ease-in"}`}>
-                    <Link className="flex gap-3 items-center md:gap-5" to="/applicant/myProfile" >
+                <div onClick={() => setApplicantActiveLink("My Profile")} className={`mb-2 cursor-pointer rounded-xl ${applicantActiveLink === "My Profile" ? "bg-green-600 text-white" : "hover:bg-[#D7F1E0] text-gray-700 transition-colors duration-200 ease-in"}`}>
+                    <Link className="flex gap-3 items-center md:gap-5 py-2.25 px-2.5" to="/applicant/myProfile" >
                         <span className="rounded-xl p-1.5 bg-[#EBF9F0] text-green-700">
                             <RxAvatar size={22} />
                         </span>
@@ -52,8 +52,8 @@ export default function ApplicantSideBar() {
                     </Link>
                 </div>
 
-                <div onClick={() => setApplicantActiveLink("Saved Jobs")} className={`mb-2 cursor-pointer rounded-xl py-2.25 px-2.5 ${applicantActiveLink === "Saved Jobs" ? "bg-green-600 text-white" : "hover:bg-[#D7F1E0] text-gray-700 transition-colors duration-200 ease-in"}`}>
-                    <Link className="flex gap-3 items-center md:gap-5" to="/applicant/savedJobs" >
+                <div onClick={() => setApplicantActiveLink("Saved Jobs")} className={`mb-2 cursor-pointer rounded-xl ${applicantActiveLink === "Saved Jobs" ? "bg-green-600 text-white" : "hover:bg-[#D7F1E0] text-gray-700 transition-colors duration-200 ease-in"}`}>
+                    <Link className="flex gap-3 items-center md:gap-5 py-2.25 px-2.5" to="/applicant/savedJobs" >
                         <span className="rounded-xl p-1.5 bg-[#EBF9F0] text-green-700">
                             <FaBookmark />
                         </span>
@@ -62,8 +62,8 @@ export default function ApplicantSideBar() {
                     </Link>
                 </div>
 
-                <div onClick={() => setApplicantActiveLink("Job Applications")} className={`mb-2 cursor-pointer rounded-xl py-2.25 px-2.5 ${applicantActiveLink === "Job Applications" ? "bg-green-600 text-white" : "hover:bg-[#D7F1E0] text-gray-700 transition-colors duration-200 ease-in"}`}>
-                    <Link className="flex gap-3 items-center md:gap-5" to="/applicant/jobApplications" >
+                <div onClick={() => setApplicantActiveLink("Job Applications")} className={`mb-2 cursor-pointer rounded-xl ${applicantActiveLink === "Job Applications" ? "bg-green-600 text-white" : "hover:bg-[#D7F1E0] text-gray-700 transition-colors duration-200 ease-in"}`}>
+                    <Link className="flex gap-3 items-center md:gap-5 py-2.25 px-2.5" to="/applicant/jobApplications" >
                         <span className="rounded-xl p-1.5 bg-[#EBF9F0] text-green-700">
                             <FaList />
                         </span>
@@ -72,8 +72,8 @@ export default function ApplicantSideBar() {
                     </Link>
                 </div>
 
-                <div onClick={() => setApplicantActiveLink("Account Settings")} className={`mb-2 cursor-pointer rounded-xl py-2.25 px-2.5 ${applicantActiveLink === "Account Settings" ? "bg-green-600 text-white" : "hover:bg-[#D7F1E0] text-gray-700 transition-colors duration-200 ease-in"}`}>
-                    <Link className="flex gap-3 items-center md:gap-5" to="/applicant/settings" >
+                <div onClick={() => setApplicantActiveLink("Account Settings")} className={`mb-2 cursor-pointer rounded-xl ${applicantActiveLink === "Account Settings" ? "bg-green-600 text-white" : "hover:bg-[#D7F1E0] text-gray-700 transition-colors duration-200 ease-in"}`}>
+                    <Link className="flex gap-3 items-center md:gap-5 py-2.25 px-2.5" to="/applicant/settings" >
                         <span className="rounded-xl p-1.5 bg-[#EBF9F0] text-green-700">
                             <VscGear size={20} />
                         </span>
