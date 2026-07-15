@@ -260,7 +260,9 @@ export default function MyProfile() {
         getEducation();
     }, [refreshEducation]);
 
-    
+    useEffect(() => {
+        setApplicantActiveLink("My Profile")
+    }, [])    
 
     if (loading) {
         return <Loading />
@@ -529,7 +531,8 @@ export default function MyProfile() {
                                                             setResumeMenuID(item.resumeID);
                                                             setShowResumeMenu(prev => resumeMenuID === item.resumeID ? !prev : true);
                                                         }} 
-                                                        size={20} 
+                                                        size={20}
+                                                        className="cursor-pointer" 
                                                     />
                                                     
                                                     {

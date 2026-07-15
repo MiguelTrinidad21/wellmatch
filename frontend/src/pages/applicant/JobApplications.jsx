@@ -7,6 +7,7 @@ import PrimaryButton from "../../components/buttons/PrimaryButton";
 import DeleteItemBox from "../../components/popUps/DeleteItemBox"
 import ConfirmationBox from "../../components/popUps/ConfirmationBox"
 import { userStore } from "../../zustand/userState";
+import { sideBarStore } from "../../zustand/stateHandlers";
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
@@ -25,6 +26,7 @@ export default function JobApplications() {
     const ReactPaginate = ReactPaginateModule.default || ReactPaginateModule;
     const navigate = useNavigate();
     const { currentUser } = userStore();
+    const { setApplicantActiveLink } = sideBarStore();
 
     const [verified, setVerified] = useState(false);
     const [loading, setLoading] = useState(true);
@@ -104,6 +106,10 @@ export default function JobApplications() {
         getApplications();
 
     }, [status, updated])
+
+    useEffect(() => {
+        setApplicantActiveLink("Job Applications")
+    }, [])
 
     function handlePageClick(event) {
         const selectedPage = event.selected + 1;
@@ -260,8 +266,8 @@ export default function JobApplications() {
                     {
                         jobs?.length === 0 ?
                             <section className="w-full mt-20 flex flex-col items-center gap-3 text-gray-500">
-                                <TbBriefcaseOff size={45} />
-                                <p className="text-sm font-medium text-center">There are no current job applications in this section</p>                                
+                                <TbBriefcaseOff className="xl:h-15 xl:w-15" size={45} />
+                                <p className="text-sm xl:text-[16px] font-medium text-center">There are no current job applications in this section</p>                                
                             </section>
                         :
                             <section className="w-full flex flex-col gap-3 mt-10">

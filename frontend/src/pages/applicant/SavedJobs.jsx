@@ -7,6 +7,7 @@ import DeleteItemBox from "../../components/popUps/DeleteItemBox"
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { userStore } from "../../zustand/userState";
+import { sideBarStore } from "../../zustand/stateHandlers";
 import { FaBuilding } from "react-icons/fa";
 import { FaLocationDot } from "react-icons/fa6";
 import { HiOutlineBookmarkSlash } from "react-icons/hi2";
@@ -15,6 +16,7 @@ import axios from "axios";
 export default function SavedJobs() {
     const navigate = useNavigate();
     const { currentUser } = userStore();
+    const { setApplicantActiveLink } = sideBarStore();
 
     const [verified, setVerified] = useState(false);
     const [loading, setLoading] = useState(true);
@@ -68,6 +70,10 @@ export default function SavedJobs() {
             navigate("/forbidden");
         }
     }, [loading, verified, navigate]);
+
+    useEffect(() => {
+        setApplicantActiveLink("Saved Jobs")
+    }, [])
 
     async function unsaveJob(jobID) {
         try {

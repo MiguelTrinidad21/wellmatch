@@ -115,7 +115,7 @@ const ResumeViewerModal = ({ resumeID, onClose, user }) => {
                     </h2>
                     <button
                         onClick={onClose}
-                        className=" hover:text-red-500 absolute right-3 top-3"
+                        className="cursor-pointer absolute right-3 top-3"
                     >
                         <IoClose size={25} />
                     </button>
@@ -168,7 +168,7 @@ const ResumeViewerModal = ({ resumeID, onClose, user }) => {
                         <a
                             href={fileUrl}
                             download={origFileName}
-                            className="bg-green-500 text-white px-4 py-2 rounded-lg text-sm hover:bg-green-600 flex items-center gap-2 font-semibold"
+                            className="bg-green-500 text-white px-4 py-2 rounded-lg text-sm hover:bg-green-600 transition-colors duration-200 ease-in flex items-center gap-2 font-semibold"
                         >
                             <MdDownload />
                             Download

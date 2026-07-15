@@ -207,6 +207,10 @@ export default function RelatedJobs() {
         fetchSavedJobs();
     }, [isJobSaved])
 
+    useEffect(() => {
+        setApplicantActiveLink("Home")
+    },[])
+
     async function saveJob(jobID) {
         try {
             await axios.post("/api/applicant/saveJob", { jobID }, {
