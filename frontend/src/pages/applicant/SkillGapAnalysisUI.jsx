@@ -1,6 +1,6 @@
 import AuthNavBar from "../../components/navBars/AuthNavBar";
-import Overlay from "../../components/overlay/OverlayMobile";
-import Footer from "../../components/others/Footer"
+import SideBarOverlay from "../../components/overlay/SideBarOverlay";
+import ApplicantSideBar from "../../components/navBars/ApplicantSideBar";
 import SkillGapLoader from "../../components/others/SkillGapLoader";
 import MatchScore from "../../components/others/MatchScore";
 import PrimaryButton from "../../components/buttons/PrimaryButton";
@@ -170,16 +170,18 @@ export default function SkillGapAnalysisUI() {
     if (!selectedJob || !skillGapAnalysis) {
         return (
             <div className="w-full min-h-screen flex items-center justify-center bg-[#F3F4F6]">
-                <p className="text-gray-500 text-sm">Something went wrong. Please refresh and try again.</p>
+                <p className="text-gray-600 text-sm">Something went wrong. Please refresh and try again.</p>
             </div>
         );
     }
 
     return (
-        <>
+        <div className="lg:flex relative w-full">
+            <ApplicantSideBar />
+            <SideBarOverlay />
+
             <div className="w-full min-h-screen bg-[#F3F4F6] relative">
                 <AuthNavBar />
-                <Overlay />
 
                 {showResumeViewer &&
                     <>
@@ -204,11 +206,11 @@ export default function SkillGapAnalysisUI() {
                     />     
                 }    
 
-                <div className="w-full min-h-[calc(100vh-64px)] p-6 md:p-15">                    
-                    <div className="w-full grid grid-cols-1 gap-4 md:grid-cols-2 md:items-start">
+                <div className="w-full min-h-[calc(100vh-64px)] p-6 md:p-15 lg:p-10 xl:px-30">                    
+                    <div className="w-full grid grid-cols-1 gap-4 md:grid-cols-2 md:items-start xl:flex">
 
-                        <div ref={leftColRef} className="w-full flex flex-col gap-4">
-                            <section className="rounded-2xl shadow-md bg-white p-4">
+                        <div ref={leftColRef} className="w-full flex flex-col gap-4 xl:w-100">
+                            <section className="rounded-2xl shadow-sm bg-white p-4 border-2 border-[#E8ECEF]">
                                 <div className="flex gap-2 mb-4">
                                     <div className="w-19 h-19 shrink-0">
                                         <img className="w-full h-full rounded-full object-cover" src={`${currentUser.profilePhoto ? currentUser.profilePhoto : defaultProfile}`} alt="" />
@@ -236,12 +238,12 @@ export default function SkillGapAnalysisUI() {
                                         <p className="text-center text-white font-semibold mt-3">{skillGapAnalysis.scoresBreakdown.interpretation}</p>
                                     </div>
 
-                                    <PrimaryButton onClick={() => setShowResumeViewer(true)} className="w-65" >View Resume</PrimaryButton>
+                                    <PrimaryButton onClick={() => setShowResumeViewer(true)} className="w-65 hover:bg-green-600 transition-colors duration-200 ease-in" >View Resume</PrimaryButton>
                                 </div>
 
                             </section>
 
-                            <section className="rounded-2xl shadow-md bg-white p-4 w-full">
+                            <section className="rounded-2xl shadow-sm bg-white p-4 w-full border-2 border-[#E8ECEF]">
                                 <h1 className="font-bold text-lg">Job Requirements</h1>
 
                                 <h2 className="font-semibold">Required</h2>
@@ -266,14 +268,14 @@ export default function SkillGapAnalysisUI() {
                             </section>
                         </div>
 
-                        <div style={leftColHeight ? { maxHeight: `${leftColHeight}px` } : undefined} className="w-full flex flex-col gap-4 md:overflow-y-auto md:pr-1">
-                            <section className="rounded-2xl shadow-md bg-white p-4 w-full">
-                                <p className="text-sm text-gray-500 font-medium">APPLYING FOR</p>
-                                <p className="font-bold text-lg ">{selectedJob.jobTitle}</p>
+                        <div style={leftColHeight ? { maxHeight: `${leftColHeight}px` } : undefined} className="w-full flex flex-col gap-4 md:overflow-y-auto md:pr-1 xl:flex-1">
+                            <section className="rounded-2xl shadow-sm bg-white p-4 w-full border-2 border-[#E8ECEF]">
+                                <p className="text-sm text-gray-600 font-semibold">APPLYING FOR</p>
+                                <p className="font-bold text-lg xl:text-xl">{selectedJob.jobTitle}</p>
                             </section>
 
-                            <section className="rounded-2xl shadow-md bg-white p-4 w-full">
-                                <p className="text-sm text-gray-500 mb-3 font-medium">SCORES BREAKDOWN</p>
+                            <section className="rounded-2xl shadow-sm bg-white p-4 w-full border-2 border-[#E8ECEF]">
+                                <p className="text-sm text-gray-600 mb-3 font-semibold">SCORES BREAKDOWN</p>
                                 <div className={`bg-[#F4F1F8] rounded-xl grid ${selectedJob.preferredQualifications ? "grid-cols-2" : "grid-cols-1"} p-4`}>
                                     <div className="text-center">
                                         <MatchScore 
@@ -299,8 +301,8 @@ export default function SkillGapAnalysisUI() {
                                 </div>
                             </section>
 
-                            <section className="w-full grid grid-cols-1 gap-4">
-                                <div className="p-4 rounded-2xl shadow-md bg-white border-l-4 border-l-green-600">
+                            <section className="w-full grid grid-cols-1 gap-4 border-2 border-[#E8ECEF]">
+                                <div className="p-4 rounded-2xl shadow-sm bg-white border-l-4 border-l-green-600">
                                     <div className="flex gap-2 items-center mb-2">
                                         <div className="w-3 h-3 bg-green-600 inline-block rounded-full"></div>
                                         <h1 className="font-bold text-lg">Matched Skills</h1>
@@ -313,12 +315,12 @@ export default function SkillGapAnalysisUI() {
                                                     skillGapAnalysis.matchedSkills?.filter((skill) => skill.skillType === "core").length >= 1 &&
                                                     <>
                                                         <h2 className="text-[12px] font-bold mb-1 text-green-700">REQUIRED SKILLS</h2>
-                                                        <div className="w-full flex flex-col gap-1 mb-4 ">
+                                                        <div className="w-full flex flex-col gap-1 mb-4 xl:flex-row xl:gap-3 xl:flex-wrap xl:mb-10 ">
                                                             {skillGapAnalysis.matchedSkills
                                                                 ?.filter((skill) => skill.skillType === "core")
                                                                 .map((skill, index) => (
                                                                     <div
-                                                                        className="relative bg-[#F0FDF4] p-2 pl-4 rounded-md flex items-center gap-2 active:scale-[0.98] transition-transform duration-200 ease-in"
+                                                                        className="relative bg-[#F0FDF4] p-2 pl-4 rounded-md flex items-center gap-2 active:scale-[0.98] transition-transform duration-200 ease-in cursor-pointer"
                                                                         key={`matched-core-${index}`} 
                                                                         onClick={() => {
                                                                              setActiveMatchEvidenceIndex(
@@ -347,13 +349,13 @@ export default function SkillGapAnalysisUI() {
                                                     skillGapAnalysis.matchedSkills?.filter((skill) => skill.skillType === "secondary").length >= 1 &&
                                                     <>
                                                         <h2 className="text-[12px] font-bold mb-1 text-green-700">PREFERRED SKILLS</h2>
-                                                        <div className="w-full flex flex-col gap-1 mb-4 ">
+                                                        <div className="w-full flex flex-col gap-1 mb-4 xl:flex-row xl:gap-3 xl:flex-wrap xl:mb-10">
                                                             {skillGapAnalysis.matchedSkills
                                                                 ?.filter((skill) => skill.skillType === "secondary")
                                                                 .map((skill, index) => (
                                                                     <div 
                                                                         key={`matched-second-${index}`}
-                                                                        className="relative bg-[#F0FDF4] p-2 pl-4 rounded-md flex items-center gap-2 active:scale-[0.98] transition-transform duration-200 ease-in"
+                                                                        className="relative bg-[#F0FDF4] p-2 pl-4 rounded-md flex items-center gap-2 active:scale-[0.98] transition-transform duration-200 ease-in cursor-pointer"
                                                                         onClick={() => {
                                                                             setActiveMatchEvidenceIndex(
                                                                                 activeMatchEvidenceIndex === `matched-core-${index}` ? null : `matched-core-${index}`
@@ -381,10 +383,10 @@ export default function SkillGapAnalysisUI() {
                                         :
                                             <p>No matched skills</p>
                                     }
-                                    <p className="text-[12px] text-gray-400 italic">Click/tap badge for job requirement evidence</p>
+                                    <p className="text-[12px] text-gray-500 italic xl:text-sm">Click/tap badge for job requirement evidence</p>
                                 </div>
 
-                                <div className="p-4 rounded-2xl shadow-md bg-white border-l-4 border-l-red-600">
+                                <div className="p-4 rounded-2xl shadow-sm bg-white border-l-4 border-l-red-600">
                                     <div className="flex gap-2 items-center mb-2">
                                         <div className="w-3 h-3 bg-red-600 inline-block rounded-full"></div>
                                         <h1 className="font-bold text-lg">Skill Gaps</h1>
@@ -397,13 +399,13 @@ export default function SkillGapAnalysisUI() {
                                                 skillGapAnalysis.missingSkills?.filter((skill) => skill.skillType === "core").length >= 1 &&
                                                 <>
                                                     <h2 className="text-[12px] font-bold mb-1 text-red-600">CORE GAPS - HIGH PRIORITY</h2>
-                                                    <div className=" w-full flex flex-col gap-1 mb-4 ">
+                                                    <div className=" w-full flex flex-col gap-1 mb-4 xl:flex-row xl:gap-3 xl:flex-wrap xl:mb-10">
                                                         {skillGapAnalysis.missingSkills
                                                             ?.filter((skill) => skill.skillType === "core")
                                                             ?.map((skill, index) => (
                                                                 <div 
                                                                     key={`missing-core-${index}`} 
-                                                                    className="relative bg-[#FFF1F2] p-2 pl-4 rounded-md flex items-center gap-2 active:scale-[0.98] transition-transform duration-200 ease-in"
+                                                                    className="relative bg-[#FFF1F2] p-2 pl-4 rounded-md flex items-center gap-2 active:scale-[0.98] transition-transform duration-200 ease-in cursor-pointer"
                                                                     onClick={() => {
                                                                         setActiveMissingEvidenceIndex(
                                                                             activeMissingEvidenceIndex === `missing-core-${index}` ? null : `missing-core-${index}`
@@ -430,13 +432,13 @@ export default function SkillGapAnalysisUI() {
                                                 skillGapAnalysis.missingSkills?.filter((skill) => skill.skillType === "secondary").length >= 1 &&
                                                 <>
                                                     <h2 className="text-[12px] font-bold mb-1 text-[#92400E]">SECONDARY - OPTIONAL</h2>
-                                                    <div className="w-full flex flex-col gap-1 mb-4 ">
+                                                    <div className="w-full flex flex-col gap-1 mb-4 xl:flex-row xl:gap-3 xl:flex-wrap xl:mb-10">
                                                         {skillGapAnalysis.missingSkills
                                                             ?.filter((skill) => skill.skillType === "secondary")
                                                             ?.map((skill, index) => (
                                                                 <div 
                                                                     key={`missing-second-${index}`} 
-                                                                    className="relative bg-[#FFFBEB] p-2 pl-4 rounded-md flex items-center gap-2 active:scale-[0.97] transition-transform duration-200 ease-in"
+                                                                    className="relative bg-[#FFFBEB] p-2 pl-4 rounded-md flex items-center gap-2 active:scale-[0.97] transition-transform duration-200 ease-in cursor-pointer"
                                                                     onClick={() => {
                                                                         setActiveMissingEvidenceIndex(
                                                                             activeMissingEvidenceIndex === `missing-core-${index}` ? null : `missing-core-${index}`
@@ -463,25 +465,28 @@ export default function SkillGapAnalysisUI() {
                                     :
                                         <p>No skill gaps detected</p>
                                     }
-                                    <p className="text-[12px] text-gray-400 italic">Click/tap badge for job requirement evidence</p>
+                                    <p className="text-[12px] text-gray-500 italic xl:text-sm">Click/tap badge for job requirement evidence</p>
                                 </div>
 
 
                             </section>
 
-                            <section className="rounded-2xl shadow-md bg-white p-4 w-full">
+                            <section className="rounded-2xl shadow-sm bg-white p-4 w-full border-2 border-[#E8ECEF]">
                                 <h1 className="text-lg font-bold mb-3">How Your Score Was Reached</h1>
                                 <p className="text-sm text-justify mb-3 indent-5">{skillGapAnalysis.scoreExplanation}</p>
 
-                                <div className="w-full flex items-center gap-3 bg-[#F0FDF4] rounded-md text-green-600 p-2">
-                                    <GoInfo size={50} />
+                                <div className="w-full flex gap-3 bg-[#F0FDF4] rounded-md text-green-600 p-2">
+                                    <GoInfo className="h-10 w-10" />
                                     <p className="text-[12px] font-semibold">To ensure fairness, this evaluation considers only information explicitly stated in the resume.</p>
                                 </div>
                             </section>
 
-                            <hr className="my-2 h-0.5 bg-gray-200 border-none" />
+                            
 
-                            <h1 className="font-bold">UPSKILLING RECOMMENDATIONS</h1>
+                            <div className="mt-8 mb-5">
+                                <h1 className="font-semibold text-[20px] md:text-[22px] lg:text-[24px]">Recommended Learning Plan</h1>
+                                <p className="text-sm text-gray-500">Personalized recommendations to improve your match for this position.</p>
+                            </div>
                             {
                                 skillGapAnalysis.upskillingReco.map((reco, index) => {
                                     const isPriority = reco.label === "Priority";
@@ -489,20 +494,18 @@ export default function SkillGapAnalysisUI() {
                                     return (
                                         <section
                                             key={index}
-                                            className={`rounded-2xl shadow-md bg-white p-4 w-full border-l-4 ${
-                                                isPriority ? "border-l-[#BE123C]" : "border-l-[#92400E]"
-                                            }`}
+                                            className={`rounded-2xl shadow-sm bg-white p-4 w-full border border-[#E8ECEF] border-l-4 border-l-[#16C47F]`}
                                         >
                                             <div className="flex justify-between items-center mb-4 gap-3">
-                                                <h2 className="font-semibold text-[15px]">{reco.skillGap}</h2>
+                                                <h2 className="font-semibold text-[15px] xl:text-lg">{reco.skillGap}</h2>
                                                 <div
-                                                    className={`text-[11px] font-medium py-1 px-3 border-2 ${
+                                                    className={`text-[11px] xl:text-sm font-semibold py-1 px-3 border-2 ${
                                                         isPriority
-                                                            ? "bg-[#FFF1F2] text-[#BE123C] border-[#BE123C]"
-                                                            : "bg-[#FFFBEB] text-[#92400E] border-[#92400E]"
+                                                            ? "bg-[#DCFCE7] text-[#15803D] border-green-600"
+                                                            : "bg-[#F8FAFC] text-[#475569] border-blue-800"
                                                     } rounded-full`}
                                                 >
-                                                    {reco.label}
+                                                    {reco.label === "Priority" ? "Required" : "Recommended"}
                                                 </div>
                                             </div>
 
@@ -516,8 +519,8 @@ export default function SkillGapAnalysisUI() {
                                                         <div className="w-px flex-1 bg-gray-200 my-1"></div>
                                                     </div>
                                                     <div className="pb-4">
-                                                        <h3 className="text-blue-600 font-semibold text-[12px] uppercase tracking-wide mb-1">Learn</h3>
-                                                        <p className="text-[13px] text-gray-800">{reco.learn}</p>
+                                                        <h3 className="text-blue-600 font-semibold text-sm uppercase tracking-wide mb-1">Learn</h3>
+                                                        <p className="text-[14px] text-gray-800">{reco.learn}</p>
                                                     </div>
                                                 </div>
 
@@ -530,8 +533,8 @@ export default function SkillGapAnalysisUI() {
                                                         <div className="w-px flex-1 bg-gray-200 my-1"></div>
                                                     </div>
                                                     <div className="pb-4">
-                                                        <h3 className="text-amber-600 font-semibold text-[12px] uppercase tracking-wide mb-1">Practice</h3>
-                                                        <p className="text-[13px] text-gray-800">{reco.practice}</p>
+                                                        <h3 className="text-amber-600 font-semibold text-sm uppercase tracking-wide mb-1">Practice</h3>
+                                                        <p className="text-[14px] text-gray-800">{reco.practice}</p>
                                                     </div>
                                                 </div>
 
@@ -543,8 +546,8 @@ export default function SkillGapAnalysisUI() {
                                                         </div>
                                                     </div>
                                                     <div>
-                                                        <h3 className="text-green-600 font-semibold text-[12px] uppercase tracking-wide mb-1">Showcase</h3>
-                                                        <p className="text-[13px] text-gray-800">{reco.proof}</p>
+                                                        <h3 className="text-green-600 font-semibold text-sm uppercase tracking-wide mb-1">Showcase</h3>
+                                                        <p className="text-[14px] text-gray-800">{reco.proof}</p>
                                                     </div>
                                                 </div>
                                             </div>
@@ -558,7 +561,6 @@ export default function SkillGapAnalysisUI() {
                 </div>
             </div>
 
-            <Footer />
-        </>
+        </div>
     )
 }
