@@ -1,6 +1,7 @@
 import AuthNavBar from "../../components/navBars/AuthNavBar";
-import Overlay from "../../components/overlay/OverlayMobile";
-import Footer from "../../components/others/Footer"
+import SideBarOverlay from "../../components/overlay/SideBarOverlay";
+import Overlay from "../../components/overlay/OverlayMobile"
+import ApplicantSideBar from "../../components/navBars/ApplicantSideBar";
 import Loading from "../../components/others/Loading"
 import PrimaryButton from "../../components/buttons/PrimaryButton";
 import DeleteItemBox from "../../components/popUps/DeleteItemBox"
@@ -131,10 +132,12 @@ export default function JobApplications() {
     }
 
     return (
-        <>
-            <div className="w-full min-h-screen bg-[#F3F4F6] relative">
+        <div className="lg:flex relative w-full">
+            <ApplicantSideBar />
+            <SideBarOverlay />
+
+            <div className="w-full min-h-screen bg-[#F3F4F6] relative min-w-0">
                 <AuthNavBar />
-                <Overlay />
 
                 {
                     showWarning &&
@@ -154,68 +157,67 @@ export default function JobApplications() {
                     />
                 }
 
-                <div className="fixed w-full">
-                    <div className="flex gap-4 items-center px-6 py-4 bg-white overflow-x-auto scrollbar-none border-b border-[#E4E2DA] md:px-15">
+                <div className="sticky top-16 md:top-18 lg:top-24 lg:mt-2 z-20 lg:w-max lg:m-auto lg:rounded-full lg:shadow-lg">
+                    <div className="flex gap-4  items-center px-6 py-4 bg-[#ECEFF3] overflow-x-auto scrollbar-none border-b border-gray-200 md:px-15 lg:px-5 lg:w-full lg:rounded-full lg:gap-2 xl:gap-4">
                         <PrimaryButton 
                             onClick={() => setStatus("submitted")} 
-                            className={status === "submitted" ? "bg-[#10B981] px-4 border border-transparent transition-colors duration-200 ease-in" : "border border-[#E4E2DA] px-4 bg-[#F5F5F0]! text-[#666666]!"}
+                            className={status === "submitted" ? "bg-[#10B981] px-4 border border-transparent transition-colors duration-200 ease-in" : "border border-[#E4E2DA] px-4 bg-white! text-[#666666]!"}
                         >
-                            <span className="flex gap-2 items-center justify-center">
-                                <FaPaperPlane size={20} />
+                            <span className="flex gap-2 items-center justify-center lg:text-sm xl:text-[1rem]">
+                                <FaPaperPlane className="lg:h-4 lg:w-4 xl:w-5 xl:h-5" size={20} />
                                 Submitted
                             </span>
                         </PrimaryButton>
 
                         <PrimaryButton 
                             onClick={() => setStatus("shortlisted")}    
-                            className={status === "shortlisted" ? "bg-[#10B981] px-4 border border-transparent transition-colors duration-200 ease-in" : "border border-[#E4E2DA] px-4 bg-[#F5F5F0]! text-[#666666]!"}
+                            className={status === "shortlisted" ? "bg-[#10B981] px-4 border border-transparent transition-colors duration-200 ease-in" : "border border-[#E4E2DA] px-4 bg-white! text-[#666666]!"}
                         >
-                            <span className="flex gap-2 items-center justify-center">
-                                <FaListCheck size={20} />
+                            <span className="flex gap-2 items-center justify-center lg:text-sm xl:text-[1rem]">
+                                <FaListCheck className="lg:h-4 lg:w-4 xl:w-5 xl:h-5" size={20} />
                                 Shortlisted
                             </span>
                         </PrimaryButton>
                         
                         <PrimaryButton 
                             onClick={() => setStatus("interview")}    
-                            className={status === "interview" ? "bg-[#10B981] px-4 border border-transparent transition-colors duration-200 ease-in" : "border border-[#E4E2DA] px-4 bg-[#F5F5F0]! text-[#666666]!"}
+                            className={status === "interview" ? "bg-[#10B981] px-4 border border-transparent transition-colors duration-200 ease-in" : "border border-[#E4E2DA] px-4 bg-white! text-[#666666]!"}
                         >
-                            <span className="flex gap-2 items-center justify-center">
-                                <HiMiniVideoCamera size={20} />
+                            <span className="flex gap-2 items-center justify-center lg:text-sm xl:text-[1rem]">
+                                <HiMiniVideoCamera className="lg:h-4 lg:w-4 xl:w-5 xl:h-5" size={20} />
                                 Interview
                             </span>
                         </PrimaryButton>
                         
                         <PrimaryButton 
                             onClick={() => setStatus("hired")}
-                            className={status === "hired" ? "bg-[#10B981] px-4 border border-transparent transition-colors duration-200 ease-in" : "border border-[#E4E2DA] px-4 bg-[#F5F5F0]! text-[#666666]!"}
+                            className={status === "hired" ? "bg-[#10B981] px-4 border border-transparent transition-colors duration-200 ease-in" : "border border-[#E4E2DA] px-4 bg-white! text-[#666666]!"}
                         >
-                            <span className="flex gap-2 items-center justify-center">
-                                <HiOutlineBriefcase size={20} />
+                            <span className="flex gap-2 items-center justify-center lg:text-sm xl:text-[1rem]">
+                                <HiOutlineBriefcase className="lg:h-4 lg:w-4 xl:w-5 xl:h-5" size={20} />
                                 Job&nbsp;Offers
                             </span>
                         </PrimaryButton>
                         
                         <PrimaryButton 
                             onClick={() => setStatus("not selected")}
-                            className={status === "not selected" ? "bg-[#10B981] px-4 border border-transparent transition-colors duration-200 ease-in" : "border border-[#E4E2DA] px-4 bg-[#F5F5F0]! text-[#666666]!"}
+                            className={status === "not selected" ? "bg-[#10B981] px-4 border border-transparent transition-colors duration-200 ease-in" : "border border-[#E4E2DA] px-4 bg-white! text-[#666666]!"}
                         >
-                            <span className="flex flex-row gap-2 items-center justify-center">
-                                <IoMdCloseCircleOutline size={20} />
+                            <span className="flex flex-row gap-2 items-center justify-center lg:text-sm xl:text-[1rem]">
+                                <IoMdCloseCircleOutline className="lg:h-4 lg:w-4 xl:w-5 xl:h-5" size={20} />
                                 Not&nbsp;selected
                             </span>
                         </PrimaryButton>
                         
                     </div>
 
-                    <div className="pointer-events-none absolute left-0 top-0 h-full w-7 bg-linear-to-r from-[#F3F4F6] to-transparent md:w-20" />
+                    <div className="lg:hidden pointer-events-none absolute left-0 top-0 h-full w-7 bg-linear-to-r from-[#F3F4F6] to-transparent md:w-20" />
 
-                    <div className="pointer-events-none absolute right-0 top-0 h-full w-7 bg-linear-to-l from-white to-transparent md:w-20" />                    
+                    <div className="lg:hidden pointer-events-none absolute right-0 top-0 h-full w-7 bg-linear-to-l from-white to-transparent md:w-20" />                    
 
                 </div>
-                <Overlay />
 
-                <div className="w-full p-6 md:p-15">
+                <div className="w-full p-6 md:p-15 xl:px-30">
                     <section className="w-full text-center mb-5">
                         {
                             status === "submitted" &&
@@ -250,6 +252,7 @@ export default function JobApplications() {
                             <>
                                 <h1 className="text-[22px] font-bold mb-3">Closed Applications</h1>
                                 <p className="font-medium text-gray-700">View applications that were not successful and continue exploring new opportunities on WellMatch.</p>
+                                
                             </>
                         }
                     </section>
@@ -286,7 +289,7 @@ export default function JobApplications() {
                                                     <>
                                                         <p className="text-gray-500 mb-2 text-sm flex items-center gap-2"><GrLocation size={18} />{item.location}</p>
                                                         <p className="text-gray-500 mb-2 text-sm flex items-center gap-2"><FiBriefcase size={18} />{item.workType}</p>
-                                                        {/* <p className="text-gray-500 mb-10 text-sm flex items-center gap-2"><FiCalendar size={18} />{`Hired on ${new Date(item.dateHired).toLocaleDateString('en-US', dateFormat)}`}</p> */}
+                                                        
                                                     </>
                                                 :
                                                     <>
@@ -321,7 +324,7 @@ export default function JobApplications() {
                                                 {
                                                     status === "hired" ? 
                                                         <>
-                                                            {/* <th className="whitespace-nowrap px-6 py-4 text-center font-bold text-black">Date Hired</th> */}
+                                                           
                                                             <th className="whitespace-nowrap px-6 py-4 text-center font-bold text-black">Work Type</th>
                                                             <th className="whitespace-nowrap px-6 py-4 text-center font-bold text-black">Skill Gap Analysis</th>
                                                         </>
@@ -343,15 +346,15 @@ export default function JobApplications() {
                                         <tbody>
                                             {
                                                 jobs?.map((item) => (
-                                                    <tr key={item.applicationID} className="border-t border-gray-200 text-sm">
+                                                    <tr key={item.applicationID} className="border-t-2 border-gray-200 text-sm">
                                                         <td className="px-6 py-5 text-center w-48 max-w-48 wrap-break-word font-semibold">{item.jobTitle}</td>
                                                         <td className="whitespace-nowrap px-6 py-5 text-center">{item.companyName}</td>
                                                         {
                                                             status === "hired" ?
                                                                 <>
-                                                                    {/* <td className="whitespace-nowrap px-6 py-5 text-center">{new Date(item.dateHired).toLocaleDateString('en-US', dateFormat)}</td> */}
+                                                                    
                                                                     <td className="whitespace-nowrap px-6 py-5 text-center">{item.workType}</td>
-                                                                    <td className="whitespace-nowrap px-6 py-5 text-center"><PrimaryButton to={`/applicant/viewJob/${item.jobID}/${item.resumeID}/skillGapReport`} className="rounded-md m-auto text-sm text-black! bg-green-300">See Report</PrimaryButton></td>
+                                                                    <td className="whitespace-nowrap px-6 py-5 text-center"><PrimaryButton to={`/applicant/viewJob/${item.jobID}/${item.resumeID}/skillGapReport`} className="rounded-md w-fit m-auto text-sm text-black! bg-green-300">See Report</PrimaryButton></td>
                                                                 </>
                                                             :
                                                                 <>
@@ -361,10 +364,10 @@ export default function JobApplications() {
                                                                         :
                                                                             <td className="whitespace-nowrap px-6 py-5 text-center">Pending analysis</td>
                                                                     }
-                                                                    <td className="whitespace-nowrap px-6 py-5 text-center"><PrimaryButton to={`/applicant/viewJob/${item.jobID}/${item.resumeID}/skillGapReport`} className="rounded-md m-auto text-sm text-black! bg-green-300">See Report</PrimaryButton></td>
+                                                                    <td className="whitespace-nowrap px-6 py-5 text-center"><PrimaryButton to={`/applicant/viewJob/${item.jobID}/${item.resumeID}/skillGapReport`} className="rounded-md w-fit m-auto text-sm text-black! bg-green-300">See Report</PrimaryButton></td>
                                                                     {
                                                                         status === "not selected" ?
-                                                                            <td className="whitespace-nowrap px-6 py-5 text-center"><PrimaryButton to={`/applicant/viewJob/${item.jobID}`} className="rounded-md m-auto text-sm px-6 text-black! bg-green-300">View</PrimaryButton></td>
+                                                                            <td className="whitespace-nowrap px-6 py-5 text-center"><PrimaryButton to={`/applicant/viewJob/${item.jobID}`} className="rounded-md w-fit m-auto text-sm px-6 text-black! bg-green-300">View</PrimaryButton></td>
                                                                         :
                                                                             <td className="whitespace-nowrap px-6 py-5 text-center">
                                                                                 <PrimaryButton 
@@ -413,7 +416,7 @@ export default function JobApplications() {
                 </div>
 
             </div>
-            <Footer />
-        </>
+
+        </div>
     )
 }

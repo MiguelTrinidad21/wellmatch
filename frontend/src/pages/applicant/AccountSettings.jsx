@@ -1,6 +1,6 @@
 import AuthNavBar from "../../components/navBars/AuthNavBar";
-import Overlay from "../../components/overlay/OverlayMobile";
-import Footer from "../../components/others/Footer"
+import SideBarOverlay from "../../components/overlay/SideBarOverlay";
+import ApplicantSideBar from "../../components/navBars/ApplicantSideBar";
 import Loading from "../../components/others/Loading"
 import PrimaryButton from "../../components/buttons/PrimaryButton";
 import ConfirmatonBox from "../../components/popUps/ConfirmationBox"
@@ -78,10 +78,12 @@ export default function AccountSettings() {
     }
 
     return (
-        <>
+        <div className="lg:flex relative w-full">
+            <ApplicantSideBar />
+            <SideBarOverlay />
+
             <div className="w-full min-h-screen bg-[#F3F4F6] relative">
                 <AuthNavBar />
-                <Overlay />
 
                 {
                     openChangeEmail &&
@@ -161,7 +163,6 @@ export default function AccountSettings() {
                 </div>
             </div>
 
-            <Footer />
-        </>
+        </div>
     )
 }
