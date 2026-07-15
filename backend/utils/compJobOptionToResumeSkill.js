@@ -11,10 +11,13 @@ export default function compareJobOptionToResumeSkill(jobOption, resumeSkill) {
         resumeSkill.evidenceEmbedding
     );
 
+    const cleanedResumeSkill = resumeSkill.skillName.trim().toLowerCase()
+    const cleanedResumeEvidence = resumeSkill.evidence.trim().toLowerCase()
+
     return {
         resumeSkillName: resumeSkill.skillName,
         resumeEvidence: resumeSkill.evidence,
         skillSimilarity,
-        evidenceSimilarity
+        evidenceSimilarity: cleanedResumeSkill === cleanedResumeEvidence ? 0.52 : evidenceSimilarity
     };
 }

@@ -7,7 +7,8 @@ export default function ConfirmationDialog({
     toggleFunction, 
     confirmFunction,
     bodyText,
-    buttonText = "Yes"
+    buttonText = "Yes",
+    isLoading
  }) {
     return (
         <>
@@ -19,15 +20,14 @@ export default function ConfirmationDialog({
                 {/* {error && <p className="text-sm text-red-600">{error}</p>} */}
 
                 <div className="w-full flex justify-end gap-3">
-                    <PrimaryButton onClick={toggleFunction} className={` bg-[#F9FAFB] font-bold text-black!`}>Cancel</PrimaryButton>
-                    <PrimaryButton className="px-6" onClick={confirmFunction}>
-                        {buttonText}
-                        {/* {isLoading ? 
+                    <PrimaryButton disabled={isLoading} onClick={toggleFunction} className={` bg-[#F9FAFB] font-bold text-black! ${isLoading ? "opacity-50 cursor-not-allowed" : undefined}`}>Cancel</PrimaryButton>
+                    <PrimaryButton disabled={isLoading} className={`${isLoading ? "opacity-50 cursor-not-allowed" : undefined} px-6`} onClick={confirmFunction}>                        
+                        {isLoading ? 
                             <span className="flex items-center gap-2">
                                 <BiLoaderAlt className="animate-spin text-white" size={20} />
-                                Delete
+                                {buttonText}
                             </span>
-                        : "Delete"} */}
+                        : buttonText}
                     </PrimaryButton>
                 </div>
             </div>

@@ -26,7 +26,7 @@ export default function ApplicantSideMenu({ status }) {
             })
             toggleSideBar()
             logoutUser();
-            setApplicantActiveLink("home")
+            setApplicantActiveLink("Home")
             navigate("/applicant/login");
 
         } catch (error) {
@@ -34,9 +34,6 @@ export default function ApplicantSideMenu({ status }) {
         }
     }
 
-    // useEffect(() => {
-    //     setApplicantActiveLink("home")
-    // }, [])
 
     return (
         <>
@@ -55,7 +52,7 @@ export default function ApplicantSideMenu({ status }) {
                     <div className="font-bold text-center text-xl mb-3">{currentUser.firstName}&nbsp;{currentUser.lastName}</div>
                     <hr className="h-px bg-gray-300 border-none mb-3"/>
 
-                    <div onClick={() => setApplicantActiveLink("home")} className={`mb-2 rounded-xl py-2.25 px-2.5 ${applicantActiveLink === "home" ? "bg-[#D7F1E0]" : "hover:bg-[#D7F1E0] transition-colors duration-200 ease-in"}`}>
+                    <div onClick={() => setApplicantActiveLink("Home")} className={`mb-2 rounded-xl py-2.25 px-2.5 ${applicantActiveLink === "home" ? "bg-[#D7F1E0]" : "hover:bg-[#D7F1E0] transition-colors duration-200 ease-in"}`}>
                         <Link className="flex gap-3 items-center md:gap-5 " to="/applicant/home" onClick={toggleSideBar}>
                             <span className={`rounded-xl p-1.5 ${applicantActiveLink === "home" ? "bg-[#109D5C] text-white" : "text-green-700 bg-[#EBF9F0]"}`}>
                                 <MdOutlineHome size={25} />
@@ -65,7 +62,7 @@ export default function ApplicantSideMenu({ status }) {
                         </Link>
                     </div>
 
-                    <div onClick={() => setApplicantActiveLink("profile")} className={`mb-2 rounded-xl py-2.25 px-2.5 ${applicantActiveLink === "profile" ? "bg-[#D7F1E0]" : "hover:bg-[#D7F1E0] transition-colors duration-100 ease-in"}`}>
+                    <div onClick={() => setApplicantActiveLink("My Profile")} className={`mb-2 rounded-xl py-2.25 px-2.5 ${applicantActiveLink === "profile" ? "bg-[#D7F1E0]" : "hover:bg-[#D7F1E0] transition-colors duration-100 ease-in"}`}>
                         <Link className="flex gap-3 items-center md:gap-5" to="/applicant/myProfile" onClick={toggleSideBar}>
                             <span className={`rounded-xl p-1.5 ${applicantActiveLink === "profile" ? "bg-[#109D5C] text-white" : "text-green-700 bg-[#EBF9F0]"}`}>
                                 <RxAvatar size={22} />
@@ -75,7 +72,7 @@ export default function ApplicantSideMenu({ status }) {
                         </Link>
                     </div>
 
-                    <div onClick={() => setApplicantActiveLink("saved")} className={`mb-2 rounded-xl py-2.25 px-2.5 ${applicantActiveLink === "saved" ? "bg-[#D7F1E0]" : "hover:bg-[#D7F1E0] transition-colors duration-100 ease-in"}`}>
+                    <div onClick={() => setApplicantActiveLink("Saved Jobs")} className={`mb-2 rounded-xl py-2.25 px-2.5 ${applicantActiveLink === "saved" ? "bg-[#D7F1E0]" : "hover:bg-[#D7F1E0] transition-colors duration-100 ease-in"}`}>
                         <Link className="flex gap-3 items-center md:gap-5" to="/applicant/savedJobs" onClick={toggleSideBar}>
                             <span className={`rounded-xl p-2 ${applicantActiveLink === "saved" ? "bg-[#109D5C] text-white" : "text-green-700 bg-[#EBF9F0]"}`}>
                                 <FaBookmark />
@@ -85,7 +82,7 @@ export default function ApplicantSideMenu({ status }) {
                         </Link>
                     </div>
 
-                    <div onClick={() => setApplicantActiveLink("applications")} className={`mb-2 rounded-xl py-2.25 px-2.5 ${applicantActiveLink === "applications" ? "bg-[#D7F1E0]" : "hover:bg-[#D7F1E0] transition-colors duration-100 ease-in"}`}>
+                    <div onClick={() => setApplicantActiveLink("Job Applications")} className={`mb-2 rounded-xl py-2.25 px-2.5 ${applicantActiveLink === "applications" ? "bg-[#D7F1E0]" : "hover:bg-[#D7F1E0] transition-colors duration-100 ease-in"}`}>
                         <Link className="flex gap-3 items-center md:gap-5" to="/applicant/jobApplications" onClick={toggleSideBar}>
                             <span className={`rounded-xl p-2 ${applicantActiveLink === "applications" ? "bg-[#109D5C] text-white" : "text-green-700 bg-[#EBF9F0]"}`}>
                                 <FaList />
@@ -95,7 +92,7 @@ export default function ApplicantSideMenu({ status }) {
                         </Link>
                     </div>
 
-                    <div onClick={() => setApplicantActiveLink("settings")} className={`rounded-xl py-2.25 px-2.5 ${applicantActiveLink === "settings" ? "bg-[#D7F1E0]" : "hover:bg-[#D7F1E0] transition-colors duration-100 ease-in"}`}>
+                    <div onClick={() => setApplicantActiveLink("Account Settings")} className={`rounded-xl py-2.25 px-2.5 ${applicantActiveLink === "settings" ? "bg-[#D7F1E0]" : "hover:bg-[#D7F1E0] transition-colors duration-100 ease-in"}`}>
                         <Link className="flex gap-3 items-center md:gap-5" to="/applicant/settings" onClick={toggleSideBar}>
                             <span className={`rounded-xl p-2 ${applicantActiveLink === "settings" ? "bg-[#109D5C] text-white" : "text-green-700 bg-[#EBF9F0]"}`}>
                                 <VscGear size={20} />

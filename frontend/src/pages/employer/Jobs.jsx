@@ -4,6 +4,7 @@ import Loading from "../../components/others/Loading"
 import Footer from "../../components/others/Footer"
 import WarningBox from "../../components/popUps/WarningBox";
 import Translucent from "../../components/overlay/Translucent";
+import ConfirmationDialog from "../../components/popUps/ConfirmationDialog";
 import { userStore } from "../../zustand/userState";
 import { sideBarStore } from "../../zustand/stateHandlers";
 import { useState, useEffect } from "react";
@@ -17,6 +18,8 @@ import { IoEllipsisVertical } from "react-icons/io5";
 import { AiOutlineEye } from "react-icons/ai";
 import { IoClose } from "react-icons/io5";
 import { MdEdit } from "react-icons/md";
+import { MdDelete } from "react-icons/md";
+import { FaCheck } from "react-icons/fa6";
 import PrimaryButton from "../../components/buttons/PrimaryButton";
 import SecondaryButton from "../../components/buttons/SecondaryButton"
 
@@ -32,11 +35,15 @@ export default function Jobs() {
 
     const [applicantList, setApplicantList] = useState([]);
 
-    const [isJobToClose, setIsJobToClose] = useState("");
+    const [isJobToClose, setIsJobToClose] = useState(false);
+    const [isJobToDelete, setIsJobToDelete] = useState(false)
+    const [isJobToOpen, setIsJobToOpen] = useState(false)
     const [isJobClosing, setIsJobClosing] = useState(false)
     const [closingError, setClosingError] = useState("");
-    const [jobHasClosed, setJobHasClosed] = useState(false);
+    const [jobHasChanged, setJobHasChanged] = useState(false);
     const [closingJobID, setClosingJobID] = useState(null);
+    const [deletingJobID, setDeletingJobID] = useState(null);
+    const [reOpenJobID, setReOpenJobID] = useState(null);
 
     const [showMenu, setShowMenu] = useState(false);
     const [menuID, setMenuID] = useState(null);
@@ -93,7 +100,7 @@ export default function Jobs() {
         }
 
         getJobs();
-    }, [jobStatus, jobHasClosed])
+    }, [jobStatus, jobHasChanged])
 
     function formatDate(dateString) {
         return new Date(dateString).toLocaleString("en-PH", {
@@ -114,6 +121,23 @@ export default function Jobs() {
         setShowMenu(false);
     }
 
+    function toggleDelete(jobID) {
+        if (jobID) {
+            setDeletingJobID(jobID);
+        }
+        setIsJobToDelete(!isJobToDelete)
+        setClosingError("");
+        setShowMenu(false);
+    }
+
+    function showReOpenBox(jobID) {
+        if (jobID) {
+            setReOpenJobID(jobID);
+        }
+        setIsJobToOpen(true)
+        setShowMenu(false);        
+    }
+
     function viewApplicants(jobID) {
         setEmployerActiveLink("applicants");
         navigate(`/employer/jobs/${jobID}/applicants`)
@@ -121,14 +145,14 @@ export default function Jobs() {
 
     async function closeJob() {
         setIsJobClosing(true);
-        setJobHasClosed(false)
+        // setJobHasChanged(false)
 
         try {
             axios.patch(`/api/employer/job/close/${closingJobID}`, 
                 { withCredentials: true }
             )
 
-            setJobHasClosed(true);
+            setJobHasChanged(!jobHasChanged);
             setIsJobToClose(!isJobToClose)
             setJobStatus("closed")
         } catch (error) {
@@ -136,9 +160,30 @@ export default function Jobs() {
             setClosingError("Closing job failed. Please try again")
         } finally {
             setIsJobClosing(false);
-
+            // setJobHasChanged(!jobHasChanged);
         }
     }
+
+
+    async function reopenJob() {
+        // setIsJobClosing(true);
+        // setJobHasChanged(false)
+
+        try {
+            axios.patch(`/api/employer/job/reOpen/${reOpenJobID}`, 
+                { withCredentials: true }
+            )
+
+            setJobHasChanged(!jobHasChanged);
+            setIsJobToOpen(false);
+            setJobStatus("open")
+        } catch (error) {
+            console.log(error)
+            // setClosingError("Closing job failed. Please try again")
+        } 
+    }
+
+
 
     useEffect(() => {
         if (!loading && !verified) {
@@ -157,7 +202,7 @@ export default function Jobs() {
 
     return (
         <>
-            <div className="w-full min-h-screen bg-[#F3F4F6] relative p-6 md:px-15 md:py-10">
+            <div className="w-full min-h-screen bg-[#F3F4F6] relative">
                 <AuthNavBar />
                 <Overlay />
 
@@ -175,30 +220,58 @@ export default function Jobs() {
                     </>                    
                 }
 
-                <h1 className="font-bold text-2xl mb-2">Company Job Posts</h1>
-                <p className="text-gray-500 mb-4">Manage your company's job posts</p>
+                {isJobToOpen && 
+                    <>
+                        <Translucent />
+                        <ConfirmationDialog
+                            heading="Re-open job posting?"
+                            bodyText="This job posting will become active again and visible to applicants. You can continue receiving new applications while keeping your existing applicants and job details."
+                            buttonText="Re-open"
+                            toggleFunction={() => setIsJobToOpen(false)}
+                            confirmFunction={reopenJob}
+                        />
+                    </>                    
+                }
 
-                <div className="grid grid-cols-2 w-full rounded-xl shadow-md mb-10">
-                    <button
-                        onClick={() => setJobStatus("open")}
-                        className={`
-                            ${jobStatus === "open" ? "bg-[#10B981] text-white duration-200" : "bg-white text-black"} py-4 rounded-tl-xl rounded-bl-xl font-bold`
-                        }>
-                        <div className="flex items-center gap-2 justify-center"><TbBriefcase2 className="inline" size={20}/> Open</div>
-                    </button>
-                    <button 
-                        onClick={() => setJobStatus("closed")}
-                        className={`
-                            ${jobStatus === "closed" ? "bg-[#10B981] text-white duration-200" : "bg-white text-black"} py-4 rounded-tr-xl rounded-br-xl font-bold`
-                        }>
-                        <div className="flex items-center gap-2 justify-center"><TbBriefcase2 className="inline" size={20}/> Closed</div>
-                    </button>
-                </div>
+                {isJobToDelete && 
+                    <>
+                        <Translucent />
+                        <WarningBox
+                            heading="Delete this job post?"
+                            text="This will mark the job as inactive. New candidates will no longer be able to view or apply for this position, but you can still access existing applicants."
+                            buttonText="Close Job"
+                            action={{closeJob, toggleWarning}}
+                            error={closingError}
+                            isLoading={isJobClosing}
+                        />
+                    </>                    
+                }
+
+                <div className="w-full p-6 md:px-15 md:py-10">
+                    <h1 className="font-bold text-2xl mb-2">Company Job Posts</h1>
+                    <p className="text-gray-500 mb-4">Manage your company's job posts</p>
+
+                    <div className="grid grid-cols-2 w-full rounded-xl shadow-md mb-10">
+                        <button
+                            onClick={() => setJobStatus("open")}
+                            className={`
+                                ${jobStatus === "open" ? "bg-[#10B981] text-white duration-200" : "bg-white text-black"} py-4 rounded-tl-xl rounded-bl-xl font-bold`
+                            }>
+                            <div className="flex items-center gap-2 justify-center"><TbBriefcase2 className="inline" size={20}/> Open</div>
+                        </button>
+                        <button 
+                            onClick={() => setJobStatus("closed")}
+                            className={`
+                                ${jobStatus === "closed" ? "bg-[#10B981] text-white duration-200" : "bg-white text-black"} py-4 rounded-tr-xl rounded-br-xl font-bold`
+                            }>
+                            <div className="flex items-center gap-2 justify-center"><TbBriefcase2 className="inline" size={20}/> Closed</div>
+                        </button>
+                    </div>
 
 
-                <h2 className="font-bold text-xl mb-6" >{jobStatus === "open" ? `${listOfJobs.length} Open Jobs` : `${listOfJobs.length} Closed Jobs`}</h2>
+                    <h2 className="font-bold text-xl mb-6" >{jobStatus === "open" ? `${listOfJobs.length} Open ${listOfJobs.length > 1 ? "Jobs" : "Job"}` : `${listOfJobs.length} Closed ${listOfJobs.length > 1 ? "Jobs" : "Job"}`}</h2>
 
-            
+                
                     {listOfJobs.length === 0 ?
                         <p className="text-center mt-20">There are no current job posts for this section</p>
                     :
@@ -226,10 +299,8 @@ export default function Jobs() {
                                                         }} 
                                                         size={20}
                                                     /> 
-
-                                                    
-                                                        
-                                                    <div className={`w-25 bg-slate-100  p-1 absolute top-full right-0 rounded-md shadow-lg transition-opacity duration-150 ease-out ${(showMenu && menuID === eachJob.jobID) ? "opacity-100" : "opacity-0"}`}>
+                                                                                                    
+                                                    <div className={`w-25 bg-slate-100  p-1 absolute top-full right-0 rounded-md shadow-lg transition-opacity duration-150 ease-out ${(showMenu && menuID === eachJob.jobID) ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}>
                                                         <PrimaryButton to={`/employer/jobs/viewJob/${eachJob.jobID}`} className="bg-slate-100 text-gray-600! font-semibold flex items-center gap-2">
                                                             <AiOutlineEye />
                                                             View
@@ -264,7 +335,34 @@ export default function Jobs() {
                                         )
                                     } else {
                                         return (
-                                            <div key={eachJob.jobID} className="w-full h-full flex flex-col rounded-2xl shadow-md bg-white p-6">
+                                            <div key={eachJob.jobID} className="relative w-full h-full flex flex-col rounded-2xl shadow-md bg-white p-6">
+                                                <div className="absolute top-4 right-4">
+                                                    <IoEllipsisVertical 
+                                                        onClick={() => {
+                                                            setMenuID(eachJob.jobID)
+                                                            setShowMenu(!showMenu)
+                                                        }} 
+                                                        size={20}
+                                                    /> 
+                                                                                                    
+                                                    <div className={`w-35 bg-slate-100  p-1 absolute top-full right-0 rounded-md shadow-lg transition-opacity duration-150 ease-out ${(showMenu && menuID === eachJob.jobID) ? "opacity-100" : "opacity-0"}`}>
+                                                        <PrimaryButton to={`/employer/jobs/viewJob/${eachJob.jobID}`} className="bg-slate-100 text-gray-600! font-semibold flex items-center gap-2">
+                                                            <AiOutlineEye />
+                                                            View
+                                                        </PrimaryButton>
+
+                                                        <PrimaryButton onClick={() => showReOpenBox(eachJob.jobID)} className="bg-slate-100 text-green-600! font-semibold flex items-center gap-2">
+                                                            <FaCheck />
+                                                            Re-open
+                                                        </PrimaryButton>
+
+                                                        <PrimaryButton onClick={() => toggleDelete(eachJob.jobID)} className="bg-slate-100 text-red-600! px-0 font-semibold flex items-center gap-1">
+                                                            <MdDelete size={20} />
+                                                            Delete
+                                                        </PrimaryButton>
+                                                    </div>
+                                                    
+                                                </div>                                                
                                                 <h1 className="font-bold text-[1.1rem] text-[#111827] mb-2 ">{eachJob.jobTitle}</h1>
                                                 <p className="flex items-center text-[#374151] gap-4 mb-1 justify-items-start"><GrLocation className="text-gray-500 w-5 shrink-0" /> {eachJob.location}</p>
                                                 <p className="flex items-center text-[#374151] gap-4 mb-1"><MdGroups size={20} className="text-gray-500 w-5 shrink-0" /> {`${totalApplicants} Applicants`}</p>
@@ -274,12 +372,9 @@ export default function Jobs() {
                                                     : `Posted by ${eachJob.createdByFirstName} ${eachJob.createdByLastName} on ${formatDate(eachJob.createdAt)}`
                                                 }</p>
                                                 
-                                                <div className="w-full flex justify-between mt-auto pt-10">
-                                                    <PrimaryButton onClick={() => viewApplicants(eachJob.jobID)}>View Applicants</PrimaryButton>
-                                                    {/* <div className="flex gap-2">
-                                                        <PrimaryButton onClick={() => toggleWarning(eachJob.jobID)} className="text-gray-700! text-[13px] bg-white">Close</PrimaryButton>
-                                                        <SecondaryButton to={`/employer/jobs/${eachJob.jobID}/edit`} className=" px-5 font-semibold">Edit</SecondaryButton>
-                                                    </div> */}
+                                                <div className="w-full mt-auto pt-10">
+                                                    <PrimaryButton className="w-full" onClick={() => viewApplicants(eachJob.jobID)}>View Applicants</PrimaryButton>
+                                                    {/* <SecondaryButton to={`/employer/jobs/viewJob/${eachJob.jobID}`}>View</SecondaryButton> */}
                                                 </div>
                                             </div>
                                         )
@@ -288,6 +383,8 @@ export default function Jobs() {
                             }
                         </div>
                     }
+                </div>
+
                 
             </div>
             

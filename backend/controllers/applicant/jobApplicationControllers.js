@@ -1,8 +1,11 @@
 import database from "../../configs/database.js";
+import brevo from "../../configs/brevo.js";
+import "dotenv/config";
+import formatDate from "../../utils/formatDate.js";
 
 export async function submitApplication(req, res) {
-    const { id } = req.user;
-    const { resumeID, yearsExp } = req.body
+    const { id, firstName, email } = req.user;
+    const { resumeID, yearsExp, jobTitle, companyName } = req.body
     const { jobID } = req.params
 
     const activeStatus = [
@@ -46,6 +49,34 @@ export async function submitApplication(req, res) {
                 yearsExp,
             ]
         );
+
+        const [date] = await database.query(`
+            SELECT applicationDate
+            FROM applications
+            WHERE applicantID = ?
+            ORDER BY applicationDate DESC
+            `, 
+            [id]
+        );
+
+        await brevo.transactionalEmails.sendTransacEmail({
+            sender: {
+                name: process.env.BREVO_SENDER_NAME,
+                email: process.env.BREVO_SENDER_EMAIL
+            },
+            to: [
+                {
+                    email
+                }
+            ],
+            templateId: 3,
+            params: {
+                applicantFirstName: firstName,
+                jobTitle,
+                companyName,
+                applicationDate: formatDate(date[0].applicationDate)
+            }
+        });
 
         return res.status(201).json({ message: "Job application submitted successfully." })
 

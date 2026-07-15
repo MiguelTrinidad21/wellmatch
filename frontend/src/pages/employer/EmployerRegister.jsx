@@ -146,8 +146,8 @@ export default function EmployerRegister() {
 
                 <h1 className="my-6 text-center text-xl font-bold">You are invited to join {invitation.companyName}</h1>
 
-                <form className="w-full bg-white rounded-3xl shadow-lg p-6 mb-6" onSubmit={handleSubmit}>
-                    <h2 className="text-center text-lg mb-4 font-bold">Create your Account</h2>
+                <form className="w-full bg-white rounded-3xl shadow-lg p-6 mb-6 md:p-10 md:w-100 lg:w-120" onSubmit={handleSubmit}>
+                    <h2 className="text-center text-lg mb-4 font-bold">Create Your Account</h2>
 
                     <div className="w-full">
                         <label className="block mb-1 font-semibold" htmlFor="firstName">First Name</label>
@@ -157,7 +157,7 @@ export default function EmployerRegister() {
                             onChange={(e) => setEmployerInfo({...employerInfo, firstName: e.target.value})}
                             required
                             placeholder="Enter first name"
-                            className="p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-gray-600" 
+                            className="p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-green-600" 
                         />
                     </div>
 
@@ -169,7 +169,7 @@ export default function EmployerRegister() {
                             onChange={(e) => setEmployerInfo({...employerInfo, lastName: e.target.value})}
                             required
                             placeholder="Enter last name"
-                            className="p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-gray-600" 
+                            className="p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-green-600" 
                         />
                     </div>
 
@@ -180,7 +180,7 @@ export default function EmployerRegister() {
                             value={invitation.email}
                             readOnly
                             required
-                            className={`p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-gray-600 ${errors.emailAddress ? 'border-red-600 focus:border-red-600 mb-1!' : 'border-gray-300'}`} 
+                            className={`p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-green-600 ${errors.emailAddress ? 'border-red-600 focus:border-red-600 mb-1!' : 'border-gray-300'}`} 
                         />
                         {errors.emailAddress && <p className="text-red-600 text-[13px] mb-4">* {errors.emailAddress}</p>}
                     </div>
@@ -194,7 +194,7 @@ export default function EmployerRegister() {
                                 onChange={(e) => setEmployerInfo({...employerInfo, password: e.target.value})}
                                 required
                                 placeholder="Enter your password" 
-                                className={`p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-gray-600 ${errors.invalidPass ? 'border-red-600 focus:border-red-600 mb-1!' : 'border-gray-300'}`} 
+                                className={`p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-green-600 ${errors.invalidPass ? 'border-red-600 focus:border-red-600 mb-1!' : 'border-gray-300'}`} 
                             />
                             <div onClick={handlePass} className="absolute top-1/2 -translate-y-1/2 right-2">
                                 {showPassword ? <FiEyeOff /> : <FiEye />}
@@ -212,7 +212,7 @@ export default function EmployerRegister() {
                                 onChange={(e) => setEmployerInfo({...employerInfo, confirmPass: e.target.value})}
                                 required
                                 placeholder="Re-type your password" 
-                                className={`p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-gray-600 ${errors.confirmPass ? 'border-red-600 focus:border-red-600 mb-1!' : 'border-gray-300'}`} 
+                                className={`p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-green-600 ${errors.confirmPass ? 'border-red-600 focus:border-red-600 mb-1!' : 'border-gray-300'}`} 
                             />
                             <div onClick={handleConfirmPass} className="absolute top-1/2 -translate-y-1/2 right-2">
                                 {showConfirmPassword ? <FiEyeOff /> : <FiEye />}
@@ -221,7 +221,7 @@ export default function EmployerRegister() {
                         {errors.confirmPass && <p className="text-red-600 text-[13px] mb-4">* {errors.confirmPass}</p>}
                     </div>
 
-                    <PrimaryButton type="submit" className="w-full">Register</PrimaryButton>
+                    <PrimaryButton type="submit" className="w-full mt-10">Register</PrimaryButton>
                 </form>
 
             </div>

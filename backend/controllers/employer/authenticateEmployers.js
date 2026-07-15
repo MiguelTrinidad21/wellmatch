@@ -111,7 +111,11 @@ export async function registerAdmin(req, res) {
 
     } catch (err) {
         if (connection) {
-            await connection.rollback();
+            try {
+                await connection.rollback();
+            } catch (rollbackError) {
+                console.error("Failed to rollback transaction:", rollbackError);
+            }
         }
 
         return res.status(500).json({

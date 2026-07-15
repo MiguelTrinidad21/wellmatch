@@ -1,6 +1,6 @@
 import AuthNavBar from "../../components/navBars/AuthNavBar";
-import Overlay from "../../components/overlay/OverlayMobile";
-import Footer from "../../components/others/Footer"
+import SideBarOverlay from "../../components/overlay/SideBarOverlay";
+import ApplicantSideBar from "../../components/navBars/ApplicantSideBar";
 import Loading from "../../components/others/Loading"
 import PrimaryButton from "../../components/buttons/PrimaryButton";
 import WorkHistoryForm from "../../components/popUps/WorkHistoryForm";
@@ -10,6 +10,7 @@ import EducationForm from "../../components/popUps/EducationForm";
 import AddResumeForm from "../../components/popUps/AddResumeForm"
 import Translucent from "../../components/overlay/Translucent";
 import DeleteItemBox from "../../components/popUps/DeleteItemBox"
+
 import defaultProfile from "../../assets/defaultProfile.jpg"
 import { MdOutlineEmail } from "react-icons/md";
 import { SlLocationPin } from "react-icons/sl";
@@ -152,7 +153,7 @@ export default function MyProfile() {
     }
 
     useEffect(() => {
-        setApplicantActiveLink("profile")
+        setApplicantActiveLink("My Profile")
     }, [])
 
     useEffect(() => {
@@ -270,10 +271,12 @@ export default function MyProfile() {
     }
 
     return (
-        <>
+        <div className="lg:flex relative w-full">
+            <ApplicantSideBar />
+            <SideBarOverlay />
+
             <div className="w-full min-h-screen bg-[#F3F4F6] relative">
                 <AuthNavBar />
-                <Overlay />
 
                 {
                     openEditForm &&
@@ -352,19 +355,19 @@ export default function MyProfile() {
                 }
 
 
-                <div className="w-full p-6 md:p-15">
-                    <section className="flex gap-2 relative w-full mb-10 md:gap-10 md:mb-15">
-                        <div className="w-19 h-19 shrink-0 md:w-30 md:h-30">
+                <div className="w-full p-6 md:p-15 lg:p-10 xl:px-30">
+                    <section className="flex gap-2 relative w-full xl:w-[80%] mb-10 md:gap-10 md:mb-15">
+                        <div className="w-19 h-19 shrink-0 md:w-30 md:h-30 xl:w-40 xl:h-40">
                             <img className="w-full h-full rounded-full object-cover" src={`${currentUser.profilePhoto ? currentUser.profilePhoto : defaultProfile}`} alt="" />
                         </div>
                         <div className="pr-5 flex flex-col min-w-0 md:gap-4 md:pr-42">
                             <h1 className="text-lg font-bold wrap-break-word md:text-3xl">{`${currentUser.firstName} ${currentUser.lastName}`}</h1>
                             <div className="relative w-full text-gray-700 font-medium">
-                                <MdOutlineEmail className=" absolute top-1/2 -translate-y-1/2 left-0 md:w-7 md:h-7" />
+                                <MdOutlineEmail className=" absolute top-1/2 -translate-y-1/2 left-0 md:w-6 md:h-6" />
                                 <p className="pl-6 wrap-break-word md:pl-10 md:text-xl">{currentUser.email}</p>
                             </div>
                             <div className="relative w-full text-gray-700 font-medium">
-                                <SlLocationPin className="absolute top-1/2 -translate-y-1/2 left-0 md:w-7 md:h-7" />
+                                <SlLocationPin className="absolute top-1/2 -translate-y-1/2 left-0 md:w-5 md:h-5" />
                                 <p className="pl-6 wrap-break-word md:pl-10 md:text-xl">{currentUser.address}</p>
                             </div>
                         </div>
@@ -376,7 +379,7 @@ export default function MyProfile() {
                         <FiEdit size={20} onClick={() => toggleForm(setOpenEditForm)} className=" text-green-600 font-bold absolute top-0 right-0 md:hidden" />
                     </section>
 
-                    <section className="w-full p-5 mb-6 bg-white rounded-2xl shadow-md md:mb-10">
+                    <section className="w-full xl:w-[80%] p-5 mb-6 bg-white rounded-2xl shadow-md md:mb-10">
                         <div className="md:flex md justify-between md:items-center md:mb-5">
                             <h1 className="text-xl text-center font-bold text-green-600 mb-3 md:text-2xl md:mb-0">Work Experience</h1>
                             <PrimaryButton onClick={() => toggleForm(setOpenWorkForm)} className="hidden rounded-lg md:flex md:items-center md:gap-2">
@@ -384,23 +387,25 @@ export default function MyProfile() {
                                 Add work
                             </PrimaryButton>
                         </div>
-                        <div className="w-full flex flex-col gap-5 md:grid md:grid-cols-2 md:gap-5">
+                        <div className="w-full">
                             {   
-                                workExp?.length === 0 ? <p className="text-gray-400 mb-2 text-center">Add your previous work experience</p>
+                                workExp?.length === 0 ? <p className="text-gray-600 font-medium mb-2 text-center md:text-left">Add your previous work experience</p>
                             :
-                                workExp?.map((work) => (
-                                    <div key={work.workExpID} className="relative w-full bg-[#F3F4F6] shadow-md rounded-2xl p-4">
-                                        <h2 className="font-bold mb-1 text-lg">{work.jobTitle}</h2>
-                                        <p className="text-gray-500 font-medium mb-3">{work.companyName}</p>
-                                        <p className="text-gray-500 text-sm">{`${work.startDate} - ${work.endDate}`}</p>
-                                        <button onClick={() => {
-                                            setWorkExpID(work.workExpID);
-                                            toggleWarning(setDeleteWorkExp);
-                                        }} className="absolute bottom-5 right-4">
-                                            <FaTrashCan className="text-red-600" size={20} />
-                                        </button>
-                                    </div>
-                                ))
+                                <div className="w-full flex flex-col gap-5 md:grid md:grid-cols-2 md:gap-5">
+                                    {workExp?.map((work) => (
+                                        <div key={work.workExpID} className="relative w-full bg-[#F3F4F6] shadow-md rounded-2xl p-4">
+                                            <h2 className="font-bold mb-1 text-lg">{work.jobTitle}</h2>
+                                            <p className="text-gray-700 font-medium mb-3">{work.companyName}</p>
+                                            <p className="text-gray-700 text-sm">{`${work.startDate} - ${work.endDate}`}</p>
+                                            <button onClick={() => {
+                                                setWorkExpID(work.workExpID);
+                                                toggleWarning(setDeleteWorkExp);
+                                            }} className="absolute bottom-5 right-4 cursor-pointer">
+                                                <FaTrashCan className="text-red-600" size={20} />
+                                            </button>
+                                        </div>
+                                    ))}
+                                </div>
                             }
                         </div>
 
@@ -412,7 +417,7 @@ export default function MyProfile() {
                     </section>
 
                     
-                    <section className="w-full p-5 mb-6 bg-white rounded-2xl shadow-md md:mb-10">
+                    <section className="w-full xl:w-[80%] p-5 mb-6 bg-white rounded-2xl shadow-md md:mb-10">
                         <div className="md:flex md justify-between md:items-center md:mb-5">
                             <h1 className="text-xl text-center text-green-600 font-bold mb-3 md:text-2xl md:mb-0 ">Certifications and Licenses</h1>
                             <PrimaryButton onClick={() => toggleForm(setOpenCredentialForm)} className="hidden rounded-lg md:flex md:items-center md:gap-2">
@@ -421,23 +426,25 @@ export default function MyProfile() {
                             </PrimaryButton>
 
                         </div>
-                        <div className="w-full flex flex-col gap-5 md:grid md:grid-cols-2 md:gap-5">
+                        <div className="w-full">
                             {   
-                                credentials?.length === 0 ? <p className="text-gray-400 mb-2 text-center">Add your certifications</p>
+                                credentials?.length === 0 ? <p className="text-gray-600 font-medium mb-2 text-center md:text-left">Add your certifications</p>
                             :
-                                credentials?.map((cred) => (
-                                    <div key={cred.credentialID} className="relative w-full bg-[#F3F4F6] shadow-md rounded-2xl p-4">
-                                        <h2 className="font-bold mb-1 text-lg">{cred.credentialTitle}</h2>
-                                        <p className="text-gray-500 font-medium mb-3">{cred.issuedBy}</p>
-                                        <p className="text-gray-500 text-sm">{`${cred.issueDate} - ${cred.expiryDate ? cred.expiryDate : "No expiry"}`}</p>
-                                        <button onClick={() => {
-                                            setCredID(cred.credentialID);
-                                            toggleWarning(setDeleteCredential);
-                                        }} className="absolute bottom-5 right-4">
-                                            <FaTrashCan className="text-red-600" size={20} />
-                                        </button>
-                                    </div>
-                                ))
+                                <div className="w-full flex flex-col gap-5 md:grid md:grid-cols-2 md:gap-5">
+                                    {credentials?.map((cred) => (
+                                        <div key={cred.credentialID} className="relative w-full bg-[#F3F4F6] shadow-md rounded-2xl p-4">
+                                            <h2 className="font-bold mb-1 text-lg">{cred.credentialTitle}</h2>
+                                            <p className="text-gray-700 font-medium mb-3">{cred.issuedBy}</p>
+                                            <p className="text-gray-700 text-sm">{`${cred.issueDate} - ${cred.expiryDate ? cred.expiryDate : "No expiry"}`}</p>
+                                            <button onClick={() => {
+                                                setCredID(cred.credentialID);
+                                                toggleWarning(setDeleteCredential);
+                                            }} className="absolute bottom-5 right-4 cursor-pointer">
+                                                <FaTrashCan className="text-red-600" size={20} />
+                                            </button>
+                                        </div>
+                                    ))}
+                                </div>
                             }
                         </div>
                         <PrimaryButton className="mt-5 md:hidden w-full flex items-center gap-2 justify-center" onClick={() => toggleForm(setOpenCredentialForm)}>
@@ -449,7 +456,7 @@ export default function MyProfile() {
 
                     
 
-                    <section className="w-full p-5 mb-6 bg-white rounded-2xl shadow-md md:mb-10">
+                    <section className="w-full xl:w-[80%] p-5 mb-6 bg-white rounded-2xl shadow-md md:mb-10">
                         <div className="md:flex md justify-between md:items-center md:mb-5">
                         <h1 className="text-xl text-center text-green-600 font-bold mb-3 md:text-2xl md:mb-0">Education</h1>
                         <PrimaryButton onClick={() => toggleForm(setOpenEducationForm)} className="hidden rounded-lg md:flex md:items-center md:gap-2">
@@ -458,23 +465,25 @@ export default function MyProfile() {
                         </PrimaryButton>                        
 
                         </div>
-                        <div className="w-full flex flex-col gap-5 md:grid md:grid-cols-2 md:gap-5">
+                        <div className="w-full">
                             {   
-                                education?.length === 0 ? <p className="text-gray-400 mb-2 text-center">Add education</p>
+                                education?.length === 0 ? <p className="text-gray-600 font-medium mb-2 text-center md:text-left">Add education</p>
                             :
-                                education?.map((item) => (
-                                    <div key={item.educationID} className="relative w-full bg-[#F3F4F6] shadow-md rounded-2xl p-4">
-                                        <h2 className="font-bold mb-1 text-lg">{item.courseName}</h2>
-                                        <p className="text-gray-500 font-medium mb-3">{item.institution}</p>
-                                        <p className="text-gray-500 text-sm">{item.graduatedAt ? `Graduated ${item.graduatedAt}` : `Expected finish ${item.willFinishAt}`}</p>
-                                        <button onClick={() => {
-                                            setEducID(item.educationID);
-                                            toggleWarning(setDeleteEduc);
-                                        }} className="absolute bottom-5 right-4">
-                                            <FaTrashCan className="text-red-600" size={20} />
-                                        </button>
-                                    </div>
-                                ))
+                                <div className="w-full flex flex-col gap-5 md:grid md:grid-cols-2 md:gap-5">
+                                    {education?.map((item) => (
+                                        <div key={item.educationID} className="relative w-full bg-[#F3F4F6] shadow-md rounded-2xl p-4">
+                                            <h2 className="font-bold mb-1 text-lg">{item.courseName}</h2>
+                                            <p className="text-gray-700 font-medium mb-3">{item.institution}</p>
+                                            <p className="text-gray-700 text-sm">{item.graduatedAt ? `Graduated ${item.graduatedAt}` : `Expected finish ${item.willFinishAt}`}</p>
+                                            <button onClick={() => {
+                                                setEducID(item.educationID);
+                                                toggleWarning(setDeleteEduc);
+                                            }} className="absolute bottom-5 right-4 cursor-pointer">
+                                                <FaTrashCan className="text-red-600" size={20} />
+                                            </button>
+                                        </div>
+                                    ))}
+                                </div>
                             }
                         </div>
                         <PrimaryButton className="mt-5 md:hidden w-full flex items-center gap-2 justify-center" onClick={() => toggleForm(setOpenEducationForm)}>
@@ -485,7 +494,7 @@ export default function MyProfile() {
 
                     
 
-                    <section className="w-full p-5 mb-5 bg-white rounded-2xl shadow-md">
+                    <section className="w-full xl:w-[80%] p-5 mb-5 bg-white rounded-2xl shadow-md">
                         <div className="md:flex md justify-between md:items-center md:mb-5">
                             <h1 className="text-xl text-center text-green-600 font-bold mb-3 md:text-2xl md:mb-0">Resumés</h1>
                             <PrimaryButton onClick={() => toggleForm(setOpenResumeForm)} className="hidden rounded-lg md:flex md:items-center md:gap-2">
@@ -493,70 +502,71 @@ export default function MyProfile() {
                                 Add resume
                             </PrimaryButton> 
                         </div>
-                        <div className="w-full flex flex-col gap-5 md:grid md:grid-cols-2 md:gap-5">
+                        <div className="w-full">
                             {   
-                                resumes?.length === 0 ? <p className="text-gray-400 mb-2 text-center">Add a new resumé</p>
+                                resumes?.length === 0 ? <p className="text-gray-600 font-medium mb-2 text-center md:text-left">Add a new resumé</p>
                             :
-                                resumes?.map((item) => (
-                                    <div key={item.resumeID} className="relative w-full bg-[#F3F4F6] shadow-md rounded-2xl p-4">
-                                        {
-                                            item.isDefault == 1 && 
-                                            <div className="mb-2 px-3 rounded-sm bg-[#F0FDF4] w-fit border-2 border-[#4A9E69]">
-                                                <p className="text-[#4A9E69] font-semibold text-sm">Default</p>
-                                            </div>
-                                        }
-                                        <h2 className="font-bold mb-1 text-lg">{item.origFileName}</h2>
+                                <div className="w-full flex flex-col gap-5 md:grid md:grid-cols-2 md:gap-5">
+                                    {resumes?.map((item) => (
+                                        <div 
+                                            key={item.resumeID} 
+                                            className={`relative w-full bg-[#F3F4F6] shadow-md rounded-2xl p-4 ${
+                                                resumeMenuID === item.resumeID && showResumeMenu ? 'z-20' : 'z-0'
+                                            }`}
+                                        >
+                                            {
+                                                item.isDefault == 1 && 
+                                                <div className="mb-2 px-3 rounded-sm bg-[#F0FDF4] w-fit border-2 border-[#4A9E69]">
+                                                    <p className="text-[#4A9E69] font-semibold text-sm">Default</p>
+                                                </div>
+                                            }
+                                            <h2 className="font-bold mb-1 text-lg">{item.origFileName}</h2>
 
-                                        <div className="absolute top-1/2 -translate-y-1/2 right-4">
-                                            <div className="relative">
-                                                <FaEllipsisVertical 
-                                                    onClick={() => {
-                                                        setResumeMenuID(item.resumeID);
-                                                        setShowResumeMenu(!showResumeMenu);
-                                                    }} 
-                                                    size={20} 
-                                                />
-                                                
-                                                {
-                                                    (resumeMenuID === item.resumeID && showResumeMenu) &&
-                                                    <div className="min-w-38 absolute top-full right-0 bg-white rounded-lg shadow-lg p-2 flex flex-col gap-2">
-                                                        {
-                                                            item.isDefault != 1 &&
-                                                            <div 
+                                            <div className="absolute top-1/2 -translate-y-1/2 right-4">
+                                                <div className="relative">
+                                                    <FaEllipsisVertical 
+                                                        onClick={() => {
+                                                            setResumeMenuID(item.resumeID);
+                                                            setShowResumeMenu(prev => resumeMenuID === item.resumeID ? !prev : true);
+                                                        }} 
+                                                        size={20} 
+                                                    />
+                                                    
+                                                    {
+                                                        (resumeMenuID === item.resumeID && showResumeMenu) &&
+                                                        <div className="min-w-38 absolute top-full right-0 bg-white rounded-lg shadow-lg p-2 flex flex-col gap-2 z-50">
+                                                            {
+                                                                item.isDefault != 1 &&
+                                                                <div 
+                                                                    onClick={() => {
+                                                                        makeResumeDefault(item.resumeID);
+                                                                        setShowResumeMenu(false);
+                                                                    }}
+                                                                    className="text-green-600 font-semibold flex flex-row gap-3 items-center justify-start"
+                                                                >
+                                                                    <FaCheck />
+                                                                    <p>Make default</p>
+                                                                </div>
+                                                            }
+                                                            <div
                                                                 onClick={() => {
-                                                                    makeResumeDefault(item.resumeID);
-                                                                    setShowResumeMenu(!showResumeMenu)
+                                                                    setResumeID(item.resumeID);
+                                                                    toggleWarning(setDeleteResume);
                                                                 }}
-                                                                 className="text-green-600 font-semibold flex flex-row gap-3 items-center justify-start"
+                                                                className="text-red-600 font-semibold flex flex-row gap-3 justify-start items-center "
                                                             >
-                                                                <FaCheck />
-                                                                <p>Make default</p>
+                                                                <FaTrashCan />
+                                                                <p>Delete</p>
                                                             </div>
-                                                        }
-                                                        <div
-                                                            onClick={() => {
-                                                                setResumeID(item.resumeID);
-                                                                toggleWarning(setDeleteResume);
-                                                            }}
-                                                            className="text-red-600 font-semibold flex flex-row gap-3 justify-start items-center "
-                                                        >
-                                                            <FaTrashCan />
-                                                            <p>Delete</p>
                                                         </div>
-                                                    </div>
-                                                }
-                                                
-                                            </div>                                    
+                                                    }
+                                                    
+                                                </div>                                    
+                                            </div>
+                                            
                                         </div>
-                                        
-                                        {/* <button onClick={() => {
-                                            setEducID(item.educationID);
-                                            toggleWarning(setDeleteEduc);
-                                        }} className="absolute bottom-5 right-4">
-                                            <FaTrashCan className="text-red-600" size={20} />
-                                        </button> */}
-                                    </div>
-                                ))
+                                    ))}
+                                </div>                                
                             }
                         </div>
                         <PrimaryButton className="mt-5 md:hidden w-full flex items-center gap-2 justify-center" onClick={() => toggleForm(setOpenResumeForm)}>
@@ -568,8 +578,6 @@ export default function MyProfile() {
                 </div>
             </div>
 
-            <Footer />
-
-        </>
+        </div>
     )
 }

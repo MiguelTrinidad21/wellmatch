@@ -116,7 +116,7 @@ export default function SkillGapReport() {
                     },
                     withCredentials: true
                 });
-                console.log(res.data)
+                console.log(res.data.skillGapReport)
                 setSkillGapAnalysis(res.data.skillGapReport);
                 setSkillGapLoaded(true);
             } catch (error) {
@@ -448,7 +448,7 @@ export default function SkillGapReport() {
                                         skillGapAnalysis.missingSkills?.length >= 1 ?
                                         <>
                                             {
-                                                skillGapAnalysis.missingSkills?.filter((skill) => skill.skillType === "core") &&
+                                                skillGapAnalysis.missingSkills?.filter((skill) => skill.skillType === "core").length >= 1 &&
                                                 <>
                                                     <h2 className="text-[12px] font-bold mb-1 text-red-600">CORE GAPS - HIGH PRIORITY</h2>
                                                     <div className=" w-full flex flex-col gap-1 mb-4 ">
@@ -482,7 +482,7 @@ export default function SkillGapReport() {
                                             }
 
                                             {
-                                                skillGapAnalysis.missingSkills?.filter((skill) => skill.skillType === "secondary") &&
+                                                skillGapAnalysis.missingSkills?.filter((skill) => skill.skillType === "secondary").length >= 1 &&
                                                 <>
                                                     <h2 className="text-[12px] font-bold mb-1 text-[#92400E]">SECONDARY - OPTIONAL</h2>
                                                     <div className="w-full flex flex-col gap-1 mb-4 ">

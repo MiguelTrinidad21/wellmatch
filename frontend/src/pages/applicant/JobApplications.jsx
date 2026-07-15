@@ -43,7 +43,7 @@ export default function JobApplications() {
     const dateFormat = { year: 'numeric', month: 'long', day: 'numeric' };
     const activeStatus = ["submitted", "shortlisted", "interview"]
 
-    const applicationsPerPage = 1;
+    const applicationsPerPage = 10;
 
     useEffect(() => {
         async function checkApplicant() {
@@ -192,7 +192,7 @@ export default function JobApplications() {
                         >
                             <span className="flex gap-2 items-center justify-center">
                                 <HiOutlineBriefcase size={20} />
-                                Hired
+                                Job&nbsp;Offers
                             </span>
                         </PrimaryButton>
                         
@@ -208,9 +208,9 @@ export default function JobApplications() {
                         
                     </div>
 
-                    <div className="pointer-events-none absolute left-0 top-0 h-full w-10 bg-linear-to-r from-[#F3F4F6] to-transparent md:w-20" />
+                    <div className="pointer-events-none absolute left-0 top-0 h-full w-7 bg-linear-to-r from-[#F3F4F6] to-transparent md:w-20" />
 
-                    <div className="pointer-events-none absolute right-0 top-0 h-full w-10 bg-linear-to-l from-white to-transparent md:w-20" />                    
+                    <div className="pointer-events-none absolute right-0 top-0 h-full w-7 bg-linear-to-l from-white to-transparent md:w-20" />                    
 
                 </div>
                 <Overlay />
@@ -221,35 +221,35 @@ export default function JobApplications() {
                             status === "submitted" &&
                             <>
                                 <h1 className="text-[22px] font-bold mb-3">Your Submitted Applications</h1>
-                                <p className="font-medium text-gray-700">Your applications have been sent to employers and are awaiting review.</p>
+                                <p className="font-medium text-gray-700">View the applications you've successfully submitted to employers and track their progress.</p>
                             </>
                         }
                         {
                             status === "shortlisted" &&
                             <>
-                                <h1 className="text-[22px] font-bold mb-3">Advancing Applications</h1>
-                                <p className="font-medium text-gray-700">Your profile has impressed employers and is shortlisted for further review.</p>
+                                <h1 className="text-[22px] font-bold mb-3">Shortlisted Applications</h1>
+                                <p className="font-medium text-gray-700">View applications where you've been shortlisted by employers for the next stage of the recruitment process.</p>
                             </>
                         }
                         {
                             status === "interview" &&
                             <>
-                                <h1 className="text-[22px] font-bold mb-3">Upcoming Interviews</h1>
-                                <p className="font-medium text-gray-700">Employers may contact you soon. Prepare for the next stage. </p>
+                                <h1 className="text-[22px] font-bold mb-3">Interview Invitations</h1>
+                                <p className="font-medium text-gray-700">View applications where you've been invited to the interview stage and stay updated on upcoming interview opportunities.</p>
                             </>
                         }
                         {
                             status === "hired" &&
                             <>
-                                <h1 className="text-[22px] font-bold mb-3">Hired Applications</h1>
-                                <p className="font-medium text-gray-700">Congratulations! These are the applications that resulted in employment.</p>
+                                <h1 className="text-[22px] font-bold mb-3">Job Offers</h1>
+                                <p className="font-medium text-gray-700">View job offers you've received from employers and stay updated on your latest opportunities.</p>
                             </>
                         }
                         {
                             status === "not selected" &&
                             <>
                                 <h1 className="text-[22px] font-bold mb-3">Closed Applications</h1>
-                                <p className="font-medium text-gray-700">You weren’t selected for these roles — but keep improving and applying.</p>
+                                <p className="font-medium text-gray-700">View applications that were not successful and continue exploring new opportunities on WellMatch.</p>
                             </>
                         }
                     </section>
@@ -258,7 +258,7 @@ export default function JobApplications() {
                         jobs?.length === 0 ?
                             <section className="w-full mt-20 flex flex-col items-center gap-3 text-gray-500">
                                 <TbBriefcaseOff size={45} />
-                                <p className="text-sm font-medium text-center">There are current job applications in this section</p>                                
+                                <p className="text-sm font-medium text-center">There are no current job applications in this section</p>                                
                             </section>
                         :
                             <section className="w-full flex flex-col gap-3 mt-10">
@@ -286,7 +286,7 @@ export default function JobApplications() {
                                                     <>
                                                         <p className="text-gray-500 mb-2 text-sm flex items-center gap-2"><GrLocation size={18} />{item.location}</p>
                                                         <p className="text-gray-500 mb-2 text-sm flex items-center gap-2"><FiBriefcase size={18} />{item.workType}</p>
-                                                        <p className="text-gray-500 mb-10 text-sm flex items-center gap-2"><FiCalendar size={18} />{`Hired on ${new Date(item.dateHired).toLocaleDateString('en-US', dateFormat)}`}</p>
+                                                        {/* <p className="text-gray-500 mb-10 text-sm flex items-center gap-2"><FiCalendar size={18} />{`Hired on ${new Date(item.dateHired).toLocaleDateString('en-US', dateFormat)}`}</p> */}
                                                     </>
                                                 :
                                                     <>
@@ -321,7 +321,7 @@ export default function JobApplications() {
                                                 {
                                                     status === "hired" ? 
                                                         <>
-                                                            <th className="whitespace-nowrap px-6 py-4 text-center font-bold text-black">Date Hired</th>
+                                                            {/* <th className="whitespace-nowrap px-6 py-4 text-center font-bold text-black">Date Hired</th> */}
                                                             <th className="whitespace-nowrap px-6 py-4 text-center font-bold text-black">Work Type</th>
                                                             <th className="whitespace-nowrap px-6 py-4 text-center font-bold text-black">Skill Gap Analysis</th>
                                                         </>
@@ -349,19 +349,34 @@ export default function JobApplications() {
                                                         {
                                                             status === "hired" ?
                                                                 <>
-                                                                    <td className="whitespace-nowrap px-6 py-5 text-center">{new Date(item.dateHired).toLocaleDateString('en-US', dateFormat)}</td>
+                                                                    {/* <td className="whitespace-nowrap px-6 py-5 text-center">{new Date(item.dateHired).toLocaleDateString('en-US', dateFormat)}</td> */}
                                                                     <td className="whitespace-nowrap px-6 py-5 text-center">{item.workType}</td>
                                                                     <td className="whitespace-nowrap px-6 py-5 text-center"><PrimaryButton to={`/applicant/viewJob/${item.jobID}/${item.resumeID}/skillGapReport`} className="rounded-md m-auto text-sm text-black! bg-green-300">See Report</PrimaryButton></td>
                                                                 </>
                                                             :
                                                                 <>
-                                                                    <td className="whitespace-nowrap px-6 py-5 text-center">{item.overallScore}%</td>
+                                                                    {
+                                                                        item.overallScore ?
+                                                                            <td className="whitespace-nowrap px-6 py-5 text-center">{item.overallScore}%</td>
+                                                                        :
+                                                                            <td className="whitespace-nowrap px-6 py-5 text-center">Pending analysis</td>
+                                                                    }
                                                                     <td className="whitespace-nowrap px-6 py-5 text-center"><PrimaryButton to={`/applicant/viewJob/${item.jobID}/${item.resumeID}/skillGapReport`} className="rounded-md m-auto text-sm text-black! bg-green-300">See Report</PrimaryButton></td>
                                                                     {
                                                                         status === "not selected" ?
                                                                             <td className="whitespace-nowrap px-6 py-5 text-center"><PrimaryButton to={`/applicant/viewJob/${item.jobID}`} className="rounded-md m-auto text-sm px-6 text-black! bg-green-300">View</PrimaryButton></td>
                                                                         :
-                                                                            <td className="whitespace-nowrap px-6 py-5 text-center"><PrimaryButton className="rounded-md bg-red-600 m-auto text-sm ">Withdraw</PrimaryButton></td>
+                                                                            <td className="whitespace-nowrap px-6 py-5 text-center">
+                                                                                <PrimaryButton 
+                                                                                    onClick={() => {
+                                                                                        setShowWarning(true);
+                                                                                        setAppToWithdraw(item.applicationID)
+                                                                                    }} 
+                                                                                    className="rounded-md bg-red-600 m-auto text-sm "
+                                                                                >
+                                                                                    Withdraw
+                                                                                </PrimaryButton>
+                                                                            </td>
                                                                             
                                                                     }
                                                                 </>

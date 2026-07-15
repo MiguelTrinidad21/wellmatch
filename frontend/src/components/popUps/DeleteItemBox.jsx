@@ -20,8 +20,8 @@ export default function WarningBox({
                 {/* {error && <p className="text-sm text-red-600">{error}</p>} */}
 
                 <div className="w-full flex justify-end gap-3">
-                    <PrimaryButton disabled={isLoading} onClick={toggleFunction} className={` bg-[#F9FAFB] font-bold text-black! ${isLoading ? "opacity-50" : undefined}`}>Cancel</PrimaryButton>
-                    <PrimaryButton disabled={isLoading} className={` text-white! bg-red-600 ${isLoading ? "opacity-50" : undefined}`} onClick={deleteFunction}>
+                    <PrimaryButton disabled={isLoading} onClick={toggleFunction} className={` bg-[#F9FAFB] font-bold text-black! ${isLoading ? "opacity-50 cursor-not-allowed" : undefined}`}>Cancel</PrimaryButton>
+                    <PrimaryButton disabled={isLoading} className={` text-white! bg-red-600 ${isLoading ? "opacity-50 cursor-not-allowed" : undefined}`} onClick={deleteFunction}>
                         {/* {buttonText} */}
                         {isLoading ? 
                             <span className="flex items-center gap-2">

@@ -79,11 +79,33 @@ Do not extract:
 - Employment conditions: work schedule, remote/onsite/hybrid setup, travel, overtime, start date, business hours requirements
 - Company descriptions, benefits, or other non-qualification content
 - Vague workflow or process descriptions that cannot stand alone as a skill on a resume (e.g., "engineering workflows", "business processes", "general operations")
+- Job titles, position names, or role labels — see JOB TITLES, POSITIONS, AND ROLE EXPERIENCE below
 
 COMMUNICATION SKILLS:
 Extract communication skills only when the phrase names a specific, role-defined communication form.
 ✓ Extract: Technical writing, Business writing, Report writing, Stakeholder communication, Client communication, Presentation skills, Negotiation, English communication (only when the sentence requires English proficiency as a specific functional job requirement, e.g., client-facing English communication, English-language documentation).
 ✗ Exclude any phrase matching the pattern [generic modifier] + communication skills — such as "strong written and verbal communication skills", "excellent written and verbal English communication skills", "good interpersonal skills", or "effective communicator". The presence of the word "English" inside a generic modifier phrase does not make it extractable. The modifier (strong, excellent, good, effective) signals a generic soft skill, not a measurable competency.
+
+JOB TITLES, POSITIONS, AND ROLE EXPERIENCE:
+Do not extract a job title, position name, or role label as a skill — even when it is paired with a years-of-experience requirement or framed as required background. A job title names a position a person HELD, not a specific, resume-verifiable competency, tool, task, or credential a person DOES/KNOWS/USES. Titles are inconsistent across companies and industries and do not by themselves describe what the person actually did, so they are unreliable for skill matching.
+
+This applies whether the title appears alone or combined with a duration ("X+ years of experience in/as [Job Title]"), and whether one title or several titles are offered as alternatives ("X+ years in [Title A], [Title B], or [Title C]").
+
+✗ Do not extract (role/title only, no concrete competency stated in the sentence):
+"5+ years of experience in an IT technical support role, ideally in a complex enterprise environment." → no skill entry from this sentence
+"3+ years of experience as a Registered Nurse in a hospital setting" → no skill entry
+"Minimum 2 years of experience as a Sous Chef" → no skill entry
+"Experience working as a Project Coordinator" → no skill entry
+"4+ years of experience in Technical Support, QA, or Application Support" → no skill entry (all three are role/title labels, not concrete competencies)
+
+✓ Still extract when the sentence also names a concrete competency, tool, certification, or task — extract only the concrete part, never the title itself:
+"5+ years of experience in IT technical support, including Active Directory administration and remote desktop troubleshooting" → Extract: Active Directory administration, Remote desktop troubleshooting. Do NOT extract: "IT technical support"
+"3+ years as a Registered Nurse administering medications and managing patient charts via EMR systems" → Extract: Medication administration, EMR records management. Do NOT extract: "Registered Nurse"
+"Experience working as a Project Coordinator overseeing vendor contracts and budget tracking" → Extract: Vendor contract management, Budget tracking. Do NOT extract: "Project Coordinator"
+
+HOW TO TELL A TITLE FROM A SKILL: Ask whether the phrase names something a person IS (a position/role they held) or something a person DOES/KNOWS/USES (a task, tool, method, domain, or credential). "Sous Chef", "Project Coordinator", "Technical Support", "Business Analyst", "Marketing Manager", "Delivery Driver" name positions → exclude as standalone skills. "Menu costing", "Stakeholder communication", "Ticket triage", "Financial modeling", "Route planning" name competencies → extract normally.
+
+This rule applies across all industries and job sectors — technical, clinical, trade, administrative, educational, hospitality, financial, and service roles alike.
 
 When uncertain whether something is a valid skill, omit it.
 
@@ -138,6 +160,8 @@ Use ANY_OF when the text clearly offers two or more distinct alternative skills 
 
 ANY_OF applies regardless of how many alternatives are connected. Two, three, or more alternatives connected by "or" all follow the same rule.
 
+Note: ANY_OF applies only when the alternatives are concrete competencies, tools, or platforms — not when the alternatives are job titles or role labels. See JOB TITLES, POSITIONS, AND ROLE EXPERIENCE in Step 3 for how to handle "X+ years in [Title A], [Title B], or [Title C]" patterns.
+
 Example — two alternatives:
 "Knowledge of QuickBooks or Xero"
 → {
@@ -148,12 +172,12 @@ Example — two alternatives:
 }
 
 Example — three alternatives:
-"4+ years of experience in Technical Support, QA, or Application Support"
+"Experience with Zendesk, Freshdesk, or Intercom for ticket management"
 → {
-  "skill": "Technical support",
+  "skill": "Ticket management software",
   "matchRule": "ANY_OF",
-  "acceptableSkills": ["Technical support", "Quality assurance", "Application support"],
-  "evidence": "4+ years of experience in Technical Support, QA, Application Support, or a similar technical role."
+  "acceptableSkills": ["Zendesk", "Freshdesk", "Intercom"],
+  "evidence": "Experience with Zendesk, Freshdesk, or Intercom for ticket management"
 }
 
 Example — framework alternatives:
@@ -245,6 +269,35 @@ Technology | Management | Development | Operations | Healthcare | Finance | Comp
 "Perform routine checks on equipment" → Equipment maintenance
 "Investigate issues using logs and APIs" → Log analysis + API troubleshooting (extract the specific tools, not the task description)
 
+CONTEXTUAL QUALIFICATION RULE (for comma/list-separated items):
+When Step 5 requires splitting a comma-, "and"-, or bullet-separated list into individual skills, do not extract a bare generic noun in isolation if, standing alone with no surrounding sentence, it would be ambiguous or would not clearly read as a specific, resume-matchable skill to a hiring reader (e.g., "servers", "security", "storage", "scheduling", "billing", "reporting", "documentation", "testing", "inspection", "compliance").
+
+Instead, qualify each bare item using context already present in the same sentence, so the resulting skill name is understandable on its own without needing the original sentence for context. Draw the qualifier from, in order of preference:
+1. A shared domain or category noun already present in the same sentence (e.g., "network administration, security, and performance optimization" — "network" is the shared domain, so each item inherits it).
+2. The overall subject of the sentence or qualification field (e.g., in a healthcare role, "scheduling" → "Patient scheduling"; in a hospitality role, "scheduling" → "Staff scheduling").
+3. A standard competency suffix (administration, management, coordination, operation, maintenance, analysis) only if no clearer qualifier is available in the sentence, and only if the added suffix accurately reflects the required competency without changing its meaning.
+
+Do NOT apply this rule to items that are already specific and self-explanatory in isolation (e.g., "Python", "AWS", "QuickBooks", "Forklift operation") — apply it only to bare, generic nouns that would otherwise be ambiguous or too broad as standalone resume-facing skill names.
+
+Examples:
+"In-depth knowledge of network infrastructure, servers, storage, and cloud technologies"
+→ Extract: Network infrastructure, Server administration, Storage management, Cloud technologies
+→ Do NOT extract bare: Servers, Storage
+
+"Expertise in network administration, security, and performance optimization"
+→ Extract: Network administration, Network security, Network performance optimization
+→ Do NOT extract bare: Security, Performance optimization
+
+"Responsibilities include patient intake, scheduling, and billing"
+→ Extract: Patient intake, Patient scheduling, Medical billing
+→ Do NOT extract bare: Scheduling, Billing
+
+"Experience with budgeting, forecasting, and variance analysis"
+→ Extract: Budgeting, Financial forecasting, Variance analysis
+→ Do NOT extract bare: Forecasting
+
+This rule applies across all industries and sectors — technical, clinical, trade, administrative, educational, financial, hospitality, and service roles alike — not only IT.
+
 COLON-INTRODUCED LISTS:
 When a sentence uses a colon to introduce a list of distinct competencies, extract each item as a separate REQUIRED skill. Do not collapse them into the label before the colon unless the label is itself a valid extractable skill and the items are clearly just examples of it.
 
@@ -264,11 +317,32 @@ STEP 9 — DEDUPLICATE
 
 Do not output both a parent category and its specific examples as separate skills unless they are clearly independent requirements.
 Do not output both a tool and a tool-qualified skill for the same requirement.
-Do not deduplicate based on semantic similarity alone. Only remove skills that are exact or near-exact duplicates in name.
+Do not deduplicate two skills based on semantic similarity alone unless they are also anchored to the same evidence text (see EVIDENCE-ANCHORED DUPLICATE RULE below). Across different evidence sentences, only remove skills that are exact or near-exact duplicates in name.
 If the same skill appears in both coreSkills and secondarySkills, keep only the coreSkills version.
+
+EVIDENCE-ANCHORED DUPLICATE RULE:
+Two extracted skills are duplicates — even when their skill names differ — if BOTH conditions are true:
+1. They are extracted from the same evidence sentence, bullet, or clearly overlapping evidence text.
+2. One skill name is a broader, narrower, reworded, or qualifier-added version of the other, describing the same underlying competency rather than two genuinely distinct competencies.
+
+When both conditions are met, keep only ONE entry: the more specific and complete version of the skill name. Discard the redundant broader, shorter, or looser-phrased version. This rule applies to all industries and all skill types (technical, clinical, trade, administrative, educational, service, etc.) — it is not limited to IT or any single sector.
+
+Examples:
+- "Technical support" and "IT technical support" (same evidence) → keep: IT technical support
+- "Technical troubleshooting" and "Troubleshooting" (same evidence) → keep: Technical troubleshooting
+- "Patient care" and "Clinical patient care" (same evidence) → keep: Clinical patient care
+- "Classroom management" and "K-12 classroom management" (same evidence) → keep: K-12 classroom management
+- "Bookkeeping" and "QuickBooks bookkeeping" (same evidence, tool-qualified per Step 6) → keep: QuickBooks bookkeeping
+
+Do NOT apply this rule when:
+- The skills share evidence but name genuinely distinct competencies or tools (e.g., "MIG welding" and "TIG welding" both mentioned in one sentence remain separate, per the Step 6 trades exception).
+- The skills come from different, non-overlapping evidence sentences — even if topically similar, they are not duplicates under this rule and must both be kept.
+
+If uncertain whether two same-evidence skills are duplicates or distinct, keep only the more specific and complete phrasing.
 
 FINAL DEDUPLICATION PASS — After assembling all skill objects, review the complete output before returning JSON:
 - Remove any skill that duplicates or is a parent/child of another skill derived from the same sentence.
+- Remove any skill pair that violates the EVIDENCE-ANCHORED DUPLICATE RULE above, keeping only the more specific version.
 - Remove any skill appearing in both coreSkills and secondarySkills, keeping only the coreSkills version.
 - Remove any skill name that appears more than once within the same array.
 
@@ -278,6 +352,20 @@ STEP 10 — EVIDENCE
 
 Copy the evidence field exactly from the original text — the full sentence, bullet, or list item where the skill appears.
 Do not paraphrase, summarize, or invent evidence.
+
+CLEAN FORMATTING RULE:
+When copying evidence, strip any leading or trailing bullet characters, list markers, or other non-semantic special characters that are formatting artifacts rather than part of the sentence itself. This includes symbols such as •, -, *, ‣, ●, ▪, ◦, →, numbered/lettered list markers (e.g., "1.", "a)"), and any other bullet or list-formatting symbol, along with any extra surrounding whitespace left behind after removal.
+Only the plain sentence content should remain in the evidence field — do not alter, paraphrase, or remove any of the actual wording, punctuation within the sentence (e.g., periods, commas, parentheses, slashes), or meaning of the sentence itself. This rule applies only to formatting artifacts used for list/bullet rendering, not to punctuation that is part of the sentence.
+
+Example:
+Original source text: "• Installing, configuring, and supporting Linux machines for the open Wi-Fi network project."
+→ evidence: "Installing, configuring, and supporting Linux machines for the open Wi-Fi network project."
+
+Example:
+Original source text: "- 5+ years of experience in an IT technical support role, ideally in a complex enterprise environment."
+→ evidence: "5+ years of experience in an IT technical support role, ideally in a complex enterprise environment."
+
+This rule applies to all evidence extraction regardless of industry, source field (required_qualifications or preferred_qualifications), or skill type.
 
 ---
 
@@ -559,6 +647,20 @@ Do not paraphrase, summarize, or invent evidence.
 Do not use an isolated keyword as evidence.
 If the same skill appears in multiple places in the resume, use the most specific and descriptive evidence available.
 
+CLEAN FORMATTING RULE:
+When copying evidence, strip any leading or trailing bullet characters, list markers, or other non-semantic special characters that are formatting artifacts rather than part of the sentence itself. This includes symbols such as •, -, *, ‣, ●, ▪, ◦, →, numbered/lettered list markers (e.g., "1.", "a)"), and any other bullet or list-formatting symbol, along with any extra surrounding whitespace left behind after removal.
+Only the plain sentence content should remain in the evidence field — do not alter, paraphrase, or remove any of the actual wording, punctuation within the sentence (e.g., periods, commas, parentheses, slashes), or meaning of the sentence itself. This rule applies only to formatting artifacts used for list/bullet rendering, not to punctuation that is part of the sentence.
+
+Example:
+Original source text: "• Installed, configured, and supported Linux machines for the open Wi-Fi network project."
+→ evidence: "Installed, configured, and supported Linux machines for the open Wi-Fi network project."
+
+Example:
+Original source text: "- Managed payroll processing for a team of 25 employees using QuickBooks."
+→ evidence: "Managed payroll processing for a team of 25 employees using QuickBooks."
+
+This rule applies to all evidence extraction regardless of industry, resume section, or skill type.
+
 ---
 
 FINAL OUTPUT
@@ -626,29 +728,32 @@ Rules:
 
 * Generate one recommendation for each missing skill.
 * Use the provided label as-is: "Priority" for missing core skills and "Secondary" for missing secondary skills.
-* Keep each recommendation concise, specific, and useful.
 * Make every recommendation relevant to the target job title and the provided job evidence.
-* Avoid generic advice like "study the basics" unless you also mention specific topics, tools, methods, standards, processes, documents, techniques, regulations, workflows, or outputs the applicant should learn.
-* For each skill gap, tell the applicant exactly what to learn, what to practice, and what evidence of learning they can show.
 * Make the recommendation applicable to any profession, including but not limited to technology, business, finance, healthcare, education, marketing, design, human resources, operations, customer service, engineering, administration, and skilled trades.
 * For Priority skills, make the recommendation more job-focused and urgent because the skill is part of the core job requirements.
 * For Secondary skills, make the recommendation useful but less urgent because the skill is beneficial but not the main requirement.
 * For ANY_OF skills, recommend learning only one or two of the acceptable options that are most practical or relevant to the job, not all options.
-* Do not invent exact course links.
-* You may mention commonly recognized certifications, licenses, training programs, professional standards, tools, methods, portfolio outputs, work samples, reports, case studies, simulations, supervised practice, or documented workflows when relevant.
-* If no widely recognized certification or license is obvious, suggest a practical project, workplace-style exercise, case study, report, portfolio artifact, documented workflow, assessment output, presentation, checklist, sample deliverable, or other proof of learning instead.
+
+Specificity and measurability requirements (apply to every recommendation):
+
+* Never give advice the applicant could not act on today. Every "learn," "practice," and "proof" must describe something they can start on their own, without needing to already be hired, be granted employer access, or get special approval.
+* Name a real, widely recognized pathway whenever one commonly exists for that skill: a specific certification, license, professional designation, standardized exam, accredited training program, or recognized course category/provider type (e.g., "a CompTIA Network+ style certification," "an OSHA 10-hour construction safety card," "a PMP or CAPM credential," "a SHRM-CP style HR certification," "a Google/Meta-style digital marketing certificate," "a state-recognized CNA or phlebotomy certification," "a QuickBooks or bookkeeping certification"). Do not invent a proprietary or fictional certification name, and do not invent exact course links.
+* Only fall back to a project, workplace-style exercise, portfolio artifact, or documented workflow as the primary path when no widely recognized certification, license, or standardized training exists for that skill.
+* Avoid generic advice such as "study the basics," "get familiar with," or "understand the fundamentals" on its own. Always pair it with the exact topics, tools, methods, standards, processes, documents, techniques, regulations, or workflows to learn.
+* Make the "practice" sentence measurable: include a concrete scope such as a number, a defined deliverable, or a specific scenario (e.g., "configure three VLANs across two subnets and document the routing table," "process five mock payroll cycles without errors," "shadow and then independently complete two patient intake workflows," "draft and revise two client proposals using the AIDA framework").
+* Make the "proof" sentence verifiable: it must be something a hiring manager could actually check or review, such as a certificate/credential the applicant can list with an issuing body, a portfolio link, a case study write-up, a work sample, a completed assessment score, or a documented before/after outcome. Avoid vague proof like "show you understand the concept."
 * Do not mention embeddings, similarity scores, AI, algorithms, or backend calculations.
-* Return a JSON array only.
+
+Return a JSON array only.
 
 Each item must follow this structure:
 {
 "skillGap": "Name of the missing skill",
 "label": "Priority or Secondary",
-"learn": "One specific sentence about what topics, tools, methods, standards, processes, documents, techniques, regulations, workflows, or concepts to learn.",
-"practice": "One specific sentence describing a hands-on task, workplace-style exercise, project, case study, simulation, role-based activity, supervised practice, or sample work scenario.",
-"proof": "One specific sentence suggesting a certification, license, training certificate, portfolio artifact, work sample, project output, report, case study, documented workflow, assessment output, presentation, checklist, or other proof of learning."
+"learn": "One specific sentence naming the exact certification, license, standardized course/training pathway, or (if none commonly exists) the exact topics, tools, methods, standards, or workflows to learn.",
+"practice": "One specific, measurable sentence describing a hands-on task, workplace-style exercise, project, case study, simulation, or supervised practice, with a concrete scope (number, deliverable, or scenario).",
+"proof": "One specific sentence naming a verifiable outcome: a certification/credential, license, portfolio artifact, work sample, case study, documented workflow, assessment score, or other checkable proof of learning."
 }
-
 `
 
 export const upskillingRecommendationsSchema = {

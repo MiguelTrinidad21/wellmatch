@@ -80,24 +80,24 @@ export default function CredentialsForm({ toggleForm, refresh }) {
                     <div className="flex flex-col w-full mb-4">
                         <label htmlFor="title">License or certification name</label>
                         <input 
-                            className="w-full p-2 border border-gray-400 rounded-md mt-1"
                             type="text"
                             required
                             id="title"
                             value={credentialInfo.credentialTitle}
                             onChange={(e) => setCredentialInfo({...credentialInfo, credentialTitle: e.target.value})}                       
+                            className="p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-green-600"
                         />
                     </div>
 
                     <div className="flex flex-col w-full mb-4">
                         <label htmlFor="company">Issuing organisation</label>
                         <input 
-                            className="w-full p-2 border border-gray-400 rounded-md mt-1"
                             type="text"
                             required
                             id="company"
                             value={credentialInfo.issuedBy}
                             onChange={(e) => setCredentialInfo({...credentialInfo, issuedBy: e.target.value})}                       
+                            className="p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-green-600"
                         />
                     </div>
 

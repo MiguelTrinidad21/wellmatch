@@ -10,6 +10,7 @@ import { userStore } from "../../zustand/userState";
 
 export default function ApplicantInfoForm({ toggleForm }) {
     const {currentUser, handleCurrentUser} = userStore();
+    const locationFieldRef = useRef(null);
 
     const [firstName, setFirstName] = useState(currentUser.firstName);
     const [lastName, setLastName] = useState(currentUser.lastName);
@@ -69,6 +70,17 @@ export default function ApplicantInfoForm({ toggleForm }) {
 
         return () => clearTimeout(delay);
     }, [address]);
+
+    useEffect(() => {
+        function handleClickOutside(e) {
+            if (locationFieldRef.current && !locationFieldRef.current.contains(e.target)) {
+                setLocationSuggestions([]);
+            }
+        }
+
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, []);
 
     function handleSelectLocation(place) {
         const formatted = [
@@ -141,7 +153,11 @@ export default function ApplicantInfoForm({ toggleForm }) {
             <Translucent />
         
             <div className="w-[85%] p-5 bg-[#F3F4F6] fixed top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 z-50 rounded-2xl md:w-100 md:p-7 md:pt-10">
-                <IoClose onClick={toggleForm} size={20} className="absolute top-2 right-2 md:top-4 md:right-4 md:h-7 md:w-7" />
+                {locationSuggestions.length > 0 && <div onClick={() => setLocationSuggestions([])} className="fixed top-0 left-0 w-full h-full"></div>}
+
+                <button disabled={isLoading} onClick={toggleForm} className="cursor-pointer absolute top-2 right-2 md:top-4 md:right-4">
+                    <IoClose size={20} className="md:h-7 md:w-7" />
+                </button>
 
                 <h1 className="font-bold text-xl mb-3 text-center ">Update Information</h1>
 
@@ -149,30 +165,30 @@ export default function ApplicantInfoForm({ toggleForm }) {
                     <div className="flex flex-col w-full mb-4">
                         <label className="font-semibold" htmlFor="firstName">First Name</label>
                         <input 
-                            className="w-full p-2 border border-gray-400 rounded-md mt-1"
                             type="text"
                             required
                             id="firstName"
                             value={firstName}
                             onChange={(e) => setFirstName(e.target.value)}                       
+                            className="p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-green-600 overflow-x-scroll"
                         />
                     </div>
 
                     <div className="flex flex-col w-full mb-4">
                         <label className="font-semibold" htmlFor="lastName">Last Name</label>
                         <input 
-                            className="w-full p-2 border border-gray-400 rounded-md mt-1"
                             type="text"
                             required
                             id="lastName"
                             value={lastName}
                             onChange={(e) => setLastName(e.target.value)}                       
+                            className="p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-green-600 overflow-x-scroll"
                         />
                     </div>
 
                     <div className="flex flex-col w-full mb-4">
                         <label className="font-semibold" htmlFor="address">Location</label>
-                        <div>
+                        <div ref={locationFieldRef}>
                             <input 
                                 type="text"
                                 id="address"
@@ -180,7 +196,7 @@ export default function ApplicantInfoForm({ toggleForm }) {
                                 onChange={(e) => setAddress(e.target.value)} 
                                 autoComplete="off"
                                 required
-                                className="block w-full overflow-x-scroll p-2 border border-gray-400 rounded-md mt-1"
+                                className="p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-green-600 overflow-x-scroll"
                             />
 
                             {isSearchingLocation && (
@@ -221,7 +237,7 @@ export default function ApplicantInfoForm({ toggleForm }) {
                         ) : <p className="mb-2 text-[13px] font-medium text-gray-500">Upload your profile picture (5MB max)</p>}
 
                         {errors?.fileSize || errors?.fileType || errors.uploadError ? (
-                            <p className="text-red-600 text-[12px] mb-2">
+                            <p className="text-red-600 text-sm mb-2">
                                 {errors?.fileSize || errors?.fileType || errors.uploadError}
                             </p>
                         ) : null}

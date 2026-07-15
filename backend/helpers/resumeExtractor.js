@@ -3,6 +3,7 @@ import mammoth from "mammoth";
 import { openai, resumeExtractionPrompt, resumeExtractionSchema } from "../configs/openai.js";
 import database from "../configs/database.js";
 import crypto from "crypto"
+import cleanEvidence from "../utils/cleanEvidence.js"
 
 export function generateFileHash(buffer) {
   return crypto
@@ -83,9 +84,15 @@ export async function generateSkillsEmbeddings(extractedSkills) {
             };
         }
 
+        // Clean evidence once, up front, and keep it attached to each item
+        const cleanedSkills = allSkills.map(item => ({
+            ...item,
+            evidence: cleanEvidence(item.evidence)
+        }));
+
         const embeddingInputs = [];
 
-        for (const item of allSkills) {
+        for (const item of cleanedSkills) {
             embeddingInputs.push(item.skill);
             embeddingInputs.push(item.evidence);
         }
@@ -101,7 +108,7 @@ export async function generateSkillsEmbeddings(extractedSkills) {
         function attachEmbeddings(item) {
             const result = {
                 skill: item.skill,
-                evidence: item.evidence,
+                evidence: item.evidence, // now guaranteed to be the cleaned version
                 skillEmbedding: embeddingResponse.data[index++].embedding,
                 evidenceEmbedding: embeddingResponse.data[index++].embedding
             }
@@ -110,7 +117,7 @@ export async function generateSkillsEmbeddings(extractedSkills) {
         }
 
         return {
-            skills: extractedSkills.skills.map(attachEmbeddings)
+            skills: cleanedSkills.map(attachEmbeddings)
         };
 
     } catch (error) {

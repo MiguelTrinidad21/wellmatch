@@ -16,6 +16,7 @@ import { IoMdCloseCircleOutline } from "react-icons/io";
 import { MdOutlineCancel } from "react-icons/md";
 import { MdGroups } from "react-icons/md";
 import { FaUsersSlash } from "react-icons/fa";
+import { FiCalendar } from "react-icons/fi";
 import { useNavigate, Link, useParams } from "react-router-dom";
 import axios from "axios";
 import { formatDistanceToNow } from 'date-fns';
@@ -43,6 +44,7 @@ export default function ViewApplicants() {
     const [showRejectAll, setShowRejectAll] = useState(false);
     const [showReject, setShowReject] = useState(false);
     const [showConfirm, setShowConfirm] = useState(false);
+    const [isUpdating, setIsUpdating] = useState(false);
 
     const [jobTitle, setJobTitle] = useState("");
 
@@ -78,6 +80,7 @@ export default function ViewApplicants() {
     }
 
     async function updateStatus(applicationID, currentStatus, nextStatus) {
+        setIsUpdating(true);
         try {
             await axios.patch("/api/employer/updateApplicationStatus",
                 {applicationID, nextStatus},
@@ -89,10 +92,13 @@ export default function ViewApplicants() {
 
         } catch (error) {
             console.log(error);
+        } finally {
+            setIsUpdating(false);
         }
     }
 
     async function rejectApplicant(applicationID, currentStatus) {
+        setIsUpdating(true)
         try {
             await axios.patch("/api/employer/rejectApplicant", 
                 { applicationID },
@@ -104,13 +110,16 @@ export default function ViewApplicants() {
             
         } catch (error) {
             console.log(error);
+        } finally {
+            setIsUpdating(false);
         }
     }
 
     async function rejectAllApplicants(currentStatus) {
+        setIsUpdating(true);
         try {
             await axios.patch("/api/employer/applications/rejectAll",
-                {currentStatus},
+                {jobID, currentStatus},
                 {withCredentials: true}
             );
 
@@ -119,6 +128,8 @@ export default function ViewApplicants() {
             
         } catch (error) {
             console.log(error);
+        } finally {
+            setIsUpdating(false);
         }
     }
 
@@ -187,10 +198,11 @@ export default function ViewApplicants() {
                     showRejectAll &&
                     <WarningBox 
                         heading="Reject all applicants?"
-                        bodyText="All active applicants for in this section will be marked as Not Selected. This action cannot be undone."
+                        bodyText="All active applicants for in this section will be marked as Rejected. This action cannot be undone."
                         buttonText="Reject all"
                         toggleFunction={() => setShowRejectAll(false)}
                         deleteFunction={() => rejectAllApplicants(status)}
+                        isLoading={isUpdating}
                     />
                 }
 
@@ -198,10 +210,11 @@ export default function ViewApplicants() {
                     showReject &&
                     <WarningBox 
                         heading="Reject Applicant?"
-                        bodyText="This applicant will be marked as Not Selected and removed from the active hiring process. This action cannot be undone."
+                        bodyText="This applicant will be marked as Rejected and removed from the active hiring process. This action cannot be undone."
                         buttonText="Reject"
                         toggleFunction={() => setShowReject(false)}
                         deleteFunction={() => rejectApplicant(applicationID, status)}
+                        isLoading={isUpdating}
                     />
                 }
 
@@ -212,6 +225,7 @@ export default function ViewApplicants() {
                         bodyText="This applicant will be moved to the Shortlisted stage, making it easier to review and compare with other promising candidates."
                         toggleFunction={() => setShowConfirm(false)}
                         confirmFunction={() => updateStatus(applicationID, status, "shortlisted")}
+                        isLoading={isUpdating}
                     />
                 }
 
@@ -219,19 +233,21 @@ export default function ViewApplicants() {
                     (showConfirm && status === "shortlisted") &&
                     <ConfirmationDialog 
                         heading="Move to Interview?"
-                        bodyText="This applicant will be moved to the Interview stage for further evaluation."
+                        bodyText="This action updates the applicant's status to Interview and notifies them that they have been selected to proceed to the next stage of the recruitment process. Interview details can be shared with the applicant at a later time."
                         toggleFunction={() => setShowConfirm(false)}
                         confirmFunction={() => updateStatus(applicationID, status, "interview")}
+                        isLoading={isUpdating}
                     />
                 }
 
                 {
                     (showConfirm && status === "interview") &&
                     <ConfirmationDialog 
-                        heading="Hire Applicant?"
-                        bodyText="This applicant will be marked as Hired, completing their hiring process for this job. This action cannot be undone."
+                        heading="Confirm Job Offer"
+                        bodyText="You're about to send a job offer to this applicant which will notify them that your company has extended a job offer. You can proceed with communicating the offer details separately."
                         toggleFunction={() => setShowConfirm(false)}
                         confirmFunction={() => updateStatus(applicationID, status, "hired")}
+                        isLoading={isUpdating}
                     />
                 }
 
@@ -274,7 +290,7 @@ export default function ViewApplicants() {
                         >
                             <span className="flex gap-2 items-center justify-center">
                                 <HiOutlineBriefcase size={20} />
-                                Hired
+                                Offer&nbsp;Sent
                             </span>
                         </PrimaryButton>
                         
@@ -330,8 +346,8 @@ export default function ViewApplicants() {
                             {
                                 status === "hired" &&
                                 <>
-                                    <h1 className="font-bold text-2xl mb-2 text-center">Hired Applicants</h1>
-                                    <p className="text-gray-600 text-center font-semibold mb-10">View applicants who have successfully accepted or secured the position.</p>                                
+                                    <h1 className="font-bold text-2xl mb-2 text-center">Offers Sent</h1>
+                                    <p className="text-gray-600 text-center font-semibold mb-10">View applicants who have received this job offer from your company.</p>                                
                                 </>
                             }
                             {
@@ -386,7 +402,7 @@ export default function ViewApplicants() {
                                                                 <h2 className="font-bold text-[16px] text-red-600">{item.status === "not selected" ? "Rejected" : "Withdrew"}</h2>
                                                             </div>
                                                         :
-                                                            <div className={`shrink-0 p-1 rounded-md max-h-fit border ${item.overallScore <= 60 ? "bg-[#FFF1F2] border-red-600 text-red-600" : "bg-[#F0FDF4] border-green-400 text-green-600"}`}>
+                                                            <div className={`shrink-0 p-1 rounded-md max-h-fit border ${(item.overallScore >= 60 || item.overallScore === null) ? "bg-[#F0FDF4] border-green-400 text-green-600" : "bg-[#FFF1F2] border-red-600 text-red-600"}`}>
                                                                 {
                                                                     item.overallScore ?
                                                                         <h2 className="font-bold text-[16px]">{`${item.overallScore}% Match`}</h2>
@@ -398,12 +414,11 @@ export default function ViewApplicants() {
             
                                                                                             
                                                     </div>
-                                                    {
-                                                        status === "hired" ?
-                                                            <p className="text-gray-500 mb-10 text-sm">{`Hired on ${new Date(item.dateHired).toLocaleDateString('en-US', dateFormat)}`}</p>
-                                                        :
-                                                            <p className="text-gray-500 mb-10 text-sm">{`Submitted on ${new Date(item.applicationDate).toLocaleDateString('en-US', dateFormat)}`}</p>
-                                                    }
+
+
+                                                    <p className="text-gray-500 my-10 text-sm flex items-center gap-2"><FiCalendar size={18} />{`Submitted on ${new Date(item.applicationDate).toLocaleDateString('en-US', dateFormat)}`}</p>
+                                                    {/* <p className="text-gray-500 mb-10 mt-5 text-sm">{`Submitted on ${new Date(item.applicationDate).toLocaleDateString('en-US', dateFormat)}`}</p> */}
+                                                    
             
                                                     <div className="flex justify-between text-sm">
                                                         <PrimaryButton to={`/employer/applications/skillGapReport/${item.applicantID}/${item.jobID}/${item.resumeID}`} >View Profile</PrimaryButton>
@@ -475,7 +490,7 @@ export default function ViewApplicants() {
                                                                     }} 
                                                                     className="text-green-600! bg-white px-0!"
                                                                 >
-                                                                    Hire
+                                                                    Send&nbsp;Offer
                                                                 </PrimaryButton>
                                                             </div>
                                                         }
@@ -493,8 +508,7 @@ export default function ViewApplicants() {
                                                         <th className="px-6 py-4 text-center font-bold text-black w-48 max-w-48">Match Score</th>
                                                         <th className="px-6 py-4 text-center font-bold text-black w-48 max-w-48">Skill Gap Analysis</th>
                                                         {
-                                                            status === "hired" ? <th className="px-6 py-4 text-center font-bold text-black w-48 max-w-48">Date Hired</th> 
-                                                          : status === "not selected" ? <th className="px-6 py-4 text-center font-bold text-black w-48 max-w-48">Status</th>
+                                                            status === "not selected" ? <th className="px-6 py-4 text-center font-bold text-black w-48 max-w-48">Status</th>
                                                           : <th className="px-6 py-4 text-center font-bold text-black w-48 max-w-48">Actions</th>
                                                         }
                                                     </tr>
@@ -506,12 +520,17 @@ export default function ViewApplicants() {
                                                             <tr key={item.applicationID} className="border-t border-gray-200 text-sm">
                                                                 <td className="px-6 py-5 text-center w-48 max-w-48 wrap-break-word font-semibold">{`${item.firstName} ${item.lastName}`}</td>
                                                                 <td className="px-6 py-5 text-center w-48 max-w-48 wrap-break-word font-semibold">{new Date(item.applicationDate).toLocaleDateString('en-US', dateFormat)}</td>
-                                                                <td className="px-6 py-5 text-center w-48 max-w-48 wrap-break-word font-semibold">{item.overallScore}%</td>
+                                                                {
+                                                                    item.overallScore ?
+                                                                        <td className="px-6 py-5 text-center w-48 max-w-48 wrap-break-word font-semibold">{`${item.overallScore}%`}</td>
+                                                                    :
+                                                                        <td className="px-6 py-5 text-center w-48 max-w-48 wrap-break-word font-semibold">Awaiting review</td>
+                                                                }
                                                                 <td className="px-6 py-5 text-center w-48 max-w-48 wrap-break-word font-semibold ">
                                                                     <PrimaryButton to={`/employer/applications/skillGapReport/${item.applicantID}/${item.jobID}/${item.resumeID}`} className="m-auto rounded-md text-sm">See Report</PrimaryButton>
                                                                 </td>
                                                                 {status === "submitted" &&
-                                                                    <td className="flex items-center justify-center gap-3">
+                                                                    <td className="flex items-center justify-center gap-5 px-6 py-5">
                                                                         <PrimaryButton
                                                                             onClick={() => {
                                                                                 setApplicationID(item.applicationID)
@@ -567,7 +586,7 @@ export default function ViewApplicants() {
                                                                             }} 
                                                                             className="text-green-600! bg-white px-0!"
                                                                         >
-                                                                            Hire
+                                                                            Send Offer
                                                                         </PrimaryButton>
                                                                         <PrimaryButton 
                                                                             onClick={() => {
@@ -581,7 +600,7 @@ export default function ViewApplicants() {
 
                                                                     </td>                                                                
                                                                 }
-                                                                {status === "hired" && <td className="px-6 py-5 text-center w-48 max-w-48 wrap-break-word font-semibold">{new Date(item.dateHired).toLocaleDateString('en-US', dateFormat)}</td>}
+                                                                {/* {status === "hired" && <td className="px-6 py-5 text-center w-48 max-w-48 wrap-break-word font-semibold">{new Date(item.dateHired).toLocaleDateString('en-US', dateFormat)}</td>} */}
                                                                 {status === "not selected" && <td className="px-6 py-5 text-center w-48 max-w-48 wrap-break-word font-semibold">{item.status === "not selected" ? "Rejected" : "Withdrew"}</td>}
                                                                 
                                                                 

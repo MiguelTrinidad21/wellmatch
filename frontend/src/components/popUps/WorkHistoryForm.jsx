@@ -72,7 +72,9 @@ export default function WorkHistoryForm({ toggleForm, refresh }) {
             <Translucent />
         
             <div className="w-[85%] p-5 bg-[#F3F4F6] fixed top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 z-50 rounded-2xl md:w-100 md:p-7 md:pt-10">
-                <IoClose onClick={toggleForm} size={20} className="absolute top-2 right-2 md:top-4 md:right-4 md:h-7 md:w-7" />
+                <button onClick={toggleForm} className="cursor-pointer absolute top-2 right-2 md:top-4 md:right-4">
+                    <IoClose onClick={toggleForm} size={20} className="md:h-7 md:w-7" />                    
+                </button>
 
                 <h1 className="font-bold text-xl mb-3 text-center">Work History</h1>
 
@@ -80,24 +82,24 @@ export default function WorkHistoryForm({ toggleForm, refresh }) {
                     <div className="flex flex-col w-full mb-4">
                         <label className="font-medium" htmlFor="title">Job Title</label>
                         <input 
-                            className="w-full p-2 border border-gray-400 rounded-md mt-1 bg-white"
                             type="text"
                             required
                             id="title"
                             value={workInfo.jobTitle}
                             onChange={(e) => setWorkInfo({...workInfo, jobTitle: e.target.value})}                       
+                            className="p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-green-600"
                         />
                     </div>
 
                     <div className="flex flex-col w-full mb-4">
                         <label className="font-medium" htmlFor="company">Company Name</label>
                         <input 
-                            className="w-full p-2 border border-gray-400 rounded-md mt-1 bg-white"
                             type="text"
                             required
                             id="company"
                             value={workInfo.companyName}
                             onChange={(e) => setWorkInfo({...workInfo, companyName: e.target.value})}                       
+                            className="p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-green-600"
                         />
                     </div>
 
