@@ -16,7 +16,7 @@ export default function AuthNavBar() {
 
     return (
         <>
-            <nav className="sticky left-0 top-0 z-20 flex h-16 w-full items-center justify-between bg-white px-5 shadow-sm md:pr-15 md:pl-14 md:h-18 lg:h-20 lg:px-10 xl:pl-29 xl:pr-30">
+            <nav className="sticky left-0 top-0 z-20 flex h-16 w-full items-center justify-between bg-[#F8FBF9] px-5 shadow-sm md:pr-15 md:pl-14 md:h-18 lg:h-20 lg:px-10 xl:pl-29 xl:pr-30">
                 {currentUser.userType === "applicant" 
                     ? <p className="hidden lg:block font-emibold text-gray-700">{applicantActiveLink}</p>
                     : <p className="hidden lg:block font-emibold text-gray-700">{employerActiveLink}</p>                    

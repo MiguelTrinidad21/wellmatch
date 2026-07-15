@@ -27,7 +27,7 @@ export default function ApplicantSideBar() {
     }
 
     return (
-        <aside className="hidden lg:block fixed top-0 left-0 bg-white text-gray-700 lg:w-65 xl:w-75 h-screen px-5">
+        <aside className="hidden lg:block fixed top-0 left-0 bg-[#F4F8F5] text-gray-700 lg:w-65 xl:w-75 h-screen px-5">
             <div className="w-full mt-5 mb-10">
                 <img src={webLogo} alt="" className="h-15 w-auto m-auto object-contain" />
             </div>
