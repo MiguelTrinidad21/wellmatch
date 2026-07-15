@@ -52,52 +52,52 @@ export default function ApplicantSideMenu({ status }) {
                     <div className="font-bold text-center text-xl mb-3">{currentUser.firstName}&nbsp;{currentUser.lastName}</div>
                     <hr className="h-px bg-gray-300 border-none mb-3"/>
 
-                    <div onClick={() => setApplicantActiveLink("Home")} className={`mb-2 rounded-xl py-2.25 px-2.5 ${applicantActiveLink === "home" ? "bg-[#D7F1E0]" : "hover:bg-[#D7F1E0] transition-colors duration-200 ease-in"}`}>
+                    <div onClick={() => setApplicantActiveLink("Home")} className={`mb-2 rounded-xl py-2.25 px-2.5 ${applicantActiveLink === "Home" ? "bg-[#D7F1E0]" : "hover:bg-[#D7F1E0] transition-colors duration-200 ease-in"}`}>
                         <Link className="flex gap-3 items-center md:gap-5 " to="/applicant/home" onClick={toggleSideBar}>
-                            <span className={`rounded-xl p-1.5 ${applicantActiveLink === "home" ? "bg-[#109D5C] text-white" : "text-green-700 bg-[#EBF9F0]"}`}>
+                            <span className={`rounded-xl p-1.5 ${applicantActiveLink === "Home" ? "bg-[#109D5C] text-white" : "text-green-700 bg-[#EBF9F0]"}`}>
                                 <MdOutlineHome size={25} />
                             </span>
-                            <span className={`${applicantActiveLink === "home" ? "font-bold" : "font-mediun"}`}>Home</span>
+                            <span className={`${applicantActiveLink === "Home" ? "font-bold" : "font-mediun"}`}>Home</span>
                             
                         </Link>
                     </div>
 
-                    <div onClick={() => setApplicantActiveLink("My Profile")} className={`mb-2 rounded-xl py-2.25 px-2.5 ${applicantActiveLink === "profile" ? "bg-[#D7F1E0]" : "hover:bg-[#D7F1E0] transition-colors duration-100 ease-in"}`}>
+                    <div onClick={() => setApplicantActiveLink("My Profile")} className={`mb-2 rounded-xl py-2.25 px-2.5 ${applicantActiveLink === "My Profile" ? "bg-[#D7F1E0]" : "hover:bg-[#D7F1E0] transition-colors duration-100 ease-in"}`}>
                         <Link className="flex gap-3 items-center md:gap-5" to="/applicant/myProfile" onClick={toggleSideBar}>
-                            <span className={`rounded-xl p-1.5 ${applicantActiveLink === "profile" ? "bg-[#109D5C] text-white" : "text-green-700 bg-[#EBF9F0]"}`}>
+                            <span className={`rounded-xl p-1.5 ${applicantActiveLink === "My Profile" ? "bg-[#109D5C] text-white" : "text-green-700 bg-[#EBF9F0]"}`}>
                                 <RxAvatar size={22} />
                             </span>
-                            <span className={`${applicantActiveLink === "profile" ? "font-bold" : "font-mediun"}`}>My Profile</span>
+                            <span className={`${applicantActiveLink === "My Profile" ? "font-bold" : "font-mediun"}`}>My Profile</span>
                             
                         </Link>
                     </div>
 
-                    <div onClick={() => setApplicantActiveLink("Saved Jobs")} className={`mb-2 rounded-xl py-2.25 px-2.5 ${applicantActiveLink === "saved" ? "bg-[#D7F1E0]" : "hover:bg-[#D7F1E0] transition-colors duration-100 ease-in"}`}>
+                    <div onClick={() => setApplicantActiveLink("Saved Jobs")} className={`mb-2 rounded-xl py-2.25 px-2.5 ${applicantActiveLink === "Saved Jobs" ? "bg-[#D7F1E0]" : "hover:bg-[#D7F1E0] transition-colors duration-100 ease-in"}`}>
                         <Link className="flex gap-3 items-center md:gap-5" to="/applicant/savedJobs" onClick={toggleSideBar}>
-                            <span className={`rounded-xl p-2 ${applicantActiveLink === "saved" ? "bg-[#109D5C] text-white" : "text-green-700 bg-[#EBF9F0]"}`}>
+                            <span className={`rounded-xl p-2 ${applicantActiveLink === "Saved Jobs" ? "bg-[#109D5C] text-white" : "text-green-700 bg-[#EBF9F0]"}`}>
                                 <FaBookmark />
                             </span>
-                            <span className={`${applicantActiveLink === "saved" ? "font-bold" : "font-mediun"}`}>Saved Jobs</span>
+                            <span className={`${applicantActiveLink === "Saved Jobs" ? "font-bold" : "font-mediun"}`}>Saved Jobs</span>
                             
                         </Link>
                     </div>
 
-                    <div onClick={() => setApplicantActiveLink("Job Applications")} className={`mb-2 rounded-xl py-2.25 px-2.5 ${applicantActiveLink === "applications" ? "bg-[#D7F1E0]" : "hover:bg-[#D7F1E0] transition-colors duration-100 ease-in"}`}>
+                    <div onClick={() => setApplicantActiveLink("Job Applications")} className={`mb-2 rounded-xl py-2.25 px-2.5 ${applicantActiveLink === "Job Applications" ? "bg-[#D7F1E0]" : "hover:bg-[#D7F1E0] transition-colors duration-100 ease-in"}`}>
                         <Link className="flex gap-3 items-center md:gap-5" to="/applicant/jobApplications" onClick={toggleSideBar}>
-                            <span className={`rounded-xl p-2 ${applicantActiveLink === "applications" ? "bg-[#109D5C] text-white" : "text-green-700 bg-[#EBF9F0]"}`}>
+                            <span className={`rounded-xl p-2 ${applicantActiveLink === "Job Applications" ? "bg-[#109D5C] text-white" : "text-green-700 bg-[#EBF9F0]"}`}>
                                 <FaList />
                             </span>
-                            <span className={`${applicantActiveLink === "applications" ? "font-bold" : "font-mediun"}`}>Job Applications</span>
+                            <span className={`${applicantActiveLink === "Job Applications" ? "font-bold" : "font-mediun"}`}>Job Applications</span>
                             
                         </Link>
                     </div>
 
-                    <div onClick={() => setApplicantActiveLink("Account Settings")} className={`rounded-xl py-2.25 px-2.5 ${applicantActiveLink === "settings" ? "bg-[#D7F1E0]" : "hover:bg-[#D7F1E0] transition-colors duration-100 ease-in"}`}>
+                    <div onClick={() => setApplicantActiveLink("Account Settings")} className={`rounded-xl py-2.25 px-2.5 ${applicantActiveLink === "Account Settings" ? "bg-[#D7F1E0]" : "hover:bg-[#D7F1E0] transition-colors duration-100 ease-in"}`}>
                         <Link className="flex gap-3 items-center md:gap-5" to="/applicant/settings" onClick={toggleSideBar}>
-                            <span className={`rounded-xl p-2 ${applicantActiveLink === "settings" ? "bg-[#109D5C] text-white" : "text-green-700 bg-[#EBF9F0]"}`}>
+                            <span className={`rounded-xl p-2 ${applicantActiveLink === "Account Settings" ? "bg-[#109D5C] text-white" : "text-green-700 bg-[#EBF9F0]"}`}>
                                 <VscGear size={20} />
                             </span>
-                            <span className={`${applicantActiveLink === "settings" ? "font-bold" : "font-mediun"}`}>Account Settings</span>
+                            <span className={`${applicantActiveLink === "Account Settings" ? "font-bold" : "font-mediun"}`}>Account Settings</span>
                             
                         </Link>
                     </div>

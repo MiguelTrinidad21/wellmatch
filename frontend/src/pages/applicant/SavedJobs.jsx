@@ -1,6 +1,6 @@
 import AuthNavBar from "../../components/navBars/AuthNavBar";
-import Overlay from "../../components/overlay/OverlayMobile";
-import Footer from "../../components/others/Footer"
+import SideBarOverlay from "../../components/overlay/SideBarOverlay";
+import ApplicantSideBar from "../../components/navBars/ApplicantSideBar";
 import Loading from "../../components/others/Loading"
 import PrimaryButton from "../../components/buttons/PrimaryButton";
 import DeleteItemBox from "../../components/popUps/DeleteItemBox"
@@ -92,10 +92,12 @@ export default function SavedJobs() {
     }
 
     return (
-        <>
+        <div className="lg:flex relative w-full">
+            <ApplicantSideBar />
+            <SideBarOverlay />
+
             <div className="w-full min-h-screen bg-[#F3F4F6] relative">
                 <AuthNavBar />
-                <Overlay />
 
                 {
                     showDelBox &&
@@ -110,24 +112,24 @@ export default function SavedJobs() {
 
                 {
                     savedJobs.length > 0 ?
-                        <div className="w-full h-full p-6 md:p-15">
+                        <div className="w-full p-6 md:p-15 lg:p-10 xl:px-30"    >
                             <div className="flex items-center justify-between mb-3 md:mb-5">
                                 <h1 className="font-bold text-xl">Saved Jobs</h1>
                                 <p className="text-gray-500 font-medium">{savedJobs.length} saved {savedJobs.length > 1 ? "jobs" : "job"}</p>
                             </div>
 
-                        <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-3 items-stretch">
+                        <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-3 lg:gap-6 items-stretch">
                         {savedJobs?.map((item) => (
-                            <div key={item.savedJobID} className="bg-white w-full h-full flex flex-col rounded-2xl shadow-md p-4">
+                            <div key={item.savedJobID} className="bg-white w-full h-full flex flex-col rounded-2xl shadow-md lg:shadow-lg p-4 xl:p-7">
                                 <h2 className="font-bold text-lg mb-2">{item.jobTitle}</h2>
                                 <p>
-                                    <span className="flex items-center gap-2 font-semibold text-sm text-gray-500">
+                                    <span className="flex items-center gap-2 font-semibold text-sm xl:text-[1rem] text-gray-500">
                                         <FaBuilding />
                                         {item.companyName}    
                                     </span>
                                 </p>
                                 <p className="mb-5">
-                                    <span className="flex items-center gap-2 font-semibold text-sm text-gray-500">
+                                    <span className="flex items-center gap-2 font-semibold text-sm xl:text-[1rem] text-gray-500">
                                         <FaLocationDot />
                                         {item.location}    
                                     </span>
@@ -153,16 +155,15 @@ export default function SavedJobs() {
                         </div>                       
                     :
                         <div className="w-full p-6 absolute top-1/2 -translate-y-1/2 flex flex-col gap-3 justify-center items-center">
-                            <HiOutlineBookmarkSlash size={50} />
-                            <h1 className="text-lg font-bold">No saved jobs yet</h1>
-                            <p className="text-gray-500 text-center text-sm">Save jobs you're interested in to easily find them later.</p>
+                            <HiOutlineBookmarkSlash className="text-gray-700 xl:h-20 xl:w-20" size={50} />
+                            <h1 className="text-lg font-bold xl:text-2xl">No saved jobs yet</h1>
+                            <p className="text-gray-500 font-medium text-center text-sm xl:text-lg">Save jobs you're interested in to easily find them later.</p>
                         </div>
                 }
 
         
             </div>
 
-            <Footer />
-        </>
+        </div>
     )
 }
