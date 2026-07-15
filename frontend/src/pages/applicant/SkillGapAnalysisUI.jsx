@@ -17,6 +17,9 @@ import { SlLocationPin } from "react-icons/sl";
 import { IoIosCheckmark } from "react-icons/io";
 import { IoMdClose } from "react-icons/io";
 import { GoInfo } from "react-icons/go";
+import { FaBookOpen } from "react-icons/fa";
+import { ImWrench } from "react-icons/im";
+import { BsAwardFill } from "react-icons/bs";
 import axios from "axios";
 
 
@@ -391,7 +394,7 @@ export default function SkillGapAnalysisUI() {
                                         skillGapAnalysis.missingSkills?.length >= 1 ?
                                         <>
                                             {
-                                                skillGapAnalysis.missingSkills?.filter((skill) => skill.skillType === "core") &&
+                                                skillGapAnalysis.missingSkills?.filter((skill) => skill.skillType === "core").length >= 1 &&
                                                 <>
                                                     <h2 className="text-[12px] font-bold mb-1 text-red-600">CORE GAPS - HIGH PRIORITY</h2>
                                                     <div className=" w-full flex flex-col gap-1 mb-4 ">
@@ -424,7 +427,7 @@ export default function SkillGapAnalysisUI() {
                                             }
 
                                             {
-                                                skillGapAnalysis.missingSkills?.filter((skill) => skill.skillType === "secondary") &&
+                                                skillGapAnalysis.missingSkills?.filter((skill) => skill.skillType === "secondary").length >= 1 &&
                                                 <>
                                                     <h2 className="text-[12px] font-bold mb-1 text-[#92400E]">SECONDARY - OPTIONAL</h2>
                                                     <div className="w-full flex flex-col gap-1 mb-4 ">
@@ -480,31 +483,75 @@ export default function SkillGapAnalysisUI() {
 
                             <h1 className="font-bold">UPSKILLING RECOMMENDATIONS</h1>
                             {
-                                skillGapAnalysis.upskillingReco.map((reco, index) => (
-                                    <section key={index} className="rounded-2xl shadow-md bg-white p-4 w-full">
-                                        <div className="flex justify-between items-center mb-2 gap-3">
-                                            <h2 className="font-semibold text-[15px]">{reco.skillGap}</h2>
-                                            <div className={`text-[11px] font-medium py-1 px-3 border-2 ${reco.label === "Priority" ? "bg-[#FFF1F2] text-[#BE123C] border-[#BE123C]" : "bg-[#FFFBEB] text-[#92400E] border-[#92400E]"} rounded-full`}>{reco.label}</div>
-                                        </div>
+                                skillGapAnalysis.upskillingReco.map((reco, index) => {
+                                    const isPriority = reco.label === "Priority";
 
-                                        <div className="w-full">
-                                            <div></div>
-                                            <div className="border-b-2 border-b-gray-300 py-2">
-                                                <h3 className="text-green-600 font-bold text-[15px] mb-1">LEARN</h3>
-                                                <p className="text-[13px] text-justify">{reco.learn}</p>
+                                    return (
+                                        <section
+                                            key={index}
+                                            className={`rounded-2xl shadow-md bg-white p-4 w-full border-l-4 ${
+                                                isPriority ? "border-l-[#BE123C]" : "border-l-[#92400E]"
+                                            }`}
+                                        >
+                                            <div className="flex justify-between items-center mb-4 gap-3">
+                                                <h2 className="font-semibold text-[15px]">{reco.skillGap}</h2>
+                                                <div
+                                                    className={`text-[11px] font-medium py-1 px-3 border-2 ${
+                                                        isPriority
+                                                            ? "bg-[#FFF1F2] text-[#BE123C] border-[#BE123C]"
+                                                            : "bg-[#FFFBEB] text-[#92400E] border-[#92400E]"
+                                                    } rounded-full`}
+                                                >
+                                                    {reco.label}
+                                                </div>
                                             </div>
-                                            <div className="py-2">
-                                                <h3 className="text-green-600 font-bold text-[15px] mb-1">PRACTICE</h3>
-                                                <p className="text-[13px] text-justify">{reco.practice}</p>
+
+                                            <div className="w-full">
+                                                {/* LEARN */}
+                                                <div className="flex gap-3">
+                                                    <div className="flex flex-col items-center">
+                                                        <div className="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center shrink-0">
+                                                            <FaBookOpen size={16} className="text-blue-600" />
+                                                        </div>
+                                                        <div className="w-px flex-1 bg-gray-200 my-1"></div>
+                                                    </div>
+                                                    <div className="pb-4">
+                                                        <h3 className="text-blue-600 font-semibold text-[12px] uppercase tracking-wide mb-1">Learn</h3>
+                                                        <p className="text-[13px] text-gray-800">{reco.learn}</p>
+                                                    </div>
+                                                </div>
+
+                                                {/* PRACTICE */}
+                                                <div className="flex gap-3">
+                                                    <div className="flex flex-col items-center">
+                                                        <div className="w-8 h-8 rounded-full bg-amber-50 flex items-center justify-center shrink-0">
+                                                            <ImWrench size={16} className="text-amber-600" />
+                                                        </div>
+                                                        <div className="w-px flex-1 bg-gray-200 my-1"></div>
+                                                    </div>
+                                                    <div className="pb-4">
+                                                        <h3 className="text-amber-600 font-semibold text-[12px] uppercase tracking-wide mb-1">Practice</h3>
+                                                        <p className="text-[13px] text-gray-800">{reco.practice}</p>
+                                                    </div>
+                                                </div>
+
+                                                {/* SHOWCASE (last item, no connector line) */}
+                                                <div className="flex gap-3">
+                                                    <div className="flex flex-col items-center">
+                                                        <div className="w-8 h-8 rounded-full bg-green-50 flex items-center justify-center shrink-0">
+                                                            <BsAwardFill size={16} className="text-green-600" />
+                                                        </div>
+                                                    </div>
+                                                    <div>
+                                                        <h3 className="text-green-600 font-semibold text-[12px] uppercase tracking-wide mb-1">Showcase</h3>
+                                                        <p className="text-[13px] text-gray-800">{reco.proof}</p>
+                                                    </div>
+                                                </div>
                                             </div>
-                                            <div className="border-t-2 border-t-gray-300 py-2">
-                                                <h3 className="text-green-600 font-bold text-[15px] mb-1">SHOWCASE</h3>
-                                                <p className="text-[13px] text-justify">{reco.proof}</p>
-                                            </div>
-                                        </div>
-                                    </section>
-                                ))
-                            }
+                                        </section>
+                                    );
+                                })
+                            }                            
                         </div>
                     </div>
 

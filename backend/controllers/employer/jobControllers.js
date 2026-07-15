@@ -182,26 +182,28 @@ export async function getSpecificJob(req, res) {
 } 
 
 export async function updateJobInfo(req, res) {
-    try {
-        const { companyID, compMemID } = req.user;
-        const { jobID } = req.params;
-        
-        let {
-            jobTitle,
-            location,
-            workplaceOption,
-            workType,
-            payRangeFrom,
-            payRangeTo,
-            jobOverview,
-            jobDuties,
-            requiredQualifications,
-            preferredQualifications,
-            workingConditions,
-            jobBenefits,
-            yearsRequired
-        } = req.body;
+    const { companyID, compMemID } = req.user;
+    const { jobID } = req.params;
+    
+    let {
+        jobTitle,
+        location,
+        workplaceOption,
+        workType,
+        payRangeFrom,
+        payRangeTo,
+        jobOverview,
+        jobDuties,
+        requiredQualifications,
+        preferredQualifications,
+        workingConditions,
+        jobBenefits,
+        yearsRequired
+    } = req.body;
 
+    let connection;
+
+    try {
         jobDuties = normalizeQuillContent(jobDuties);
         requiredQualifications = normalizeQuillContent(requiredQualifications);
         preferredQualifications = normalizeQuillContent(preferredQualifications);
@@ -217,7 +219,26 @@ export async function updateJobInfo(req, res) {
             });
         }
 
-        await database.query(`
+        connection = await database.getConnection();
+        await connection.beginTransaction();
+
+        await connection.query(`
+            DELETE from jobSkillEmbeddings
+            WHERE jobID = ?
+            `,
+            [jobID]
+        );
+
+
+        await connection.query(`
+            DELETE from skillGapAnalysis
+            WHERE jobID = ?
+            `,
+            [jobID]
+        );
+
+
+        await connection.query(`
             UPDATE jobs
             SET
                 updatedByCompMemID = ?,
@@ -263,6 +284,8 @@ export async function updateJobInfo(req, res) {
             ]
         );
 
+        await connection.commit();
+
         processJob(jobID).catch((error) => {
             console.error("Job processing failed:", error);
         });
@@ -270,8 +293,19 @@ export async function updateJobInfo(req, res) {
         return res.status(200).json({message: "job updated successfully"});
 
     } catch (error) {
-        console.error(error);
-        return res.status(500).json({message: "Internal server occurred while updating job"});
+        if (connection) {
+            try {
+                await connection.rollback();
+            } catch (rollbackError) {
+                console.error("Failed to rollback transaction:", rollbackError);
+            }
+        }
+
+        console.error("Error in updateJobInfo:", error);
+        return res.status(500).json({ message: "Internal server error occurred while updating job" });
+
+    } finally {
+        if (connection) connection.release()
     }
 }
 
@@ -293,6 +327,30 @@ export async function closeJob(req, res) {
         );
 
         return res.status(200).json({ message: `Job ${jobID} has closed` })
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: "Closing job failed" });
+    }
+}
+
+export async function reOpenJob(req, res) {
+    const { jobID } = req.params
+    const { companyID, compMemID } = req.user
+
+    try {
+        await database.query(`
+            UPDATE jobs
+            SET 
+                status = 'open',
+                updatedByCompMemID = ?,
+                updatedAt = NOW()
+            WHERE jobID = ?
+            AND companyID = ?
+            `,
+            [compMemID, jobID, companyID]
+        );
+
+        return res.status(200).json({ message: `Job ${jobID} has open` })
     } catch (error) {
         console.error(error);
         return res.status(500).json({ message: "Closing job failed" });

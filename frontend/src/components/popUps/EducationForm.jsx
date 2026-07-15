@@ -62,34 +62,34 @@ export default function EducationForm({ toggleForm, refresh }) {
                     <div className="flex flex-col w-full mb-4">
                         <label htmlFor="title">Finished Program</label>
                         <input 
-                            className="w-full p-2 border border-gray-400 rounded-md mt-1"
                             type="text"
                             required
                             id="title"
                             value={educationInfo.courseName}
                             onChange={(e) => setEducationInfo({...educationInfo, courseName: e.target.value})}                       
+                            className="p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-green-600"
                         />
                     </div>
 
                     <div className="flex flex-col w-full mb-4">
                         <label htmlFor="company">Institution</label>
                         <input 
-                            className="w-full p-2 border border-gray-400 rounded-md mt-1"
                             type="text"
                             required
                             id="company"
                             value={educationInfo.institution}
                             onChange={(e) => setEducationInfo({...educationInfo, institution: e.target.value})}                       
+                            className="p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-green-600"
                         />
                     </div>
 
                     <div className="w-full mb-4 flex gap-2 items-center">
                         <input 
-                            className="w-4 h-4 border border-gray-400 rounded-md"
                             type="checkbox"
                             id="option"
                             checked={isChecked}
                             onChange={handleCheckboxChange}                   
+                            className="w-4 h-4 border border-gray-400 rounded-md"
                         />
                         <label htmlFor="option" className={isChecked ? "font-semibold duration-100 ease-out" : undefined}>Qaulification Complete</label>
                     </div>

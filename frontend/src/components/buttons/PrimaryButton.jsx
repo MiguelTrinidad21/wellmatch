@@ -10,7 +10,7 @@ export default function PrimaryButton({
     disabled
  }) {
 
-    const baseStyle = "box-border block text-center text-md text-white font-semibold bg-[#10B981] py-2 px-3 rounded-full active:scale-[0.98]";
+    const baseStyle = "cursor-pointer box-border block text-center text-md text-white font-semibold bg-[#10B981] py-2 px-3 rounded-full active:scale-[0.98]";
 
     if (to) {
         return (

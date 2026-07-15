@@ -1,6 +1,7 @@
 import { openai, skillExtractionPrompt, jobSkillExtractionSchema } from "../configs/openai.js";
 import database from "../configs/database.js";
 import { JSDOM } from "jsdom";
+import cleanEvidence from "../utils/cleanEvidence.js";
 
 
 function htmlToText(html) {
@@ -141,7 +142,7 @@ async function generateSkillsEmbeddings(extractedSkills) {
         for (const item of allSkills) {
             for (const eachSkill of item.acceptableSkills) {
                 embeddingInputs.push(eachSkill);
-                embeddingInputs.push(`${eachSkill}: ${item.evidence}`);
+                embeddingInputs.push(cleanEvidence(item.evidence));
             }
         }
 

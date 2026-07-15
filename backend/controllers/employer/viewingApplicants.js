@@ -43,7 +43,7 @@ export async function fetchApplicants(req, res) {
         [allApplicants] = await database.query(`
             SELECT a.*, s.overallScore, ap.firstName, ap.lastName
             FROM applications a
-            INNER JOIN skillGapAnalysis s
+            LEFT JOIN skillGapAnalysis s
                 ON a.jobID = s.jobID
                 AND a.resumeID = s.resumeID
             INNER JOIN applicants ap

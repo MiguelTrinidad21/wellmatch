@@ -17,8 +17,8 @@ export default function WarningBox({
             {error && <p className="text-sm text-red-600">{error}</p>}
 
             <div className="w-full flex justify-end gap-3">
-                <PrimaryButton onClick={() => action.toggleWarning(null)} className={`${isLoading && "disabled"} bg-[#F9FAFB] font-bold text-black!`}>Cancel</PrimaryButton>
-                <PrimaryButton className={`${isLoading && "disabled opacity-60"} text-white! bg-red-600`} onClick={action.closeJob}>
+                <PrimaryButton disabled={isLoading} onClick={() => action.toggleWarning(null)} className={`${isLoading ? "opacity-50 cursor-not-allowed" : undefined} bg-[#F9FAFB] font-bold text-black!`}>Cancel</PrimaryButton>
+                <PrimaryButton disabled={isLoading} className={`${isLoading ? "opacity-50 cursor-not-allowed" : undefined} text-white! bg-red-600`} onClick={action.closeJob}>
                     {isLoading ? 
                         <span className="flex items-center gap-2">
                             <BiLoaderAlt className="animate-spin text-white" size={20} />

@@ -156,7 +156,9 @@ export default function JobAppFinalStep() {
         try {
             await axios.post(`/api/applicant/submitApplication/${jobID}`, {
                 resumeID: resumeToAnalyze.resumeID,
-                yearsExp: selectedYears
+                yearsExp: selectedYears,
+                jobTitle: currentJob.jobTitle,
+                companyName: currentJob.companyName,
             },
             { withCredentials: true }
         )
@@ -222,7 +224,7 @@ export default function JobAppFinalStep() {
                         </div>
                     </div>
 
-                    <div className="bg-white shadow-lg rounded-2xl p-4 w-full md:max-w-120">
+                    <div className="bg-white shadow-lg rounded-2xl p-4 w-full md:max-w-120 md:p-8">
                         <h2 className="font-bold text-xl mb-3">Review WellMatch Profile</h2>
                         <p className="text-[12px] text-gray-500 mb-5 font-semibold md:text-sm">Your profile is part of your job application. Make sure you review it carefully.</p>
 

@@ -172,6 +172,8 @@ export default function ApplicantRegister() {
                 <PublicNavBar />
                 <Overlay />
 
+                {locationSuggestions.length > 0 && <div onClick={() => setLocationSuggestions([])} className="fixed top-0 left-0 w-full h-full"></div>}
+
                 {showPopUp && (
                     <>
                         <Translucent />
@@ -179,8 +181,8 @@ export default function ApplicantRegister() {
                     </>
                 )}
 
-                <form onSubmit={handleSubmit} className="m-auto w-full bg-white rounded-3xl shadow-lg p-6 md:w-100 ">
-                    <h2 className="text-center text-xl font-bold mb-5 md:text-2xl">Register Account</h2>
+                <form onSubmit={handleSubmit} className="m-auto w-full bg-white rounded-3xl shadow-lg p-6 md:w-100 lg:w-120">
+                    <h2 className="text-center text-xl font-bold mb-5 md:text-2xl">Create your Account</h2>
 
                     <label className="block font-medium mb-1" htmlFor="firstName">First Name</label>
                     <input 
@@ -190,7 +192,7 @@ export default function ApplicantRegister() {
                         onChange={(e) => setApplicantInfo({...applicantInfo, firstName: e.target.value})}
                         placeholder="Enter first name"
                         required
-                        className="p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-gray-600"
+                        className="p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-green-600"
                     />
 
                     <label className="block font-medium mb-1" htmlFor="lastName">Last Name</label>
@@ -201,7 +203,7 @@ export default function ApplicantRegister() {
                         onChange={(e) => setApplicantInfo({...applicantInfo, lastName: e.target.value})}
                         placeholder="Enter last name"
                         required
-                        className="p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-gray-600"
+                        className="p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-green-600"
                     />
 
                     <label className="block font-medium mb-1" htmlFor="address">Address</label>
@@ -214,7 +216,7 @@ export default function ApplicantRegister() {
                             placeholder="e.g. Tarlac City, Tarlac"
                             required
                             autoComplete="off"
-                            className="p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-gray-600 overflow-x-scroll"
+                            className="p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-green-600 overflow-x-scroll"
                         />
 
                         {isSearchingLocation && (
@@ -252,7 +254,7 @@ export default function ApplicantRegister() {
                         onChange={(e) => setApplicantInfo({...applicantInfo, email: e.target.value})}
                         placeholder="name@example.com"
                         required
-                        className={`p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-gray-600 ${errors.email ? "border-red-600 focus:border-red-600 mb-1!" : "border-gray-300"}`}
+                        className={`p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-green-600 ${errors.email ? "border-red-600 focus:border-red-600 mb-1!" : "border-gray-300"}`}
                     />
                     {errors.email && <p className="text-red-600 text-[13px] mb-4">* {errors.email}</p>}
 
@@ -265,7 +267,7 @@ export default function ApplicantRegister() {
                             onChange={(e) => setApplicantInfo({...applicantInfo, password: e.target.value})}
                             placeholder="Enter password"
                             required
-                            className={`p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-gray-600 ${errors.invalidPass ? "focus:border-red-600 border-red-600 mb-1!" : "border-gray-300"}`}
+                            className={`p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-green-600 ${errors.invalidPass ? "focus:border-red-600 border-red-600 mb-1!" : "border-gray-300"}`}
                         />
                         <div onClick={handlePass} className="absolute top-1/2 -translate-y-1/2 right-2">
                             {showPassword ? <FiEyeOff /> : <FiEye />}
@@ -282,7 +284,7 @@ export default function ApplicantRegister() {
                             onChange={(e) => setApplicantInfo({...applicantInfo, confirmPass: e.target.value})}
                             placeholder="Re-enter password"
                             required
-                            className={`p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-gray-600 ${errors.confirmPassword ? 'border-red-600 focus:border-red-600 mb-1!' : 'border-gray-300'}`}
+                            className={`p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-green-600 ${errors.confirmPassword ? 'border-red-600 focus:border-red-600 mb-1!' : 'border-gray-300'}`}
                         />
                         <div onClick={handleConfirmPass} className="absolute top-1/2 -translate-y-1/2 right-2">
                             {showConfirmPassword ? <FiEyeOff /> : <FiEye />}
@@ -292,7 +294,7 @@ export default function ApplicantRegister() {
                     
 
                     <h3 className="block font-medium mb-1">Resume</h3>
-                    <p className="text-gray-500 text-xs mb-2">Accepted file types: docx and pdf (5MB limit)</p>
+                    <p className="text-gray-500 text-xs mb-2 lg:text-sm">Accepted file types: docx and pdf (5MB limit)</p>
                     
                     {resumeFileName && (
                         <p className="mb-2 text-sm font-medium text-gray-700">
@@ -338,7 +340,7 @@ export default function ApplicantRegister() {
                     {errors.general && <p className="text-red-600 my-2 text-sm">{errors.general}</p>}
                 </form>
             </div>
-            <Footer />
+            {/* <Footer /> */}
         </>
     )
 }

@@ -1,6 +1,7 @@
 import brevo from "../../configs/brevo.js";
 import crypto from "crypto";
 import database from "../../configs/database.js";
+import "dotenv/config"
 
 export async function sendEmployerInvitationEmail(req, res) {
     const { email } = req.body;
