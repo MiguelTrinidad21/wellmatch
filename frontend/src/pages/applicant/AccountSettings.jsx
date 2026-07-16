@@ -8,11 +8,16 @@ import { ChangeEmailForm, ChangePasswordForm, DeleteAccountForm } from "../../co
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { userStore } from "../../zustand/userState";
+import { sideBarStore } from "../../zustand/stateHandlers";
 import axios from "axios";
+import { IoPersonSharp } from "react-icons/io5";
+import { GoShieldLock } from "react-icons/go";
+import { VscWarning } from "react-icons/vsc";
 
 export default function AccountSettings() {
     const navigate = useNavigate();
     const { currentUser, logoutUser } = userStore();
+    const { setApplicantActiveLink } = sideBarStore();
 
     const [verified, setVerified] = useState(false);
     const [loading, setLoading] = useState(true);
@@ -56,6 +61,10 @@ export default function AccountSettings() {
             navigate("/forbidden");
         }
     }, [loading, verified, navigate]);
+
+    useEffect(() => {
+        setApplicantActiveLink("Account Settings");
+    }, []);
     
     async function logout() {
         try {
@@ -136,28 +145,49 @@ export default function AccountSettings() {
                     />
                 }
 
-                <div className="w-full p-6 md:p-15">
-                    <h1 className="font-bold text-2xl text-center mb-10">Account Settings</h1>
+                <div className="w-full p-6 md:p-15 xl:px-30">
+                    <h1 className="font-bold text-2xl xl:text-3xl mb-1">Account Settings</h1>
+                    <p className="mb-10 xl:text-lg">Manage your email, password, and account preferences</p>
 
-                    <div className="w-full m-auto bg-white shadow-md p-4 rounded-xl mb-6 md:w-100">
-                        <div className="w-full flex justify-between items-center mb-3">
-                            <h2 className="font-bold text-lg">Email Address</h2>
-                            <PrimaryButton onClick={() => setOpenChangeEmail(true)}>Change</PrimaryButton>
+                    <div className="w-full xl:w-150 xl:p-8 bg-white shadow-md p-4 rounded-xl m-auto md:mx-0 mb-6 md:w-120">
+                        <div className="flex gap-4 mb-4 items-center text-gray-800">
+                            <IoPersonSharp size={20} />
+                            <h1 className="text-[22px] xl:text-2xl text-gray-800 font-bold">Account</h1>
                         </div>
-                        <p className="text-gray-500 font-medium">{currentUser.email}</p> 
+                        
+                        <h2 className="font-semibold text-lg xl:text-xl xl:mb-1 text-gray-700">Email Address</h2>
+                        <p className="text-gray-500 font-medium xl:text-lg mb-5">{currentUser.email}</p>
+
+                        <div className="flex justify-end">
+                            <PrimaryButton onClick={() => setOpenChangeEmail(true)} className="rounded-lg">Update Email</PrimaryButton>
+                        </div>
+                        
                     </div>
 
-                    <div className="w-full m-auto bg-white shadow-md p-4 rounded-xl mb-6 flex md:w-100">
-                        <div className="w-full flex justify-between items-center">
-                            <h2 className="font-bold text-lg">Password</h2>
-                            <PrimaryButton onClick={() => setOpenChangePassword(true)}>Change</PrimaryButton>
+                    <div className="w-full md:w-120 xl:w-150 xl:p-8 bg-white shadow-md p-4 rounded-xl m-auto md:mx-0 mb-6">
+                        <div className="flex gap-4 mb-4 items-center text-gray-800">
+                            <GoShieldLock size={25} />
+                            <h1 className="text-[22px] text-gray-800 font-bold">Security</h1>
+                        </div>
+
+                        <h2 className="font-semibold xl:text-xl xl:mb-1 text-lg text-gray-700">Password</h2>
+                        <p className="mb-5">&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;</p>
+
+                        <div className="flex justify-end">
+                            <PrimaryButton onClick={() => setOpenChangePassword(true)} className="rounded-lg">Update Password</PrimaryButton>
                         </div>
                     </div>
 
-                    <div className="w-full m-auto bg-white shadow-md p-4 rounded-xl md:w-100">
-                        <div className="w-full flex justify-between items-center">
-                            <h2 className="font-bold text-lg">Delete Account</h2>
-                            <PrimaryButton onClick={() => setOpenDelAccount(true)} className="bg-red-600 px-5">Delete</PrimaryButton>
+
+                    <div className="w-full xl:w-150 xl:p-8 border border-red-600 bg-[#FFF1F2] shadow-md p-4 m-auto md:mx-0 rounded-xl md:w-120">
+                        <div className="flex gap-4 mb-4 items-center text-red-900">
+                            <VscWarning size={25} />
+                            <h1 className="text-[22px] font-bold">Delete Account</h1>
+                        </div>
+                        <p>Permanently delete your account.</p>
+                        <p className="mb-5">This action cannot be undone.</p>
+                        <div className="flex justify-end">                            
+                            <PrimaryButton onClick={() => setOpenDelAccount(true)} className="bg-red-600 px-5 rounded-lg">Delete Account</PrimaryButton>
                         </div>
                     </div>
                 </div>
