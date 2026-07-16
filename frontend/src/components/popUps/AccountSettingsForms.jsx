@@ -79,7 +79,7 @@ export function ChangeEmailForm({ toggleForm, confirmFunc }) {
                         onChange={(e) => setCredentials({...credentials, email: e.target.value})}
                         required
                         placeholder="Enter new email address"
-                        className={`p-2 rounded-md block w-full border-2 border-gray-300 mb-5 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-gray-600 ${errors.sameEmail ? "border-red-600 focus:border-red-600 mb-1!" : "border-gray-300"}`}
+                        className={`p-2 rounded-md block w-full border-2 border-gray-300 mb-5 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-green-600 ${errors.sameEmail ? "border-red-600 focus:border-red-600 mb-1!" : "border-gray-300"}`}
                     />
                     {errors.sameEmail && <p className="text-sm text-red-600 mb-5">{errors.sameEmail}</p>}
 
@@ -92,7 +92,7 @@ export function ChangeEmailForm({ toggleForm, confirmFunc }) {
                             onChange={(e) => setCredentials({...credentials, password: e.target.value})}
                             required
                             placeholder="Enter current password"
-                            className={`p-2 rounded-md block w-full border-2 border-gray-300 mb-5 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-gray-600 ${errors.password ? "border-red-600 focus:border-red-600 mb-1!" : "border-gray-300"}`}
+                            className={`p-2 rounded-md block w-full border-2 border-gray-300 mb-5 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-green-600 ${errors.password ? "border-red-600 focus:border-red-600 mb-1!" : "border-gray-300"}`}
                         />
                         {
                             showPassword ?
@@ -211,7 +211,7 @@ export function ChangePasswordForm({ toggleForm, confirmFunc }) {
                             onChange={(e) => setCredentials({...credentials, currentPassword: e.target.value})}
                             required
                             placeholder="Enter current password"
-                            className={`p-2 rounded-md block w-full border-2 border-gray-300 mb-5 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-gray-600 ${errors.incorrectPass ? "border-red-600 focus:border-red-600 mb-1!" : "border-gray-300"}`}
+                            className={`p-2 rounded-md block w-full border-2 border-gray-300 mb-5 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-green-600 ${errors.incorrectPass ? "border-red-600 focus:border-red-600 mb-1!" : "border-gray-300"}`}
                         />
                         {
                             showCurrPassword ?
@@ -240,7 +240,7 @@ export function ChangePasswordForm({ toggleForm, confirmFunc }) {
                             onChange={(e) => setCredentials({...credentials, newPassword: e.target.value})}
                             required
                             placeholder="Enter new password"
-                            className={`p-2 rounded-md block w-full border-2 border-gray-300 mb-5 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-gray-600 ${errors.invalidPass ? "border-red-600 focus:border-red-600 mb-1!" : "border-gray-300"}`}
+                            className={`p-2 rounded-md block w-full border-2 border-gray-300 mb-5 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-green-600 ${errors.invalidPass ? "border-red-600 focus:border-red-600 mb-1!" : "border-gray-300"}`}
                         />
                         {
                             showNewPassword ?
@@ -268,7 +268,7 @@ export function ChangePasswordForm({ toggleForm, confirmFunc }) {
                             onChange={(e) => setCredentials({...credentials, retypePassword: e.target.value})}
                             required
                             placeholder="Confirm new password"
-                            className={`p-2 rounded-md block w-full border-2 border-gray-300 mb-5 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-gray-600 ${errors.notMatch ? "border-red-600 focus:border-red-600 mb-1!" : "border-gray-300"}`}
+                            className={`p-2 rounded-md block w-full border-2 border-gray-300 mb-5 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-green-600 ${errors.notMatch ? "border-red-600 focus:border-red-600 mb-1!" : "border-gray-300"}`}
                         />
                         {
                             showRetypePassword ?
@@ -378,7 +378,7 @@ export function DeleteAccountForm({ toggleForm, confirmFunc }) {
                             onChange={(e) => setCredentials({...credentials, email: e.target.value})}
                             required
                             placeholder="Enter email address"
-                            className={`p-2 rounded-md block w-full border-2 border-gray-300 mb-5 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-gray-600 ${errors.email ? "border-red-600 focus:border-red-600 mb-1!" : "border-gray-300"}`}
+                            className={`p-2 rounded-md block w-full border-2 border-gray-300 mb-5 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-green-600 ${errors.email ? "border-red-600 focus:border-red-600 mb-1!" : "border-gray-300"}`}
                         />
                     </div>
                     {errors.email && <p className="text-[13px] text-red-600 mb-5">{errors.email}</p>}
@@ -393,7 +393,7 @@ export function DeleteAccountForm({ toggleForm, confirmFunc }) {
                             onChange={(e) => setCredentials({...credentials, password: e.target.value})}
                             required
                             placeholder="Enter password"
-                            className={`p-2 rounded-md block w-full border-2 border-gray-300 mb-5 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-gray-600 ${errors.password ? "border-red-600 focus:border-red-600 mb-1!" : "border-gray-300"}`}
+                            className={`p-2 rounded-md block w-full border-2 border-gray-300 mb-5 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-green-600 ${errors.password ? "border-red-600 focus:border-red-600 mb-1!" : "border-gray-300"}`}
                         />
                         {
                             showPassword ?
