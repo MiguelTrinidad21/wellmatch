@@ -1,6 +1,6 @@
 import AuthNavBar from "../../components/navBars/AuthNavBar";
-import Overlay from "../../components/overlay/OverlayMobile";
-import Footer from "../../components/others/Footer"
+import ApplicantSideBar from "../../components/navBars/ApplicantSideBar";
+import SideBarOverlay from "../../components/overlay/SideBarOverlay";
 import Loading from "../../components/others/Loading"
 import PrimaryButton from "../../components/buttons/PrimaryButton";
 import SecondaryButton from "../../components/buttons/SecondaryButton"
@@ -13,8 +13,10 @@ import { FaRegBuilding } from "react-icons/fa6";
 import { AiOutlineLaptop } from "react-icons/ai";
 import { TbBuildingCommunity } from "react-icons/tb";
 import { userStore } from "../../zustand/userState";
+import { locationStore } from "../../zustand/stateHandlers";
+import { jobInfoStore } from "../../zustand/stateHandlers";
 import { useState, useEffect } from "react";
-import { useNavigate, Link, useParams } from "react-router-dom";
+import { useNavigate, Link, useParams, useLocation } from "react-router-dom";
 import axios from "axios";
 
 
@@ -22,12 +24,15 @@ export default function ViewJobInfo() {
     const navigate = useNavigate();
     const { jobID } = useParams();
     const { currentUser } = userStore();
+    const { isJobSaved, setIsJobSaved } = jobInfoStore();
+    const { setPrevLocation } = locationStore();
+
+    const location = useLocation();
 
     const [verified, setVerified] = useState(false);
     const [loading, setLoading] = useState(true);
     const [selectedJob, setSelectedJob] = useState({});
 
-    const [isJobSaved, setIsJobSaved] = useState(false);
     const [savedJobIDs, setSavedJobIDs] = useState(new Set());
 
     useEffect(() => {
@@ -94,6 +99,11 @@ export default function ViewJobInfo() {
         fetchSavedJobs();
     }, [isJobSaved])
 
+    function goNext(jobID) {
+        setPrevLocation(location.pathname);
+        navigate(`/applicant/viewJob/${jobID}/apply`);
+    }
+
     async function saveJob(jobID) {
         try {
             await axios.post("/api/applicant/saveJob", { jobID }, {
@@ -128,10 +138,12 @@ export default function ViewJobInfo() {
     }
 
     return (
-        <>
+        <div className="lg:flex relative w-full">
+            <ApplicantSideBar />
+            <SideBarOverlay />
+
             <div className="w-full min-h-full bg-[#F3F4F6] relative">
                 <AuthNavBar />
-                <Overlay />
 
                 <div className="w-full p-6 md:p-15">
 
@@ -177,13 +189,15 @@ export default function ViewJobInfo() {
                                 </div>
                             </div>
                             <div>
-                                <PrimaryButton to={`/applicant/viewJob/${jobID}/apply`} className="w-full mb-2">Apply Now</PrimaryButton>
+                                <PrimaryButton onClick={() => goNext(jobID)} className="w-full mb-2">Apply Now</PrimaryButton>
                                 {
                                     savedJobIDs.has(selectedJob.jobID) ?
                                         <SecondaryButton onclick={() => unsaveJob(selectedJob.jobID)} className="w-full py-2 font-bold! border-none bg-green-100">Saved</SecondaryButton>
                                     :
                                         <SecondaryButton onclick={() => saveJob(selectedJob.jobID)} className="w-full py-2 font-bold!">Save</SecondaryButton>
                                 }
+
+                            
                                 
                             </div>
                         </div>
@@ -251,7 +265,6 @@ export default function ViewJobInfo() {
 
             </div>
 
-            <Footer />
-        </>
+        </div>
     )
 }

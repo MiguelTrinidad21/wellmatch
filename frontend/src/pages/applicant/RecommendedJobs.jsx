@@ -4,6 +4,7 @@ import Loading from "../../components/others/Loading"
 import PrimaryButton from "../../components/buttons/PrimaryButton";
 import SecondaryButton from "../../components/buttons/SecondaryButton"
 import ApplicantSideBar from "../../components/navBars/ApplicantSideBar";
+import JobInfoSide from "../../components/popUps/JobInfoSide";
 import defaultPhoto from "../../assets/defaultCover.jpg"
 import { LuBriefcase } from "react-icons/lu";
 import { MdOutlineLocationOn } from "react-icons/md";
@@ -15,17 +16,21 @@ import { BiLoaderAlt } from "react-icons/bi";
 import { userStore } from "../../zustand/userState";
 import { jobSearchStore } from "../../zustand/jobSearching";
 import { sideBarStore } from "../../zustand/stateHandlers";
+import { jobInfoStore } from "../../zustand/stateHandlers";
+import { locationStore } from "../../zustand/stateHandlers";
 import { FaRegBuilding } from "react-icons/fa6";
 import { AiOutlineLaptop } from "react-icons/ai"
 import { TbBuildingCommunity } from "react-icons/tb";
 import { useState, useEffect, useCallback, useRef } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useLocation } from "react-router-dom";
+import useIsDesktop from "../../hooks/useIsDesktop"; 
 import axios from "axios";
 import ReactPaginateModule from "react-paginate";
 
 
 export default function RecommendedJobs() {
     const ReactPaginate = ReactPaginateModule.default || ReactPaginateModule;
+    const isDesktop = useIsDesktop();
     
     const locationFieldRef = useRef(null);
     const rightColScrollRef = useRef(null);
@@ -37,7 +42,20 @@ export default function RecommendedJobs() {
 
     const navigate = useNavigate();
     const { currentUser } = userStore();
+    const { setPrevLocation } = locationStore();
     const { setApplicantActiveLink } = sideBarStore();
+
+    const { 
+        displayJob, 
+        setDisplayJob, 
+        jobInfo, 
+        setJobInfo, 
+        savedJobIDs, 
+        isJobSaved, 
+        setIsJobSaved,
+        setSavedJobIDs
+    } = jobInfoStore();
+
     const { 
         jobSearchResults, 
         setJobSearchResults, 
@@ -45,27 +63,11 @@ export default function RecommendedJobs() {
         setJobSearch
     } = jobSearchStore();
 
+    const location = useLocation();
     const [verified, setVerified] = useState(false);
     const [loading, setLoading] = useState(true);
     const [recommendedJobs, setRecommendedJobs] = useState([]);
-    const [jobInfo, setJobInfo] = useState({
-        jobID: null,
-        coverPhotoURL: "",
-        profilePhotoURL: "",
-        jobTitle: "",
-        companyName: "",
-        location: "",
-        workType: "",
-        workPlaceOption: "",
-        minSalary: "",
-        maxSalary: "",
-        jobOverview: "",
-        jobDuties: "",
-        requiredQualifications: "",
-        preferredQualifications: "",
-        workingConditions: "",
-        jobBenefits: "",
-    });
+
     const [resumeStatus, setResumeStatus] = useState("");
     const [isSearchingJob, setIsSearchingJob] = useState(false);
 
@@ -78,9 +80,6 @@ export default function RecommendedJobs() {
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(0);
     const [totalJobs, setTotalJobs] = useState(0);
-
-    const [isJobSaved, setIsJobSaved] = useState(false);
-    const [savedJobIDs, setSavedJobIDs] = useState(new Set());
 
     const jobsPerPage = 10;
 
@@ -213,6 +212,49 @@ export default function RecommendedJobs() {
         fetchSavedJobs();
     }, [isJobSaved])
 
+    function displayJobInfo(
+        jobID,
+        coverPhotoURL,
+        profilePhotoURL,
+        jobTitle,
+        companyName,
+        location,
+        workType,
+        workPlaceOption,
+        minSalary,
+        maxSalary,
+        jobOverview,
+        jobDuties,
+        requiredQualifications,
+        preferredQualifications,
+        workingConditions,
+        jobBenefits
+    ) {
+        setJobInfo({
+            jobID,
+            coverPhotoURL,
+            profilePhotoURL,
+            jobTitle,
+            companyName,
+            location,
+            workType,
+            workPlaceOption,
+            minSalary,
+            maxSalary,
+            jobOverview,
+            jobDuties,
+            requiredQualifications,
+            preferredQualifications,
+            workingConditions,
+            jobBenefits
+        });
+
+        setDisplayJob()
+        if (!isDesktop) {
+            navigate(`/applicant/viewJob/${jobID}`);
+        }
+    }
+
     async function saveJob(jobID) {
         try {
             await axios.post("/api/applicant/saveJob", { jobID }, {
@@ -237,8 +279,6 @@ export default function RecommendedJobs() {
             console.log(error);
         }
     }
-
-
     
 
     function handleSelectLocation(place) {
@@ -260,6 +300,18 @@ export default function RecommendedJobs() {
     function handlePageClick(event) {
         const selectedPage = event.selected + 1;
         fetchRecommendedJobs(selectedPage);
+    }
+
+    function goNext(jobID) {
+        setPrevLocation(location.pathname);
+        navigate(`/applicant/viewJob/${jobID}/apply`);
+        setDisplayJob();
+    }
+
+    function goToAnalysis(jobID) {
+        setPrevLocation(previousLocation.pathname);
+        navigate(`/applicant/viewJob/${jobID}/chooseFile`);
+        setDisplayJob();
     }
 
 
@@ -345,12 +397,10 @@ export default function RecommendedJobs() {
         <div className="lg:flex relative w-full">
             <ApplicantSideBar />
             <SideBarOverlay />
+            <JobInfoSide display={displayJob} />
             
             <div className="w-full min-h-screen bg-[#F3F4F6] relative">
                 <AuthNavBar />
-                {/* <Overlay /> */}
-
-                {/* <div onClick={() => setLocationSuggestions([])} className="fixed top-0 left-0 w-full h-screen"></div> */}
 
                 <div className="w-full bg-linear-to-t from-[#098B5F] to-[#10B981] flex items-center justify-center flex-col p-6 md:px-15 lg:p-10 xl:p-20">
                     <h1 className="text-xl font-bold text-white mb-5 md:text-3xl lg:text-4xl lg:mb-10 xl:text-5xl">Find jobs that match your skills</h1>
@@ -454,7 +504,7 @@ export default function RecommendedJobs() {
                                     <div className="w-full xl:grid xl:grid-cols-2 xl:gap-5">
                                         {/* Tihs is the left column */}
                                         <div ref={leftColRef} className="flex flex-col gap-6 w-full">
-                                            <div className="w-full grid grid-cols-1 gap-6 lg:grid-cols-2 xl:grid-cols-1 lg:gap-6">
+                                            <div className="w-full grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-1 lg:gap-6">
                                                 {recommendedJobs.map((job) => {
                                                     return (
                                                         <div 
@@ -514,7 +564,30 @@ export default function RecommendedJobs() {
                                                                     />
                                                             }                                                        
 
-                                                            <PrimaryButton to={`/applicant/viewJob/${job.jobID}`} className="w-full mt-auto xl:hidden">View Job Description</PrimaryButton>
+                                                            <PrimaryButton 
+                                                                onClick={() => displayJobInfo(
+                                                                    job.jobID,
+                                                                    job.coverPhotoURL,
+                                                                    job.profilePhotoURL,
+                                                                    job.jobTitle,
+                                                                    job.companyName,
+                                                                    job.location,
+                                                                    job.workType,
+                                                                    job.workPlaceOption,
+                                                                    job.minSalary,
+                                                                    job.maxSalary,
+                                                                    job.jobOverview,
+                                                                    job.jobDuties,
+                                                                    job.requiredQualifications,
+                                                                    job.preferredQualifications,
+                                                                    job.workingConditions,
+                                                                    job.jobBenefits
+                                                                )} 
+                                                                className="w-full mt-auto xl:hidden"
+                                                            >
+                                                                View Job Description
+                                                            </PrimaryButton>
+                                                        
                                                         </div>
                                                     )
                                                 })}
@@ -569,7 +642,15 @@ export default function RecommendedJobs() {
                                                                         alt="profile photo"
                                                                         className="w-25 object-cover rounded-sm md:rounded-xl md:w-30"
                                                                     />
-                                                                    <PrimaryButton to={`/applicant/viewJob/${jobInfo.jobID}/chooseFile`} className="absolute top-0 right-0 text-black! bg-green-300 hover:bg-green-400 transition-colors duration-200 ease-in rounded-lg px-5 max-w-[60%] text-center whitespace-normal text-sm">View Skill Gap Analysis</PrimaryButton>
+                                                                    <PrimaryButton 
+                                                                        onClick={() => {
+                                                                            setPrevLocation(location.pathname);
+                                                                            navigate(`/applicant/viewJob/${jobInfo.jobID}/chooseFile`);
+                                                                        }} 
+                                                                        className="absolute top-0 right-0 text-black! bg-green-300 hover:bg-green-400 transition-colors duration-200 ease-in rounded-lg px-5 max-w-[60%] text-center whitespace-normal text-sm"
+                                                                    >
+                                                                        View Skill Gap Analysis
+                                                                    </PrimaryButton>
                                                                 </div>
                                                                 <div className="w-full mb-4">
                                                                     <h1 className="text-xl font-bold">{jobInfo.jobTitle}</h1>
@@ -595,7 +676,15 @@ export default function RecommendedJobs() {
                                                                     </div>
                                                                 </div>
                                                                 <div className="lg:flex lg:gap-3">
-                                                                    <PrimaryButton to={`/applicant/viewJob/${jobInfo.jobID}/apply`} className="w-full mb-2 lg:mb-0">Apply Now</PrimaryButton>
+                                                                    <PrimaryButton 
+                                                                        onClick={() => {
+                                                                            setPrevLocation(location.pathname);
+                                                                            navigate(`/applicant/viewJob/${jobInfo.jobID}/apply`);
+                                                                        }} 
+                                                                        className="w-full mb-2 lg:mb-0"
+                                                                    >
+                                                                        Apply Now
+                                                                    </PrimaryButton>
                                                                     {
                                                                         savedJobIDs.has(jobInfo.jobID) ?
                                                                             <SecondaryButton onclick={() => unsaveJob(jobInfo.jobID)} className="w-full py-2 font-bold! border-none bg-green-100 lg:py-0">Saved</SecondaryButton>

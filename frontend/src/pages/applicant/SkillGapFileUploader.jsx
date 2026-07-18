@@ -1,23 +1,30 @@
 import AuthNavBar from "../../components/navBars/AuthNavBar";
-import Overlay from "../../components/overlay/OverlayMobile";
-import Footer from "../../components/others/Footer"
+import SideBarOverlay from "../../components/overlay/SideBarOverlay";
+import ApplicantSideBar from "../../components/navBars/ApplicantSideBar";
 import Loading from "../../components/others/Loading"
 import PrimaryButton from "../../components/buttons/PrimaryButton";
+import Tooltip from "../../components/others/Tooltip";
 import { IoMdInformationCircleOutline } from "react-icons/io";
 import { IoChevronDown } from "react-icons/io5";
 import { FiUpload } from "react-icons/fi";
 import { BiLoaderAlt } from "react-icons/bi";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate, Link, useParams } from "react-router-dom";
 import { userStore } from "../../zustand/userState";
 import { resumeStore } from "../../zustand/skillGapResume";
+import { locationStore } from "../../zustand/stateHandlers";
+import { tooltipStore } from "../../zustand/stateHandlers";
 import axios from "axios";
 
 
 
 export default function SkillGapFileUploader() {
+    const tooltipRef = useRef(null);
+
     const navigate = useNavigate();
     const { currentUser } = userStore();
+    const {showTip, setShowTip} = tooltipStore();
+    const { prevLocation } = locationStore();
     const {
         resumeToAnalyze,
         selectedOption,
@@ -91,6 +98,17 @@ export default function SkillGapFileUploader() {
         getAllResumes();
     }, []);
 
+    useEffect(() => {
+        function handleClickOutside(e) {
+            if (tooltipRef.current && !tooltipRef.current.contains(e.target)) {
+                if (showTip) setShowTip(false);
+            }
+        }
+
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, [showTip])
+
 
     async function executeSkillGapAnalysis() {
         if (!selectedResume && !uploadedResume) {
@@ -115,7 +133,7 @@ export default function SkillGapFileUploader() {
                 const uploadedResumeData = uploadResponse.data.resumeToAnalyze;
                 setResumeToAnalyze(uploadedResumeData);
                 setErrors({issue: ""})
-                navigate(`/applicant/viewJob/${jobID}/${resumeToAnalyze.resumeID}/skillGapReport`);
+                navigate(`/applicant/viewJob/${jobID}/${uploadedResumeData.resumeID}/skillGapReport`);
             }
             
         } catch (error) {
@@ -142,30 +160,35 @@ export default function SkillGapFileUploader() {
 
 
     return (
-        <>
+        <div className="lg:flex relative w-full">
+            <ApplicantSideBar />
+            <SideBarOverlay />
+
             <div className="w-full min-h-screen bg-[#F3F4F6] relative">
                 <AuthNavBar />
-                <Overlay />
                 
-                <div className="w-full min-h-[calc(100vh-64px)] p-6 flex flex-col justify-center items-center gap-5 md:px-15">
-                    <div className="relative w-full flex items-center justify-center gap-3">
+                <div className="w-full min-h-[calc(100vh-64px)] p-6 flex flex-col justify-center items-center gap-5 md:py-0 md:px-15">
+                    <div ref={tooltipRef} className="relative w-full flex items-center justify-center gap-3">
                         <h1 className="inline font-bold text-xl ">Skill Gap Analysis</h1>
-                        <IoMdInformationCircleOutline size={20} />
+                        {/* <IoMdInformationCircleOutline className="cursor-pointer" size={20} /> */}
+                        <Tooltip
+                            text="Uses AI to compare your resume with the job requirements, identifying your matched skills, skill gaps, qualification score, and recommended learning opportunities."
+                            className="bottom-auto! left-7 md:left-1/2 text-sm! top-full z-50 w-65"
+                            />
                     </div>
 
-                    <div className="bg-white shadow-md rounded-2xl p-6 w-full md:w-100">
+                    <div className="bg-white shadow-md rounded-2xl p-6 w-full md:w-100 lg:w-120">
                         <h2 className="font-semibold text-lg mb-3">Choose Resume</h2>
-                        <p className="text-sm mb-3 text-gray-400">
-                            Click{" "}
+                        <p className="text-sm mb-3 text-gray-500">
                             <a
                                 href="/2025-template_bullet.docx"
                                 download="2025-template_bullet.docx"
                                 rel="noopener noreferrer"
                                 className="text-blue-600"
                             >
-                                here
+                                Download
                             </a>{" "}
-                            to download our recommended resume template to ensure your skills are accurately matched.
+                            our recommended resume template, or use a similar layout for more accurate skill matching
                         </p>
 
                         <div className="flex flex-col gap-4 mb-5">
@@ -283,7 +306,7 @@ export default function SkillGapFileUploader() {
                         {errors.issue && <p className="text-center text-sm text-red-600 mb-3">{errors.issue}</p>}
 
                         <div className="w-full flex justify-between">
-                            <PrimaryButton to={`/applicant/viewJob/${jobID}`} className="bg-gray-200 text-black! border-2 border-gray-400">Cancel</PrimaryButton>
+                            <PrimaryButton to={prevLocation} className="bg-gray-200 text-black! border-2 border-gray-400">Cancel</PrimaryButton>
                             <PrimaryButton disabled={isUploading} onClick={executeSkillGapAnalysis} className={`px-4 ${isUploading && "opacity-50"}`}>
                                 {isUploading ? 
                                     <span className="flex gap-2 items-center justify-center">
@@ -299,7 +322,6 @@ export default function SkillGapFileUploader() {
                 </div>
             </div>
 
-            <Footer />
-        </>
+        </div>
     )
 }

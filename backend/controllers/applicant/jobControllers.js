@@ -399,9 +399,19 @@ export async function getAllSavedJobs(req, res) {
                 s.*,
                 j.jobID,
                 j.jobTitle,
-                j.location,
                 j.jobOverview,
-                c.companyName
+                j.jobDuties,
+                j.requiredQualifications,
+                j.preferredQualifications,
+                j.workingConditions,
+                j.jobBenefits,
+                j.location,
+                j.workPlaceOption,
+                j.workType,
+                j.minSalary,
+                j.maxSalary,
+                c.companyName,
+                c.profilePhotoURL
             FROM savedJobs s
             INNER JOIN jobs j
                 ON s.jobID = j.jobID

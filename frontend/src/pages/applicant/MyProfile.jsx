@@ -391,7 +391,10 @@ export default function MyProfile() {
                         </div>
                         <div className="w-full">
                             {   
-                                workExp?.length === 0 ? <p className="text-gray-600 font-medium mb-2 text-center md:text-left">Add your previous work experience</p>
+                                workExp?.length === 0 ?
+                                <div className="text-gray-600 font-medium mb-2 flex items-center justify-center p-8 rounded-2xl md:text-left border-2 border-gray-500 border-dashed w-full">
+                                    No work experience added yet
+                                </div>                                
                             :
                                 <div className="w-full flex flex-col gap-5 md:grid md:grid-cols-2 md:gap-5">
                                     {workExp?.map((work) => (
@@ -403,7 +406,7 @@ export default function MyProfile() {
                                                 setWorkExpID(work.workExpID);
                                                 toggleWarning(setDeleteWorkExp);
                                             }} className="absolute bottom-5 right-4 cursor-pointer">
-                                                <FaTrashCan className="text-red-600" size={20} />
+                                                <FaTrashCan className="text-gray-500 hover:text-red-600 transition-colors duration-200 ease-out" size={20} />
                                             </button>
                                         </div>
                                     ))}
@@ -430,7 +433,10 @@ export default function MyProfile() {
                         </div>
                         <div className="w-full">
                             {   
-                                credentials?.length === 0 ? <p className="text-gray-600 font-medium mb-2 text-center md:text-left">Add your certifications</p>
+                                credentials?.length === 0 ? 
+                                <div className="text-gray-600 font-medium mb-2 flex items-center justify-center p-8 rounded-2xl md:text-left border-2 border-gray-500 border-dashed w-full">
+                                    No certification/license added yet
+                                </div>                                
                             :
                                 <div className="w-full flex flex-col gap-5 md:grid md:grid-cols-2 md:gap-5">
                                     {credentials?.map((cred) => (
@@ -442,7 +448,7 @@ export default function MyProfile() {
                                                 setCredID(cred.credentialID);
                                                 toggleWarning(setDeleteCredential);
                                             }} className="absolute bottom-5 right-4 cursor-pointer">
-                                                <FaTrashCan className="text-red-600" size={20} />
+                                                <FaTrashCan className="text-gray-500 hover:text-red-600 transition-colors duration-200 ease-out" size={20} />
                                             </button>
                                         </div>
                                     ))}
@@ -469,7 +475,10 @@ export default function MyProfile() {
                         </div>
                         <div className="w-full">
                             {   
-                                education?.length === 0 ? <p className="text-gray-600 font-medium mb-2 text-center md:text-left">Add education</p>
+                                education?.length === 0 ? 
+                                <div className="text-gray-600 font-medium mb-2 flex items-center justify-center p-8 rounded-2xl md:text-left border-2 border-gray-500 border-dashed w-full">
+                                    No education added yet
+                                </div>
                             :
                                 <div className="w-full flex flex-col gap-5 md:grid md:grid-cols-2 md:gap-5">
                                     {education?.map((item) => (
@@ -481,7 +490,7 @@ export default function MyProfile() {
                                                 setEducID(item.educationID);
                                                 toggleWarning(setDeleteEduc);
                                             }} className="absolute bottom-5 right-4 cursor-pointer">
-                                                <FaTrashCan className="text-red-600" size={20} />
+                                                <FaTrashCan className="text-gray-500 hover:text-red-600 transition-colors duration-200 ease-out" size={20} />
                                             </button>
                                         </div>
                                     ))}
@@ -506,7 +515,10 @@ export default function MyProfile() {
                         </div>
                         <div className="w-full">
                             {   
-                                resumes?.length === 0 ? <p className="text-gray-600 font-medium mb-2 text-center md:text-left">Add a new resumé</p>
+                                resumes?.length === 0 ? 
+                                <div className="text-gray-600 font-medium mb-2 flex items-center justify-center p-8 rounded-2xl md:text-left border-2 border-gray-500 border-dashed w-full">
+                                    No resumé added yet
+                                </div>                                
                             :
                                 <div className="w-full flex flex-col gap-5 md:grid md:grid-cols-2 md:gap-5">
                                     {resumes?.map((item) => (
@@ -517,14 +529,17 @@ export default function MyProfile() {
                                             }`}
                                         >
                                             {
-                                                item.isDefault == 1 && 
-                                                <div className="mb-2 px-3 rounded-sm bg-[#F0FDF4] w-fit border-2 border-[#4A9E69]">
-                                                    <p className="text-[#4A9E69] font-semibold text-sm">Default</p>
-                                                </div>
+                                                item.isDefault == 1 ?
+                                                    <div className="mb-2 h-6 px-3 rounded-sm bg-[#F0FDF4] w-fit border-2 border-[#4A9E69]">
+                                                        <p className="text-[#4A9E69] font-semibold text-sm">Default</p>
+                                                    </div>
+                                                :
+                                                    <div className="h-6"></div>
                                             }
-                                            <h2 className="font-bold mb-1 text-lg">{item.origFileName}</h2>
+                                            <h2 className="font-bold mb-1 text-lg">{item.origFileName.replace(/\.(pdf|docx)$/i, "")}</h2>
+                                            <p className="text-gray-500 font-medium text-sm">{item.origFileName}</p>
 
-                                            <div className="absolute top-1/2 -translate-y-1/2 right-4">
+                                            <div className="absolute top-4  right-4">
                                                 <div className="relative">
                                                     <FaEllipsisVertical 
                                                         onClick={() => {
@@ -545,7 +560,7 @@ export default function MyProfile() {
                                                                         makeResumeDefault(item.resumeID);
                                                                         setShowResumeMenu(false);
                                                                     }}
-                                                                    className="text-green-600 font-semibold flex flex-row gap-3 items-center justify-start"
+                                                                    className="cursor-pointer text-green-600 font-semibold flex flex-row gap-3 items-center justify-start"
                                                                 >
                                                                     <FaCheck />
                                                                     <p>Make default</p>
@@ -556,7 +571,7 @@ export default function MyProfile() {
                                                                     setResumeID(item.resumeID);
                                                                     toggleWarning(setDeleteResume);
                                                                 }}
-                                                                className="text-red-600 font-semibold flex flex-row gap-3 justify-start items-center "
+                                                                className="cursor-pointer text-red-600 font-semibold flex flex-row gap-3 justify-start items-center "
                                                             >
                                                                 <FaTrashCan />
                                                                 <p>Delete</p>

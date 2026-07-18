@@ -1,6 +1,6 @@
 import AuthNavBar from "../../components/navBars/AuthNavBar";
-import Overlay from "../../components/overlay/OverlayMobile";
-import Footer from "../../components/others/Footer"
+import SideBarOverlay from "../../components/overlay/SideBarOverlay";
+import ApplicantSideBar from "../../components/navBars/ApplicantSideBar";
 import Loading from "../../components/others/Loading"
 import PrimaryButton from "../../components/buttons/PrimaryButton";
 import defaultCover from "../../assets/defaultCover.jpg"
@@ -8,12 +8,15 @@ import { IoChevronDown } from "react-icons/io5";
 import { useState, useEffect } from "react";
 import { useNavigate, Link, useParams } from "react-router-dom";
 import { userStore } from "../../zustand/userState";
+import { locationStore } from "../../zustand/stateHandlers";
 import { resumeStore } from "../../zustand/skillGapResume";
 import axios from "axios";
 
 
 export default function JobAppInitialStep() {
     const navigate = useNavigate();
+    const { prevLocation } = locationStore();
+    console.log(prevLocation)
     const { currentUser } = userStore();
     const {
         resumeToAnalyze,
@@ -143,10 +146,12 @@ export default function JobAppInitialStep() {
 
 
     return (
-        <>
+        <div className="lg:flex relative w-full">
+            <ApplicantSideBar />
+            <SideBarOverlay />
+
             <div className="w-full min-h-screen bg-[#F3F4F6] relative">
                 <AuthNavBar />
-                <Overlay />
                 
                 <div className="w-full min-h-[calc(100vh-64px)] p-6 flex flex-col justify-center items-center gap-5 md:p-15">
                     <div className="w-full flex gap-3 md:gap-5 md:max-w-120">
@@ -155,16 +160,16 @@ export default function JobAppInitialStep() {
                         </div>
 
                         <div className="flex-1">
-                            <p className="text-sm text-gray-500">Applying for</p>
-                            <h1 className="text-xl font-bold text-gray-900">{currentJob.jobTitle}</h1>
+                            <p className="text-sm text-gray-500 mb-2">Applying for</p>
+                            <h1 className="text-xl mb-2 font-bold text-gray-900">{currentJob.jobTitle}</h1>
                             <p className="text-gray-700 font-semibold">{currentJob.companyName}</p>
-                            <Link to={`/applicant/viewJob/${jobID}`} className="underline underline-offset-4 text-sm text-blue-600 font-medium">View job description</Link>
+                            {/* <Link to={`/applicant/viewJob/${jobID}`} className="underline underline-offset-4 text-sm text-blue-600 font-medium">View job description</Link> */}
                         </div>
                     </div>
 
-                    <div className="bg-white shadow-lg rounded-2xl p-6 w-full md:w-120">
+                    <div className="bg-white shadow-lg rounded-2xl p-6 w-full md:w-120 lg:p-10">
                         <h2 className="font-bold text-lg mb-3">Choose Resume</h2>
-                        <p className="text-[13px] mb-5 text-gray-600">
+                        <p className="text-[13px] xl:text-sm font-medium mb-5 text-gray-600">
                             <a
                                 href="/2025-template_bullet.docx"
                                 download="2025-template_bullet.docx"
@@ -218,55 +223,6 @@ export default function JobAppInitialStep() {
                                 </div>
 
                             </div>
-
-                            {/* <div className="flex flex-col gap-2 mb-10">
-                                <label className="flex items-center gap-2 cursor-pointer">
-                                    <input
-                                        type="radio"
-                                        name="resumeOption"
-                                        value="upload"
-                                        checked={selectedOption === "upload"}
-                                        onChange={() => setSelectedOption("upload")}
-                                        className="w-4 h-4"
-                                    />
-                                    <span className={selectedOption === "upload" ? "text-black" : "text-gray-400"}>
-                                        Upload resume <span className="text-sm">(pdf or docx)</span>
-                                    </span>
-                                </label>
-
-                                <div>
-                                    {uploadedResumeName && (
-                                        <p className={`truncate mb-2 ml-6 text-sm font-medium ${selectedOption === "upload" ? "text-gray-700" : "text-gray-400"}`}>
-                                            {uploadedResumeName}
-                                        </p>
-                                    )}
-
-                                    <label className={`ml-6 flex items-center gap-1 border rounded-lg px-2.5 py-2 w-fit ${
-                                        selectedOption === "upload"
-                                            ? "text-black border-gray-300 cursor-pointer hover:bg-gray-100"
-                                            : "text-gray-400 border-gray-200 cursor-not-allowed bg-gray-50"
-                                    }`}>
-                                        <FiUpload className="h-6 mr-3" />
-                                        {uploadedResumeName ? "Change Resume" : "  Upload"}
-                                        <input 
-                                            type="file"
-                                            id="resume"
-                                            disabled = {selectedOption !== "upload"}
-                                            accept=".docx, .pdf"
-                                            onChange={(e) => {
-                                                const file = e.target.files[0]
-            
-                                                if (!file) return;
-            
-                                                setUploadedResume(file)
-                                                setUploadedResumeName(file.name)
-                                            }}
-                                            className="hidden"
-                                        />
-                                    </label>
-            
-                                </div>
-                            </div> */}
                         </div>
                         
                         <h1 className="text-lg font-bold mb-3">Relevant Experience</h1>
@@ -294,7 +250,7 @@ export default function JobAppInitialStep() {
                         {errors.noYears && <p className="text-center text-sm text-red-600 mb-5">{errors.noYears}</p>}
 
                         <div className="w-full flex justify-between">
-                            <PrimaryButton to={`/applicant/viewJob/${jobID}`} className="bg-gray-200 text-black! border-2 border-gray-400">Cancel</PrimaryButton>
+                            <PrimaryButton to={prevLocation} className="bg-gray-200 text-black! border-2 border-gray-400">Cancel</PrimaryButton>
                             <PrimaryButton onClick={goNextPage}  className={`px-5`}>
                                 Next                                
                             </PrimaryButton>
@@ -303,7 +259,6 @@ export default function JobAppInitialStep() {
                 </div>
             </div>
 
-            <Footer />
-        </>
+        </div>
     )
 }

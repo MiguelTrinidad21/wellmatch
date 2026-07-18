@@ -28,7 +28,7 @@ export default function EmployerSideMenu({ status }) {
             })
             toggleSideBar()
             logoutUser();
-            setEmployerActiveLink("jobs")
+            setEmployerActiveLink("Jobs")
             navigate("/employer/login");
 
         } catch (error) {
@@ -73,40 +73,40 @@ export default function EmployerSideMenu({ status }) {
                     <div className="font-medium text-center mb-3">{companyInfo.companyName}</div>
                     <hr className="h-px bg-gray-300 border-none mb-3"/>
 
-                    <div onClick={() => setEmployerActiveLink("jobs")} className={`mb-2 rounded-xl py-2.25 px-2.5 ${employerActiveLink === "jobs" ? "bg-[#D7F1E0]" : "hover:bg-[#D7F1E0] transition-colors duration-200 ease-in"}`}>
+                    <div onClick={() => setEmployerActiveLink("Jobs")} className={`mb-2 rounded-xl py-2.25 px-2.5 ${employerActiveLink === "Jobs" ? "bg-[#D7F1E0]" : "hover:bg-[#D7F1E0] transition-colors duration-200 ease-in"}`}>
                         <Link className="flex gap-3 items-center md:gap-5" to="/employer/jobs" onClick={toggleSideBar}>
-                            <span className={`rounded-xl p-2 ${employerActiveLink === "jobs" ? "bg-[#109D5C] text-white" : "text-green-700 bg-[#D7F1E0]"}`}>
+                            <span className={`rounded-xl p-2 ${employerActiveLink === "Jobs" ? "bg-[#109D5C] text-white" : "text-green-700 bg-[#D7F1E0]"}`}>
                                 <FiBriefcase />
                             </span>
-                            <span className={`${employerActiveLink === "jobs" ? "font-bold" : "font-mediun"}`}>Jobs</span>
+                            <span className={`${employerActiveLink === "Jobs" ? "font-bold" : "font-mediun"}`}>Jobs</span>
                             
                         </Link>
                     </div>                    
 
-                    <div onClick={() => setEmployerActiveLink("applicants")} className={`mb-2 rounded-xl py-2.25 px-2.5 ${employerActiveLink === "applicants" ? "bg-[#D7F1E0]" : "hover:bg-[#D7F1E0] transition-colors duration-200 ease-in"}`}>
+                    <div onClick={() => setEmployerActiveLink("Applicants")} className={`mb-2 rounded-xl py-2.25 px-2.5 ${employerActiveLink === "Applicants" ? "bg-[#D7F1E0]" : "hover:bg-[#D7F1E0] transition-colors duration-200 ease-in"}`}>
                         <Link className="flex gap-3 items-center md:gap-5" to="/employer/jobs/selectFirst/applicants" onClick={toggleSideBar}>
-                            <span className={`rounded-xl p-2 ${employerActiveLink === "applicants" ? "bg-[#109D5C] text-white" : "text-green-700 bg-[#D7F1E0]"}`}>
+                            <span className={`rounded-xl p-2 ${employerActiveLink === "Applicants" ? "bg-[#109D5C] text-white" : "text-green-700 bg-[#D7F1E0]"}`}>
                                 <FaList />
                             </span>
-                            <span className={`${employerActiveLink === "applicants" ? "font-bold" : "font-mediun"}`}>Applicants</span>                        
+                            <span className={`${employerActiveLink === "Applicants" ? "font-bold" : "font-mediun"}`}>Applicants</span>                        
                         </Link>
                     </div>
 
-                    <div onClick={() => setEmployerActiveLink("company")} className={`mb-2 rounded-xl py-2.25 px-2.5 ${employerActiveLink === "company" ? "bg-[#D7F1E0]" : "hover:bg-[#D7F1E0] transition-colors duration-200 ease-in"}`}>
+                    <div onClick={() => setEmployerActiveLink("Company Profile")} className={`mb-2 rounded-xl py-2.25 px-2.5 ${employerActiveLink === "Company Profile" ? "bg-[#D7F1E0]" : "hover:bg-[#D7F1E0] transition-colors duration-200 ease-in"}`}>
                         <Link className="flex gap-3 items-center md:gap-5" to="/employer/companyProfile" onClick={toggleSideBar}>
-                            <span className={`rounded-xl p-2 ${employerActiveLink === "company" ? "bg-[#109D5C] text-white" : "text-green-700 bg-[#D7F1E0]"}`}>
+                            <span className={`rounded-xl p-2 ${employerActiveLink === "Company Profile" ? "bg-[#109D5C] text-white" : "text-green-700 bg-[#D7F1E0]"}`}>
                                 <RxAvatar size={17} />
                             </span>
-                            <span className={`${employerActiveLink === "company" ? "font-bold" : "font-mediun"}`}>Company Profile</span>                           
+                            <span className={`${employerActiveLink === "Company Profile" ? "font-bold" : "font-mediun"}`}>Company Profile</span>                           
                         </Link>
                     </div>
 
-                    <div onClick={() => setEmployerActiveLink("settings")} className={`rounded-xl py-2.25 px-2.5 ${employerActiveLink === "settings" ? "bg-[#D7F1E0]" : "hover:bg-[#D7F1E0] transition-colors duration-200 ease-in"}`}>
+                    <div onClick={() => setEmployerActiveLink("Account Settings")} className={`rounded-xl py-2.25 px-2.5 ${employerActiveLink === "Account Settings" ? "bg-[#D7F1E0]" : "hover:bg-[#D7F1E0] transition-colors duration-200 ease-in"}`}>
                         <Link className="flex gap-3 items-center md:gap-5" to="/employer/settings" onClick={toggleSideBar}>
-                            <span className={`rounded-xl p-2 ${employerActiveLink === "settings" ? "bg-[#109D5C] text-white" : "text-green-700 bg-[#D7F1E0]"}`}>
+                            <span className={`rounded-xl p-2 ${employerActiveLink === "Account Settings" ? "bg-[#109D5C] text-white" : "text-green-700 bg-[#D7F1E0]"}`}>
                                 <FaGear />
                             </span>
-                            <span className={`${employerActiveLink === "settings" ? "font-bold" : "font-mediun"}`}>Account Settings</span>                    
+                            <span className={`${employerActiveLink === "Account Settings" ? "font-bold" : "font-mediun"}`}>Account Settings</span>                    
                         </Link>
                     </div>                    
                     
