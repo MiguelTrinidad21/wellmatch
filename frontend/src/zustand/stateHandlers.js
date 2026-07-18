@@ -1,6 +1,40 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from "zustand/middleware";
 
+export const tooltipStore = create((set) => ({
+    showTip: false,
+    setShowTip: (value) => set({showTip: value})
+}))
+
+export const jobInfoStore = create((set) => ({
+    displayJob: false,
+    isJobSaved: false,
+    savedJobIDs: new Set(),
+    jobInfo: {
+        jobID: null,
+        coverPhotoURL: "",
+        profilePhotoURL: "",
+        jobTitle: "",
+        companyName: "",
+        location: "",
+        workType: "",
+        workPlaceOption: "",
+        minSalary: "",
+        maxSalary: "",
+        jobOverview: "",
+        jobDuties: "",
+        requiredQualifications: "",
+        preferredQualifications: "",
+        workingConditions: "",
+        jobBenefits: "",
+    },
+    setJobInfo: (value) => set({jobInfo: value}),
+    setSavedJobIDs: (value) => set({savedJobIDs: new Set(value)}),
+    setDisplayJob: () => set((state) => ({displayJob: !state.displayJob})),
+    setIsJobSaved: () => set((state) => ({isJobSaved: !state.isJobSaved}))
+
+}))
+
 export const sideBarStore = create(
     persist(
         (set) => ({
@@ -21,11 +55,27 @@ export const sideBarStore = create(
         }
 ));
 
+export const locationStore = create(
+    persist(
+        (set) => ({
+            prevLocation: "",
+            setPrevLocation: (value) => set({prevLocation: value})
+        }),
+        {
+            name: "wellmatch-locationLink",
+            storage: createJSONStorage(() => localStorage),
+            partialize: (state) => ({
+                prevLocation: state.prevLocation
+            })            
+        }
+));
+
 
 export const companyStore = create((set) => ({
     companyInfo: {},
     setCompanyInfo: (value) => set({companyInfo: value})
 }))
+
 
 export const jobCreationStore = create(
     persist(

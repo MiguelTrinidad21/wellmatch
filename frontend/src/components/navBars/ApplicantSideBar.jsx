@@ -6,11 +6,14 @@ import { VscGear } from "react-icons/vsc";
 import { MdOutlineLogout } from "react-icons/md";
 import webLogo from '../../assets/WellMatch_Logo.png'
 import { sideBarStore } from "../../zustand/stateHandlers";
+import { userStore } from "../../zustand/userState";
 import { Link } from "react-router-dom";
+import axios from "axios";
 
 
 export default function ApplicantSideBar() {
     const { applicantActiveLink, setApplicantActiveLink } = sideBarStore();
+    const { logoutUser } = userStore();
 
     async function logoutApplicant() {
         try {
@@ -80,7 +83,11 @@ export default function ApplicantSideBar() {
                         <span className={`${applicantActiveLink === "Account Settings" ? "text-white font-bold" : "text-gray-700 font-semibold"}`}>Account Settings</span>
                         
                     </Link>
-                </div>                
+                </div>  
+
+                <hr className="h-0.5 border-none bg-gray-200 my-7"/>   
+
+                <button onClick={logoutApplicant} className="text-lg px-4 font-bold text-red-600 cursor-pointer"><MdOutlineLogout size={20} className="inline mr-4 text-red-600" />Log out</button>
             </div>
         </aside>
     )

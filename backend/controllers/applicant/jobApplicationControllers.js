@@ -98,9 +98,19 @@ export async function fetchApplications(req, res) {
             SELECT
                 a.*,
                 j.jobTitle,
+                j.jobOverview,
+                j.jobDuties,
+                j.requiredQualifications,
+                j.preferredQualifications,
+                j.workingConditions,
+                j.jobBenefits,
                 j.location,
+                j.workPlaceOption,
                 j.workType,
+                j.minSalary,
+                j.maxSalary,
                 c.companyName,
+                c.profilePhotoURL,
                 s.overallScore
             FROM applications a
             INNER JOIN jobs j

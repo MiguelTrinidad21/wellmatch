@@ -1,23 +1,23 @@
 import { useState } from "react";
 import { IoMdInformationCircleOutline } from "react-icons/io";
-<IoMdInformationCircleOutline />
+import { tooltipStore } from "../../zustand/stateHandlers";
 
 
-export default function Tooltip({ text }) {
-    const [showTip, setShowTip] = useState(false);
+export default function Tooltip({ text, className }) {
+    const {showTip, setShowTip} = tooltipStore();
     
     return(
         <div className="inline-block">
             <button
                 type="button"
                 onClick={() => setShowTip(!showTip)}
-                className="text-gray-500 hover:text-gray-700"
+                className="text-gray-600 hover:text-gray-700 cursor-pointer"
             >
                 <IoMdInformationCircleOutline size={20} />
             </button>
 
             
-            <div  className={`absolute bottom-full left-1/2 z-10 w-50 rounded-md shadow-md text-white font-semibold bg-[#10B981] p-2 text-[12px] ${showTip ? "opacity-100" : " opacity-0"} transition-opacity duration-200 ease-in`}>
+            <div  className={`pointer-events-none absolute bottom-full left-1/2 z-10 ${className} w-50 rounded-md shadow-md text-white font-medium bg-gray-800 p-2 text-[12px] ${showTip ? "opacity-100" : " opacity-0"} transition-opacity duration-200 ease-in`}>
                 {text}
             </div>
             

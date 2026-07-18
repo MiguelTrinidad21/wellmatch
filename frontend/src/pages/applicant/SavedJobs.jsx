@@ -4,27 +4,41 @@ import ApplicantSideBar from "../../components/navBars/ApplicantSideBar";
 import Loading from "../../components/others/Loading"
 import PrimaryButton from "../../components/buttons/PrimaryButton";
 import DeleteItemBox from "../../components/popUps/DeleteItemBox"
+import JobInfoSide from "../../components/popUps/JobInfoSide";
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { userStore } from "../../zustand/userState";
+import { jobInfoStore } from "../../zustand/stateHandlers";
 import { sideBarStore } from "../../zustand/stateHandlers";
 import { FaBuilding } from "react-icons/fa";
 import { FaLocationDot } from "react-icons/fa6";
 import { HiOutlineBookmarkSlash } from "react-icons/hi2";
+import useIsDesktop from "../../hooks/useIsDesktop"; 
 import axios from "axios";
 
 export default function SavedJobs() {
+    const isDesktop = useIsDesktop();
     const navigate = useNavigate();
     const { currentUser } = userStore();
     const { setApplicantActiveLink } = sideBarStore();
 
     const [verified, setVerified] = useState(false);
     const [loading, setLoading] = useState(true);
-    const [isJobSaved, setIsJobSaved] = useState(false);
     const [savedJobs, setSavedJobs] = useState([]);
 
     const [showDelBox, setShowDelBox] = useState(false)
     const [jobToDelete, setJobToDelete] = useState(null);
+
+    const { 
+        displayJob, 
+        setDisplayJob, 
+        jobInfo, 
+        isJobSaved,
+        setJobInfo, 
+        setIsJobSaved,
+        savedJobIDs, 
+        setSavedJobIDs
+    } = jobInfoStore();
 
     useEffect(() => {
         async function checkApplicant() {
@@ -75,6 +89,49 @@ export default function SavedJobs() {
         setApplicantActiveLink("Saved Jobs")
     }, [])
 
+    function displayJobInfo(
+        jobID,
+        coverPhotoURL,
+        profilePhotoURL,
+        jobTitle,
+        companyName,
+        location,
+        workType,
+        workPlaceOption,
+        minSalary,
+        maxSalary,
+        jobOverview,
+        jobDuties,
+        requiredQualifications,
+        preferredQualifications,
+        workingConditions,
+        jobBenefits
+    ) {
+        setJobInfo({
+            jobID,
+            coverPhotoURL,
+            profilePhotoURL,
+            jobTitle,
+            companyName,
+            location,
+            workType,
+            workPlaceOption,
+            minSalary,
+            maxSalary,
+            jobOverview,
+            jobDuties,
+            requiredQualifications,
+            preferredQualifications,
+            workingConditions,
+            jobBenefits
+        });
+
+        setDisplayJob()
+        if (!isDesktop) {
+            navigate(`/applicant/viewJob/${jobID}`);
+        }
+    }
+
     async function unsaveJob(jobID) {
         try {
             await axios.delete("/api/applicant/unsaveJob", {
@@ -101,6 +158,7 @@ export default function SavedJobs() {
         <div className="lg:flex relative w-full">
             <ApplicantSideBar />
             <SideBarOverlay />
+             <JobInfoSide display={displayJob} />
 
             <div className="w-full min-h-screen bg-[#F3F4F6] relative">
                 <AuthNavBar />
@@ -152,7 +210,29 @@ export default function SavedJobs() {
                                         className="bg-white text-red-600!">
                                         Remove
                                     </PrimaryButton>
-                                    <PrimaryButton to={`/applicant/viewJob/${item.jobID}`} className="px-5">View Job</PrimaryButton>
+                                    <PrimaryButton 
+                                        onClick={() => displayJobInfo(
+                                            item.jobID,
+                                            item.coverPhotoURL,
+                                            item.profilePhotoURL,
+                                            item.jobTitle,
+                                            item.companyName,
+                                            item.location,
+                                            item.workType,
+                                            item.workPlaceOption,
+                                            item.minSalary,
+                                            item.maxSalary,
+                                            item.jobOverview,
+                                            item.jobDuties,
+                                            item.requiredQualifications,
+                                            item.preferredQualifications,
+                                            item.workingConditions,
+                                            item.jobBenefits
+                                        )}  
+                                        className="px-5"
+                                    >
+                                        View Job
+                                    </PrimaryButton>
                                 </div>
                             </div>
                         ))}                       

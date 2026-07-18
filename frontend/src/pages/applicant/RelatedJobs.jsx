@@ -14,20 +14,23 @@ import { IoSearchSharp } from "react-icons/io5";
 import { LuSearchX } from "react-icons/lu";
 import { BiLoaderAlt } from "react-icons/bi";
 import { userStore } from "../../zustand/userState";
+import { jobInfoStore, locationStore } from "../../zustand/stateHandlers";
 import { jobSearchStore } from "../../zustand/jobSearching";
 import { sideBarStore } from "../../zustand/stateHandlers";
 import { FaRegBuilding } from "react-icons/fa6";
 import { AiOutlineLaptop } from "react-icons/ai"
 import { TbBuildingCommunity } from "react-icons/tb";
 import { useState, useEffect, useCallback, useRef } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useLocation } from "react-router-dom";
 import axios from "axios";
 import ReactPaginateModule from "react-paginate";
+import JobInfoSide from "../../components/popUps/JobInfoSide";
+import useIsDesktop from "../../hooks/useIsDesktop";
 
 
 export default function RelatedJobs() {
     const ReactPaginate = ReactPaginateModule.default || ReactPaginateModule;
-
+    const isDesktop = useIsDesktop();
     const locationFieldRef = useRef(null);
     const rightColScrollRef = useRef(null);
     const [leftColHeight, setLeftColHeight] = useState(null);
@@ -38,6 +41,7 @@ export default function RelatedJobs() {
 
     const navigate = useNavigate();
     const { currentUser } = userStore();
+    const { setPrevLocation } = locationStore();
     const { setApplicantActiveLink } = sideBarStore();
     const { 
         jobSearchResults, 
@@ -46,24 +50,18 @@ export default function RelatedJobs() {
         setJobSearch
     } = jobSearchStore();
 
-    const [jobInfo, setJobInfo] = useState({
-        jobID: null,
-        coverPhotoURL: "",
-        profilePhotoURL: "",
-        jobTitle: "",
-        companyName: "",
-        location: "",
-        workType: "",
-        workPlaceOption: "",
-        minSalary: "",
-        maxSalary: "",
-        jobOverview: "",
-        jobDuties: "",
-        requiredQualifications: "",
-        preferredQualifications: "",
-        workingConditions: "",
-        jobBenefits: "",
-    });
+    const { 
+        displayJob, 
+        setDisplayJob, 
+        jobInfo, 
+        setJobInfo, 
+        savedJobIDs, 
+        isJobSaved,
+        setIsJobSaved, 
+        setSavedJobIDs
+    } = jobInfoStore();
+
+    const location = useLocation();
 
     const [verified, setVerified] = useState(false);
     const [loading, setLoading] = useState(true);
@@ -78,9 +76,6 @@ export default function RelatedJobs() {
     const [currentPage, setCurrentPage] = useState(jobSearchResults?.pagination?.currentPage);
     const [totalPages, setTotalPages] = useState(jobSearchResults?.pagination?.totalPages);
     const [totalJobs, setTotalJobs] = useState(jobSearchResults?.relatedJobs?.length);
-
-    const [isJobSaved, setIsJobSaved] = useState(false);
-    const [savedJobIDs, setSavedJobIDs] = useState(new Set());
 
     const jobsPerPage = 10;
 
@@ -236,7 +231,17 @@ export default function RelatedJobs() {
         }
     }
 
+    function goNext(jobID) {
+        setPrevLocation(location.pathname);
+        navigate(`/applicant/viewJob/${jobID}/apply`);
+        setDisplayJob();
+    }
 
+    function goToAnalysis(jobID) {
+        setPrevLocation(previousLocation.pathname);
+        navigate(`/applicant/viewJob/${jobID}/chooseFile`);
+        setDisplayJob();
+    }
 
 
     function handleSelectLocation(place) {
@@ -293,6 +298,49 @@ export default function RelatedJobs() {
         fetchRelatedJobs(selectedPage);
     }
 
+   function displayJobInfo(
+        jobID,
+        coverPhotoURL,
+        profilePhotoURL,
+        jobTitle,
+        companyName,
+        location,
+        workType,
+        workPlaceOption,
+        minSalary,
+        maxSalary,
+        jobOverview,
+        jobDuties,
+        requiredQualifications,
+        preferredQualifications,
+        workingConditions,
+        jobBenefits
+    ) {
+        setJobInfo({
+            jobID,
+            coverPhotoURL,
+            profilePhotoURL,
+            jobTitle,
+            companyName,
+            location,
+            workType,
+            workPlaceOption,
+            minSalary,
+            maxSalary,
+            jobOverview,
+            jobDuties,
+            requiredQualifications,
+            preferredQualifications,
+            workingConditions,
+            jobBenefits
+        });
+
+        setDisplayJob()
+        if (!isDesktop) {
+            navigate(`/applicant/viewJob/${jobID}`);
+        }
+    }
+
     
     useEffect(() => {
         if (!loading && !verified) {
@@ -312,6 +360,7 @@ export default function RelatedJobs() {
         <div className="lg:flex relative w-full">
             <ApplicantSideBar />
             <SideBarOverlay />
+            <JobInfoSide display={displayJob} />
 
             <div className="w-full min-h-screen bg-[#F3F4F6] relative">
                 <AuthNavBar />
@@ -419,7 +468,7 @@ export default function RelatedJobs() {
                                                             preferredQualifications: job.preferredQualifications,
                                                             workingConditions: job.workingConditions,
                                                             jobBenefits: job.jobBenefits
-                                                        })}                                                     
+                                                        })}                                                    
                                                         key={job.jobID} 
                                                         className="xl:cursor-pointer box-border border-3 border-transparent hover:border-green-600 transition-all duration-200 ease-in w-full h-full bg-white shadow-md rounded-2xl p-4 relative md:p-8 flex flex-col"
                                                     >
@@ -448,9 +497,32 @@ export default function RelatedJobs() {
                                                                 <FaRegBookmark className="absolute top-4 right-4 md:top-8 md:right-8 xl:top-auto xl:bottom-8" size={20} onClick={() => saveJob(job.jobID)} />
                                                         }
 
-                                                        <PrimaryButton to={`/applicant/viewJob/${job.jobID}`} className="w-full mt-auto xl:hidden">View Job Description</PrimaryButton>
+                                                        <PrimaryButton 
+                                                            onClick={(e) => displayJobInfo(
+                                                                job.jobID,
+                                                                job.coverPhotoURL,
+                                                                job.profilePhotoURL,
+                                                                job.jobTitle,
+                                                                job.companyName,
+                                                                job.location,
+                                                                job.workType,
+                                                                job.workPlaceOption,
+                                                                job.minSalary,
+                                                                job.maxSalary,
+                                                                job.jobOverview,
+                                                                job.jobDuties,
+                                                                job.requiredQualifications,
+                                                                job.preferredQualifications,
+                                                                job.workingConditions,
+                                                                job.jobBenefits
+                                                            )} 
+                                                            className="w-full mt-auto xl:hidden"
+                                                        >
+                                                            View Job Description
+                                                        </PrimaryButton>
                                                     </div>
                                                 )
+                                                
                                             })}
                                         </div>                        
                                         {totalPages > 1 && (
@@ -503,7 +575,7 @@ export default function RelatedJobs() {
                                                                     alt="profile photo"
                                                                     className="w-25 object-cover rounded-sm md:rounded-xl md:w-30"
                                                                 />
-                                                                <PrimaryButton to={`/applicant/viewJob/${jobInfo.jobID}/chooseFile`} className="absolute top-0 right-0 text-black! bg-green-300 hover:bg-green-400 transition-colors duration-200 ease-in rounded-lg px-5 max-w-[60%] text-center whitespace-normal text-sm">View Skill Gap Analysis</PrimaryButton>
+                                                                <PrimaryButton onClick={() => goToAnalysis(jobInfo.jobID)} className="absolute top-0 right-0 text-black! bg-green-300 hover:bg-green-400 transition-colors duration-200 ease-in rounded-lg px-5 max-w-[60%] text-center whitespace-normal text-sm">View Skill Gap Analysis</PrimaryButton>
                                                             </div>
                                                             <div className="w-full mb-4">
                                                                 <h1 className="text-xl font-bold">{jobInfo.jobTitle}</h1>
@@ -529,7 +601,7 @@ export default function RelatedJobs() {
                                                                 </div>
                                                             </div>
                                                             <div className="lg:flex lg:gap-3">
-                                                                <PrimaryButton to={`/applicant/viewJob/${jobInfo.jobID}/apply`} className="w-full mb-2 lg:mb-0">Apply Now</PrimaryButton>
+                                                                <PrimaryButton onClick={() => goNext(jobInfo.jobID)} className="w-full mb-2 lg:mb-0">Apply Now</PrimaryButton>
                                                                 {
                                                                     savedJobIDs.has(jobInfo.jobID) ?
                                                                         <SecondaryButton onclick={() => unsaveJob(jobInfo.jobID)} className="w-full py-2 font-bold! border-none bg-green-100 lg:py-0">Saved</SecondaryButton>

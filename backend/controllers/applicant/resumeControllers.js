@@ -28,7 +28,7 @@ export async function uploadAndAddResume(req, res) {
             SELECT resumeID, resumeStatus, cloudinaryPublicID
             FROM resumes
             WHERE applicantID = ?
-            AND fileHash = ?
+                AND fileHash = ?
             LIMIT 1
             `,
             [id, fileHash]

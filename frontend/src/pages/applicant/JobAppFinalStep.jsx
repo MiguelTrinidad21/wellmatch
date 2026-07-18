@@ -18,6 +18,8 @@ import { FiBriefcase } from "react-icons/fi";
 import { FiAward } from "react-icons/fi";
 import { RiGraduationCapLine } from "react-icons/ri";
 import { BiLoaderAlt } from "react-icons/bi";
+import ApplicantSideBar from "../../components/navBars/ApplicantSideBar";
+import SideBarOverlay from "../../components/overlay/SideBarOverlay";
 
 
 export default function JobAppFinalStep() {
@@ -183,10 +185,12 @@ export default function JobAppFinalStep() {
 
 
     return (
-        <>
+        <div className="lg:flex relative w-full">
+            <ApplicantSideBar />
+            <SideBarOverlay />
+            
             <div className="w-full min-h-screen bg-[#F3F4F6] relative">
                 <AuthNavBar />
-                <Overlay />
 
                 {
                     isSubmitted && (
@@ -211,7 +215,7 @@ export default function JobAppFinalStep() {
                 }
                 
                 <div className="w-full min-h-[calc(100vh-64px)] p-6 flex flex-col justify-center items-center gap-5 md:p-15">
-                    <div className="w-full flex gap-3 md:max-w-120">
+                    <div className="w-full flex gap-3 md:w-fit">
                         <div className="w-30 rounded-lg">
                             <img className="w-full object-cover rounded-lg" src={currentJob.profilePhotoURL ? currentJob.profilePhotoURL : defaultCover} alt="" />
                         </div>
@@ -220,11 +224,11 @@ export default function JobAppFinalStep() {
                             <p className="text-sm text-gray-500">Applying for</p>
                             <h1 className="text-xl font-bold text-gray-900">{currentJob.jobTitle}</h1>
                             <p className="text-gray-700 font-semibold">{currentJob.companyName}</p>
-                            <Link to={`/applicant/viewJob/${jobID}`} className="underline underline-offset-4 text-sm text-blue-600 font-medium">View job description</Link>
+                            {/* <Link to={`/applicant/viewJob/${jobID}`} className="underline underline-offset-4 text-sm text-blue-600 font-medium">View job description</Link> */}
                         </div>
                     </div>
 
-                    <div className="bg-white shadow-lg rounded-2xl p-4 w-full md:max-w-120 md:p-8">
+                    <div className="bg-white shadow-lg rounded-2xl p-4 w-full md:max-w-120 lg:max-w-150 md:p-8">
                         <h2 className="font-bold text-xl mb-3">Review WellMatch Profile</h2>
                         <p className="text-[12px] text-gray-500 mb-5 font-semibold md:text-sm">Your profile is part of your job application. Make sure you review it carefully.</p>
 
@@ -246,7 +250,7 @@ export default function JobAppFinalStep() {
 
                                     ))
                                 :
-                                    <p className="my-5 text-sm font-medium text-center text-gray-600">No data to show</p>
+                                    <p className="my-5 text-sm font-medium text-center text-gray-600">No work experience added yet</p>
                             }
                         </div>
 
@@ -268,7 +272,7 @@ export default function JobAppFinalStep() {
 
                                     ))
                                 :
-                                    <p className="my-5 text-sm font-medium text-center text-gray-600">No data to show</p>
+                                    <p className="my-5 text-sm font-medium text-center text-gray-600">No credentials added yet</p>
                             }
                         </div>
 
@@ -295,7 +299,7 @@ export default function JobAppFinalStep() {
 
                                     ))
                                 :
-                                    <p className="my-5 text-sm font-medium text-center text-gray-600">No data to show</p>
+                                    <p className="my-5 text-sm font-medium text-center text-gray-600">No education added yet</p>
                             }
                         </div>
                         
@@ -319,8 +323,6 @@ export default function JobAppFinalStep() {
                     </div>
                 </div>
             </div>
-
-            <Footer />
-        </>
+        </div>
     )
 }

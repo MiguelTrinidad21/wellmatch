@@ -8,6 +8,7 @@ import DeleteItemBox from "../../components/popUps/DeleteItemBox"
 import ConfirmationBox from "../../components/popUps/ConfirmationBox"
 import { userStore } from "../../zustand/userState";
 import { sideBarStore } from "../../zustand/stateHandlers";
+import { jobInfoStore } from "../../zustand/stateHandlers";
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
@@ -21,18 +22,30 @@ import { GrLocation } from "react-icons/gr";
 import { FiBriefcase } from "react-icons/fi";
 import { FiCalendar } from "react-icons/fi";
 import ReactPaginateModule from "react-paginate";
+import useIsDesktop from "../../hooks/useIsDesktop";
+import JobInfoSide from "../../components/popUps/JobInfoSide";
 
 export default function JobApplications() {
+    const isDesktop = useIsDesktop();
     const ReactPaginate = ReactPaginateModule.default || ReactPaginateModule;
     const navigate = useNavigate();
     const { currentUser } = userStore();
     const { setApplicantActiveLink } = sideBarStore();
+    const { 
+        displayJob, 
+        setDisplayJob, 
+        jobInfo, 
+        setJobInfo, 
+        savedJobIDs, 
+        setSavedJobIDs
+    } = jobInfoStore();    
 
     const [verified, setVerified] = useState(false);
     const [loading, setLoading] = useState(true);
 
     const [status, setStatus] = useState("submitted");
     const [jobs, setJobs] = useState([]);
+
 
     const [showWarning, setShowWarning] = useState(false);
     const [appToWithdraw, setAppToWithdraw] = useState(null);
@@ -129,6 +142,49 @@ export default function JobApplications() {
         }
     }
 
+    function displayJobInfo(
+        jobID,
+        coverPhotoURL,
+        profilePhotoURL,
+        jobTitle,
+        companyName,
+        location,
+        workType,
+        workPlaceOption,
+        minSalary,
+        maxSalary,
+        jobOverview,
+        jobDuties,
+        requiredQualifications,
+        preferredQualifications,
+        workingConditions,
+        jobBenefits
+    ) {
+        setJobInfo({
+            jobID,
+            coverPhotoURL,
+            profilePhotoURL,
+            jobTitle,
+            companyName,
+            location,
+            workType,
+            workPlaceOption,
+            minSalary,
+            maxSalary,
+            jobOverview,
+            jobDuties,
+            requiredQualifications,
+            preferredQualifications,
+            workingConditions,
+            jobBenefits
+        });
+
+        setDisplayJob()
+        if (!isDesktop) {
+            navigate(`/applicant/viewJob/${jobID}`);
+        }
+    }
+
     if (loading) {
         return <Loading />
     }
@@ -141,6 +197,7 @@ export default function JobApplications() {
         <div className="lg:flex relative w-full">
             <ApplicantSideBar />
             <SideBarOverlay />
+            <JobInfoSide display={displayJob} />
 
             <div className="w-full min-h-screen bg-[#F3F4F6] relative min-w-0">
                 <AuthNavBar />
@@ -373,7 +430,31 @@ export default function JobApplications() {
                                                                     <td className="whitespace-nowrap px-6 py-5 text-center"><PrimaryButton to={`/applicant/viewJob/${item.jobID}/${item.resumeID}/skillGapReport`} className="rounded-md w-fit m-auto text-sm text-black! bg-green-300">See Report</PrimaryButton></td>
                                                                     {
                                                                         status === "not selected" ?
-                                                                            <td className="whitespace-nowrap px-6 py-5 text-center"><PrimaryButton to={`/applicant/viewJob/${item.jobID}`} className="rounded-md w-fit m-auto text-sm px-6 text-black! bg-green-300">View</PrimaryButton></td>
+                                                                            <td className="whitespace-nowrap px-6 py-5 text-center">
+                                                                                <PrimaryButton 
+                                                                                    onClick={() => displayJobInfo(
+                                                                                        item.jobID,
+                                                                                        item.coverPhotoURL,
+                                                                                        item.profilePhotoURL,
+                                                                                        item.jobTitle,
+                                                                                        item.companyName,
+                                                                                        item.location,
+                                                                                        item.workType,
+                                                                                        item.workPlaceOption,
+                                                                                        item.minSalary,
+                                                                                        item.maxSalary,
+                                                                                        item.jobOverview,
+                                                                                        item.jobDuties,
+                                                                                        item.requiredQualifications,
+                                                                                        item.preferredQualifications,
+                                                                                        item.workingConditions,
+                                                                                        item.jobBenefits
+                                                                                    )}
+                                                                                    className="rounded-md w-fit m-auto text-sm px-6 text-black! bg-green-300"
+                                                                                >
+                                                                                    View
+                                                                                </PrimaryButton>
+                                                                            </td>
                                                                         :
                                                                             <td className="whitespace-nowrap px-6 py-5 text-center">
                                                                                 <PrimaryButton 

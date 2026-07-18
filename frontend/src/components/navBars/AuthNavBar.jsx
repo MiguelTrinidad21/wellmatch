@@ -1,17 +1,21 @@
 import { IoMdMenu } from "react-icons/io";
 import { IoChevronDown } from "react-icons/io5";
 import { IoChevronUp } from "react-icons/io5";
+import { FaPlus } from "react-icons/fa6";
 import webLogo from '../../assets/WellMatch_Logo.png'
 import { Link } from "react-router-dom";
 import EmployerSideMenu from "./EmployerSideMenu";
 import ApplicantSideMenu from "./ApplicantSideMenu";
 import { sideBarStore } from "../../zustand/stateHandlers";
 import { userStore } from "../../zustand/userState";
+import { companyStore } from "../../zustand/stateHandlers";
 import defaultProfile from "../../assets/defaultProfile.jpg"
+import PrimaryButton from "../buttons/PrimaryButton";
 
 export default function AuthNavBar() {
     const { sideBarStatus, toggleSideBar, applicantActiveLink, employerActiveLink } = sideBarStore();
     const { currentUser } = userStore();
+    const { companyInfo, setCompanyInfo } = companyStore();
     
 
     return (
@@ -31,12 +35,29 @@ export default function AuthNavBar() {
                 </Link>
 
                 <IoMdMenu className="lg:hidden" size={30} onClick={toggleSideBar} />
-                <div className="hidden lg:flex items-center justify-between gap-5 relative">
-                    <p className="font-semibold text-xl">{currentUser.firstName} {currentUser.lastName}</p>
-                    <div className="w-10 h-10 rounded-full border-3 border-green-700">
-                        <img className="w-full h-full rounded-full object-cover" src={currentUser.profilePhoto ? `${currentUser.profilePhoto}` : defaultProfile} alt="" />
-                    </div>
 
+                <div className="hidden lg:flex items-center gap-10">
+                    <PrimaryButton onClick={() => {
+                        clearCreatedJob();
+                    }} className="w-fit block text-center rounded-lg">
+                        <Link className="flex gap-3 items-center justify-center md:gap-5 lg:gap-2" to="/employer/createJob">
+                            <FaPlus />
+                            Create Job Post
+                        </Link>
+                    </PrimaryButton>
+
+                    <div className="flex items-center justify-between gap-5 relative">
+                        <p className="font-semibold text-xl">{currentUser.firstName} {currentUser.lastName}</p>
+                        <div className="w-10 h-10 rounded-full border-3 border-green-700">
+                            {
+                                currentUser.userType === "applicant" ? 
+                                    <img className="w-full h-full rounded-full object-cover" src={currentUser.profilePhoto ? `${currentUser.profilePhoto}` : defaultProfile} alt="" />                                
+                                :   
+                                    <img className="w-full h-full rounded-full object-cover" src={companyInfo.profilePhotoURL ? `${companyInfo.profilePhotoURL}` : defaultProfile} alt="Company Logo" />                            
+                            }
+                        </div>
+
+                    </div>
                 </div>
             </nav>
 
