@@ -60,7 +60,7 @@ export function EditInfoForm({ toggleForm, confirmFunc }) {
             <Translucent />
 
             <div className="w-[85%] p-5 bg-[#F3F4F6] fixed top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 z-50 rounded-2xl md:w-100 md:p-7">
-                <IoClose onClick={toggleForm} size={25} className="absolute top-2 right-2" />
+                <IoClose onClick={toggleForm} size={25} className="cursor-pointer absolute top-2 right-2" />
 
                 <h1 className="my-5 text-center font-bold text-xl">Update Personal Details</h1>
 
@@ -73,7 +73,7 @@ export function EditInfoForm({ toggleForm, confirmFunc }) {
                         onChange={(e) => setCredentials({...credentials, firstName: e.target.value})}
                         required
                         placeholder="Enter updated name"
-                        className={`bg-white w-full border-2 border-gray-300 rounded-md p-2 mb-5`}
+                        className={`p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-green-600`}
                     />
 
                     <label className="block font-semibold mb-1" htmlFor="lastName">Last Name</label>
@@ -84,7 +84,7 @@ export function EditInfoForm({ toggleForm, confirmFunc }) {
                         onChange={(e) => setCredentials({...credentials, lastName: e.target.value})}
                         required
                         placeholder="Enter updated name"
-                        className={`bg-white w-full border-2 border-gray-300 rounded-md p-2 mb-5`}
+                        className={`p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-green-600`}
                     />
 
 
@@ -96,7 +96,7 @@ export function EditInfoForm({ toggleForm, confirmFunc }) {
                         onChange={(e) => setCredentials({...credentials, email: e.target.value})}
                         required
                         placeholder="Enter new email address"
-                        className={`p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-gray-600 ${errors.sameEmail ? "focus:border-red-600 border-red-600 mb-1!" : "border-gray-300"}`}
+                        className={`p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-green-600 ${errors.sameEmail ? "focus:border-red-600 border-red-600 mb-1!" : "border-gray-300"}`}
                     />
                     {errors.sameEmail && <p className="text-sm text-red-600 mb-5">{errors.sameEmail}</p>}
 
@@ -109,7 +109,7 @@ export function EditInfoForm({ toggleForm, confirmFunc }) {
                             onChange={(e) => setCredentials({...credentials, password: e.target.value})}
                             required
                             placeholder="Enter current password"
-                            className={`p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-gray-600 ${errors.password ? "focus:border-red-600 border-red-600 mb-1!" : "border-gray-300"}`}
+                            className={`p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-green-600 ${errors.password ? "focus:border-red-600 border-red-600 mb-1!" : "border-gray-300"}`}
                         />
                         {
                             showPassword ?
@@ -214,7 +214,7 @@ export function ChangePasswordForm({ toggleForm, confirmFunc }) {
             <Translucent />
 
             <div className="w-[85%] p-5 bg-[#F3F4F6] fixed top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 z-50 rounded-2xl md:w-100 md:p-7">
-                <IoClose onClick={toggleForm} size={25} className="absolute top-2 right-2" />
+                <IoClose onClick={toggleForm} size={25} className="cursor-pointer absolute top-2 right-2" />
 
                 <h1 className="my-5 text-center font-bold text-xl">Change Password</h1>
 
@@ -228,7 +228,7 @@ export function ChangePasswordForm({ toggleForm, confirmFunc }) {
                             onChange={(e) => setCredentials({...credentials, currentPassword: e.target.value})}
                             required
                             placeholder="Enter current password"
-                            className={`p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-gray-600 ${errors.incorrectPass ? "focus:border-red-600 border-red-600 mb-1!" : "border-gray-300"}`}
+                            className={`p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-green-600 ${errors.incorrectPass ? "focus:border-red-600 border-red-600 mb-1!" : "border-gray-300"}`}
                         />
                         {
                             showCurrPassword ?
@@ -257,7 +257,7 @@ export function ChangePasswordForm({ toggleForm, confirmFunc }) {
                             onChange={(e) => setCredentials({...credentials, newPassword: e.target.value})}
                             required
                             placeholder="Enter new password"
-                            className={`p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-gray-600 ${errors.invalidPass ? "focus:border-red-600 border-red-600 mb-1!" : "border-gray-300"}`}
+                            className={`p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-green-600 ${errors.invalidPass ? "focus:border-red-600 border-red-600 mb-1!" : "border-gray-300"}`}
                         />
                         {
                             showNewPassword ?
@@ -285,7 +285,7 @@ export function ChangePasswordForm({ toggleForm, confirmFunc }) {
                             onChange={(e) => setCredentials({...credentials, retypePassword: e.target.value})}
                             required
                             placeholder="Confirm new password"
-                            className={`p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-gray-600 ${errors.notMatch ? "focus:border-red-600 border-red-600 mb-1!" : "border-gray-300"}`}
+                            className={`p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-green-600 ${errors.notMatch ? "focus:border-red-600 border-red-600 mb-1!" : "border-gray-300"}`}
                         />
                         {
                             showRetypePassword ?
@@ -378,7 +378,7 @@ export function DeleteAccountForm({ toggleForm, confirmFunc }) {
             <Translucent />
 
             <div className="w-[85%] p-5 bg-[#F3F4F6] fixed top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 z-50 rounded-2xl md:w-100 md:p-7">
-                <IoClose onClick={toggleForm} size={25} className="absolute top-2 right-2" />
+                <IoClose onClick={toggleForm} size={25} className="cursor-pointer absolute top-2 right-2" />
 
                 <h1 className="my-5 text-center font-bold text-xl">Delete Account</h1>
 
@@ -395,7 +395,7 @@ export function DeleteAccountForm({ toggleForm, confirmFunc }) {
                             onChange={(e) => setCredentials({...credentials, email: e.target.value})}
                             required
                             placeholder="Enter email address"
-                            className={`p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-gray-600 ${errors.email ? "border-red-600 focus:border-red-600 mb-1!" : "border-gray-300"}`}
+                            className={`p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-green-600 ${errors.email ? "border-red-600 focus:border-red-600 mb-1!" : "border-gray-300"}`}
                         />
                     </div>
                     {errors.email && <p className="text-sm text-red-600 mb-4">{errors.email}</p>}
@@ -410,7 +410,7 @@ export function DeleteAccountForm({ toggleForm, confirmFunc }) {
                             onChange={(e) => setCredentials({...credentials, password: e.target.value})}
                             required
                             placeholder="Enter password"
-                            className={`p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-gray-600 ${errors.password ? "focus:border-red-600 border-red-600 mb-1!" : "border-gray-300"}`}
+                            className={`p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-green-600 ${errors.password ? "focus:border-red-600 border-red-600 mb-1!" : "border-gray-300"}`}
                         />
                         {
                             showPassword ?
