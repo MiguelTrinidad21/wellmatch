@@ -36,18 +36,9 @@ export default function AuthNavBar() {
 
                 <IoMdMenu className="lg:hidden" size={30} onClick={toggleSideBar} />
 
-                <div className="hidden lg:flex items-center gap-10">
-                    <PrimaryButton onClick={() => {
-                        clearCreatedJob();
-                    }} className="w-fit block text-center rounded-lg">
-                        <Link className="flex gap-3 items-center justify-center md:gap-5 lg:gap-2" to="/employer/createJob">
-                            <FaPlus />
-                            Create Job Post
-                        </Link>
-                    </PrimaryButton>
+                <div className="hidden lg:flex items-center gap-15">
 
-                    <div className="flex items-center justify-between gap-5 relative">
-                        <p className="font-semibold text-xl">{currentUser.firstName} {currentUser.lastName}</p>
+                    <div className="flex items-center justify-between gap-4 relative">
                         <div className="w-10 h-10 rounded-full border-3 border-green-700">
                             {
                                 currentUser.userType === "applicant" ? 
@@ -55,6 +46,10 @@ export default function AuthNavBar() {
                                 :   
                                     <img className="w-full h-full rounded-full object-cover" src={companyInfo.profilePhotoURL ? `${companyInfo.profilePhotoURL}` : defaultProfile} alt="Company Logo" />                            
                             }
+                        </div>
+                        <div>
+                            <p className="font-semibold text-xl">{currentUser.firstName} {currentUser.lastName}</p>
+                            <p className="text-gray-600 text-sm font-medium">{currentUser.role}</p>
                         </div>
 
                     </div>

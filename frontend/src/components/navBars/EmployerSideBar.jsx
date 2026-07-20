@@ -39,7 +39,7 @@ export default function EmployerSideBar() {
                 <div onClick={() => setEmployerActiveLink("Jobs")} className={`mb-2 cursor-pointer rounded-xl ${employerActiveLink === "Jobs" ? "bg-green-600 text-white" : "hover:bg-[#D7F1E0] text-gray-700 transition-colors duration-200 ease-in"}`}>
                     <Link className="flex gap-3 items-center md:gap-4 py-2.25 px-2.5" to="/employer/jobs" >
                         <span className="rounded-xl p-1.5 bg-[#EBF9F0] text-green-700">
-                            <FiBriefcase size={25} />                       
+                            <FiBriefcase size={20} />                       
                         </span>                        
                         <span className={`${employerActiveLink === "Jobs" ? "text-white font-bold" : "text-gray-700 font-semibold"}`}>Jobs</span>                       
                     </Link>
@@ -48,7 +48,7 @@ export default function EmployerSideBar() {
                 <div onClick={() => setEmployerActiveLink("Applicants")} className={`mb-2 cursor-pointer rounded-xl ${employerActiveLink === "Applicants" ? "bg-green-600 text-white" : "hover:bg-[#D7F1E0] text-gray-700 transition-colors duration-200 ease-in"}`}>
                     <Link className="flex gap-3 items-center md:gap-5 py-2.25 px-2.5" to="/employer/jobs/selectFirst/applicants" >
                         <span className="rounded-xl p-1.5 bg-[#EBF9F0] text-green-700">
-                            <FaList size={22} />
+                            <FaList size={18} />
                         </span>
                         <span className={`${employerActiveLink === "Applicants" ? "text-white font-bold" : "text-gray-700 font-semibold"}`}>Applicants</span>
                         
@@ -58,7 +58,7 @@ export default function EmployerSideBar() {
                 <div onClick={() => setEmployerActiveLink("Company Profile")} className={`mb-2 cursor-pointer rounded-xl ${employerActiveLink === "Company Profile" ? "bg-green-600 text-white" : "hover:bg-[#D7F1E0] text-gray-700 transition-colors duration-200 ease-in"}`}>
                     <Link className="flex gap-3 items-center md:gap-5 py-2.25 px-2.5" to="/employer/companyProfile" >
                         <span className="rounded-xl p-1.5 bg-[#EBF9F0] text-green-700">
-                            <FaBookmark />
+                            <RxAvatar size={20} />
                         </span>
                         <span className={` ${employerActiveLink === "Company Profile" ? "text-white font-bold" : "text-gray-700 font-semibold"}`}>Company Profile</span>
                         

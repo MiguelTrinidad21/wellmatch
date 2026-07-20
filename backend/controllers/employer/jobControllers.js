@@ -102,6 +102,12 @@ export async function getJobs(req, res) {
             SELECT
                 j.jobID,
                 j.jobTitle,
+                j.jobOverview,
+                j.jobDuties,
+                j.requiredQualifications,
+                j.preferredQualifications,
+                j.workingConditions,
+                j.jobBenefits,
                 j.location,
                 j.workPlaceOption,
                 j.workType,
@@ -109,6 +115,8 @@ export async function getJobs(req, res) {
                 j.maxSalary,
                 j.createdAt,
                 j.updatedAt,
+                comp.profilePhotoURL,
+                comp.coverPhotoURL,
 
                 creator.firstName AS createdByFirstName,
                 creator.lastName AS createdByLastName,
@@ -117,6 +125,9 @@ export async function getJobs(req, res) {
                 updater.lastName AS updatedByLastName
 
             FROM jobs j
+
+            INNER JOIN companies comp
+                ON j.companyID = comp.companyID
 
             INNER JOIN companyMembers cmCreator
                 ON j.createdByCompMemID = cmCreator.compMemID

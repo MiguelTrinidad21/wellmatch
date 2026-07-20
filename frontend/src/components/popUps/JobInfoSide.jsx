@@ -2,6 +2,7 @@ import Translucent from "../overlay/Translucent"
 import { IoClose } from "react-icons/io5";
 import { jobInfoStore } from "../../zustand/stateHandlers";
 import { locationStore } from "../../zustand/stateHandlers";
+import { userStore } from "../../zustand/userState";
 import defaultPhoto from "../../assets/defaultCover.jpg"
 import PrimaryButton from "../buttons/PrimaryButton";
 import SecondaryButton from "../../components/buttons/SecondaryButton"
@@ -22,6 +23,7 @@ export default function JobInfoSide({ display }) {
 
     const { setDisplayJob, jobInfo, savedJobIDs, setSavedJobIDs, isJobSaved, setIsJobSaved } = jobInfoStore();
     const { setPrevLocation } = locationStore();
+    const { currentUser } = userStore();
     const {
         jobID,
         coverPhotoURL,
@@ -81,7 +83,11 @@ export default function JobInfoSide({ display }) {
 
     useEffect(() => {
         async function fetchSavedJobs() {
-            const res = await axios.get("/api/applicant/getSavedJobs", {
+            const res = await axios.get(
+                (currentUser.userType === "applicant" 
+                    ? "/api/applicant/getSavedJobs"
+                    : "/api/employer/getJobs"
+                ), {
                 withCredentials: true
             });
 
@@ -99,14 +105,28 @@ export default function JobInfoSide({ display }) {
                     <button onClick={setDisplayJob} className="cursor-pointer p-2 rounded-full bg-green-100 absolute top-0 right-0"><IoClose size={20}/></button>
                 </div>
 
-                <div className="p-4 w-full mt-10 md:p-7">
+                <div className="px-4 w-full mt-10 md:px-7">
+                    {/* {
+                        currentUser.userType === "employer" || currentUser.userType === "admin" &&
+                        <div className="w-full h-50 rounded-tl-2xl rounded-tr-2xl mb-5">
+                            <img 
+                                src={coverPhotoURL ? coverPhotoURL : defaultPhoto}
+                                alt="cover photo"
+                                className="w-full h-full object-cover rounded-tl-2xl rounded-tr-2xl"
+                            />
+                        </div>
+                    } */}
+
                     <div className="w-full relative mb-4">
                         <img 
                             src={profilePhotoURL ? profilePhotoURL : defaultPhoto} 
                             alt="profile photo"
                             className="w-25 object-cover rounded-sm md:rounded-xl md:w-30"
                         />
-                        <PrimaryButton onClick={() => goToAnalysis(jobID)} className="absolute top-0 font-bold! px-5 right-0 rounded-md bg-green-300! hover:bg-green-400 transition-colors duration-200 ease-in text-gray-800! text-sm">View Skill Gap Analysis</PrimaryButton>
+                        {
+                            currentUser.userType === "applicant" &&
+                            <PrimaryButton onClick={() => goToAnalysis(jobID)} className="absolute top-0 font-bold! px-5 right-0 rounded-md bg-green-300! hover:bg-green-400 transition-colors duration-200 ease-in text-gray-800! text-sm">View Skill Gap Analysis</PrimaryButton>
+                        }
                     </div>
                     <div className="w-full mb-4">
                         <h1 className="text-xl font-bold">{jobTitle}</h1>
@@ -131,18 +151,18 @@ export default function JobInfoSide({ display }) {
                             <span className="pl-7 text-sm md:text-[1rem]">{minSalary?.toLocaleString()} - {maxSalary?.toLocaleString()}</span>
                         </div>
                     </div>
-                    <div className="flex gap-2">
-                        <PrimaryButton onClick={() => goNext(jobID)} className="w-full">Apply Now</PrimaryButton>
-                        {
-                            savedJobIDs.has(jobID) ?
-                                <SecondaryButton onclick={() => unsaveJob(jobID)} className="w-full py-2 font-bold! border-none bg-green-100">Saved</SecondaryButton>
-                            :
-                                <SecondaryButton onclick={() => saveJob(jobID)} className="w-full py-2 font-bold!">Save</SecondaryButton>
-                        }
-
-                    
-                        
-                    </div>
+                    {
+                        currentUser.userType === "applicant" &&
+                        <div className="flex gap-2">
+                            <PrimaryButton onClick={() => goNext(jobID)} className="w-full">Apply Now</PrimaryButton>
+                            {
+                                savedJobIDs.has(jobID) ?
+                                    <SecondaryButton onclick={() => unsaveJob(jobID)} className="w-full py-2 font-bold! border-none bg-green-100">Saved</SecondaryButton>
+                                :
+                                    <SecondaryButton onclick={() => saveJob(jobID)} className="w-full py-2 font-bold!">Save</SecondaryButton>
+                            }                        
+                        </div>
+                    }
                 </div>
 
                 <div className="w-full px-4 pb-4 md:p-7">
