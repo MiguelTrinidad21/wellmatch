@@ -3,7 +3,9 @@ import { persist, createJSONStorage } from "zustand/middleware";
 
 export const tooltipStore = create((set) => ({
     showTip: false,
-    setShowTip: (value) => set({showTip: value})
+    currText: "",
+    setShowTip: (value) => set({showTip: value}),
+    setCurrText: (value) => set({currText: value})
 }))
 
 export const jobInfoStore = create((set) => ({

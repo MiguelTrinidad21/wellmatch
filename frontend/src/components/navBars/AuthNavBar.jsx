@@ -48,8 +48,15 @@ export default function AuthNavBar() {
                             }
                         </div>
                         <div>
-                            <p className="font-semibold text-xl">{currentUser.firstName} {currentUser.lastName}</p>
-                            <p className="text-gray-600 text-sm font-medium">{currentUser.role}</p>
+                            {
+                                currentUser.userType === "applicant" ?
+                                    <p className="font-semibold text-xl">{currentUser.firstName} {currentUser.lastName}</p>
+                                :
+                                    <>
+                                        <p className="font-semibold text-xl">{companyInfo.companyName}</p>
+                                        <p className="text-gray-600 text-sm font-medium">{currentUser.firstName} {currentUser.lastName}</p>                                    
+                                    </>
+                            }
                         </div>
 
                     </div>

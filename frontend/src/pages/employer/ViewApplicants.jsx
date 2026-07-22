@@ -1,7 +1,7 @@
 import AuthNavBar from "../../components/navBars/AuthNavBar";
-import Overlay from "../../components/overlay/OverlayMobile";
+import SideBarOverlay from "../../components/overlay/SideBarOverlay";
+import EmployerSideBar from "../../components/navBars/EmployerSideBar";
 import Loading from "../../components/others/Loading"
-import Footer from "../../components/others/Footer"
 import PrimaryButton from "../../components/buttons/PrimaryButton";
 import ConfirmationDialog from "../../components/popUps/ConfirmationDialog";
 import WarningBox from "../../components/popUps/DeleteItemBox";
@@ -15,6 +15,7 @@ import { HiOutlineBriefcase } from "react-icons/hi";
 import { IoMdCloseCircleOutline } from "react-icons/io";
 import { MdOutlineCancel } from "react-icons/md";
 import { MdGroups } from "react-icons/md";
+import { RiGroupLine } from "react-icons/ri";
 import { FaUsersSlash } from "react-icons/fa";
 import { FiCalendar } from "react-icons/fi";
 import { useNavigate, Link, useParams } from "react-router-dom";
@@ -66,8 +67,6 @@ export default function ViewApplicants() {
                 },
                 withCredentials: true
             });
-
-            // console.log(res.data.allApplicants)
 
             setJobTitle(res?.data?.jobTitle);
             setApplicantList(res?.data?.allApplicants);
@@ -140,7 +139,7 @@ export default function ViewApplicants() {
     }
     
     useEffect(() => {
-        setEmployerActiveLink("applicants")
+        setEmployerActiveLink("Applicants")
     }, [])
 
     useEffect(() => {
@@ -189,10 +188,12 @@ export default function ViewApplicants() {
     }
 
     return (
-        <>
-            <div className="w-full min-h-screen bg-[#F3F4F6] relative">
+        <div className="lg:flex relative w-full min-w-0">
+            <SideBarOverlay />
+            <EmployerSideBar />
+
+            <div className="w-full min-h-screen bg-[#F3F4F6] relative min-w-0">
                 <AuthNavBar />
-                <Overlay />
 
                 {
                     showRejectAll &&
@@ -252,13 +253,13 @@ export default function ViewApplicants() {
                 }
 
                 
-                <div className="fixed w-full">
-                    <div className="flex gap-4 items-center px-6 py-4 bg-white overflow-x-auto scrollbar-none border-b border-[#E4E2DA] md:px-15">
+                <div className="sticky top-16 md:top-18 lg:top-24 lg:mt-2 z-20 lg:w-max lg:m-auto lg:rounded-full lg:shadow-lg">
+                    <div className="flex gap-4  items-center px-6 py-4 bg-[#ECEFF3] overflow-x-auto scrollbar-none border-b border-gray-200 md:px-15 lg:px-5 lg:w-full lg:rounded-full lg:gap-2 xl:gap-4">
                         <PrimaryButton 
                             onClick={() => fetchApplicants(1, "submitted")} 
-                            className={status === "submitted" ? "bg-[#10B981] px-4 border border-transparent transition-colors duration-200 ease-in" : "border border-[#E4E2DA] px-4 bg-[#F5F5F0]! text-[#666666]!"}
+                            className={status === "submitted" ? "bg-[#10B981] px-4 border border-transparent transition-colors duration-200 ease-in" : "border border-[#E4E2DA] px-4 bg-white! text-[#666666]!"}
                         >
-                            <span className="flex gap-2 items-center justify-center">
+                            <span className="flex gap-2 items-center justify-center lg:text-sm xl:text-[1rem]">
                                 <FaUserPlus size={20} />
                                 New
                             </span>
@@ -266,9 +267,9 @@ export default function ViewApplicants() {
 
                         <PrimaryButton 
                             onClick={() => fetchApplicants(1, "shortlisted")}    
-                            className={status === "shortlisted" ? "bg-[#10B981] px-4 border border-transparent transition-colors duration-200 ease-in" : "border border-[#E4E2DA] px-4 bg-[#F5F5F0]! text-[#666666]!"}
+                            className={status === "shortlisted" ? "bg-[#10B981] px-4 border border-transparent transition-colors duration-200 ease-in" : "border border-[#E4E2DA] px-4 bg-white! text-[#666666]!"}
                         >
-                            <span className="flex gap-2 items-center justify-center">
+                            <span className="flex gap-2 items-center justify-center lg:text-sm xl:text-[1rem]">
                                 <FaListCheck size={20} />
                                 Shortlisted
                             </span>
@@ -276,9 +277,9 @@ export default function ViewApplicants() {
                         
                         <PrimaryButton 
                             onClick={() => fetchApplicants(1, "interview")}    
-                            className={status === "interview" ? "bg-[#10B981] px-4 border border-transparent transition-colors duration-200 ease-in" : "border border-[#E4E2DA] px-4 bg-[#F5F5F0]! text-[#666666]!"}
+                            className={status === "interview" ? "bg-[#10B981] px-4 border border-transparent transition-colors duration-200 ease-in" : "border border-[#E4E2DA] px-4 bg-white! text-[#666666]!"}
                         >
-                            <span className="flex gap-2 items-center justify-center">
+                            <span className="flex gap-2 items-center justify-center lg:text-sm xl:text-[1rem]">
                                 <HiMiniVideoCamera size={20} />
                                 Interview
                             </span>
@@ -286,31 +287,31 @@ export default function ViewApplicants() {
                         
                         <PrimaryButton 
                             onClick={() => fetchApplicants(1, "hired")}
-                            className={status === "hired" ? "bg-[#10B981] px-4 border border-transparent transition-colors duration-200 ease-in" : "border border-[#E4E2DA] px-4 bg-[#F5F5F0]! text-[#666666]!"}
+                            className={status === "hired" ? "bg-[#10B981] px-4 border border-transparent transition-colors duration-200 ease-in" : "border border-[#E4E2DA] px-4 bg-white! text-[#666666]!"}
                         >
-                            <span className="flex gap-2 items-center justify-center">
+                            <span className="flex gap-2 items-center justify-center lg:text-sm xl:text-[1rem]">
                                 <HiOutlineBriefcase size={20} />
-                                Offer&nbsp;Sent
+                                Offers&nbsp;Sent
                             </span>
                         </PrimaryButton>
                         
                         <PrimaryButton 
                             onClick={() => fetchApplicants(1, "not selected")}
-                            className={status === "not selected" ? "bg-[#10B981] px-4 border border-transparent transition-colors duration-200 ease-in" : "border border-[#E4E2DA] px-4 bg-[#F5F5F0]! text-[#666666]!"}
+                            className={status === "not selected" ? "bg-[#10B981] px-4 border border-transparent transition-colors duration-200 ease-in" : "border border-[#E4E2DA] px-4 bg-white! text-[#666666]!"}
                         >
-                            <span className="flex flex-row gap-2 items-center justify-center">
+                            <span className="flex flex-row gap-2 items-center justify-center lg:text-sm xl:text-[1rem]">
                                 <IoMdCloseCircleOutline size={20} />
                                 Past&nbsp;Applicants
                             </span>
                         </PrimaryButton>
                         
                     </div>
-                </div>
-                <Overlay />
 
-                <div className="pointer-events-none absolute left-0 top-0 h-full w-10 bg-linear-to-r from-[#F3F4F6] to-transparent md:w-20" />
+                    <div className="lg:hidden pointer-events-none absolute left-0 top-0 h-full w-7 bg-linear-to-r from-white to-transparent md:w-20" />
 
-                <div className="pointer-events-none absolute right-0 top-0 h-full w-10 bg-linear-to-l from-white to-transparent md:w-20" />                  
+                    <div className="lg:hidden pointer-events-none absolute right-0 top-0 h-full w-7 bg-linear-to-l from-white to-transparent md:w-20" />                  
+                </div>  
+
 
                 {
                     jobID === "selectFirst" ?
@@ -321,7 +322,7 @@ export default function ViewApplicants() {
                             <PrimaryButton to="/employer/jobs">Select a job</PrimaryButton>
                         </div>
                     :
-                        <div className="w-full p-6 md:py-10 md:px-15">
+                        <div className="w-full p-6 md:py-10 md:px-15 lg:px-10 xl:px-30">
                             {
                                 status === "submitted" &&
                                 <>
@@ -368,18 +369,32 @@ export default function ViewApplicants() {
                             :   
                                 <div className="w-full">
 
-                                    <div className="mb-8 border-l-4 border-green-600 pl-3 py-4 ">
-                                        <p className="text-sm text-green-700 font-semibold">APPLICANTS FOR</p>
-                                        <p className="font-bold">{jobTitle}</p>
+                                    <div className="rounded-2xl mb-10 flex items-center justify-between w-full p-5 bg-white">
+                                        <div className="flex items-center gap-3">
+                                            <div className="bg-green-100 p-1 w-11 h-11 rounded-xl flex justify-center items-center">
+                                                <HiOutlineBriefcase size={25} className="text-green-700"/>
+                                            </div>
+                                            <div className="max-w-100 xl:max-w-150">
+                                                <p className="text-sm text-gray-600">Applicants for</p>
+                                                <p className="font-bold text-xl">{jobTitle}</p>
+                                            </div>
+                                        </div>
+                                        <div className="hidden md:flex rounded-xl border border-gray-300 py-2 p-5 items-center gap-2 bg-white">
+                                            <RiGroupLine className="text-gray-700" />
+                                            <p className="text-gray-600 font-medium text-sm"><span className="text-black font-bold text-[1rem]">{applicantList.length}</span>{`${applicantList.length > 1 ? " applicants" : " applicant"}`}</p>
+                                        </div>                                        
                                     </div>
 
                                     <div className="flex justify-between items-center mb-3">
-                                        <p className="text-gray-500">{`${applicantList.length} ${applicantList.length > 1 ? "applicants" : "applicant"}`}</p>
+                                        <div className="md:hidden rounded-xl border border-gray-300 py-2 p-5 flex items-center gap-2 bg-white">
+                                            <RiGroupLine className="text-gray-700" />
+                                            <p className="text-gray-600 font-medium text-sm"><span className="text-black font-bold text-[1rem]">{applicantList.length}</span>{`${applicantList.length > 1 ? " applicants" : " applicant"}`}</p>
+                                        </div>
                                         {
                                             activeStatus.includes(status) &&
                                             <PrimaryButton 
                                                 onClick={() => setShowRejectAll(true)}
-                                                className="text-sm flex items-center gap-1 rounded-md bg-red-600 shadow-md"
+                                                className="text-sm md:ml-auto flex items-center gap-1 rounded-lg bg-red-600 shadow-md"
                                             >
                                                 <MdOutlineCancel size={20} />
                                                 Reject all
@@ -417,7 +432,6 @@ export default function ViewApplicants() {
 
 
                                                     <p className="text-gray-500 my-10 text-sm flex items-center gap-2"><FiCalendar size={18} />{`Submitted on ${new Date(item.applicationDate).toLocaleDateString('en-US', dateFormat)}`}</p>
-                                                    {/* <p className="text-gray-500 mb-10 mt-5 text-sm">{`Submitted on ${new Date(item.applicationDate).toLocaleDateString('en-US', dateFormat)}`}</p> */}
                                                     
             
                                                     <div className="flex justify-between text-sm">
@@ -517,7 +531,7 @@ export default function ViewApplicants() {
                                                 <tbody>
                                                     {
                                                         applicantList?.map((item) => (
-                                                            <tr key={item.applicationID} className="border-t border-gray-200 text-sm">
+                                                            <tr key={item.applicationID} className="border-t-2 border-gray-200 text-sm">
                                                                 <td className="px-6 py-5 text-center w-48 max-w-48 wrap-break-word font-semibold">{`${item.firstName} ${item.lastName}`}</td>
                                                                 <td className="px-6 py-5 text-center w-48 max-w-48 wrap-break-word font-semibold">{new Date(item.applicationDate).toLocaleDateString('en-US', dateFormat)}</td>
                                                                 {
@@ -530,77 +544,81 @@ export default function ViewApplicants() {
                                                                     <PrimaryButton to={`/employer/applications/skillGapReport/${item.applicantID}/${item.jobID}/${item.resumeID}`} className="m-auto rounded-md text-sm">See Report</PrimaryButton>
                                                                 </td>
                                                                 {status === "submitted" &&
-                                                                    <td className="flex items-center justify-center gap-5 px-6 py-5">
-                                                                        <PrimaryButton
-                                                                            onClick={() => {
-                                                                                setApplicationID(item.applicationID)
-                                                                                setShowConfirm(true)
-                                                                            }} 
-                                                                            className="text-green-600! text-sm bg-white px-0!"                                        
-                                                                        >
-                                                                            Interested
-                                                                        </PrimaryButton>
+                                                                    <td className="px-6 py-5 text-center w-48 max-w-48">
+                                                                        <div className="flex items-center justify-center gap-5">
+                                                                            <PrimaryButton
+                                                                                onClick={() => {
+                                                                                    setApplicationID(item.applicationID)
+                                                                                    setShowConfirm(true)
+                                                                                }} 
+                                                                                className="text-green-600! text-sm bg-white px-0!"                                        
+                                                                            >
+                                                                                Interested
+                                                                            </PrimaryButton>
 
-                                                                        <PrimaryButton 
-                                                                            onClick={() => {
-                                                                                setApplicationID(item.applicationID)
-                                                                                setShowReject(true)
-                                                                            }} 
-                                                                            className="text-red-600! bg-white px-0!"
-                                                                        >
-                                                                            Reject
-                                                                        </PrimaryButton>                                                                        
+                                                                            <PrimaryButton 
+                                                                                onClick={() => {
+                                                                                    setApplicationID(item.applicationID)
+                                                                                    setShowReject(true)
+                                                                                }} 
+                                                                                className="text-red-600! bg-white px-0!"
+                                                                            >
+                                                                                Reject
+                                                                            </PrimaryButton>
+                                                                        </div>
                                                                     </td>
                                                                 }
 
                                                                 {status === "shortlisted" &&
-                                                                    <td className="flex items-center justify-center gap-3">
-                                                                        <PrimaryButton 
-                                                                            onClick={() => {
-                                                                                setApplicationID(item.applicationID)
-                                                                                setShowConfirm(true)
-                                                                            }} 
-                                                                            className="text-green-600! bg-white px-0!"
-                                                                        >
-                                                                            Interview
-                                                                        </PrimaryButton>
-                                                                        <PrimaryButton 
-                                                                            onClick={() => {
-                                                                                setApplicationID(item.applicationID)
-                                                                                setShowReject(true)
-                                                                            }} 
-                                                                            className="text-red-600! bg-white px-0!"
-                                                                        >
-                                                                            Reject
-                                                                        </PrimaryButton>
-
-                                                                    </td>                                                                
+                                                                    <td className="px-6 py-5 text-center w-48 max-w-48">
+                                                                        <div className="flex items-center justify-center gap-3">
+                                                                            <PrimaryButton 
+                                                                                onClick={() => {
+                                                                                    setApplicationID(item.applicationID)
+                                                                                    setShowConfirm(true)
+                                                                                }} 
+                                                                                className="text-green-600! bg-white px-0!"
+                                                                            >
+                                                                                Interview
+                                                                            </PrimaryButton>
+                                                                            <PrimaryButton 
+                                                                                onClick={() => {
+                                                                                    setApplicationID(item.applicationID)
+                                                                                    setShowReject(true)
+                                                                                }} 
+                                                                                className="text-red-600! bg-white px-0!"
+                                                                            >
+                                                                                Reject
+                                                                            </PrimaryButton>
+                                                                        </div>
+                                                                    </td>
                                                                 }
 
                                                                 {status === "interview" &&
-                                                                    <td className="flex items-center justify-center gap-3">
-                                                                        <PrimaryButton 
-                                                                            onClick={() => {
-                                                                                setApplicationID(item.applicationID)
-                                                                                setShowConfirm(true)
-                                                                            }} 
-                                                                            className="text-green-600! bg-white px-0!"
-                                                                        >
-                                                                            Send Offer
-                                                                        </PrimaryButton>
-                                                                        <PrimaryButton 
-                                                                            onClick={() => {
-                                                                                setApplicationID(item.applicationID)
-                                                                                setShowReject(true)
-                                                                            }} 
-                                                                            className="text-red-600! bg-white px-0!"
-                                                                        >
-                                                                            Reject
-                                                                        </PrimaryButton>
-
-                                                                    </td>                                                                
+                                                                    <td className="px-6 py-5 text-center w-48 max-w-48">
+                                                                        <div className="flex items-center justify-center gap-3">
+                                                                            <PrimaryButton 
+                                                                                onClick={() => {
+                                                                                    setApplicationID(item.applicationID)
+                                                                                    setShowConfirm(true)
+                                                                                }} 
+                                                                                className="text-green-600! bg-white px-0!"
+                                                                            >
+                                                                                Send Offer
+                                                                            </PrimaryButton>
+                                                                            <PrimaryButton 
+                                                                                onClick={() => {
+                                                                                    setApplicationID(item.applicationID)
+                                                                                    setShowReject(true)
+                                                                                }} 
+                                                                                className="text-red-600! bg-white px-0!"
+                                                                            >
+                                                                                Reject
+                                                                            </PrimaryButton>
+                                                                        </div>
+                                                                    </td>
                                                                 }
-                                                                {/* {status === "hired" && <td className="px-6 py-5 text-center w-48 max-w-48 wrap-break-word font-semibold">{new Date(item.dateHired).toLocaleDateString('en-US', dateFormat)}</td>} */}
+                                                                
                                                                 {status === "not selected" && <td className="px-6 py-5 text-center w-48 max-w-48 wrap-break-word font-semibold">{item.status === "not selected" ? "Rejected" : "Withdrew"}</td>}
                                                                 
                                                                 
@@ -639,7 +657,6 @@ export default function ViewApplicants() {
                 
             </div>
 
-            <Footer />
-        </>
+        </div>
     )
 }
