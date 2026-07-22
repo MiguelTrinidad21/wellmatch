@@ -1,6 +1,5 @@
 import AuthNavBar from "../../components/navBars/AuthNavBar";
 import SideBarOverlay from "../../components/overlay/SideBarOverlay";
-import Overlay from "../../components/overlay/OverlayMobile"
 import ApplicantSideBar from "../../components/navBars/ApplicantSideBar";
 import Loading from "../../components/others/Loading"
 import PrimaryButton from "../../components/buttons/PrimaryButton";
@@ -274,7 +273,7 @@ export default function JobApplications() {
                         
                     </div>
 
-                    <div className="lg:hidden pointer-events-none absolute left-0 top-0 h-full w-7 bg-linear-to-r from-[#F3F4F6] to-transparent md:w-20" />
+                    <div className="lg:hidden pointer-events-none absolute left-0 top-0 h-full w-7 bg-linear-to-r from-white to-transparent md:w-20" />
 
                     <div className="lg:hidden pointer-events-none absolute right-0 top-0 h-full w-7 bg-linear-to-l from-white to-transparent md:w-20" />                    
 

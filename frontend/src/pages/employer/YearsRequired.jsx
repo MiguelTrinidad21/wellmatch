@@ -1,6 +1,6 @@
 import AuthNavBar from "../../components/navBars/AuthNavBar";
-import Overlay from "../../components/overlay/OverlayMobile";
-import Footer from "../../components/others/Footer";
+import SideBarOverlay from "../../components/overlay/SideBarOverlay";
+import EmployerSideBar from "../../components/navBars/EmployerSideBar";
 import PrimaryButton from "../../components/buttons/PrimaryButton";
 import ConfirmationBox from "../../components/popUps/ConfirmationBox"
 import Loading from "../../components/others/Loading";
@@ -122,10 +122,12 @@ export default function YearsRequired({ mode = "create" }) {
 
 
     return (
-        <>
+        <div className="lg:flex relative w-full">
+            <SideBarOverlay />
+            <EmployerSideBar />
+
             <div className="w-full min-h-screen bg-[#F3F4F6]">
                 <AuthNavBar />
-                <Overlay />
                 
                 {isJobPosted && 
                     <>
@@ -138,14 +140,31 @@ export default function YearsRequired({ mode = "create" }) {
                     </>
                 }
 
-                <div className="w-full p-6 md:py-10 md:px-15">
-                    <h1 className="text-2xl font-bold mb-6 text-center">Post Your Job Ad</h1>
+                <div className="w-full p-6 md:px-15 md:py-10 lg:px-20 xl:px-40">
+                    <h1 className="text-2xl font-bold mb-6 lg:mb-2 text-center lg:text-3xl xl:text-4xl lg:text-left">{isEditMode ? "Update Job Post" : "Create Job Post"}</h1>
+                    <p className="mb-5 hidden lg:block xl:text-xl font-medium text-gray-500">Step 3 of 3 &mdash; Define required experience for this role.</p>
 
-                    <form onSubmit={handleSubmit} className="w-full rounded-2xl bg-white p-6 shadow-md mb-7 m-auto md:w-100 md:text-lg">
+
+                    <div className="w-full md:w-100 lg:w-full mb-5 lg:mb-7 m-auto">
+                        <div className="grid grid-cols-3 w-full gap-1 lg:gap-2 mb-2">
+                            <div className="border-t-3 lg:border-t-4 border-gray-300 lg:pt-7">
+                                <p className="hidden lg:block font-bold text-gray-500 text-left">Basic Details</p>
+                            </div>
+                            <div className="border-t-3 lg:border-t-4 border-gray-300 lg:pt-7">
+                                <p className="hidden lg:block font-bold text-gray-500 text-center">Job Description</p>
+                            </div>
+                            <div className="border-t-3 lg:border-t-4 border-green-600 lg:pt-7">
+                                <p className="hidden lg:block font-bold text-green-700 text-right">Years Required</p>
+                            </div>
+                        </div>
+                        <p className="text-sm lg:hidden font-medium text-gray-500">Step 3 of 3 &mdash; <span className="text-green-600 font-semibold">Define required experience for this role.</span></p>
+                    </div>
+
+                    <form onSubmit={handleSubmit} className="w-full rounded-2xl bg-white p-6 lg:py-10 lg:px-15 shadow-md m-auto md:w-100 lg:w-full lg:m-0">
                         <h2 className="font-semibold mb-5">What is the minimum years of experience do you require?</h2>
 
 
-                        <div className="flex flex-col gap-4 mb-5">
+                        <div className="flex flex-col gap-4 mb-5 ">
                             {experienceOptions.map((option) => (
                                 <label
                                     key={option.value}
@@ -188,7 +207,6 @@ export default function YearsRequired({ mode = "create" }) {
 
             </div>
 
-            <Footer />
-        </>
+        </div>
     )
 }
