@@ -13,7 +13,7 @@ export default function WarningBox({
     return (
         <>
             <Translucent />
-            <div className="rounded-2xl bg-[#F9FAFB] fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 p-5 w-75 z-40 md:w-80 xl:p-7">
+            <div className="rounded-2xl bg-[#F9FAFB] fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 p-5 w-75 z-40 md:w-100 xl:p-7">
                 <h1 className="font-bold text-lg mb-2 xl:text-xl">{heading}</h1>
                 <p className="mb-10 xl:text-lg">{bodyText}</p>
 

@@ -147,17 +147,17 @@ export default function YearsRequired({ mode = "create" }) {
 
                     <div className="w-full md:w-100 lg:w-full mb-5 lg:mb-7 m-auto">
                         <div className="grid grid-cols-3 w-full gap-1 lg:gap-2 mb-2">
-                            <div className="border-t-3 lg:border-t-4 border-gray-300 lg:pt-7">
-                                <p className="hidden lg:block font-bold text-gray-500 text-left">Basic Details</p>
+                            <div className="border-t-3 lg:border-t-4 border-green-600 lg:pt-7">
+                                <p className="hidden lg:block font-bold text-green-700 text-left">Basic Details</p>
                             </div>
-                            <div className="border-t-3 lg:border-t-4 border-gray-300 lg:pt-7">
-                                <p className="hidden lg:block font-bold text-gray-500 text-center">Job Description</p>
+                            <div className="border-t-3 lg:border-t-4 border-green-600 lg:pt-7">
+                                <p className="hidden lg:block font-bold text-green-700 text-center">Job Description</p>
                             </div>
                             <div className="border-t-3 lg:border-t-4 border-green-600 lg:pt-7">
                                 <p className="hidden lg:block font-bold text-green-700 text-right">Years Required</p>
                             </div>
                         </div>
-                        <p className="text-sm lg:hidden font-medium text-gray-500">Step 3 of 3 &mdash; <span className="text-green-600 font-semibold">Define required experience for this role.</span></p>
+                        <p className="text-sm lg:hidden font-medium text-gray-500">Step 3 of 3 &mdash; <span className="text-green-700 font-semibold">Define required experience for this role.</span></p>
                     </div>
 
                     <form onSubmit={handleSubmit} className="w-full rounded-2xl bg-white p-6 lg:py-10 lg:px-15 shadow-md m-auto md:w-100 lg:w-full lg:m-0">

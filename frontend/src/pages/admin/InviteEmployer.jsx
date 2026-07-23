@@ -1,17 +1,15 @@
-import AuthNavBar from "../../components/navBars/AuthNavBar";
-import Overlay from "../../components/overlay/OverlayMobile";
 import PrimaryButton from "../../components/buttons/PrimaryButton";
-import Footer from "../../components/others/Footer";
 import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { userStore } from "../../zustand/userState";
 import { BiLoaderAlt } from "react-icons/bi";
+import { MdMailOutline } from "react-icons/md";
 import axios from "axios";
 import ConfirmationBox from "../../components/popUps/ConfirmationBox";
 import Translucent from "../../components/overlay/Translucent";
 import Loading from "../../components/others/Loading";
 
-export default function InviteEmployer() {
+export default function InviteEmployer({ cancelFunc, setInviteSent }) {
     const navigate = useNavigate();
 
     const { currentUser } = userStore();
@@ -21,7 +19,6 @@ export default function InviteEmployer() {
         email: ""
     });
     const [isSending, setIsSending] = useState(false);
-    const [showPopUp, setShowPopUp] = useState(false);
     const [error, setError] = useState("");
 
     
@@ -37,9 +34,10 @@ export default function InviteEmployer() {
                 {withCredentials: true}
             );
 
-            setShowPopUp(true);
             setIsSending(false);
             setError("");
+            setInviteSent();
+            cancelFunc();
         } catch (error) {
             setIsSending(false);
 
@@ -49,76 +47,34 @@ export default function InviteEmployer() {
         }
     }
 
-    function closePopUp() {
-        setShowPopUp(false);
-    }
 
-    useEffect(() => {
-        async function checkAdmin() {
-            try {
-                console.log(currentUser);
-                if (!currentUser || Object.keys(currentUser).length === 0) {
-                    setVerified(false);
-                    setLoading(false);
-                    return;
-                }
-
-                await axios.get("/api/employer/authorizeAdmin", {
-                    params: {
-                        employerID: currentUser.employerID
-                    }
-                });
-
-                setVerified(true);
-            } catch (error) {
-                console.log(error);
-                setVerified(false);
-            } finally {
-                setLoading(false);
-            }
-        }
-
-        checkAdmin();
-    }, [currentUser]);
-
-
-    if (loading) {
-        return <Loading />
-    }
-
-    if (!verified) {
-        navigate("/forbidden");
-    }
 
     return (
         <>
-            <div className="w-full h-screen px-6 bg-[#F3F4F6] md:px-40 md:py-15">
-                <AuthNavBar />
-                <Overlay />
+            <Translucent />
 
-                {showPopUp && 
-                    <> 
-                        <Translucent />
-                        <ConfirmationBox buttonText="Close" onClick={closePopUp} text="Email sent successfully" />
-                    </>
-                }
-
-                <h1 className="font-bold text-2xl my-5">Invite your co-employer</h1>
-                <h2 className="text-lg font-medium mb-10">Enter your co-employer's email address to send them a registration link via email</h2>
+            <div className="fixed top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 z-40 w-[90%] md:w-100 rounded-2xl bg-white shadow-md p-6">
+                <div className="w-15 h-15 flex justify-center items-center text-green-700 p-4 bg-[#E7F4EC] rounded-2xl m-auto mb-6">
+                    <MdMailOutline size={30}/>
+                </div>
+                <h1 className="font-bold text-center text-xl md:text-3xl mb-5">Invite your co-employer</h1>
+                <h2 className="text-gray-600 text-center font-medium mb-6">Enter your co-employer's email address to send them a registration link via email</h2>
 
                 <form onSubmit={handleSubmit}>
                     <label htmlFor="email" className="block mb-3 font-semibold">Email Address</label>
-                    <input className="block border w-full text-md p-2 mb-3 rounded-md" 
+                    <input 
                         type="email" 
+                        id="email"
                         placeholder="employer@gmail.com"
                         value={employerToInvite.email}
                         onChange={(e) => setEmployerToInvite({
                             ...employerToInvite,
                             email: e.target.value})}
                         required
+                        className={`p-2 lg:px-4 rounded-md block w-full border-2 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out ${error ? "border-red-600 focus:border-red-600" : "border-gray-300 focus:border-green-600"}`} 
                     />
                     {error &&
-                        <p className="text-red-600 text-[13px] italic mb-3">
+                        <p className="text-red-600 text-[13px] text-center mb-3">
                             {error}
                         </p>
                     }
@@ -132,14 +88,14 @@ export default function InviteEmployer() {
                         : "Send Email"}
                         
                     </PrimaryButton>
-                    <Link className="font-semibold block w-full text-center" to="/employer/companyProfile">Cancel</Link>
                 </form>
+                    <button onClick={cancelFunc} className="cursor-pointer font-semibold block w-full text-center mb-7">Cancel</button>
 
-                
-            </div>
-            <Footer />
-            
-            
+                    <div className="w-full border border-gray-300 bg-gray-100 rounded-2xl p-4">
+                        <p className="text-sm text-center text-gray-600">They'll receive a registration link by email. Invites expire after 24 hours if unused.</p>
+                    </div>
+            </div>             
+ 
         </>
     )
 }

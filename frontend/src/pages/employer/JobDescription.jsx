@@ -8,13 +8,12 @@ import { FaArrowLeftLong } from "react-icons/fa6";
 import { jobCreationStore } from "../../zustand/stateHandlers";
 import { useNavigate, useParams } from "react-router-dom";
 import TextEditor from "../../components/others/TextEditor"
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { userStore } from "../../zustand/userState";
 import { tooltipStore } from "../../zustand/stateHandlers";
 import axios from "axios";
 
 export default function JobDescription({ mode = "create" }) {
-    const tooltipRef = useRef(null);
     const { jobID } = useParams();
     const isEditMode = mode === "edit";
 
@@ -31,21 +30,19 @@ export default function JobDescription({ mode = "create" }) {
     })
 
     useEffect(() => {
-        function closeTooltip(e) {
-            if (tooltipRef.current && !tooltipRef.current.contains(e.target)) {
+        function handleClickOutside(event) {
+            if (!event.target.closest("[data-tooltip]")) {
                 setShowTip(false);
             }
         }
 
-        document.addEventListener("mousedown", closeTooltip);
-
-        return () => document.removeEventListener("mousedown", closeTooltip)
-    }, [])
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, []);
 
     useEffect(() => {
         async function checkEmployer() {
             try {
-                // console.log(currentUser);
                 if (!currentUser || Object.keys(currentUser).length === 0) {
                     setVerified(false);
                     setLoading(false);
@@ -135,8 +132,8 @@ export default function JobDescription({ mode = "create" }) {
 
                     <div className="w-full md:w-100 lg:w-full mb-5 lg:mb-7 m-auto">
                         <div className="grid grid-cols-3 w-full gap-1 lg:gap-2 mb-2">
-                            <div className="border-t-3 lg:border-t-4 border-gray-300 lg:pt-7">
-                                <p className="hidden lg:block font-bold text-gray-500 text-left">Basic Details</p>
+                            <div className="border-t-3 lg:border-t-4 border-green-600 lg:pt-7">
+                                <p className="hidden lg:block font-bold text-green-700 text-left">Basic Details</p>
                             </div>
                             <div className="border-t-3 lg:border-t-4 border-green-600 lg:pt-7">
                                 <p className="hidden lg:block font-bold text-green-700 text-center">Job Description</p>
@@ -145,17 +142,17 @@ export default function JobDescription({ mode = "create" }) {
                                 <p className="hidden lg:block font-bold text-gray-500 text-right">Years Required</p>
                             </div>
                         </div>
-                        <p className="text-sm lg:hidden font-medium text-gray-500">Step 2 of 3 &mdash; <span className="text-green-600 font-semibold">Describe job description and requirements.</span></p>
+                        <p className="text-sm lg:hidden font-medium text-gray-500">Step 2 of 3 &mdash; <span className="text-green-700 font-semibold">Describe job description and requirements.</span></p>
                     </div>
 
                     <form onSubmit={handleNext} className="w-full rounded-2xl bg-white p-6 lg:py-10 lg:px-15 shadow-md m-auto md:w-100 lg:w-full lg:m-0">
                         <div className="w-full mb-6">
                             <div className="relative flex items-center w-max gap-2">
                                 <label className="font-semibold text-lg mb-1" htmlFor="jobOverview">Job Overview</label>
-                                <Tooltip ref={tooltipRef} textToCompare="Provide a brief overview of the role, its primary purpose, and how it contributes to the organization." text="Provide a brief overview of the role, its primary purpose, and how it contributes to the organization." />
+                                <Tooltip data-tooltip  textToCompare="Provide a brief overview of the role, its primary purpose, and how it contributes to the organization." text="Provide a brief overview of the role, its primary purpose, and how it contributes to the organization." />
                             </div>
                             <textarea 
-                                className="p-2 lg:px-4 rounded-xl h-32 block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-green-600 placeholder:italic"
+                                className="p-4 lg:px-4 rounded-xl h-40 block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-green-600 placeholder:italic"
                                 id="jobTitle"
                                 value={createdJob.jobOverview}
                                 onChange={(e) => setCreatedJob({jobOverview: e.target.value})}
@@ -169,7 +166,7 @@ export default function JobDescription({ mode = "create" }) {
                         <div className="w-full mb-6">
                             <div className="relative flex items-center w-max gap-2">
                                 <label className="block font-semibold text-lg mb-1" htmlFor="duties">Job Responsibilities</label>
-                                <Tooltip ref={tooltipRef} textToCompare="List the main duties and responsibilities of the position." text="List the main duties and responsibilities of the position." />
+                                <Tooltip data-tooltip textToCompare="List the main duties and responsibilities of the position." text="List the main duties and responsibilities of the position." />
                             </div>
                             <TextEditor 
                                 value={createdJob.jobDuties} 
@@ -183,7 +180,7 @@ export default function JobDescription({ mode = "create" }) {
                         <div className="w-full mb-6">
                             <div className="relative flex items-center w-max gap-2">
                                 <label className="block font-semibold text-lg mb-1" htmlFor="duties">Required Qualifications</label>
-                                <Tooltip ref={tooltipRef} textToCompare="Specify the minimum qualifications necessary to perform the job successfully." text="Specify the minimum qualifications necessary to perform the job successfully." />
+                                <Tooltip data-tooltip textToCompare="Specify the minimum qualifications necessary to perform the job successfully." text="Specify the minimum qualifications necessary to perform the job successfully." />
                             </div>
                             <TextEditor 
                                 value={createdJob.requiredQualifications} 
@@ -197,7 +194,7 @@ export default function JobDescription({ mode = "create" }) {
                         <div className="w-full mb-6">
                             <div className="relative flex items-center w-max gap-2">
                                 <label className="block font-semibold text-lg mb-1" htmlFor="duties">Preferred Qualifications</label>
-                                <Tooltip ref={tooltipRef} textToCompare="List additional qualifications, skills, certifications, or experiences that are desirable but not required. (Optional)" text="List additional qualifications, skills, certifications, or experiences that are desirable but not required. (Optional)" />
+                                <Tooltip data-tooltip textToCompare="List additional qualifications, skills, certifications, or experiences that are desirable but not required. (Optional)" text="List additional qualifications, skills, certifications, or experiences that are desirable but not required. (Optional)" />
                             </div>
                             <TextEditor 
                                 value={createdJob.preferredQualifications} 
@@ -210,7 +207,7 @@ export default function JobDescription({ mode = "create" }) {
                         <div className="w-full mb-6">
                             <div className="relative flex items-center w-max gap-2">
                                 <label className="block font-semibold text-lg mb-1" htmlFor="duties">Working Conditions</label>
-                                <Tooltip ref={tooltipRef} textToCompare="Describe the work setup, schedule, location, and any special working conditions associated with the role. (Optional)" text="Describe the work setup, schedule, location, and any special working conditions associated with the role. (Optional)" />
+                                <Tooltip data-tooltip  textToCompare="Describe the work setup, schedule, location, and any special working conditions associated with the role. (Optional)" text="Describe the work setup, schedule, location, and any special working conditions associated with the role. (Optional)" />
                             </div>
                             <TextEditor 
                                 value={createdJob.workingConditions} 
@@ -223,7 +220,7 @@ export default function JobDescription({ mode = "create" }) {
                         <div className="w-full mb-6">
                             <div className="relative flex items-center w-max gap-2">
                                 <label className="block font-semibold text-lg mb-1" htmlFor="duties">Job Benefits</label>
-                                <Tooltip ref={tooltipRef} textToCompare="Provide information about the compensation package, employee benefits, and other perks offered for the position. (Optional)" text="Provide information about the compensation package, employee benefits, and other perks offered for the position. (Optional)" />
+                                <Tooltip data-tooltip textToCompare="Provide information about the compensation package, employee benefits, and other perks offered for the position. (Optional)" text="Provide information about the compensation package, employee benefits, and other perks offered for the position. (Optional)" />
                             </div>
                             <TextEditor 
                                 value={createdJob.jobBenefits} 

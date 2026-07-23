@@ -1,6 +1,6 @@
 import AuthNavBar from "../../components/navBars/AuthNavBar";
-import Overlay from "../../components/overlay/OverlayMobile";
-import Footer from "../../components/others/Footer"
+import SideBarOverlay from "../../components/overlay/SideBarOverlay";
+import EmployerSideBar from "../../components/navBars/EmployerSideBar";
 import Loading from "../../components/others/Loading"
 import ConfirmationBox from "../../components/popUps/ConfirmationBox";
 import { FaCheck } from "react-icons/fa6";
@@ -139,10 +139,12 @@ export default function EditPermission(req, res) {
     }
 
     return (
-        <>
+        <div className="lg:flex relative w-full">
+            <SideBarOverlay />
+            <EmployerSideBar />
+
             <div className="w-full min-h-screen bg-[#F3F4F6] relative">
                 <AuthNavBar />
-                <Overlay />
 
                 {
                     showConfirm &&
@@ -155,7 +157,7 @@ export default function EditPermission(req, res) {
                     />
                 }
 
-                <div className="w-full p-6">
+                <div className="w-full p-6 md:py-10 md:px-15 xl:px-30">
                     <h1 className="font-bold text-2xl mb-4">Individual Details</h1>
 
                     <section className="flex gap-4 w-full">
@@ -175,80 +177,82 @@ export default function EditPermission(req, res) {
                         <h1 className="text-2xl font-bold mb-1">Role Permissions</h1>
                         <p>Select the access level for this user.</p>
 
-                        <div 
-                            onClick={() => setRole("Employer")}
-                            className={`w-full border-2 rounded-2xl p-4 my-6 ${role === "Employer" ? "border-green-600 bg-[#D5F7E3]" : "border-gray-400 bg-white"}`}
-                        >
-                            <div className="flex gap-2 items-center mb-2">
-                                <input 
-                                    type="radio"
-                                    id="employer"
-                                    name="role"
-                                    value="Employer"
-                                    onChange={(e) => setRole(e.target.value)}
-                                    checked={role === "Employer"}
-                                    className="w-5 h-5"
-                                />
-                                <label className="text-lg font-bold" htmlFor="employer">Employer</label>
+                        <div className="w-full xl:grid xl:grid-cols-2 xl:gap-5 xl:my-10">
+                            <div 
+                                onClick={() => setRole("Employer")}
+                                className={`cursor-pointer transition-colors duration-200 ease-out w-full border-2 rounded-2xl p-4 my-6 xl:my-0 ${role === "Employer" ? "border-green-600 bg-[#D5F7E3]" : "border-gray-400 bg-white"}`}
+                            >
+                                <div className="flex gap-2 items-center mb-2">
+                                    <input 
+                                        type="radio"
+                                        id="employer"
+                                        name="role"
+                                        value="Employer"
+                                        onChange={(e) => setRole(e.target.value)}
+                                        checked={role === "Employer"}
+                                        className="w-5 h-5"
+                                    />
+                                    <label className="text-lg font-bold" htmlFor="employer">Employer</label>
+                                </div>
+
+                                <div className="w-full pl-7">
+                                    {
+                                        employerPrivelages.map((item) => (
+                                            <div key={item.header} className="w-full">
+                                                <h1 className="font-semibold mb-1 flex gap-2 items-center">
+                                                    <FaCheck />
+                                                    {item.header}
+                                                </h1>
+                                                <p className="pl-6 mb-3 text-sm">{item.text}</p>
+                                            </div>
+                                        ))
+                                    }
+                                </div>
+
                             </div>
 
-                            <div className="w-full pl-7">
-                                {
-                                    employerPrivelages.map((item) => (
-                                        <div key={item.header} className="w-full">
-                                            <h1 className="font-semibold mb-1 flex gap-2 items-center">
-                                                <FaCheck />
-                                                {item.header}
-                                            </h1>
-                                            <p className="pl-6 mb-3 text-sm">{item.text}</p>
-                                        </div>
-                                    ))
-                                }
-                            </div>
+                            <div
+                                onClick={() => setRole("Admin Employer")}
+                                className={`cursor-pointer transition-colors duration-200 ease-out w-full border-2 rounded-2xl p-4 mb-6 xl:mb-0 ${role === "Admin Employer" ? "border-green-600 bg-[#D5F7E3]" : "border-gray-400 bg-white"}`}
+                            >
+                                <div className="flex gap-2 items-center">
+                                    <input 
+                                        type="radio"
+                                        id="admin"
+                                        name="role"
+                                        value="Admin Employer"
+                                        onChange={(e) => setRole(e.target.value)}
+                                        checked={role === "Admin Employer"}
+                                        className="w-5 h-5"
+                                    />
+                                    <label className="text-lg font-bold" htmlFor="admin">Administrator</label>
+                                </div>
 
+                                <div className="w-full pl-7">
+                                    {
+                                        adminPrivelages.map((item) => (
+                                            <div key={item.header} className="w-full">
+                                                <h1 className="font-semibold mb-1 flex gap-2 items-center">
+                                                    <FaCheck />
+                                                    {item.header}
+                                                </h1>
+                                                <p className="pl-6 mb-3 text-sm">{item.text}</p>
+                                            </div>
+                                        ))
+                                    }
+                                </div>                            
+                            </div>
                         </div>
 
-                        <div
-                            onClick={() => setRole("Admin Employer")}
-                            className={`w-full border-2 rounded-2xl p-4 mb-6 ${role === "Admin Employer" ? "border-green-600 bg-[#D5F7E3]" : "border-gray-400 bg-white"}`}
-                        >
-                            <div className="flex gap-2 items-center">
-                                <input 
-                                    type="radio"
-                                    id="admin"
-                                    name="role"
-                                    value="Admin Employer"
-                                    onChange={(e) => setRole(e.target.value)}
-                                    checked={role === "Admin Employer"}
-                                    className="w-5 h-5"
-                                />
-                                <label className="text-lg font-bold" htmlFor="admin">Administrator</label>
-                            </div>
-
-                            <div className="w-full pl-7">
-                                {
-                                    adminPrivelages.map((item) => (
-                                        <div key={item.header} className="w-full">
-                                            <h1 className="font-semibold mb-1 flex gap-2 items-center">
-                                                <FaCheck />
-                                                {item.header}
-                                            </h1>
-                                            <p className="pl-6 mb-3 text-sm">{item.text}</p>
-                                        </div>
-                                    ))
-                                }
-                            </div>                            
-                        </div>
                     </section>
 
-                    <section className="flex gap-3 justify-end">
+                    <section className="flex gap-3 md:gap-5 justify-end">
                         <PrimaryButton to="/employer/companyProfile" className="bg-slate-100 border-2 border-slate-400 text-black!">Cancel</PrimaryButton>
                         <PrimaryButton onClick={editPermission}>Save Changes</PrimaryButton>
                     </section>
                 </div>
             </div>
 
-            <Footer />
-        </>
+        </div>
     )
 }

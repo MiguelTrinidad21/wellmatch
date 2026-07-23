@@ -3,11 +3,11 @@ import { IoMdInformationCircleOutline } from "react-icons/io";
 import { tooltipStore } from "../../zustand/stateHandlers";
 
 
-export default function Tooltip({ ref, textToCompare, text, className }) {
+export default function Tooltip({ ref, textToCompare, text, className, ...rest }) {
     const {showTip, setShowTip, currText, setCurrText} = tooltipStore();
     
     return(
-        <div className="inline-block">
+        <div {...rest} className="inline-block">
             <button
                 ref={ref}
                 type="button"

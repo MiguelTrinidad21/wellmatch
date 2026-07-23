@@ -205,7 +205,7 @@ export default function CreateJobPost({ mode = "create" }) {
                                 <p className="hidden lg:block font-bold text-gray-500 text-right">Years Required</p>
                             </div>
                         </div>
-                        <p className="text-sm lg:hidden font-medium text-gray-500">Step 1 of 3 &mdash; <span className="text-green-600 font-semibold">Basic Details</span></p>
+                        <p className="text-sm lg:hidden font-medium text-gray-500">Step 1 of 3 &mdash; <span className="text-green-700 font-semibold">Basic Details</span></p>
                     </div>
                     
                     <form onSubmit={handleNext} className="w-full rounded-2xl bg-white p-6 lg:py-10 lg:px-15 shadow-md m-auto md:w-100 lg:w-full lg:m-0">
