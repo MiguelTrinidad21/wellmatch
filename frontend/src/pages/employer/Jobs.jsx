@@ -227,8 +227,17 @@ export default function Jobs() {
             // setClosingError("Closing job failed. Please try again")
         } 
     }
+    
+    useEffect(() => {
+        function handleClickOutside(event) {
+            if (!event.target.closest("[data-job-menu]")) {
+                setShowMenu(false);
+            }
+        }
 
-
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, []);
 
     useEffect(() => {
         if (!loading && !verified) {
@@ -358,7 +367,7 @@ export default function Jobs() {
                                                         <p className="text-sm font-bold text-green-700">OPEN</p>    
                                                     </div>
 
-                                                    <div className="relative">
+                                                    <div data-job-menu className="relative">
                                                         <IoEllipsisVertical 
                                                             onClick={() => {
                                                                 setMenuID(eachJob.jobID)
@@ -437,7 +446,7 @@ export default function Jobs() {
                                                         <p className="text-sm font-bold text-red-700">Closed</p>    
                                                     </div>
 
-                                                    <div className="relative">
+                                                    <div data-job-menu className="relative">
                                                         <IoEllipsisVertical 
                                                             onClick={() => {
                                                                 setMenuID(eachJob.jobID)

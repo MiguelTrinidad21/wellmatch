@@ -162,7 +162,7 @@ export default function EditCompany({ handleEditCompanyBox }) {
     return (
         <div className="w-[90%] max-h-[98%] overflow-y-auto z-40 fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 p-5 bg-[#F9FAFB] rounded-2xl md:w-100">
             <div className="relative">
-            <MdClose onClick={cancelChanges} size={30} className="fixed top-3 right-3" />
+            <MdClose onClick={cancelChanges} size={30} className="fixed top-3 right-3 cursor-pointer" />
 
             </div>
 
@@ -178,7 +178,7 @@ export default function EditCompany({ handleEditCompanyBox }) {
                             value={companyName}
                             onChange={(e) => setCompanyName(e.target.value)}
                             required
-                            className={`text-sm p-2 rounded-md block w-full border-2 mb-4 bg-slate-100 outline-none transition-colors duration-200 ease-in-out focus:border-gray-600 ${errors?.companyName?.companyName ? 'border-red-600 focus:border-red-600 mb-1!' : 'border-gray-300'}`}
+                            className={`text-sm xl:text-[1rem] p-2 rounded-md block w-full border-2 mb-4 bg-slate-100 outline-none transition-colors duration-200 ease-in-out focus:border-green-600 ${errors?.companyName?.companyName ? 'border-red-600 focus:border-red-600 mb-1!' : 'border-gray-300'}`}
                         />
                         {errors?.companyName?.companyName || errors?.companyName?.companyName ? (
                             <p className="text-red-600 text-[13px] mb-4">
@@ -198,7 +198,7 @@ export default function EditCompany({ handleEditCompanyBox }) {
                             onChange={(e) => setCompanyLocation(e.target.value)} 
                             autoComplete="off"
                             required
-                            className="block w-full overflow-x-scroll text-sm p-2 rounded-md border-2 border-gray-300 mb-4 bg-slate-100 outline-none transition-colors duration-200 ease-in-out focus:border-gray-600"
+                            className="block w-full overflow-x-scroll text-sm xl:text-[1rem] p-2 rounded-md border-2 border-gray-300 mb-4 bg-slate-100 outline-none transition-colors duration-200 ease-in-out focus:border-green-600"
                         />
 
                         {isSearchingLocation && (
@@ -244,7 +244,7 @@ export default function EditCompany({ handleEditCompanyBox }) {
                         ) : <p className="mb-2 text-[13px] font-medium text-gray-500">Upload your company logo (5MB max)</p>}
 
                         {errors?.profilePhoto?.fileSize || errors?.profilePhoto?.fileType ? (
-                            <p className="text-red-600 text-[13px] italic">
+                            <p className="text-red-600 text-[13px] ">
                                 {errors?.profilePhoto?.fileSize || errors?.profilePhoto?.fileType}
                             </p>
                         ) : null}
@@ -280,7 +280,7 @@ export default function EditCompany({ handleEditCompanyBox }) {
                         }
 
                         {errors?.coverPhoto?.fileSize || errors?.coverPhoto?.fileType ? (
-                            <p className="text-red-600 text-[13px] italic">
+                            <p className="text-red-600 text-[13px] ">
                                 {errors?.coverPhoto?.fileSize || errors?.coverPhoto?.fileType}
                             </p>
                         ) : null}
