@@ -9,6 +9,8 @@ import axios from "axios";
 
 
 export default function EditCompany({ handleEditCompanyBox }) {
+    const toggleLocationRef = useRef(null);
+
     const {companyInfo, setCompanyInfo} = companyStore();
     const { currentUser, handleCurrentUser } = userStore();
 
@@ -71,6 +73,18 @@ export default function EditCompany({ handleEditCompanyBox }) {
 
         return () => clearTimeout(delay);
     }, [companyLocation, isLocationSelected]);
+
+    useEffect(() => {
+        function closeLocation(e) {
+            if (toggleLocationRef.current && !toggleLocationRef.current.contains(e.target)) {
+                setLocationSuggestions([]);
+            }
+        }
+
+        document.addEventListener("mousedown", closeLocation);
+
+        return () => document.removeEventListener("mousedown", closeLocation);
+    })
 
     function cancelChanges() {
         handleEditCompanyBox();
@@ -192,6 +206,7 @@ export default function EditCompany({ handleEditCompanyBox }) {
                     <label className="font-semibold block mb-1" htmlFor="companyLocation">Location</label>
                     <div className="relative">
                         <input 
+                            ref={toggleLocationRef}
                             type="text"
                             id="companyLocation"
                             value={companyLocation}
@@ -311,7 +326,7 @@ export default function EditCompany({ handleEditCompanyBox }) {
 
                 </div>
                 <div className="w-full flex justify-end gap-4">
-                    <PrimaryButton disabled={isLoading} className={`bg-gray-200 text-black! px-4 border-2 border-gray-500 ${isLoading && "opacity-50"}`} onClick={cancelChanges}>Cancel</PrimaryButton>
+                    <PrimaryButton disabled={isLoading} className={`bg-gray-100 text-black! px-4 border-2 border-gray-300 ${isLoading && "opacity-50"}`} onClick={cancelChanges}>Cancel</PrimaryButton>
                     <PrimaryButton disabled={isLoading} type="submit" className={`px-7 ${isLoading && "opacity-50"}`}>
                         {isLoading ? 
                             <>

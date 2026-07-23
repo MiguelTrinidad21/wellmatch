@@ -157,6 +157,17 @@ export default function MyProfile() {
     }, [])
 
     useEffect(() => {
+        function handleClickOutside(event) {
+            if (!event.target.closest("[data-resume-menu]")) {
+                setShowResumeMenu(false);
+            }
+        }
+
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, []);
+
+    useEffect(() => {
         async function checkApplicant() {
             try {
                 if (!currentUser || Object.keys(currentUser).length === 0) {
@@ -540,7 +551,7 @@ export default function MyProfile() {
                                             <p className="text-gray-500 font-medium text-sm">{item.origFileName}</p>
 
                                             <div className="absolute top-4  right-4">
-                                                <div className="relative">
+                                                <div data-resume-menu className="relative">
                                                     <FaEllipsisVertical 
                                                         onClick={() => {
                                                             setResumeMenuID(item.resumeID);
@@ -552,7 +563,7 @@ export default function MyProfile() {
                                                     
                                                     {
                                                         (resumeMenuID === item.resumeID && showResumeMenu) &&
-                                                        <div className="min-w-38 absolute top-full right-0 bg-white rounded-lg shadow-lg p-2 flex flex-col gap-2 z-50">
+                                                        <div className={`min-w-38 absolute top-full right-0 bg-white rounded-lg shadow-lg p-2 flex flex-col gap-2 z-50`}>
                                                             {
                                                                 item.isDefault != 1 &&
                                                                 <div 

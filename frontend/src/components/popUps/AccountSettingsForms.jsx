@@ -66,7 +66,7 @@ export function ChangeEmailForm({ toggleForm, confirmFunc }) {
             <Translucent />
 
             <div className="w-[85%] p-5 bg-[#F3F4F6] fixed top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 z-50 rounded-2xl md:w-90">
-                <IoClose onClick={toggleForm} size={25} className="absolute top-2 right-2" />
+                <IoClose onClick={toggleForm} size={25} className="cursor-pointer absolute top-2 right-2" />
 
                 <h1 className="my-5 text-center font-bold text-xl">Change Email Address</h1>
 
@@ -99,13 +99,13 @@ export function ChangeEmailForm({ toggleForm, confirmFunc }) {
                                 <FiEyeOff 
                                     size={15}
                                     onClick={() => setShowPassword(false)}
-                                    className="absolute top-1/2 -translate-y-1/2 right-3" 
+                                    className="cursor-pointer absolute top-1/2 -translate-y-1/2 right-3" 
                                 />
                             :
                                 <FiEye 
                                     size={15}
                                     onClick={() => setShowPassword(true)}
-                                    className="absolute top-1/2 -translate-y-1/2 right-3" 
+                                    className="cursor-pointer absolute top-1/2 -translate-y-1/2 right-3" 
                                 />                                
                         }
                     </div>
@@ -197,7 +197,7 @@ export function ChangePasswordForm({ toggleForm, confirmFunc }) {
             <Translucent />
 
             <div className="w-[85%] p-5 bg-[#F3F4F6] fixed top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 z-50 rounded-2xl md:w-90">
-                <IoClose onClick={toggleForm} size={25} className="absolute top-2 right-2" />
+                <IoClose onClick={toggleForm} size={25} className="cursor-pointer absolute top-2 right-2" />
 
                 <h1 className="my-5 text-center font-bold text-xl">Change Password</h1>
 
@@ -218,13 +218,13 @@ export function ChangePasswordForm({ toggleForm, confirmFunc }) {
                                 <FiEyeOff 
                                     size={15}
                                     onClick={() => setShowCurrPassword(false)}
-                                    className="absolute top-1/2 -translate-y-1/2 right-3" 
+                                    className="cursor-pointer absolute top-1/2 -translate-y-1/2 right-3" 
                                 />
                             :
                                 <FiEye 
                                     size={15}
                                     onClick={() => setShowCurrPassword(true)}
-                                    className="absolute top-1/2 -translate-y-1/2 right-3" 
+                                    className="cursor-pointer absolute top-1/2 -translate-y-1/2 right-3" 
                                 />                                
                         }
                     </div>
@@ -247,13 +247,13 @@ export function ChangePasswordForm({ toggleForm, confirmFunc }) {
                                 <FiEyeOff 
                                     size={15}
                                     onClick={() => setShowNewPassword(false)}
-                                    className="absolute top-1/2 -translate-y-1/2 right-3" 
+                                    className="cursor-pointer absolute top-1/2 -translate-y-1/2 right-3" 
                                 />
                             :
                                 <FiEye 
                                     size={15}
                                     onClick={() => setShowNewPassword(true)}
-                                    className="absolute top-1/2 -translate-y-1/2 right-3" 
+                                    className="cursor-pointer absolute top-1/2 -translate-y-1/2 right-3" 
                                 />                                
                         }
                     </div>
@@ -275,13 +275,13 @@ export function ChangePasswordForm({ toggleForm, confirmFunc }) {
                                 <FiEyeOff 
                                     size={15}
                                     onClick={() => setShowRetypePassword(false)}
-                                    className="absolute top-1/2 -translate-y-1/2 right-3" 
+                                    className="cursor-pointer absolute top-1/2 -translate-y-1/2 right-3" 
                                 />
                             :
                                 <FiEye 
                                     size={15}
                                     onClick={() => setShowRetypePassword(true)}
-                                    className="absolute top-1/2 -translate-y-1/2 right-3" 
+                                    className="cursor-pointer absolute top-1/2 -translate-y-1/2 right-3" 
                                 />                                
                         }
                     </div>
@@ -361,7 +361,7 @@ export function DeleteAccountForm({ toggleForm, confirmFunc }) {
             <Translucent />
 
             <div className="w-[85%] p-5 bg-[#F3F4F6] fixed top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 z-50 rounded-2xl md:w-90">
-                <IoClose onClick={toggleForm} size={25} className="absolute top-2 right-2" />
+                <IoClose onClick={toggleForm} size={25} className="cursor-pointer absolute top-2 right-2" />
 
                 <h1 className="my-5 text-center font-bold text-xl">Delete Account</h1>
 
@@ -400,13 +400,13 @@ export function DeleteAccountForm({ toggleForm, confirmFunc }) {
                                 <FiEyeOff 
                                     size={15}
                                     onClick={() => setShowPassword(false)}
-                                    className="absolute top-1/2 -translate-y-1/2 right-3" 
+                                    className="cursor-pointer absolute top-1/2 -translate-y-1/2 right-3" 
                                 />
                             :
                                 <FiEye 
                                     size={15}
                                     onClick={() => setShowPassword(true)}
-                                    className="absolute top-1/2 -translate-y-1/2 right-3" 
+                                    className="cursor-pointer absolute top-1/2 -translate-y-1/2 right-3" 
                                 />                                
                         }
                     </div>
