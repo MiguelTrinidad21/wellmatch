@@ -62,8 +62,7 @@ export default function ApplicantSignIn() {
                 <div className="w-full flex-1 flex justify-center items-center p-6 md:px-15 md:py-10 lg:px-20 min-h-0">
                     <div className="flex flex-col min-h-0 w-full lg:flex-row lg:w-240 lg:h-140 lg:overflow-hidden lg:rounded-3xl lg:shadow-xl">
                         <div className="w-full text-center mb-5 lg:hidden">
-                            <h1 className="text-3xl font-extrabold bg-linear-to-r from-[#166534] via-[#16A34A] to-[#4ADE80] bg-clip-text text-transparent mb-2 md:text-5xl md:mb-5" >Find Your Perfect Match</h1>
-                            {/* <h2 className="font-semibold md:text-xl">Match your skills with the right opportunities</h2> */}
+                            <h1 className="text-3xl font-extrabold bg-linear-to-r from-[#166534] via-[#16A34A] to-[#4ADE80] bg-clip-text text-transparent mb-2 md:text-5xl md:mb-5" >Your Career Starts Here</h1>
                         </div>
 
                         {/* Image column */}
@@ -71,7 +70,7 @@ export default function ApplicantSignIn() {
                             <img src={applicantBanner} className="w-full h-full object-cover lg:block"/>
                             <div className="absolute bottom-0 left-0 w-full h-[70%] bg-linear-to-t from-gray-900 to-transparent">
                                 <div className="absolute w-full bottom-5 left-0 p-8">
-                                    <h1 className="text-3xl font-extrabold bg-linear-to-r from-[#166534] via-[#16A34A] to-[#4ADE80] bg-clip-text text-transparent mb-2 md:text-5xl md:mb-5 lg:text-left lg:text-4xl lg:text-green-500 lg:mb-2">Find Your Perfect Match</h1>
+                                    <h1 className="text-3xl font-extrabold bg-linear-to-r from-[#166534] via-[#16A34A] to-[#4ADE80] bg-clip-text text-transparent mb-2 md:text-5xl md:mb-5 lg:text-left lg:text-4xl lg:text-green-500 lg:mb-2">Your Career Starts Here</h1>
                                     <h2 className="font-semibold md:text-xl text-white text-left text-lg">Match your skills with the right opportunities</h2>
                                 </div>
                             </div>
