@@ -60,7 +60,7 @@ export default function EmployerSideMenu({ status }) {
     return (
         <>
             <div onClick={toggleSideBar} className={`fixed inset-0 z-30 bg-gray-800/50 transition-opacity duration-300 ${status ? "opacity-100 visible" : "opacity-0 invisible"}`}></div>
-            <aside className={`p-5 pt-7 fixed top-0 right-0 ${status ? "translate-x-0" : "translate-x-full"} transition-transform duration-300 ease-out w-[70%] h-full z-40 bg-[#F9FAFB] md:w-[50%] md:p-10`}>
+            <aside className={`p-5 pt-7 fixed top-0 right-0 ${status ? "translate-x-0" : "translate-x-full"} transition-transform duration-300 ease-out w-68 overflow-y-scroll scrollbar-none h-full z-40 bg-[#F9FAFB] md:w-[50%] md:p-10`}>
                 <div className="absolute top-3 right-3 bg-[#D7F1E0] p-2 rounded-full" >
                     <IoClose size={25} onClick={toggleSideBar} />
                 </div>
@@ -69,8 +69,8 @@ export default function EmployerSideMenu({ status }) {
                     <div className="w-25 h-25 m-auto mt-7 mb-3 rounded-lg">
                         <img className="w-full h-full object-cover rounded-lg" src={companyInfo.profilePhotoURL ? `${companyInfo.profilePhotoURL}` : defaultCover} alt="Company Logo" />
                     </div>
-                    <div className="font-bold text-center text-xl mb-1">{currentUser.firstName}&nbsp;{currentUser.lastName}</div>
-                    <div className="font-medium text-center mb-3">{companyInfo.companyName}</div>
+                    <div className="font-bold text-center text-xl mb-1">{companyInfo.companyName}</div>
+                    <div className="font-medium text-center mb-3">{currentUser.firstName}&nbsp;{currentUser.lastName}</div>
                     <hr className="h-px bg-gray-300 border-none mb-3"/>
 
                     <div onClick={() => setEmployerActiveLink("Jobs")} className={`mb-2 rounded-xl py-2.25 px-2.5 ${employerActiveLink === "Jobs" ? "bg-[#D7F1E0]" : "hover:bg-[#D7F1E0] transition-colors duration-200 ease-in"}`}>

@@ -1,6 +1,4 @@
 import AuthNavBar from "../../components/navBars/AuthNavBar";
-import Overlay from "../../components/overlay/OverlayMobile";
-import Footer from "../../components/others/Footer"
 import Loading from "../../components/others/Loading"
 import defaultPhoto from "../../assets/defaultCover.jpg"
 import { LuBriefcase } from "react-icons/lu";
@@ -90,7 +88,6 @@ export default function ViewJobDescription() {
         <>
             <div className="w-full min-h-full bg-[#F3F4F6] relative">
                 <AuthNavBar />
-                <Overlay />
 
                 <div className="w-full p-6 md:p-15">
 
@@ -201,7 +198,6 @@ export default function ViewJobDescription() {
 
             </div>
 
-            <Footer />
         </>
     )
 }

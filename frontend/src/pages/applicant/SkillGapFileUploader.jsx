@@ -23,7 +23,7 @@ export default function SkillGapFileUploader() {
 
     const navigate = useNavigate();
     const { currentUser } = userStore();
-    const {showTip, setShowTip} = tooltipStore();
+    const { setShowTip, textToCompare } = tooltipStore();
     const { prevLocation } = locationStore();
     const {
         resumeToAnalyze,
@@ -99,15 +99,15 @@ export default function SkillGapFileUploader() {
     }, []);
 
     useEffect(() => {
-        function handleClickOutside(e) {
-            if (tooltipRef.current && !tooltipRef.current.contains(e.target)) {
-                if (showTip) setShowTip(false);
+        function handleClickOutside(event) {
+            if (!event.target.closest("[data-tooltip]")) {
+                setShowTip(false);
             }
         }
 
         document.addEventListener("mousedown", handleClickOutside);
         return () => document.removeEventListener("mousedown", handleClickOutside);
-    }, [showTip])
+    }, []);
 
 
     async function executeSkillGapAnalysis() {
@@ -172,9 +172,11 @@ export default function SkillGapFileUploader() {
                         <h1 className="inline font-bold text-xl ">Skill Gap Analysis</h1>
                         {/* <IoMdInformationCircleOutline className="cursor-pointer" size={20} /> */}
                         <Tooltip
+                            data-tooltip
+                            textToCompare="Uses AI to compare your resume with the job requirements, identifying your matched skills, skill gaps, qualification score, and recommended learning opportunities."
                             text="Uses AI to compare your resume with the job requirements, identifying your matched skills, skill gaps, qualification score, and recommended learning opportunities."
                             className="bottom-auto! left-7 md:left-1/2 text-sm! top-full z-50 w-65"
-                            />
+                        />
                     </div>
 
                     <div className="bg-white shadow-md rounded-2xl p-6 w-full md:w-100 lg:w-120">

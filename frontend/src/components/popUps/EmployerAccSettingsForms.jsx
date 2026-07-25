@@ -59,7 +59,7 @@ export function EditInfoForm({ toggleForm, confirmFunc }) {
         <>
             <Translucent />
 
-            <div className="w-[85%] p-5 bg-[#F3F4F6] fixed top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 z-50 rounded-2xl md:w-100 md:p-7">
+            <div className="w-[85%] max-h-[90%] overflow-y-scroll scrollbar-none p-5 bg-[#F3F4F6] fixed top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 z-50 rounded-2xl md:w-100 md:p-7">
                 <IoClose onClick={toggleForm} size={25} className="cursor-pointer absolute top-2 right-2" />
 
                 <h1 className="my-5 text-center font-bold text-xl">Update Personal Details</h1>
@@ -213,7 +213,7 @@ export function ChangePasswordForm({ toggleForm, confirmFunc }) {
         <>
             <Translucent />
 
-            <div className="w-[85%] p-5 bg-[#F3F4F6] fixed top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 z-50 rounded-2xl md:w-100 md:p-7">
+            <div className="w-[85%] max-h-[90%] overflow-y-scroll scrollbar-none p-5 bg-[#F3F4F6] fixed top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 z-50 rounded-2xl md:w-100 md:p-7">
                 <IoClose onClick={toggleForm} size={25} className="cursor-pointer absolute top-2 right-2" />
 
                 <h1 className="my-5 text-center font-bold text-xl">Change Password</h1>
@@ -377,7 +377,7 @@ export function DeleteAccountForm({ toggleForm, confirmFunc }) {
         <>
             <Translucent />
 
-            <div className="w-[85%] p-5 bg-[#F3F4F6] fixed top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 z-50 rounded-2xl md:w-100 md:p-7">
+            <div className="w-[85%] max-h-[90%] overflow-y-scroll scrollbar-none p-5 bg-[#F3F4F6] fixed top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 z-50 rounded-2xl md:w-100 md:p-7">
                 <IoClose onClick={toggleForm} size={25} className="cursor-pointer absolute top-2 right-2" />
 
                 <h1 className="my-5 text-center font-bold text-xl">Delete Account</h1>

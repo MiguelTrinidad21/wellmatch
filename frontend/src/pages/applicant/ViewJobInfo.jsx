@@ -163,7 +163,7 @@ export default function ViewJobInfo() {
                                     alt="profile photo"
                                     className="w-25 object-cover rounded-sm md:rounded-xl md:w-30"
                                 />
-                                <PrimaryButton to={`/applicant/viewJob/${jobID}/chooseFile`} className="absolute top-0 right-0 bg-[#2B2B2B]! text-[12px]">View Skill Gap Analysis</PrimaryButton>
+                                <PrimaryButton to={`/applicant/viewJob/${jobID}/chooseFile`} className="absolute top-0 right-0 rounded-md bg-gray-800! text-[12px] md:text-sm">View Skill Gap Analysis</PrimaryButton>
                             </div>
                             <div className="w-full mb-4">
                                 <h1 className="text-xl font-bold">{selectedJob.jobTitle}</h1>

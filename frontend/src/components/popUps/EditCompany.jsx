@@ -174,7 +174,7 @@ export default function EditCompany({ handleEditCompanyBox }) {
     }
 
     return (
-        <div className="w-[90%] max-h-[98%] overflow-y-auto z-40 fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 p-5 bg-[#F9FAFB] rounded-2xl md:w-100">
+        <div className="w-[90%] max-h-[90%] overflow-y-scroll scrollbar-none z-40 fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 p-5 bg-[#F9FAFB] rounded-2xl md:w-100">
             <div className="relative">
             <MdClose onClick={cancelChanges} size={30} className="fixed top-3 right-3 cursor-pointer" />
 
