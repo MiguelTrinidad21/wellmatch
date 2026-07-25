@@ -38,9 +38,7 @@ export default function ApplicantSideMenu({ status }) {
     return (
         <>
             <div onClick={toggleSideBar} className={`fixed inset-0 z-30 bg-gray-800/50 transition-opacity duration-300 ${status ? "opacity-100 visible" : "opacity-0 invisible"}`}></div>
-            <aside className={`p-5 pt-7 fixed top-0 right-0 ${
-    status ? "translate-x-0" : "translate-x-full"
-  } transition-transform duration-300 ease-out w-[70%] h-full z-40 bg-[#F9FAFB] md:w-[50%] md:p-10`}>
+            <aside className={`p-5 pt-7 fixed top-0 right-0 ${status ? "translate-x-0" : "translate-x-full"} transition-transform duration-300 ease-out w-68 overflow-y-scroll h-full z-40 bg-[#F9FAFB] md:w-[50%] md:p-10`}>
                 <div className="absolute top-3 right-3 bg-[#EBF9F0] p-2 rounded-full" >
                     <IoClose size={25} onClick={toggleSideBar} />
                 </div>

@@ -54,7 +54,7 @@ export default function AddResumeForm({ toggleForm, refresh }) {
         <>
             <Translucent />
         
-            <div className="w-[85%] p-5 bg-[#F3F4F6] fixed top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 z-50 rounded-2xl md:w-100 md:p-7 md:pt-10">
+            <div className="w-[85%] max-h-[90%] overflow-y-scroll p-5 bg-[#F3F4F6] fixed top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 z-50 rounded-2xl md:w-100 md:p-7 md:pt-10">
                 <PrimaryButton disabled={isLoading} onClick={toggleForm} className="absolute top-2 bg-[#F3F4F6] text-black! right-2 md:top-3 md:right-3 md:min-h-7 md:min-w-7">
                     <IoClose size={20} />
                 </PrimaryButton>

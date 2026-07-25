@@ -325,13 +325,21 @@ export default function CompanyProfile() {
                                 }
 
                                 return (
-                                    <div key={member.compMemID} className="w-full rounded-xl shadow-md bg-white p-4">
-                                        <p className="font-semibold text-green-600 text-sm mb-5">{member.role}</p>
-                                        <h1 className="font-bold text-lg">{member.firstName}&nbsp;{member.lastName}</h1>
+                                    <div key={member.compMemID} className="w-full pt-3 border-t border-gray-300 relative">
+                                        <div className="w-full flex gap-3 xl:gap-6">
+                                            <div className={`flex items-center justify-center w-13 h-13 shrink-0 px-2 rounded-md ${member.role === "Admin Employer" ? "bg-green-200" : "bg-gray-100 border border-gray-300"}`}>
+                                                <p className={`font-bold ${member.role === "Admin Employer" ? "text-green-700" : "text-gray-800"}`}>{`${member.firstName[0]}${member.lastName[0]}`}</p>
+                                            </div>
 
-                                        <p className="text-gray-500 font-medium">{member.email}</p>
-
-
+                                            <div className="min-w-0 w-70">
+                                                <h1 className="font-bold wrap-break-word text-gray-00 text-lg mb-1">{member.firstName}&nbsp;{member.lastName}</h1>
+                                                <p className={`lg:hidden font-semibold mb-1 ${member.role === "Admin Employer" ? "text-green-700" : "text-gray-800"} text-sm md:text-[1rem]`}>{member.role}</p>
+                                                <p title={member.email} className="text-gray-500 mb-3 truncate text-sm">{member.email}</p>
+                                                <div className={`hidden lg:block absolute top-1/2 -translate-y-1/2 right-0 py-1 px-2 rounded-lg ${member.role === "Employer" ? "bg-slate-100" : "bg-green-100"}`}>
+                                                    <p className={`font-semibold ${member.role === "Admin Employer" ? "text-green-700" : "text-gray-800"} text-sm md:text-[1rem]`}>{member.role}</p>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 )                                      
                             })}
