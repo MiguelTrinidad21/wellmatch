@@ -143,6 +143,7 @@ export async function getRecommendedJobs(req, res) {
                     matchPercentage: Math.round(similarityScore * 100)
                 };
             })
+            .filter((job) => job.matchPercentage >= 57)
             .sort((a, b) => b.similarityScore - a.similarityScore);
         
         const totalJobs = sortedRecommendedJobs.length;
@@ -200,7 +201,7 @@ export async function searchJobs(req, res) {
             dimensions: 1024
         });
 
-        const jobTitleEmbedding = embeddingResponse.data[0].embedding;
+        const jobSearchTitleEmbedding = embeddingResponse.data[0].embedding;
 
         let allJobs;
 
@@ -222,7 +223,7 @@ export async function searchJobs(req, res) {
                     ON j.companyID = c.companyID
                 WHERE j.status = 'open'
                     AND LOWER(j.location) LIKE ?
-                    AND j.jobSearchEmbedding IS NOT NULL
+                    AND j.jobTitleEmbedding IS NOT NULL
                 `,
                 [`%${cityOrRegion}%`]
             );
@@ -238,7 +239,7 @@ export async function searchJobs(req, res) {
                 INNER JOIN companies c
                     ON j.companyID = c.companyID
                 WHERE j.status = 'open'
-                    AND j.jobSearchEmbedding IS NOT NULL
+                    AND j.jobTitleEmbedding IS NOT NULL
                 `
             );
         }
@@ -257,10 +258,10 @@ export async function searchJobs(req, res) {
 
         const sortedRelatedJobs = allJobs
             .map((job) => {
-                const jobEmbedding = JSON.parse(job.jobSearchEmbedding);
+                const jobEmbedding = JSON.parse(job.jobTitleEmbedding);
 
                 const similarityScore = cosineSimilarity(
-                    jobTitleEmbedding,
+                    jobSearchTitleEmbedding,
                     jobEmbedding
                 );
 
@@ -270,7 +271,7 @@ export async function searchJobs(req, res) {
                     matchPercentage: Math.round(similarityScore * 100)
                 };
             })
-            .filter((job) => job.matchPercentage >= 25)
+            .filter((job) => job.matchPercentage >= 40)
             .sort((a, b) => b.similarityScore - a.similarityScore);
 
         const totalJobs = sortedRelatedJobs.length;

@@ -15,9 +15,7 @@ import { IoSearchSharp } from "react-icons/io5";
 import { BiLoaderAlt } from "react-icons/bi";
 import { userStore } from "../../zustand/userState";
 import { jobSearchStore } from "../../zustand/jobSearching";
-import { sideBarStore } from "../../zustand/stateHandlers";
-import { jobInfoStore } from "../../zustand/stateHandlers";
-import { locationStore } from "../../zustand/stateHandlers";
+import { sideBarStore, jobInfoStore, locationStore } from "../../zustand/stateHandlers";
 import { FaRegBuilding } from "react-icons/fa6";
 import { AiOutlineLaptop } from "react-icons/ai"
 import { TbBuildingCommunity } from "react-icons/tb";
@@ -152,6 +150,28 @@ export default function RecommendedJobs() {
 
     useEffect(() => {
         setApplicantActiveLink("Home")
+        setJobSearch({
+            jobTitle: "",
+            location: ""
+        });
+        setJobInfo({
+            jobID: null,
+            coverPhotoURL: "",
+            profilePhotoURL: "",
+            jobTitle: "",
+            companyName: "",
+            location: "",
+            workType: "",
+            workPlaceOption: "",
+            minSalary: "",
+            maxSalary: "",
+            jobOverview: "",
+            jobDuties: "",
+            requiredQualifications: "",
+            preferredQualifications: "",
+            workingConditions: "",
+            jobBenefits: "",
+        })
     }, [])
 
     useEffect(() => {
@@ -349,7 +369,7 @@ export default function RecommendedJobs() {
                 },
                 withCredentials: true
             });
-            // console.log(response.data?.recommendedJobs)
+            console.log(response.data?.sortedRecommendedJobs)
             setResumeStatus(response.data?.resumeStatus);
             setRecommendedJobs(response.data?.sortedRecommendedJobs || []);
             setTotalJobs(response.data?.pagination?.totalJobs || 0);
@@ -529,8 +549,8 @@ export default function RecommendedJobs() {
                                                             key={job.jobID} className="xl:cursor-pointer box-border border-3 border-transparent hover:border-green-600 transition-all duration-200 ease-in w-full h-full bg-white shadow-md rounded-2xl p-4 relative md:p-8 flex flex-col"
                                                         >
 
-                                                            <div className={`${job.profilePhotoURL === null && "hidden"} w-25 mb-3 md:w-30 xl:absolute xl:top-7 xl:right-8`}>
-                                                                <img className={`${job.profilePhotoURL === null && "hidden"} w-full rounded-lg` } src={job.profilePhotoURL}  alt="" />
+                                                            <div className={`w-25 mb-3 md:w-30 xl:absolute xl:top-7 xl:right-8`}>
+                                                                <img className={`w-full rounded-lg` } src={job.profilePhotoURL ? job.profilePhotoURL : defaultPhoto}  alt="" />
                                                             </div>
                                                             <h1 className="text-xl font-bold wrap-break-word xl:w-70 ">{job.jobTitle}</h1>
                                                             <p className="text-md font-medium text-gray-500 mb-5">{job.companyName}</p>

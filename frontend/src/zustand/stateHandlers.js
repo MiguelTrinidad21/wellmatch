@@ -130,7 +130,7 @@ export const jobCreationStore = create(
             storage: createJSONStorage(() => localStorage),
             partialize: (state) => ({
                 createdJob: state.createdJob,
-            }),
+            })
         }
     )
 );

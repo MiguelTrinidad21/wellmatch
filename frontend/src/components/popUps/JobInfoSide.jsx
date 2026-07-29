@@ -105,18 +105,7 @@ export default function JobInfoSide({ display }) {
                     <button onClick={setDisplayJob} className="cursor-pointer p-2 rounded-full bg-green-100 absolute top-0 right-0"><IoClose size={20}/></button>
                 </div>
 
-                <div className="px-4 w-full mt-10 md:px-7">
-                    {/* {
-                        currentUser.userType === "employer" || currentUser.userType === "admin" &&
-                        <div className="w-full h-50 rounded-tl-2xl rounded-tr-2xl mb-5">
-                            <img 
-                                src={coverPhotoURL ? coverPhotoURL : defaultPhoto}
-                                alt="cover photo"
-                                className="w-full h-full object-cover rounded-tl-2xl rounded-tr-2xl"
-                            />
-                        </div>
-                    } */}
-
+                <div className="px-4 w-full mt-15 md:px-7">
                     <div className="w-full relative mb-4">
                         <img 
                             src={profilePhotoURL ? profilePhotoURL : defaultPhoto} 

@@ -16,12 +16,12 @@ export default function JobSkillEvidence({
             <Translucent />
             <div className={`fixed left-1/2 top-1/2 -translate-y-1/2 -translate-x-1/2 w-[90%] z-40 bg-slate-100 rounded-xl shadow-xl md:w-90`}>
                 <div className="w-full relative p-4 pt-5">
-                    <IoClose size={20} onClick={toggleFunc} className="absolute top-1 right-3 md:top-3" />
+                    <IoClose size={20} onClick={toggleFunc} className="cursor-pointer absolute top-1 right-3 md:top-3" />
 
                     <h1 className={`font-bold text-sm ${isMatched ? "text-green-700" : "text-red-700"} mb-2`}>JOB REQUIREMENT</h1>
-                    <div className={`${isMatched ? "bg-[#E4F3E8]" : "bg-red-50"} flex gap-2 items-center p-1 px-2 rounded-lg w-fit mb-4`}>
+                    <div className={`${isMatched ? "bg-[#E4F3E8]" : "bg-[#FFF1F2]"} flex gap-2 items-center p-1 px-2 rounded-lg w-fit mb-4`}>
                         <div className={`${isMatched ? "bg-green-500" : "bg-red-600"} h-2 w-2 rounded-full`}></div>
-                        <p className={`font-semibold ${isMatched ? "text-green-800" : "text-red-800"}  text-sm`}>{jobSkill}</p>
+                        <p className={`font-semibold ${isMatched ? "text-green-800" : "text-red-700"}  text-sm`}>{jobSkill}</p>
                     </div>
                     <h1 className={`font-bold ${isMatched ? "text-green-700" : "text-red-700"} text-sm mb-2`}>EVIDENCE FROM JOB POST</h1>
                     <div className={`border-l-3 ${isMatched ? "border-l-green-600" : "border-l-red-600"} pl-4 py-2 `}>

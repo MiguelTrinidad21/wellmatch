@@ -21,7 +21,7 @@ export default function Tooltip({ ref, textToCompare, text, className, ...rest }
             </button>
 
             
-            <div  className={`pointer-events-none absolute bottom-full left-1/2 z-10 ${className} w-50 rounded-md shadow-md text-white font-medium bg-gray-800 p-2 text-[12px] ${(showTip && currText === text) ? "opacity-100" : " opacity-0"} transition-opacity duration-200 ease-in`}>
+            <div  className={`pointer-events-none absolute bottom-full left-1/2 z-10 ${className} w-50 rounded-md shadow-md text-white font-medium bg-gray-800 p-2 text-[12px] xl:text-sm ${(showTip && currText === text) ? "opacity-100" : " opacity-0"} transition-opacity duration-200 ease-in`}>
                 {text}
             </div>
             

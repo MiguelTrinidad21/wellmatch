@@ -243,7 +243,7 @@ export default function SkillGapFileUploader() {
                                                         setSelectedResumeID(resume.resumeID);
                                                         setIsResumeDropdownOpen(false);
                                                     }}
-                                                    className="w-full px-3 py-2 text-left truncate hover:bg-cyan-100"
+                                                    className="cursor-pointer w-full px-3 py-2 text-left truncate hover:bg-green-100"
                                                     title={resume.origFileName}
                                                 >
                                                     {resume.origFileName}
@@ -313,7 +313,7 @@ export default function SkillGapFileUploader() {
                                 {isUploading ? 
                                     <span className="flex gap-2 items-center justify-center">
                                         <BiLoaderAlt className="animate-spin" size={20} />
-                                        Analyzing
+                                        Uploading
                                     </span>
                                 : "Analyze"
                                 }

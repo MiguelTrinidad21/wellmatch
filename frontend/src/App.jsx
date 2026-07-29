@@ -78,7 +78,6 @@ function App() {
         }>    
           <Route path='/employer/jobs' element={<Jobs />} />
           <Route path='/employer/companyProfile' element={<CompanyProfile />} />
-          <Route path='/employer/companyProfile/editPermission/:memberID' element={<EditPermission />} />
           <Route path='/employer/settings' element={<AccountSettings />} />
           <Route path='/employer/jobs/viewJob/:jobID' element={<ViewJobDescription />} />
 
@@ -98,7 +97,8 @@ function App() {
         <Route element={
           <ProtectedRoute allowedUserTypes={["admin"]} redirectTo={"/employer/login"}/>
         }>
-          <Route path='/employer/companyProfile/invite' element={<InviteEmployer />} />
+          <Route path='/employer/companyProfile/editPermission/:memberID' element={<EditPermission />} />
+          {/* <Route path='/employer/companyProfile/invite' element={<InviteEmployer />} /> */}
         </Route>
 
         

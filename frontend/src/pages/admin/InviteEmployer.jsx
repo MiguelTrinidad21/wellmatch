@@ -53,7 +53,7 @@ export default function InviteEmployer({ cancelFunc, setInviteSent }) {
         <>
             <Translucent />
 
-            <div className="fixed top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 z-40 w-[90%] max-h-[90%] overflow-y-scroll md:w-100 rounded-2xl bg-white shadow-md p-6">
+            <div className="fixed top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 z-40 w-[90%] max-h-[90%] overflow-y-scroll scrollbar-none md:w-100 rounded-2xl bg-white shadow-md p-6">
                 <div className="w-15 h-15 flex justify-center items-center text-green-700 p-4 bg-[#E7F4EC] rounded-2xl m-auto mb-6">
                     <MdMailOutline size={30}/>
                 </div>
@@ -89,7 +89,7 @@ export default function InviteEmployer({ cancelFunc, setInviteSent }) {
                         
                     </PrimaryButton>
                 </form>
-                    <button onClick={cancelFunc} className="cursor-pointer font-semibold block w-full text-center mb-7">Cancel</button>
+                    <button onClick={cancelFunc} className="cursor-pointer font-semibold block w-fit m-auto text-center mb-7">Cancel</button>
 
                     <div className="w-full border border-gray-300 bg-gray-100 rounded-2xl p-4">
                         <p className="text-sm text-center text-gray-600">They'll receive a registration link by email. Invites expire after 24 hours if unused.</p>

@@ -53,8 +53,8 @@ export default function EducationForm({ toggleForm, refresh }) {
         <>
             <Translucent />
         
-            <div className="w-[85%] max-h-[90%] overflow-y-scroll p-5 bg-[#F3F4F6] fixed top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 z-50 rounded-2xl md:w-100 md:p-7 md:pt-10">
-                <IoClose onClick={toggleForm} size={20} className="absolute top-2 right-2 md:top-4 md:right-4 md:h-7 md:w-7" />
+            <div className="w-[85%] max-h-[90%] overflow-y-scroll scrollbar-none p-5 bg-[#F3F4F6] fixed top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 z-50 rounded-2xl md:w-100 md:p-7 md:pt-10">
+                <IoClose onClick={toggleForm} size={20} className="cursor-pointer absolute top-2 right-2 md:top-4 md:right-4 md:h-7 md:w-7" />
 
                 <h1 className="font-bold text-xl mb-3 text-center">Education</h1>
 

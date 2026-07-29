@@ -475,9 +475,9 @@ export default function SkillGapAnalysisUI() {
                                 <h1 className="text-lg font-bold mb-3">How Your Score Was Reached</h1>
                                 <p className="text-sm text-justify mb-3 indent-5">{skillGapAnalysis.scoreExplanation}</p>
 
-                                <div className="w-full flex gap-3 bg-[#F0FDF4] rounded-md text-green-600 p-2">
-                                    <GoInfo className="h-10 w-10" />
-                                    <p className="text-[12px] font-semibold">To ensure fairness, this evaluation considers only information explicitly stated in the resume.</p>
+                                <div className="w-full flex items-start gap-3 bg-[#F0FDF4] rounded-md text-green-600 p-2">
+                                    <GoInfo className="h-5 w-5" />
+                                    <p className="text-[12px] xl:text-sm font-semibold flex-1">To ensure fairness, this evaluation considers only information explicitly stated in the resume.</p>
                                 </div>
                             </section>
 

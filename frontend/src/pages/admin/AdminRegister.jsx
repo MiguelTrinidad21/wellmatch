@@ -252,7 +252,7 @@ export default function AdminRegister() {
                             placeholder="Enter company location"
                             required
                             autoComplete="off"
-                            className="p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-green-600 overflow-x-scroll"
+                            className="p-2 rounded-md block w-full border-2 border-gray-300 mb-2 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-green-600 overflow-x-scroll"
                         />
 
                         {isSearchingLocation && (
@@ -262,7 +262,7 @@ export default function AdminRegister() {
                         )}
 
                         {locationSuggestions.length > 0 && (
-                            <ul className="absolute z-30 mt-1 max-h-60 w-full overflow-y-auto rounded-lg border bg-white shadow-lg">
+                            <ul className="absolute z-30 bottom-full mb-1 max-h-60 w-full overflow-y-auto rounded-lg border bg-white shadow-lg">
                                 {locationSuggestions.map((place) => (
                                     <li
                                         key={place.placeId}

@@ -48,7 +48,7 @@ export async function registerAdmin(req, res) {
             await connection.rollback();
 
             return res.status(409).json({
-                message: "*Company name is already registered",
+                message: "Company name is already registered",
                 issue: "company"
             });
         }

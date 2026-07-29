@@ -290,49 +290,20 @@ async function generateConcatSkillsEmbedding(concatJobSkills) {
     }
 }
 
-async function createJobSearchText(jobID, concatJobSkills) {
+async function generateJobTitleEmbedding(jobID) {
     try {
-        const [jobResult] = await database.query(`
-            SELECT
-                jobTitle,
-                jobOverview,
-                location,
-                workPlaceOption,
-                workType
-            FROM jobs
-            WHERE jobID = ?
-            LIMIT 1`,
+        const [[job]] = await database.query(
+            `SELECT jobTitle FROM jobs WHERE jobID = ? LIMIT 1`,
             [jobID]
         );
 
-        if (jobResult.length === 0) {
-            throw new Error("Job info not found");
+        if (!job) {
+            throw new Error(`Job with ID ${jobID} not found.`);
         }
 
-        const job = jobResult[0];
-
-        const jobSearchText = `
-            Job Title: ${job.jobTitle},
-            Job Summary: ${job.jobOverview},
-            Location: ${job.location},
-            Skills: ${concatJobSkills},
-            Work Place: ${job.workPlaceOption},
-            Work Type: ${job.workType}
-        `;
-
-        return jobSearchText;
-
-    } catch (error) {
-        console.error(error);
-        throw error
-    }
-}
-
-async function generateJobSearchEmbedding(jobSearchText) {
-    try {
         const embeddingResponse = await openai.embeddings.create({
             model: "text-embedding-3-large",
-            input: jobSearchText,
+            input: job.jobTitle,
             dimensions: 1024
         });
 
@@ -350,8 +321,7 @@ export async function processJob(jobID) {
         const jobSkillsEmbeddings = await generateSkillsEmbeddings(extractedJobSkills);
         const concatJobSkills = concatenateJobSkills(extractedJobSkills);
         const concatJobSkillsEmbedding = await generateConcatSkillsEmbedding(concatJobSkills);
-        const jobSearchText = await createJobSearchText(jobID, concatJobSkills);
-        const jobSearchEmbedding = await generateJobSearchEmbedding(jobSearchText);
+        const jobTitleEmbedding = await generateJobTitleEmbedding(jobID);
         
         await database.query(`
             UPDATE jobs
@@ -359,15 +329,13 @@ export async function processJob(jobID) {
                 extractedJobSkills = ?,
                 concatJobSkills = ?,
                 concatJobSkillsEmbedding = ?,
-                jobSearchText = ?,
-                jobSearchEmbedding = ?
+                jobTitleEmbedding = ?
             WHERE jobID = ?`,
             [
                 JSON.stringify(extractedJobSkills),
                 concatJobSkills,
                 JSON.stringify(concatJobSkillsEmbedding),
-                jobSearchText,
-                JSON.stringify(jobSearchEmbedding),
+                JSON.stringify(jobTitleEmbedding),
                 jobID
             ]
         );
