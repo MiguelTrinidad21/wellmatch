@@ -270,6 +270,7 @@ export async function updateJobInfo(req, res) {
                 extractedJobSkills = NULL,
                 concatJobSkills = NULL,
                 concatJobSkillsEmbedding = NULL,
+                jobSearchText = NULL,
                 jobTitleEmbedding = NULL
             WHERE jobID = ?
             AND companyID = ?

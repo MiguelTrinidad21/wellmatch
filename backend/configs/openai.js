@@ -133,6 +133,26 @@ Pattern C — "such as" category lists:
 → Extract: Warehouse equipment operation
 → Do NOT extract: Forklift, Pallet jack, Hand truck
 
+IMPORTANT EXCEPTION — "such as" / "including" / "e.g." introducing DISTINCT, NAMED, STANDALONE items (not mere illustrative examples):
+Patterns A, B, and C only apply when the listed items are genuinely interchangeable illustrations of one general competency — i.e., a resume reader would not care which specific one the candidate has, only that they have "one of these" or "this category of thing."
+Do NOT collapse into a single general category when the listed items are themselves distinct, independently-valid, named credentials, tools, platforms, or competencies that a candidate could hold ANY ONE of, and where each item is specific and resume-matchable on its own (e.g., named certifications, named software products, named platforms). In that case, treat the sentence under STEP 5 as ANY_OF instead, using the items as acceptableSkills.
+
+How to tell the difference: ask whether collapsing the list would lose resume-matchable signal. If the items are generic, interchangeable stand-ins for a category (forklifts/pallet jacks/hand trucks are all just "warehouse equipment," and having used any one is the same signal) → collapse per Pattern A/B/C. If the items are distinct named things where holding ANY ONE specifically satisfies the requirement, and a hiring reader would want to know exactly which one the candidate has → do NOT collapse; use ANY_OF (Step 5) and keep each named item as a distinct acceptableSkill.
+
+Example — do NOT collapse (distinct named certifications offered as alternatives):
+"Certifications such as CompTIA Server+, Microsoft Certified, or Linux certifications are a plus."
+→ {
+  "skill": "IT certifications",
+  "matchRule": "ANY_OF",
+  "acceptableSkills": ["CompTIA Server+", "Microsoft Certified", "Linux certifications"],
+  "evidence": "Certifications such as CompTIA Server+, Microsoft Certified, or Linux certifications are a plus."
+}
+This is different from Pattern C ("Warehouse equipment such as forklifts...") because each certification here is a distinct, independently resume-matchable credential, not an interchangeable illustration of a generic category — dropping any of the three loses real matching signal.
+
+Example — do NOT collapse (distinct named accounting platforms offered as alternatives):
+"Proficiency in accounting software such as QuickBooks, Xero, or MYOB"
+→ ANY_OF: acceptableSkills = ["QuickBooks", "Xero", "MYOB"]
+
 EXCEPTION — Slash-separated items in parentheses:
 Slash-separated items inside parentheses indicate distinct alternatives, not examples of the parent category. Treat them as ANY_OF, not as a collapsed general category.
 "A foundational understanding of cloud infrastructure (AWS/GCP/Azure)"
@@ -153,10 +173,11 @@ Use REQUIRED for a single required skill:
 - skill: one normalized skill name
 - acceptableSkills: [same skill name]
 
-Use ANY_OF when the text clearly offers two or more distinct alternative skills via "or", "and/or", "(or X)", or slash-separated items in parentheses:
+Use ANY_OF when the text clearly offers two or more distinct alternative skills via "or", "and/or", "(or X)", "such as ... or ...", "including ... or ...", or slash-separated items in parentheses — as long as the alternatives are distinct, independently-valid, named items (see the IMPORTANT EXCEPTION in Step 4 for how to distinguish this from a collapsible example list):
 - skill: a normalized shared category name
 - acceptableSkills: list of the distinct alternatives
 - Do NOT also create a separate REQUIRED entry for the parent category of the same sentence
+- Never silently drop any of the named alternatives — every distinct named item in the list must appear in acceptableSkills.
 
 ANY_OF applies regardless of how many alternatives are connected. Two, three, or more alternatives connected by "or" all follow the same rule.
 
@@ -187,6 +208,15 @@ Example — framework alternatives:
   "matchRule": "ANY_OF",
   "acceptableSkills": ["React", "Angular"],
   "evidence": "Experience in front end development using React (or Angular)"
+}
+
+Example — "such as" introducing named certification alternatives (see Step 4 exception):
+"Certifications such as CompTIA Server+, Microsoft Certified, or Linux certifications are a plus."
+→ {
+  "skill": "IT certifications",
+  "matchRule": "ANY_OF",
+  "acceptableSkills": ["CompTIA Server+", "Microsoft Certified", "Linux certifications"],
+  "evidence": "Certifications such as CompTIA Server+, Microsoft Certified, or Linux certifications are a plus."
 }
 
 PARENT CATEGORY RULE: When you create an ANY_OF entry, do not also create a separate REQUIRED entry for the parent category derived from the same sentence. The ANY_OF entry is sufficient.
@@ -225,6 +255,17 @@ In trade and manufacturing roles, specific process names are distinct skills and
 
 Only separate tool and competency in non-trade roles if the text clearly treats them as independent requirements.
 
+DO NOT RE-EXTRACT A TOOL ALREADY CAPTURED ELSEWHERE UNDER A NEW COMBINED NAME:
+Before combining a tool with a verb/task phrase (e.g., "configuration and troubleshooting," "setup and administration," "installation and maintenance") into a new tool-qualified skill name, check whether that same tool has already been extracted as a standalone skill elsewhere in this document (in an earlier or later sentence, in the same or the other qualification field). If it has, do NOT create a second, differently-named entry for the same tool.
+- If the new sentence only restates general, non-distinct tasks (configuring, troubleshooting, setting up, maintaining, administering) that are inherent to using the tool at all, do not create a new entry — the existing standalone tool entry (e.g., "Docker", "Kubernetes") already covers it. Rely on the FINAL DEDUPLICATION PASS (Step 9) to catch this even across non-adjacent sentences.
+- Only create a new, more specific tool-qualified skill name if the sentence describes a genuinely distinct, more advanced, or differently-scoped competency that the plain tool name would not capture (e.g., "Kubernetes cluster autoscaling configuration," "Docker Swarm multi-node orchestration" as opposed to just "using" the tool).
+
+Example:
+Sentence 1 (evidence A): "Familiarity with containerization tools (e.g., Docker, Kubernetes)." → Extract: Docker, Kubernetes (Pattern A collapse does not apply here since Docker/Kubernetes are named tools, not generic examples — extract as ANY_OF or REQUIRED per Step 5 depending on phrasing).
+Sentence 2 (evidence B, elsewhere in the same document): "(Hands-on) Demonstrate experience in setting-up/configuring/troubleshooting of Kubernetes and Docker containers using infrastructure as code (Terraform and Ansible)."
+→ Extract only the genuinely new tools from sentence 2: Terraform, Ansible.
+→ Do NOT extract "Kubernetes container configuration and troubleshooting" or "Docker container configuration and troubleshooting" — Docker and Kubernetes are already captured from sentence 1, and "configuring/troubleshooting" is a generic task inherent to using any containerization tool, not a distinct new skill.
+
 ---
 
 STEP 7 — CERTIFICATIONS, LICENSES, AND PERMITS
@@ -238,6 +279,8 @@ Examples:
 - "Valid driver's license (professional)" → Professional driver's license
 - "Food handler's permit required" → Food handler's permit
 - "Must be a CPA" → CPA license
+
+If a sentence lists multiple distinct, named certifications as alternatives (e.g., via "such as ... or ...", "or", commas before a final "or"), do NOT pick only one and discard the rest — apply Step 5's ANY_OF rule and include every named certification as a distinct acceptableSkill. See the Step 4/Step 5 examples for "Certifications such as CompTIA Server+, Microsoft Certified, or Linux certifications are a plus."
 
 If a sentence requires both the credential and the underlying competency as separate items, extract both.
 Example: "Must be a licensed nurse with ICU experience" → PRC nursing license + ICU nursing (two separate skills).
@@ -338,13 +381,36 @@ Do NOT apply this rule when:
 - The skills share evidence but name genuinely distinct competencies or tools (e.g., "MIG welding" and "TIG welding" both mentioned in one sentence remain separate, per the Step 6 trades exception).
 - The skills come from different, non-overlapping evidence sentences — even if topically similar, they are not duplicates under this rule and must both be kept.
 
-If uncertain whether two same-evidence skills are duplicates or distinct, keep only the more specific and complete phrasing.
+CROSS-SENTENCE SAME-TOOL RULE (applies across different evidence sentences — separate from the Evidence-Anchored Duplicate Rule above):
+This rule does not classify task words as "ordinary" or "distinct." It only checks one thing: has the same underlying tool, platform, language, or credential ended up extracted as more than one skill entry anywhere in the final output? If yes, that is a duplicate to resolve, regardless of which sentence each mention came from or what task words are attached.
+
+Two entries name the same underlying tool when one name is the bare tool/platform/language/credential (e.g., "Docker", "Bash", "AWS") and the other is that same name with a task, verb, or use-case phrase attached (e.g., "Docker container configuration and troubleshooting", "Bash scripting", "AWS cloud infrastructure management").
+
+EXEMPTION FOR STEP 6'S COMBINED FORMS: A combined name that matches one of Step 6's listed tool-qualified skills (Excel data analysis, QuickBooks bookkeeping, SAP inventory management, POS cash handling, AutoCAD drafting, EMR records management, Intercom ticket management) — or follows that same pattern of naming a tool together with its single defining, intended use as described in a qualification sentence — is Step 6's correct default output and is NOT, by itself, a violation of this rule. Producing "AutoCAD drafting" when a sentence describes drafting with AutoCAD is correct per Step 6 and stays as-is. This rule only activates when that SAME tool is ALSO extracted a second time, separately, from a different sentence (bare, or combined with different task language) — e.g., if "AutoCAD" also appears bare elsewhere as its own entry, or "AutoCAD 3D modeling" appears as a separate entry from a different sentence, THEN the two AutoCAD entries are a duplicate to resolve under this rule. A single combined name with no second mention anywhere else in the output is never, by itself, a violation.
+
+This rule applies no matter where the two mentions of the tool live in the output structure, and to any job post in any industry — not just IT:
+(a) Two standalone entries (e.g., two REQUIRED entries, or one in coreSkills and one in secondarySkills before the core/secondary dedup step runs).
+(b) A standalone entry AND one acceptableSkill inside an ANY_OF group's alternatives list (e.g., "Bash" appears as one of several acceptableSkills inside a "Scripting" ANY_OF group from one sentence, while a separate sentence elsewhere produces a standalone "Bash scripting" REQUIRED entry).
+(c) Two acceptableSkills inside two different ANY_OF groups that both name the same tool.
+
+How to resolve, in every configuration: keep only ONE entry for the tool, choosing whichever of the two names is more complete and specific per Step 8's normalization guidance — do not decide by judging whether either task word is "ordinary." In practice:
+- If one mention is bare and the other adds task/use-case language, keep the version with task/use-case language attached, since it is strictly more descriptive (e.g., keep "Bash scripting" over bare "Bash"), UNLESS that combined phrase would itself be flagged as too wordy under Step 8 (Step 8's "Not this (too wordy)" examples), in which case keep the plain tool name instead.
+- If both mentions add different task/use-case language to the same tool from two different sentences, keep whichever name most completely reflects what both sentences described together, rather than keeping two separate entries.
+- For case (b): resolve by keeping the ANY_OF group intact and either renaming that specific acceptableSkill branch to the more complete name (e.g., the "Scripting" ANY_OF group's "Bash" branch becomes "Bash scripting"), or discarding the standalone entry if the ANY_OF branch's existing name is already adequate — never leave both.
+- For case (c): keep the tool in whichever ANY_OF group's alternatives it most naturally belongs to, and remove it from the other group's acceptableSkills list. If this leaves an ANY_OF group with only one alternative, convert that group to a REQUIRED entry for the remaining item.
+- The only time both entries legitimately survive as separate skills is when the second mention names a genuinely narrower sub-capability that the first mention's evidence does not cover at all — not merely a different verb for the same general use of the tool (e.g., "Kubernetes" and "Kubernetes cluster autoscaling configuration" can both survive, since autoscaling is a specific sub-capability not implied by general Kubernetes knowledge; "Kubernetes" and "Kubernetes container configuration and troubleshooting" cannot both survive, since configuring/troubleshooting containers is what using Kubernetes generally already means).
+
+This rule exists because the same tool, language, or platform is often mentioned once inside a list of examples or alternatives (e.g., in a "scripting skills" or "containerization tools" sentence) and again later with implementation or usage detail (e.g., in a hands-on requirements bullet) — both mentions describe one underlying skill, not two. This pattern is common across all industries (e.g., a nursing job posting listing "EMR systems" among general skills and separately requiring "EMR charting and documentation" elsewhere describes one underlying EMR competency, not two — unless the second mention describes a distinct EMR sub-capability the first did not, such as "EMR system administration and user provisioning" alongside general "EMR" use).
+
+If uncertain whether two mentions of the same tool should merge, default to keeping the single most complete and specific name rather than keeping both.
 
 FINAL DEDUPLICATION PASS — After assembling all skill objects, review the complete output before returning JSON:
 - Remove any skill that duplicates or is a parent/child of another skill derived from the same sentence.
 - Remove any skill pair that violates the EVIDENCE-ANCHORED DUPLICATE RULE above, keeping only the more specific version.
+- Remove any skill pair that violates the CROSS-SENTENCE SAME-TOOL RULE above — scan every skill name in the full output, including every acceptableSkill inside every ANY_OF group, for the same tool/platform/language/credential appearing more than once anywhere, and collapse each such pair into a single entry per that rule. Skip this removal for any single combined name that matches Step 6's listed forms and has no second mention elsewhere in the output — that is correct output, not a duplicate.
 - Remove any skill appearing in both coreSkills and secondarySkills, keeping only the coreSkills version.
 - Remove any skill name that appears more than once within the same array.
+- Confirm every ANY_OF entry retains every distinct named alternative from its source sentence — re-read the original evidence sentence for each ANY_OF entry and verify no named alternative (e.g., a certification, tool, or platform) was silently dropped.
 
 ---
 

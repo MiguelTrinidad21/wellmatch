@@ -8,7 +8,7 @@ import ConfirmationDialog from "../../components/popUps/ConfirmationDialog";
 import JobInfoSide from "../../components/popUps/JobInfoSide";
 import { userStore } from "../../zustand/userState";
 import { sideBarStore, jobCreationStore, jobInfoStore } from "../../zustand/stateHandlers";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
 import { TbBriefcase2 } from "react-icons/tb";
@@ -26,8 +26,11 @@ import { FaCheck } from "react-icons/fa6";
 import PrimaryButton from "../../components/buttons/PrimaryButton";
 import SecondaryButton from "../../components/buttons/SecondaryButton"
 import useIsDesktop from "../../hooks/useIsDesktop";
+import ReactPaginateModule from "react-paginate";
 
 export default function Jobs() {
+    const ReactPaginate = ReactPaginateModule.default || ReactPaginateModule;
+
     const { currentUser } = userStore();
     const { setEmployerActiveLink } = sideBarStore();
     const { displayJob, setDisplayJob, setJobInfo } = jobInfoStore();
@@ -52,6 +55,12 @@ export default function Jobs() {
 
     const [showMenu, setShowMenu] = useState(false);
     const [menuID, setMenuID] = useState(null);
+
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(0);
+    const [totalJobs, setTotalJobs] = useState(0);
+
+    const jobsPerPage = 6;
  
     useEffect(() => {
         setEmployerActiveLink("jobs")
@@ -92,11 +101,12 @@ export default function Jobs() {
 
     useEffect(() => {
         async function getJobs() {
-            // setJobStatus("open");
 
             try {
                 const allJobs = await axios.get("/api/employer/getJobs", {
-                    params: { jobStatus },
+                    params: { 
+                        jobStatus
+                     },
                     withCredentials: true
                 })
 
@@ -331,13 +341,15 @@ export default function Jobs() {
                             }
                             
                         </div>
-                        <PrimaryButton onClick={() => {
-                            clearCreatedJob();
-                        }} className="w-fit hidden md:block text-center rounded-lg">
-                            <Link className="flex gap-3 items-center justify-center md:gap-5 lg:gap-2" to="/employer/createJob">
-                                <FaPlus />
-                                Create Job Post
-                            </Link>
+                        <PrimaryButton 
+                            onClick={() => {
+                                clearCreatedJob();
+                                navigate("/employer/createJob")
+                            }} 
+                            className="w-fit hidden text-center rounded-lg md:flex gap-3 items-center justify-center md:gap-5 lg:gap-2"
+                        >
+                            <FaPlus />
+                            Create Job Post
                         </PrimaryButton>                        
                     </div>
                 

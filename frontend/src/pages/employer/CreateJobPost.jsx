@@ -239,7 +239,7 @@ export default function CreateJobPost({ mode = "create" }) {
                                     />
 
                                     {isSearchingLocation && (
-                                        <p className="mt-1 text-xs text-gray-500">
+                                        <p className="absolute top-full left-0 mt-1 text-xs text-gray-500">
                                             Searching locations...
                                         </p>
                                     )}

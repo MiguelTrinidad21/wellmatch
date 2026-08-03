@@ -7,13 +7,15 @@ import { MdOutlineLogout } from "react-icons/md";
 import webLogo from '../../assets/WellMatch_Logo.png'
 import { sideBarStore } from "../../zustand/stateHandlers";
 import { userStore } from "../../zustand/userState";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 
 export default function ApplicantSideBar() {
     const { applicantActiveLink, setApplicantActiveLink } = sideBarStore();
     const { logoutUser } = userStore();
+
+    const navigate = useNavigate();
 
     async function logoutApplicant() {
         try {

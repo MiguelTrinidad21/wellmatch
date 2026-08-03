@@ -217,9 +217,6 @@ export default function RecommendedJobs() {
         return () => clearTimeout(delay);
     }, [jobSearch.location]);
 
-
-
-
     useEffect(() => {
         async function fetchSavedJobs() {
             const res = await axios.get("/api/applicant/getSavedJobs", {

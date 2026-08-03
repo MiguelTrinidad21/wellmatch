@@ -109,9 +109,11 @@ export async function fetchApplications(req, res) {
                 j.workType,
                 j.minSalary,
                 j.maxSalary,
+                j.concatJobSkills,
                 c.companyName,
                 c.profilePhotoURL,
-                s.overallScore
+                s.overallScore,
+                s.scoresBreakdown
             FROM applications a
             INNER JOIN jobs j
                 ON a.jobID = j.jobID

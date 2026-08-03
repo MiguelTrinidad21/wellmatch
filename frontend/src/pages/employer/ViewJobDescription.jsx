@@ -136,10 +136,10 @@ export default function ViewJobDescription() {
                         </div>
 
                         <div className="w-full px-4 pb-4 md:p-7">
-                            <h1 className="text-lg font-bold text-center mb-2">Job Desciption</h1>
+                            <h1 className="text-xl font-bold text-center mb-2">Job Description</h1>
                             <p className="text-justify indent-8 text-[15px] mb-3">{selectedJob.jobOverview}</p>
 
-                            <h2 className="font-bold">Job Responsibilities</h2>
+                            <h2 className="font-bold mt-5 text-xl">Job Responsibilities</h2>
                             <div
                                 className="prose max-w-none text-[15px] [&_ul]:list-disc [&_ul]:pl-6 [&_li]:text-black [&_li::marker]:text-black"
                                 dangerouslySetInnerHTML={{
@@ -147,7 +147,7 @@ export default function ViewJobDescription() {
                                 }}
                             />
 
-                            <h2 className="font-bold">Required Qualifications</h2>
+                            <h2 className="font-bold mt-5 text-xl">Required Qualifications</h2>
                             <div
                                 className="prose max-w-none text-[15px] [&_ul]:list-disc [&_ul]:pl-6 [&_li]:text-black [&_li::marker]:text-black"
                                 dangerouslySetInnerHTML={{
@@ -157,7 +157,7 @@ export default function ViewJobDescription() {
 
                             {selectedJob.preferredQualifications &&
                                 <>
-                                    <h2 className="font-bold">Preferred Qualifications</h2>
+                                    <h2 className="font-bold mt-5 text-xl">Preferred Qualifications</h2>
                                     <div
                                         className="prose max-w-none text-[15px] [&_ul]:list-disc [&_ul]:pl-6 [&_li]:text-black [&_li::marker]:text-black"
                                         dangerouslySetInnerHTML={{
@@ -169,7 +169,7 @@ export default function ViewJobDescription() {
 
                             {selectedJob.workingConditions &&
                                 <>
-                                    <h2 className="font-bold">Working Conditions</h2>
+                                    <h2 className="font-bold mt-5 text-xl">Working Conditions</h2>
                                     <div
                                         className="prose max-w-none text-[15px] [&_ul]:list-disc [&_ul]:pl-6 [&_li]:text-black [&_li::marker]:text-black"
                                         dangerouslySetInnerHTML={{
@@ -181,7 +181,7 @@ export default function ViewJobDescription() {
 
                             {selectedJob.jobBenefits &&
                                 <>
-                                    <h2 className="font-bold">Job Benefits</h2>
+                                    <h2 className="font-bold mt-5 text-xl">Job Benefits</h2>
                                     <div
                                         className="prose max-w-none text-[15px] [&_ul]:list-disc [&_ul]:pl-6 [&_li]:text-black [&_li::marker]:text-black"
                                         dangerouslySetInnerHTML={{
