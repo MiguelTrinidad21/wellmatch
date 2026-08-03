@@ -212,7 +212,7 @@ export default function JobAppInitialStep() {
                                                         setSelectedResumeID(resume.resumeID);
                                                         setIsResumeDropdownOpen(false);
                                                     }}
-                                                    className="w-full px-3 py-2 text-left truncate hover:bg-cyan-100"
+                                                    className="w-full px-3 py-2 text-left truncate hover:bg-green-100 cursor-pointer"
                                                     title={resume.origFileName}
                                                 >
                                                     {resume.origFileName}
@@ -250,8 +250,8 @@ export default function JobAppInitialStep() {
                         {errors.noYears && <p className="text-center text-sm text-red-600 mb-5">{errors.noYears}</p>}
 
                         <div className="w-full flex justify-between">
-                            <PrimaryButton to={prevLocation} className="bg-gray-200 text-black! border-2 border-gray-400">Cancel</PrimaryButton>
-                            <PrimaryButton onClick={goNextPage}  className={`px-5`}>
+                            <PrimaryButton to={prevLocation} className="bg-gray-200 text-black! xl:px-5">Cancel</PrimaryButton>
+                            <PrimaryButton onClick={goNextPage}  className="px-5 xl:px-7">
                                 Next                                
                             </PrimaryButton>
                         </div>

@@ -179,6 +179,175 @@ export default function SkillGapReport() {
         return null;
     }
 
+    if (
+        skillGapAnalysis.matchedSkills === null &&
+        skillGapAnalysis.missingSkills === null &&
+        skillGapAnalysis.overallScore === null &&
+        skillGapAnalysis.scoreExplanation === null &&
+        skillGapAnalysis.scoresBreakdown === null
+    ) {
+        // console.log("dito")
+        return (
+            <div className="lg:flex relative w-full">
+                <SideBarOverlay />
+                <EmployerSideBar />
+
+                <div className="w-full min-h-screen bg-[#F3F4F6] relative">
+                    <AuthNavBar />
+
+                    {showResumeViewer &&
+                        <>
+                            <Translucent />
+                            <ResumeViewerModal
+                            resumeID={resumeID}
+                            onClose={() => setShowResumeViewer(false)}
+                            user="employer"
+                            />
+                        </>
+                    }
+
+                    {
+                        showEvidence &&
+                        <JobSkillEvidence
+                            status={evidenceStatus}
+                            resumeSkill={resumeSkill}
+                            resumeEvidence={resumeEvidence}
+                            jobSkill={jobSkill}
+                            jobEvidence={jobEvidence}
+                            toggleFunc={() => setShowEvidence(false)} 
+                        />     
+                    }    
+
+                    <div className="w-full min-h-[calc(100vh-64px)] p-6 md:py-10 md:px-15 lg:px-10 xl:px-30">
+
+                        <div className="w-full grid grid-cols-1 gap-4 md:grid-cols-2 md:items-start xl:flex">
+                            <div ref={leftColRef} className="w-full flex flex-col gap-4 xl:w-100">
+                                <section className="rounded-2xl shadow-sm border-2 border-[#E8ECEF] bg-white p-4">
+                                    <div className="flex gap-2 mb-4">
+                                        <div className="w-19 h-19 shrink-0">
+                                            <img className="w-full h-full rounded-full object-cover" src={`${skillGapAnalysis.profilePhotoURL ? skillGapAnalysis.profilePhotoURL : defaultCover}`} alt="" />
+                                        </div>
+                                        <div className="flex-1 min-w-0">
+                                            <h1 className="text-lg font-bold wrap-break-word">{`${skillGapAnalysis.firstName} ${skillGapAnalysis.lastName}`}</h1>
+                                            <div className="flex items-start gap-2 w-full">
+                                                <MdOutlineEmail className="shrink-0 mt-1" />
+                                                <p className="wrap-break-word min-w-0">{skillGapAnalysis.email}</p>
+                                            </div>
+                                            {
+                                                skillGapAnalysis.address &&
+                                                <div className="flex items-start gap-2 w-full">
+                                                    <SlLocationPin className="shrink-0 mt-1" />
+                                                    <p className="wrap-break-word min-w-0">{skillGapAnalysis.address}</p>
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+
+                                    <div className="flex flex-col w-full items-center justify-center gap-4">
+                                        <div className="flex items-start gap-4 rounded-2xl bg-[#2A1F54] w-65 p-4 text-white">
+                                            <div className="w-5">
+                                                <GoInfo className="h-5 w-5"/>
+                                            </div>
+                                            <div>
+                                                <h1 className="font-bold text-lg mb-1">Skill gap analysis not available for this job post</h1>
+                                                <p className="text-sm">This job post doesn't specify any required skills or experience, so there's nothing to compare against the applicant's resume. Review the job requirements and resume directly to assess fit.</p>
+                                            </div>
+                                        </div>
+
+                                        <PrimaryButton onClick={() => setShowResumeViewer(true)} className="w-65 hover:bg-green-600 transition-colors duration-200 ease-in" >View Resume</PrimaryButton>
+                                    </div>                              
+                                </section>
+                            </div>
+
+                            <div className="w-full flex flex-col gap-4 md:overflow-y-auto md:pr-1 xl:flex-1" style={leftColHeight ? { maxHeight: `${leftColHeight}px` } : undefined}>
+                                <section className="rounded-2xl shadow-sm border-2 border-[#E8ECEF] bg-white p-4 w-full">
+                                    <p className="text-sm text-gray-600 font-semibold">APPLYING FOR</p>
+                                    <p className="font-bold text-lg">{selectedJob.jobTitle}</p>
+                                </section>
+
+                                <section className="rounded-2xl shadow-sm border-2 border-[#E8ECEF] bg-white p-4 w-full">
+                                    <h1 className="font-bold text-xl mb-5">Candidate History</h1>
+                                    <div className="w-full border-b-2 border-gray-100 mb-5">
+                                        <p className="text-sm text-gray-700 font-semibold mb-3">WORK EXPERIENCE</p>
+
+                                        {
+                                            workExp.length === 0 ?
+                                            <p className="my-5 text-center font-semibold text-gray-500">No data to show</p>
+                                        :
+                                            workExp?.map((item) => (
+                                                <div key={item.workExpID} className="flex gap-3 pb-5">
+                                                    <div className="p-2 w-10 h-10 rounded-full border-2 border-[#D4D8FC] bg-[#EEF2FF]">
+                                                        <FiBriefcase size={20} className="text-[#6366F1] m-auto" />
+                                                    </div>
+                                                    <div className="flex-1">
+                                                        <h1 className="font-bold text-lg mb-1">{item.jobTitle}</h1>
+                                                        <p className="text-[#6366F1] font-semibold mb-1">{item.companyName}</p>
+                                                        <p className="text-gray-500 font-semibold text-[13px]">{`${item.startDate} - ${item.endDate}`}</p>
+                                                    </div>
+                                                </div>
+                                            ))                                        
+                                        }
+                                    </div>
+
+                                    <div className="w-full border-b-2 border-gray-100 mb-5">
+                                        <p className="text-sm text-gray-700 font-semibold mb-3">CERTIFICATIONS AND LICENSES</p>
+                                        {
+                                            credentials.length === 0 ?
+                                            <p className="my-5 text-center font-semibold text-gray-500">No data to show</p>
+                                        :
+                                            credentials?.map((item) => (
+                                                <div key={item.credentialID} className="flex gap-3 pb-5">
+                                                    <div className="p-2 w-10 h-10 rounded-full border-2 border-[#FDE9C1] bg-[#FFFBEB]">
+                                                        <FiAward size={20} className="text-[#F59E0B] m-auto" />
+                                                    </div>
+                                                    <div className="flex-1">
+                                                        <h1 className="font-bold text-lg mb-1">{item.credentialTitle}</h1>
+                                                        <p className="text-[#6366F1] font-semibold mb-1">{item.issuedBy}</p>
+                                                        <p className="text-gray-500 font-semibold text-[13px]">{`${item.issueDate} - ${item.expiryDate ? item.expiryDate : "No expiry"}`}</p>
+                                                    </div>
+                                                </div>
+
+                                            ))                                  
+                                        }                                    
+                                    </div>
+
+                                    <div className="w-full mb-6">
+                                        <p className="text-sm text-gray-700 font-semibold mb-3">EDUCATION</p>
+
+                                        {
+                                            education.length === 0 ?
+                                                <p className="mt-5 text-center font-semibold text-gray-500">No data to show</p>
+                                            :
+                                                education?.map((item) => (
+                                                <div key={item.educationID} className="flex gap-3 pb-5">
+                                                    <div className="p-2 w-10 h-10 rounded-full border-2 border-[#C6F0DE] bg-[#F0FDF4]">
+                                                        <RiGraduationCapLine size={20} className="text-[#10B981] m-auto" />
+                                                    </div>
+                                                    <div className="flex-1">
+                                                        <h1 className="font-bold text-lg mb-1">{item.courseName}</h1>
+                                                        <p className="text-[#6366F1] font-semibold mb-1">{item.institution}</p>
+                                                        {
+                                                            item.graduatedAt ? 
+                                                                <p className="text-gray-500 font-semibold text-[13px]">{`Graduated at ${item.issueDate}`}</p>
+                                                            :    
+                                                                <p className="text-gray-500 font-semibold text-[13px]">{`Expected to finish at ${item.willFinishAt}`}</p>
+                                                        }
+                                                    </div>
+                                                </div>
+                                            ))
+                                        }
+                                    </div>
+                                </section>                          
+
+                            </div>
+                        </div>
+
+                    </div>            
+                </div>
+            </div>            
+        )
+    }
+
     return (
         <div className="lg:flex relative w-full">
             <SideBarOverlay />

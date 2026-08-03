@@ -102,7 +102,7 @@ export default function JobApplications() {
                 },
                 withCredentials: true
             })
-            console.log(allApplications.data.pagination)
+            console.log(allApplications.data.applications)
             setJobs(allApplications.data.applications);
             setTotalApplications(allApplications?.data?.pagination?.totalApplications);
             setTotalPages(allApplications?.data?.pagination?.totalPages);
@@ -421,10 +421,12 @@ export default function JobApplications() {
                                                             :
                                                                 <>
                                                                     {
-                                                                        item.overallScore ?
+                                                                        item.overallScore !== null ?
                                                                             <td className="whitespace-nowrap px-6 py-5 text-center">{item.overallScore}%</td>
-                                                                        :
-                                                                            <td className="whitespace-nowrap px-6 py-5 text-center">Pending analysis</td>
+                                                                        : item.concatJobSkills === null ?
+                                                                            <td className="whitespace-nowrap px-6 py-5 text-center">Not Applicable</td>
+                                                                        :   
+                                                                            <td className="whitespace-nowrap px-6 py-5 text-center">Pending Analysis</td>
                                                                     }
                                                                     <td className="whitespace-nowrap px-6 py-5 text-center"><PrimaryButton to={`/applicant/viewJob/${item.jobID}/${item.resumeID}/skillGapReport`} className="rounded-md w-fit m-auto text-sm text-black! bg-green-300">See Report</PrimaryButton></td>
                                                                     {

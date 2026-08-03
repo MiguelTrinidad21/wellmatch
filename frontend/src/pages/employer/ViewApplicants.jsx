@@ -416,18 +416,19 @@ export default function ViewApplicants() {
                                                             <div className="shrink-0 bg-red-50 p-1 rounded-md max-h-fit border border-red-400">
                                                                 <h2 className="font-bold text-[16px] text-red-600">{item.status === "not selected" ? "Rejected" : "Withdrew"}</h2>
                                                             </div>
-                                                        :
-                                                            <div className={`shrink-0 p-1 rounded-md max-h-fit border ${(item.overallScore >= 60 || item.overallScore === null) ? "bg-[#F0FDF4] border-green-400 text-green-600" : "bg-[#FFF1F2] border-red-600 text-red-600"}`}>
-                                                                {
-                                                                    item.overallScore ?
-                                                                        <h2 className="font-bold text-[16px]">{`${item.overallScore}% Match`}</h2>
-                                                                    :
-                                                                        <h2 className="font-bold text-sm text-green-600">Awaiting review</h2>
-                                                                }
+                                                        : item.overallScore ?
+                                                            <div className={`shrink-0 p-1 rounded-md max-h-fit border ${(item.overallScore >= 60) ? "bg-[#F0FDF4] border-green-400 text-green-600" : "bg-[#FFF1F2] border-red-600 text-red-600"}`}>
+                                                                <h2 className="font-bold text-[16px]">{`${item.overallScore}% Match`}</h2>
                                                             </div>  
-                                                        }
-            
-                                                                                            
+                                                        : item.concatJobSkills === null ?
+                                                            <div className={`shrink-0 p-1 rounded-md max-h-fit border bg-slate-100 border-slate-300`}>
+                                                                <h2 className="font-bold text-sm text-gray-800">Not Applicable</h2>
+                                                            </div>  
+                                                        :
+                                                            <div className={`shrink-0 p-1 rounded-md max-h-fit border bg-slate-100 border-slate-300`}>
+                                                                <h2 className="font-bold text-sm text-gray-800">Awaiting Review</h2>
+                                                            </div>  
+                                                        }                                                                                            
                                                     </div>
 
 
@@ -537,6 +538,8 @@ export default function ViewApplicants() {
                                                                 {
                                                                     item.overallScore ?
                                                                         <td className="px-6 py-5 text-center w-48 max-w-48 wrap-break-word font-semibold">{`${item.overallScore}%`}</td>
+                                                                    : item.concatJobSkills === null ?
+                                                                        <td className="px-6 py-5 text-center w-48 max-w-48 wrap-break-word font-semibold">Not Applicable</td>
                                                                     :
                                                                         <td className="px-6 py-5 text-center w-48 max-w-48 wrap-break-word font-semibold">Awaiting review</td>
                                                                 }

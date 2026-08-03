@@ -304,10 +304,10 @@ export default function JobAppFinalStep() {
                         </div>
                         
                         <div className="flex justify-between w-full">
-                            <PrimaryButton disabled={isSubmitting} to={`/applicant/viewJob/${jobID}/apply`} className="bg-gray-200 text-black! px-4">Back</PrimaryButton>
-                            <div className="flex gap-2" >
-                                <SecondaryButton disabled={isSubmitting} to="/applicant/myProfile" className="px-5">Edit</SecondaryButton>
-                                <PrimaryButton className={isSubmitting ? "opacity-50" : undefined} disabled={isSubmitting} onClick={submitApplication}>
+                            <PrimaryButton disabled={isSubmitting} to={`/applicant/viewJob/${jobID}/apply`} className="bg-gray-200 text-black! px-4 xl:px-7">Back</PrimaryButton>
+                            <div className="flex gap-2 xl:gap-4" >
+                                <SecondaryButton disabled={isSubmitting} to="/applicant/myProfile" className="px-5 xl:px-7 fon-bold! xl:text-[1rem]!">Edit</SecondaryButton>
+                                <PrimaryButton className={`xl:px-7 xl:text-[1rem]! ${isSubmitting ? "opacity-50" : undefined}`} disabled={isSubmitting} onClick={submitApplication}>
                                     {
                                         isSubmitting ?
                                             <span className="flex gap-2 items-center justify-center">

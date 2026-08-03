@@ -575,7 +575,15 @@ export default function RelatedJobs() {
                                                                     alt="profile photo"
                                                                     className="w-25 object-cover rounded-sm md:rounded-xl md:w-30"
                                                                 />
-                                                                <PrimaryButton onClick={() => goToAnalysis(jobInfo.jobID)} className="absolute top-0 right-0 text-black! bg-green-300 hover:bg-green-400 transition-colors duration-200 ease-in rounded-lg px-5 max-w-[60%] text-center whitespace-normal text-sm">View Skill Gap Analysis</PrimaryButton>
+                                                                <PrimaryButton 
+                                                                    onClick={() => {
+                                                                        setPrevLocation(location.pathname);
+                                                                        navigate(`/applicant/viewJob/${jobInfo.jobID}/chooseFile`);
+                                                                    }}  
+                                                                    className="absolute top-0 right-0 text-black! bg-green-300 hover:bg-green-400 transition-colors duration-200 ease-in rounded-lg px-5 max-w-[60%] text-center whitespace-normal text-sm"
+                                                                >
+                                                                    View Skill Gap Analysis
+                                                                </PrimaryButton>
                                                             </div>
                                                             <div className="w-full mb-4">
                                                                 <h1 className="text-xl font-bold">{jobInfo.jobTitle}</h1>

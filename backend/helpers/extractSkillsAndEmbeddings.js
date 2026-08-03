@@ -255,7 +255,7 @@ function concatenateJobSkills(extractedSkills) {
     ];
 
     if (allSkills.length === 0) {
-        return "";
+        return null;
     }
 
     let combinedSkills = [];
@@ -290,6 +290,44 @@ async function generateConcatSkillsEmbedding(concatJobSkills) {
     }
 }
 
+async function createJobSearchText(jobID, concatJobSkills) {
+    try {
+        const [jobResult] = await database.query(`
+            SELECT
+                jobTitle,
+                jobOverview,
+                location,
+                workPlaceOption,
+                workType
+            FROM jobs
+            WHERE jobID = ?
+            LIMIT 1`,
+            [jobID]
+        );
+
+        if (jobResult.length === 0) {
+            throw new Error("Job info not found");
+        }
+
+        const job = jobResult[0];
+
+        const jobSearchText = `
+            Job Title: ${job.jobTitle},
+            Job Summary: ${job.jobOverview},
+            Location: ${job.location},
+            Skills: ${concatJobSkills},
+            Work Place: ${job.workPlaceOption},
+            Work Type: ${job.workType}
+        `;
+
+        return jobSearchText;
+
+    } catch (error) {
+        console.error(error);
+        throw error
+    }
+}
+
 async function generateJobTitleEmbedding(jobID) {
     try {
         const [[job]] = await database.query(
@@ -321,6 +359,7 @@ export async function processJob(jobID) {
         const jobSkillsEmbeddings = await generateSkillsEmbeddings(extractedJobSkills);
         const concatJobSkills = concatenateJobSkills(extractedJobSkills);
         const concatJobSkillsEmbedding = await generateConcatSkillsEmbedding(concatJobSkills);
+        const jobSearchText = await createJobSearchText(jobID, concatJobSkills);
         const jobTitleEmbedding = await generateJobTitleEmbedding(jobID);
         
         await database.query(`
@@ -329,12 +368,14 @@ export async function processJob(jobID) {
                 extractedJobSkills = ?,
                 concatJobSkills = ?,
                 concatJobSkillsEmbedding = ?,
+                jobSearchText = ?,
                 jobTitleEmbedding = ?
             WHERE jobID = ?`,
             [
                 JSON.stringify(extractedJobSkills),
                 concatJobSkills,
                 JSON.stringify(concatJobSkillsEmbedding),
+                jobSearchText,
                 JSON.stringify(jobTitleEmbedding),
                 jobID
             ]

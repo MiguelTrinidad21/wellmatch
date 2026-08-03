@@ -13,11 +13,12 @@ import { FaRegBookmark } from "react-icons/fa";
 import { FaRegBuilding } from "react-icons/fa6";
 import { AiOutlineLaptop } from "react-icons/ai";
 import { TbBuildingCommunity } from "react-icons/tb"
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 
 export default function JobInfoSide({ display }) {
+    const topScrollRef = useRef(null);
     const navigate = useNavigate();
     const previousLocation = useLocation();
 
@@ -82,6 +83,12 @@ export default function JobInfoSide({ display }) {
     }
 
     useEffect(() => {
+        if (topScrollRef.current) {
+            topScrollRef.current.scrollTo({ top: 0 });
+        }        
+    }, [jobID]);
+
+    useEffect(() => {
         async function fetchSavedJobs() {
             const res = await axios.get(
                 (currentUser.userType === "applicant" 
@@ -100,7 +107,7 @@ export default function JobInfoSide({ display }) {
     return (
         <>
             <div onClick={setDisplayJob} className={`hidden lg:block fixed inset-0 z-30 bg-gray-800/50 transition-opacity duration-300 ${display ? "opacity-100 visible" : "opacity-0 invisible"}`}></div>
-            <div className={`p-6 overflow-y-scroll hidden lg:block fixed z-40 top-0 right-0 bg-white w-[50%] xl:w-[40%] h-screen ${display ? "translate-x-0" : "translate-x-full"} transition-transform duration-300`}>
+            <div ref={topScrollRef} className={`p-6 overflow-y-scroll hidden lg:block fixed z-40 top-0 right-0 bg-white w-[50%] xl:w-[40%] h-screen ${display ? "translate-x-0" : "translate-x-full"} transition-transform duration-300`}>
                 <div className="relative w-full">
                     <button onClick={setDisplayJob} className="cursor-pointer p-2 rounded-full bg-green-100 absolute top-0 right-0"><IoClose size={20}/></button>
                 </div>
@@ -155,10 +162,10 @@ export default function JobInfoSide({ display }) {
                 </div>
 
                 <div className="w-full px-4 pb-4 md:p-7">
-                    <h1 className="text-lg font-bold text-center mb-2">Job Desciption</h1>
+                    <h1 className="text-xl font-bold text-center mb-2">Job Description</h1>
                     <p className="text-justify indent-8 text-[15px] mb-3">{jobOverview}</p>
 
-                    <h2 className="font-bold">Job Responsibilities</h2>
+                    <h2 className="font-bold mt-5 text-xl">Job Responsibilities</h2>
                     <div
                         className="prose max-w-none text-[15px] [&_ul]:list-disc [&_ul]:pl-6 [&_li]:text-black [&_li::marker]:text-black"
                         dangerouslySetInnerHTML={{
@@ -166,7 +173,7 @@ export default function JobInfoSide({ display }) {
                         }}
                     />
 
-                    <h2 className="font-bold">Required Qualifications</h2>
+                    <h2 className="font-bold mt-5 text-xl">Required Qualifications</h2>
                     <div
                         className="prose max-w-none text-[15px] [&_ul]:list-disc [&_ul]:pl-6 [&_li]:text-black [&_li::marker]:text-black"
                         dangerouslySetInnerHTML={{
@@ -176,7 +183,7 @@ export default function JobInfoSide({ display }) {
 
                     {preferredQualifications &&
                         <>
-                            <h2 className="font-bold">Preferred Qualifications</h2>
+                            <h2 className="font-bold text-xl mt-5">Preferred Qualifications</h2>
                             <div
                                 className="prose max-w-none text-[15px] [&_ul]:list-disc [&_ul]:pl-6 [&_li]:text-black [&_li::marker]:text-black"
                                 dangerouslySetInnerHTML={{
@@ -188,7 +195,7 @@ export default function JobInfoSide({ display }) {
 
                     {workingConditions &&
                         <>
-                            <h2 className="font-bold">Working Conditions</h2>
+                            <h2 className="font-bold text-xl mt-5">Working Conditions</h2>
                             <div
                                 className="prose max-w-none text-[15px] [&_ul]:list-disc [&_ul]:pl-6 [&_li]:text-black [&_li::marker]:text-black"
                                 dangerouslySetInnerHTML={{
@@ -200,7 +207,7 @@ export default function JobInfoSide({ display }) {
 
                     {jobBenefits &&
                         <>
-                            <h2 className="font-bold">Job Benefits</h2>
+                            <h2 className="font-bold text-xl mt-5">Job Benefits</h2>
                             <div
                                 className="prose max-w-none text-[15px] [&_ul]:list-disc [&_ul]:pl-6 [&_li]:text-black [&_li::marker]:text-black"
                                 dangerouslySetInnerHTML={{

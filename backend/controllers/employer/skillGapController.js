@@ -85,66 +85,101 @@ export async function getSkillGapReport(req, res) {
 
         const skillGapResult = await skillGapService(resumeID, jobID);
 
-        const matchScoreExplanation = await generateExplanation(
-            jobID,
-            skillGapResult
-        );
-
-        const upskillingRecommendations = await generateUpskillingRecos(
-            jobID,
-            skillGapResult.missingSkills
-        );
-
-        await database.query(
-            `
-            INSERT IGNORE INTO skillGapAnalysis (
-                resumeID,
+        if (Object.keys(skillGapResult.scoreBreakdown).length > 0) {
+            const matchScoreExplanation = await generateExplanation(
                 jobID,
-                overallScore,
-                scoresBreakdown,
-                matchedSkills,
-                missingSkills,
-                scoreExplanation,
-                upskillingReco
-            )
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-            `,
-            [
-                resumeID,
+                skillGapResult
+            );
+    
+            const upskillingRecommendations = await generateUpskillingRecos(
                 jobID,
-                skillGapResult.scoreBreakdown.overAllScore,
-                JSON.stringify(skillGapResult.scoreBreakdown),
-                JSON.stringify(skillGapResult.matchedSkills),
-                JSON.stringify(skillGapResult.missingSkills),
-                matchScoreExplanation,
-                upskillingRecommendations
-            ]
-        );        
+                skillGapResult.missingSkills
+            );
+    
+            await database.query(
+                `
+                INSERT IGNORE INTO skillGapAnalysis (
+                    resumeID,
+                    jobID,
+                    overallScore,
+                    scoresBreakdown,
+                    matchedSkills,
+                    missingSkills,
+                    scoreExplanation,
+                    upskillingReco
+                )
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                `,
+                [
+                    resumeID,
+                    jobID,
+                    skillGapResult.scoreBreakdown.overAllScore,
+                    JSON.stringify(skillGapResult.scoreBreakdown),
+                    JSON.stringify(skillGapResult.matchedSkills),
+                    JSON.stringify(skillGapResult.missingSkills),
+                    matchScoreExplanation,
+                    upskillingRecommendations
+                ]
+            );        
+    
+            const [finalReport] = await database.query(`
+                SELECT 
+                    s.*, 
+                    a.firstName, 
+                    a.lastName,
+                    a.email, 
+                    a.address, 
+                    a.profilePhotoURL
+                FROM skillGapAnalysis s
+                JOIN resumes r
+                    ON s.resumeID = r.resumeID
+                JOIN applicants a
+                    ON r.applicantID = a.applicantID
+                WHERE s.resumeID = ?
+                AND s.jobID = ?
+                LIMIT 1
+                `,
+                [resumeID, jobID]
+            );
+    
+            return res.status(200).json({
+                message: "New skill gap report ready",
+                skillGapReport: formatReport(finalReport[0])
+            });
 
-        const [finalReport] = await database.query(`
-            SELECT 
-                s.*, 
-                a.firstName, 
-                a.lastName,
-                a.email, 
-                a.address, 
-                a.profilePhotoURL
-            FROM skillGapAnalysis s
-            JOIN resumes r
-                ON s.resumeID = r.resumeID
-            JOIN applicants a
-                ON r.applicantID = a.applicantID
-            WHERE s.resumeID = ?
-            AND s.jobID = ?
-            LIMIT 1
-            `,
-            [resumeID, jobID]
-        );
+        } else {
+            await database.query(`
+                INSERT IGNORE INTO skillGapAnalysis (resumeID, jobID)
+                VALUES (?, ?)`,
+                [resumeID, jobID]
+            );
 
-        return res.status(200).json({
-            message: "New skill gap report ready",
-            skillGapReport: formatReport(finalReport[0])
-        });
+            const [[finalReport]] = await database.query(`
+                SELECT *
+                FROM skillGapAnalysis
+                WHERE jobID = ?
+                AND resumeID = ?
+                LIMIT 1
+                `,
+                [jobID, resumeID]
+            );
+
+            return res.status(200).json({
+                message: "New skill gap report ready (no requirements)",
+                skillGapReport: {
+                    analysisID: finalReport.analysisID,
+                    jobID: finalReport.jobID,
+                    matchedSkills: finalReport.matchedSkills,
+                    missingSkills: finalReport.missingSkills,
+                    overallScore: finalReport.overallScore,
+                    resumeID: finalReport.resumeID,
+                    scoreExplanation: finalReport.scoreExplanation,
+                    scoresBreakdown: finalReport.scoresBreakdown,
+                    upskillingReco: finalReport.upskillingReco                   
+                }
+            });            
+        }
+
         
     } catch (error) {
         console.error(error);

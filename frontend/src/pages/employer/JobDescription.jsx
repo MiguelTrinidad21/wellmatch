@@ -159,7 +159,7 @@ export default function JobDescription({ mode = "create" }) {
                                 required                             
                             />
                             {errors?.issue === "Job Overview" && 
-                                <p className="text-sm text-red-600 italic">{errors.message}</p>
+                                <p className="text-sm text-red-600 ">{errors.message}</p>
                             }
                         </div>
 
@@ -173,7 +173,7 @@ export default function JobDescription({ mode = "create" }) {
                                 func={(value) => setCreatedJob({jobDuties: value})} 
                             />
                             {errors?.issue === "Job Responsibilities" && 
-                                <p className="text-sm text-red-600 italic">{errors.message}</p>
+                                <p className="text-sm text-red-600 ">{errors.message}</p>
                             }
                         </div>
 
@@ -187,7 +187,7 @@ export default function JobDescription({ mode = "create" }) {
                                 func={(value) => setCreatedJob({ requiredQualifications: value })} 
                             />
                             {errors?.issue === "Required Qualifications" && 
-                                <p className="text-sm text-red-600 italic">{errors.message}</p>
+                                <p className="text-sm text-red-600 ">{errors.message}</p>
                             }
                         </div>
 
@@ -230,7 +230,7 @@ export default function JobDescription({ mode = "create" }) {
                             />
                         </div>
 
-                        {errors?.issue !== "" && <p className="text-center text-red-600 italic text-sm mb-5">Please fill out {errors?.issue} section before proceeding</p>}
+                        {errors?.issue !== "" && <p className="text-center text-red-600  text-sm mb-5">Please fill out {errors?.issue} section before proceeding</p>}
 
                         <div className="flex justify-between w-full">
                             <PrimaryButton
