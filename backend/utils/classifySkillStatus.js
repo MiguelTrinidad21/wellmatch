@@ -6,7 +6,7 @@ export default function classifySkillStatus(skillScore, evidenceScore) {
         return "matched";
     }
 
-    if (skillScore >= 0.70 && evidenceScore >= 0.42) {
+    if (skillScore >= 0.65 && evidenceScore >= 0.42) {
         return "matched";
     }
 

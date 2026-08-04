@@ -224,13 +224,6 @@ export async function deleteAccount(req, res) {
             );
         }
 
-        // Fix #5 — correct FK for recommendedJobs
-        await connection.query(`
-            DELETE FROM recommendedJobs
-            WHERE resumeID IN (SELECT resumeID FROM resumes WHERE applicantID = ?)
-            `, [id]
-        );
-
         await connection.query(`
             DELETE FROM savedJobs WHERE applicantID = ?`, [id]);
 

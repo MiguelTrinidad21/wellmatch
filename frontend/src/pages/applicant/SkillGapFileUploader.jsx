@@ -308,8 +308,16 @@ export default function SkillGapFileUploader() {
                         {errors.issue && <p className="text-center text-sm text-red-600 mb-3">{errors.issue}</p>}
 
                         <div className="w-full flex justify-between">
-                            <PrimaryButton to={prevLocation} className="bg-gray-200 text-black! border-2 border-gray-400">Cancel</PrimaryButton>
-                            <PrimaryButton disabled={isUploading} onClick={executeSkillGapAnalysis} className={`px-4 ${isUploading && "opacity-50"}`}>
+                            <PrimaryButton
+                                disabled={isUploading}
+                                onClick={() => {
+                                    navigate(prevLocation)
+                                }} 
+                                className={`${isUploading ? "cursor-not-allowed opacity-50" : undefined} bg-gray-200 text-black! border-2 border-gray-400`} 
+                            >
+                                Cancel
+                            </PrimaryButton>
+                            <PrimaryButton disabled={isUploading} onClick={executeSkillGapAnalysis} className={`px-4 ${isUploading ? "cursor-progress opacity-50" : undefined}`}>
                                 {isUploading ? 
                                     <span className="flex gap-2 items-center justify-center">
                                         <BiLoaderAlt className="animate-spin" size={20} />

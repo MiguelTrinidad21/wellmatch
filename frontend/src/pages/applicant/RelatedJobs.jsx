@@ -296,6 +296,7 @@ export default function RelatedJobs() {
     function handlePageClick(event) {
         const selectedPage = event.selected + 1;
         fetchRelatedJobs(selectedPage);
+        window.scrollTo({ top: 0, behavior: "smooth" });
     }
 
    function displayJobInfo(
@@ -536,10 +537,10 @@ export default function RelatedJobs() {
                                                 marginPagesDisplayed={2}
                                                 pageRangeDisplayed={3}
                                                 containerClassName="flex justify-center items-center gap-4 mt-6 w-full"
-                                                pageLinkClassName="px-4 py-3 rounded-lg text-lg"
-                                                activeLinkClassName="bg-[#2B2B2B] text-white"
-                                                previousLinkClassName="px-4 py-2 rounded-md bg-white shadow"
-                                                nextLinkClassName="px-4 py-2 rounded-md bg-white shadow"
+                                                pageLinkClassName="cursor-pointer px-4 py-3 rounded-lg text-lg"
+                                                activeLinkClassName="cursor-pointer bg-[#2B2B2B] text-white"
+                                                previousLinkClassName="cursor-pointer px-4 py-2 rounded-md bg-white shadow"
+                                                nextLinkClassName="cursor-pointer px-4 py-2 rounded-md bg-white shadow"
                                                 disabledClassName="opacity-40 cursor-not-allowed"
                                             />
                                         )}
