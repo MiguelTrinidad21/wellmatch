@@ -155,7 +155,7 @@ export default function ApplicantInfoForm({ toggleForm }) {
             <div className="w-[85%] max-h-[90%] overflow-y-scroll scrollbar-none p-5 bg-[#F3F4F6] fixed top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 z-50 rounded-2xl md:w-100 md:p-7 md:pt-10">
                 {locationSuggestions.length > 0 && <div onClick={() => setLocationSuggestions([])} className="fixed top-0 left-0 w-full h-full"></div>}
 
-                <button disabled={isLoading} onClick={toggleForm} className="cursor-pointer absolute top-2 right-2 md:top-4 md:right-4">
+                <button disabled={isLoading} onClick={toggleForm} className={`${isLoading ? "cursor-not-allowed" : "cursor-pointer"} absolute top-2 right-2 md:top-4 md:right-4`}>
                     <IoClose size={20} className="md:h-7 md:w-7" />
                 </button>
 
@@ -268,8 +268,8 @@ export default function ApplicantInfoForm({ toggleForm }) {
                     {/* {errors && <p>{errors}</p>} */}
 
                     <div className="w-full flex justify-end gap-4">
-                        <PrimaryButton disabled={isLoading} className={`bg-gray-200 text-black! px-4 border-2 border-gray-500 ${isLoading && "opacity-50"}`} onClick={toggleForm}>Cancel</PrimaryButton>
-                        <PrimaryButton disabled={isLoading} type="submit" className={`px-7 ${isLoading && "opacity-50"}`}>
+                        <PrimaryButton disabled={isLoading} onClick={toggleForm} className={`bg-gray-200 text-black! px-4 border-2 border-gray-500 ${isLoading && "opacity-50 cursor-not-allowed"}`} >Cancel</PrimaryButton>
+                        <PrimaryButton disabled={isLoading} type="submit" className={`px-7 ${isLoading && "opacity-50 cursor-progress"}`}>
                             {isLoading ? 
                                 <>
                                     <BiLoaderAlt className="animate-spin inline mr-3" />

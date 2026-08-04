@@ -66,7 +66,9 @@ export function ChangeEmailForm({ toggleForm, confirmFunc }) {
             <Translucent />
 
             <div className="w-[85%] p-5 bg-[#F3F4F6] fixed top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 z-50 rounded-2xl md:w-90">
-                <IoClose onClick={toggleForm} size={25} className="cursor-pointer absolute top-2 right-2" />
+                <button onClick={toggleForm} className={`${isLoading ? "cursor-not-allowed" : "cursor-pointer"} absolute top-2 right-2`}>
+                    <IoClose size={25} />
+                </button>
 
                 <h1 className="my-5 text-center font-bold text-xl">Change Email Address</h1>
 
@@ -112,8 +114,8 @@ export function ChangeEmailForm({ toggleForm, confirmFunc }) {
                     {errors.password && <p className="text-sm text-red-600 mb-5">{errors.password}</p>}
 
                     <div className="flex justify-end gap-3">
-                        <PrimaryButton disabled={isLoading} className={`bg-[#F3F4F6] text-black! ${isLoading ? "opacity-50" : undefined}`} onClick={toggleForm}>Cancel</PrimaryButton>
-                        <PrimaryButton disabled={isLoading} type="submit" className={isLoading ? "opacity-50" : undefined}>
+                        <PrimaryButton disabled={isLoading} onClick={toggleForm} className={`bg-[#F3F4F6] text-black! ${isLoading ? "opacity-50 cursor-not-allowed" : undefined}`} >Cancel</PrimaryButton>
+                        <PrimaryButton disabled={isLoading} type="submit" className={isLoading ? "opacity-50 cursor-progress" : undefined}>
                             {
                                 isLoading ?
                                     <span className="flex items-center gap-2">
@@ -197,7 +199,9 @@ export function ChangePasswordForm({ toggleForm, confirmFunc }) {
             <Translucent />
 
             <div className="w-[85%] p-5 bg-[#F3F4F6] fixed top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 z-50 rounded-2xl md:w-90">
-                <IoClose onClick={toggleForm} size={25} className="cursor-pointer absolute top-2 right-2" />
+                <button disabled={isLoading} onClick={toggleForm} className={`${isLoading ? "cursor-not-allowed" : "cursor-pointer"} absolute top-2 right-2`}>
+                    <IoClose size={25} />
+                </button>
 
                 <h1 className="my-5 text-center font-bold text-xl">Change Password</h1>
 
@@ -290,8 +294,8 @@ export function ChangePasswordForm({ toggleForm, confirmFunc }) {
 
 
                     <div className="flex justify-end gap-3">
-                        <PrimaryButton disabled={isLoading} className={`bg-[#F3F4F6] text-black! ${isLoading ? "opacity-50" : undefined}`} onClick={toggleForm}>Cancel</PrimaryButton>
-                        <PrimaryButton disabled={isLoading} type="submit" className={isLoading ? "opacity-50" : undefined}>
+                        <PrimaryButton disabled={isLoading} onClick={toggleForm} className={`bg-[#F3F4F6] text-black! ${isLoading ? "opacity-50 cursor-not-allowed" : undefined}`}>Cancel</PrimaryButton>
+                        <PrimaryButton disabled={isLoading} type="submit" className={isLoading ? "opacity-50 cursor-progress" : undefined}>
                             {
                                 isLoading ?
                                     <span className="flex items-center gap-2">
@@ -361,7 +365,9 @@ export function DeleteAccountForm({ toggleForm, confirmFunc }) {
             <Translucent />
 
             <div className="w-[85%] p-5 bg-[#F3F4F6] fixed top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 z-50 rounded-2xl md:w-90">
-                <IoClose onClick={toggleForm} size={25} className="cursor-pointer absolute top-2 right-2" />
+                <button disabled={isLoading} onClick={toggleForm} className={`${isLoading ? "cursor-not-allowed" : "cursor-pointer"} absolute top-2 right-2`}>
+                    <IoClose size={25} />
+                </button>
 
                 <h1 className="my-5 text-center font-bold text-xl">Delete Account</h1>
 
@@ -414,8 +420,8 @@ export function DeleteAccountForm({ toggleForm, confirmFunc }) {
 
 
                     <div className="flex justify-end gap-3">
-                        <PrimaryButton disabled={isLoading} className={`bg-[#F3F4F6] text-black! ${isLoading ? "opacity-50" : undefined}`} onClick={toggleForm}>Cancel</PrimaryButton>
-                        <PrimaryButton disabled={isLoading} type="submit" className={`bg-red-600 ${isLoading ? "opacity-50" : undefined}`}>
+                        <PrimaryButton disabled={isLoading} onClick={toggleForm} className={`bg-[#F3F4F6] text-black! ${isLoading ? "opacity-50 cursor-not-allowed" : undefined}`}>Cancel</PrimaryButton>
+                        <PrimaryButton disabled={isLoading} type="submit" className={`bg-red-600 ${isLoading ? "opacity-50 cursor-progress" : undefined}`}>
                             {
                                 isLoading ?
                                     <span className="flex items-center gap-2">

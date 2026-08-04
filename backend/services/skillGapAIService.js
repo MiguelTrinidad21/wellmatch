@@ -1,5 +1,10 @@
 import database from "../configs/database.js";
-import { openai, scoreExplanationPrompt, upskillingRecoPrompt } from "../configs/openai.js";
+import { 
+    openai, 
+    scoreExplanationPrompt, 
+    upskillingRecoPrompt , 
+    upskillingRecommendationsSchema 
+} from "../configs/openai.js";
 
 export async function generateExplanation(jobID, skillGapResult) {
 
@@ -119,7 +124,13 @@ export async function generateUpskillingRecos(jobID, missingSkills) {
                 effort: "low"
             },
             text: {
-                verbosity: "low"
+                verbosity: "low",
+                format: {
+                    type: "json_schema",
+                    name: "upskilling_recommendations",
+                    schema: upskillingRecommendationsSchema,
+                    strict: true
+                }    
             },
             input: [
                 {
@@ -136,7 +147,15 @@ export async function generateUpskillingRecos(jobID, missingSkills) {
             ]
         });
 
-        return response.output_text;
+        let upskillingRecommendations;
+        try {
+            const parsed = JSON.parse(response.output_text);
+            upskillingRecommendations = parsed.recommendations;
+        } catch (err) {
+            console.error("Model returned invalid JSON for upskilling recos:", response.output_text);
+            throw new Error("Failed to parse upskilling recommendations from AI response");
+        }
+        return upskillingRecommendations;
 
     } catch (error) {
         console.error(error);

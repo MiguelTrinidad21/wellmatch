@@ -597,13 +597,15 @@ export default function SkillGapAnalysisUI() {
                             </section>
 
                             
-
-                            <div className="mt-8 mb-5">
-                                <h1 className="font-semibold text-[20px] md:text-[22px] lg:text-[24px]">Recommended Learning Plan</h1>
-                                <p className="text-sm text-gray-500">Personalized recommendations to improve your match for this position.</p>
-                            </div>
                             {
-                                skillGapAnalysis.upskillingReco.map((reco, index) => {
+                                skillGapAnalysis.upskillingReco?.length > 0 &&
+                                <div className="mt-8 mb-5">
+                                    <h1 className="font-semibold text-[20px] md:text-[22px] lg:text-[24px]">Recommended Learning Plan</h1>
+                                    <p className="text-sm text-gray-500">Personalized recommendations to improve your match for this position.</p>
+                                </div>
+                            }
+                            {
+                                skillGapAnalysis.upskillingReco?.map((reco, index) => {
                                     const isPriority = reco.label === "Priority";
 
                                     return (

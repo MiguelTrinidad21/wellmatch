@@ -79,7 +79,7 @@ export async function skillGapController(req, res) {
                     JSON.stringify(skillGapResult.matchedSkills),
                     JSON.stringify(skillGapResult.missingSkills),
                     matchScoreExplanation,
-                    upskillingRecommendations
+                    JSON.stringify(upskillingRecommendations)
                 ]
             );
     

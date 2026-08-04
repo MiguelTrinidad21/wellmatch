@@ -32,6 +32,7 @@ export default function RecommendedJobs() {
     
     const locationFieldRef = useRef(null);
     const rightColScrollRef = useRef(null);
+
     const [leftColHeight, setLeftColHeight] = useState(null);
     const [leftColNode, setLeftColNode] = useState(null);
     const leftColRef = useCallback((node) => {
@@ -317,6 +318,7 @@ export default function RecommendedJobs() {
     function handlePageClick(event) {
         const selectedPage = event.selected + 1;
         fetchRecommendedJobs(selectedPage);
+        window.scrollTo({ top: 0, behavior: "smooth" });
     }
 
     function goNext(jobID) {
@@ -411,7 +413,7 @@ export default function RecommendedJobs() {
     }
 
     return (
-        <div className="lg:flex relative w-full">
+        <div  className="lg:flex relative w-full">
             <ApplicantSideBar />
             <SideBarOverlay />
             <JobInfoSide display={displayJob} />

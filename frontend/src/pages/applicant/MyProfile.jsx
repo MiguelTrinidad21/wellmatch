@@ -353,7 +353,7 @@ export default function MyProfile() {
                     deleteEduc &&
                     <DeleteItemBox 
                         heading="Delete Education"
-                        toggleFunction={() => toggleWarning(setDeleteEducation)}
+                        toggleFunction={() => toggleWarning(setDeleteEduc)}
                         deleteFunction={() => handleEducationDeletion(educID)}
                     />
                 }

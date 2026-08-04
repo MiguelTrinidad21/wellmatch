@@ -73,8 +73,7 @@ export async function deleteWorkExp(req, res) {
 
     try {
         await database.query(`
-            UPDATE workExperiences
-            SET status = 'deleted'
+            DELETE FROM workExperiences
             WHERE workExpID = ?
             AND applicantID = ?
             `,
@@ -168,8 +167,7 @@ export async function deleteCredential(req, res) {
 
     try {
         await database.query(`
-            UPDATE credentials
-            SET status = 'deleted'
+            DELETE FROM credentials
             WHERE credentialID = ?
             AND applicantID = ?
             `,
@@ -273,8 +271,7 @@ export async function deleteEducation(req, res) {
 
     try {
         await database.query(`
-            UPDATE education
-            SET status = 'deleted'
+            DELETE FROM education
             WHERE educationID = ?
             AND applicantID = ?
             `,
@@ -302,22 +299,6 @@ export async function updateInfo(req, res) {
         } = req.body;
 
         const profilePhoto = req.file
-
-        // if (prevEmail !== email) {
-        //     const [existingEmail] = await database.query(`
-        //         SELECT LOWER(email) FROM applicants
-        //         WHERE email = ?`,
-        //         [email.toLowerCase()]
-        //     )
-
-        //     if (existingEmail[0]) {
-        //         return res.status(409).json({
-        //             message: "Email address is already taken",
-        //             issue: "email",
-        //             field: "email"
-        //         })
-        //     }
-        // }
 
         const [applicantRows] = await database.query(
             `

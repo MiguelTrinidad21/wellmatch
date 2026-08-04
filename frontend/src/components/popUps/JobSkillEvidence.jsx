@@ -20,11 +20,11 @@ export default function JobSkillEvidence({
 
                     <h1 className={`font-bold text-sm ${isMatched ? "text-green-700" : "text-red-700"} mb-2`}>JOB REQUIREMENT</h1>
                     <div className={`${isMatched ? "bg-[#E4F3E8]" : "bg-[#FFF1F2]"} flex gap-2 items-center p-1 px-2 rounded-lg w-fit mb-4`}>
-                        <div className={`${isMatched ? "bg-green-500" : "bg-red-600"} h-2 w-2 rounded-full`}></div>
-                        <p className={`font-semibold ${isMatched ? "text-green-800" : "text-red-700"}  text-sm`}>{jobSkill}</p>
+                        <div className={`${isMatched ? "bg-green-500" : "bg-red-600"} h-2 w-2 rounded-full shrink-0`}></div>
+                        <p className={`font-semibold ${isMatched ? "text-green-800" : "text-[#BE123C]"}  text-sm`}>{jobSkill}</p>
                     </div>
                     <h1 className={`font-bold ${isMatched ? "text-green-700" : "text-red-700"} text-sm mb-2`}>EVIDENCE FROM JOB POST</h1>
-                    <div className={`border-l-3 ${isMatched ? "border-l-green-600" : "border-l-red-600"} pl-4 py-2 `}>
+                    <div className={`border-l-3 ${isMatched ? "border-l-green-600" : "border-l-red-600"} bg-white rounded-xl shadow-sm pl-4 py-2 `}>
                         <p className="text-sm">{jobEvidence}</p>
                     </div>
 
@@ -42,7 +42,7 @@ export default function JobSkillEvidence({
                                 <p className="font-semibold text-[#073789]  text-sm">{resumeSkill}</p>
                             </div>
                             <h1 className="font-bold text-[#073789] text-sm mb-2">EVIDENCE</h1>
-                            <div className="border-l-3 border-l-blue-500 pl-4 py-2 ">
+                            <div className="border-l-3 border-l-blue-500 pl-4 py-2 bg-white rounded-xl shadow-sm">
                                 <p className="text-sm">{resumeEvidence}</p>
                             </div>                    
                         </>
