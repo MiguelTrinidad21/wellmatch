@@ -4,7 +4,7 @@ import { BiLoaderAlt } from "react-icons/bi";
 import PrimaryButton from "../buttons/PrimaryButton";
 import { useEffect, useState, useRef } from "react";
 import Translucent from "../overlay/Translucent";
-import axios from "axios";
+import api from "../../apis/axios.js";
 import { userStore } from "../../zustand/userState";
 
 
@@ -50,8 +50,8 @@ export default function ApplicantInfoForm({ toggleForm }) {
             try {
                 setIsSearchingLocation(true);
 
-                const response = await axios.get(
-                    "/api/geoapify/autocomplete",
+                const response = await api.get(
+                    "/geoapify/autocomplete",
                     {
                         params: {
                             text: searchText.trim()
@@ -111,11 +111,10 @@ export default function ApplicantInfoForm({ toggleForm }) {
         }
 
         try {
-            const result = await axios.patch(
-                "/api/applicant/editProfileInfo",
+            const result = await api.patch(
+                "/applicant/editProfileInfo",
                 formData,
                 {
-                    withCredentials: true,
                     headers: {
                         "Content-Type": "multipart/form-data"
                     }

@@ -7,7 +7,7 @@ import { FaCheck } from "react-icons/fa6";
 import { userStore } from "../../zustand/userState";
 import { useState, useEffect } from "react"
 import { useNavigate, Link, useParams } from "react-router-dom";
-import axios from "axios";
+import api from "../../apis/axios.js"
 import PrimaryButton from "../../components/buttons/PrimaryButton";
 
 export default function EditPermission(req, res) {
@@ -67,9 +67,8 @@ export default function EditPermission(req, res) {
     async function editPermission() {
         try {
             console.log(role)
-            await axios.patch("/api/employer/editPermission", 
-                {memberID, role}, 
-                {withCredentials: true}
+            await api.patch("/employer/editPermission", 
+                {memberID, role}
             );
 
             setShowConfirm(true);
@@ -82,9 +81,8 @@ export default function EditPermission(req, res) {
     useEffect(() => {
         async function getEmployerInfo() {
             try {
-                const res = await axios.get("/api/employer/getEmployerInfo", {
-                    params: { memberID },
-                    withCredentials: true
+                const res = await api.get("/employer/getEmployerInfo", {
+                    params: { memberID }
                 });
 
                 setEmployerInfo(res.data);
@@ -105,7 +103,7 @@ export default function EditPermission(req, res) {
                     return;
                 }
 
-                await axios.get("/api/employer/authorizeAdmin", {
+                await api.get("/employer/authorizeAdmin", {
                     params: {
                         employerID: currentUser.employerID
                     }

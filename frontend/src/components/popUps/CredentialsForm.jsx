@@ -4,7 +4,7 @@ import { useState } from "react";
 import Translucent from "../overlay/Translucent";
 import MonthSelector from "../others/MonthSelector";
 import YearSelector from "../others/YearSelector";
-import axios from "axios";
+import api from "../../apis/axios";
 
 
 export default function CredentialsForm({ toggleForm, refresh }) {
@@ -56,9 +56,7 @@ export default function CredentialsForm({ toggleForm, refresh }) {
         }
 
         try {
-            await axios.post("/api/applicant/addCredential", credentialInfo, {
-                withCredentials: true
-            })
+            await api.post("/applicant/addCredential", credentialInfo)
 
             refresh();
             toggleForm();

@@ -4,7 +4,7 @@ import PublicNavBar from "../../components/navBars/PublicNavBar.jsx";
 import Overlay from "../../components/overlay/OverlayMobile.jsx";
 import PrimaryButton from "../../components/buttons/PrimaryButton.jsx";
 import Footer from "../../components/others/Footer.jsx";
-import axios from "axios";
+import api from "../../apis/axios.js";
 import { userStore } from "../../zustand/userState.js";
 import { FiEye } from "react-icons/fi";
 import { FiEyeOff } from "react-icons/fi";
@@ -27,9 +27,7 @@ export default function EmployerSignIn() {
         setErrors({});
 
         try {
-            const signedToken = await axios.post("/api/employer/login", employerCredentials, {
-                withCredentials: true
-            })
+            const signedToken = await api.post("/employer/login", employerCredentials)
 
             const loggedEmployer = signedToken.data.user;
             console.log(loggedEmployer)

@@ -15,7 +15,7 @@ import { AiOutlineLaptop } from "react-icons/ai";
 import { TbBuildingCommunity } from "react-icons/tb"
 import { useState, useEffect, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import axios from "axios";
+import api from "../../apis/axios";
 
 export default function JobInfoSide({ display }) {
     const topScrollRef = useRef(null);
@@ -59,9 +59,7 @@ export default function JobInfoSide({ display }) {
 
     async function saveJob(jobID) {
         try {
-            await axios.post("/api/applicant/saveJob", { jobID }, {
-                withCredentials: true
-            })
+            await api.post("/applicant/saveJob", { jobID })
 
             setIsJobSaved(!isJobSaved);
         } catch (error) {
@@ -71,9 +69,8 @@ export default function JobInfoSide({ display }) {
 
     async function unsaveJob(jobID) {
         try {
-            await axios.delete("/api/applicant/unsaveJob", {
-                params: {jobID},
-                withCredentials: true
+            await api.delete("/applicant/unsaveJob", {
+                params: {jobID}
             })
 
             setIsJobSaved(!isJobSaved);
@@ -90,13 +87,11 @@ export default function JobInfoSide({ display }) {
 
     useEffect(() => {
         async function fetchSavedJobs() {
-            const res = await axios.get(
+            const res = await api.get(
                 (currentUser.userType === "applicant" 
-                    ? "/api/applicant/getSavedJobs"
-                    : "/api/employer/getJobs"
-                ), {
-                withCredentials: true
-            });
+                    ? "/applicant/getSavedJobs"
+                    : "/employer/getJobs"
+                ));
 
             setSavedJobIDs(new Set(res.data.jobIDs));
         }

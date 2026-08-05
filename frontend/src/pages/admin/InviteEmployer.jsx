@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { userStore } from "../../zustand/userState";
 import { BiLoaderAlt } from "react-icons/bi";
 import { MdMailOutline } from "react-icons/md";
-import axios from "axios";
+import api from "../../apis/axios";
 import ConfirmationBox from "../../components/popUps/ConfirmationBox";
 import Translucent from "../../components/overlay/Translucent";
 import Loading from "../../components/others/Loading";
@@ -28,10 +28,9 @@ export default function InviteEmployer({ cancelFunc, setInviteSent }) {
         try {
             setIsSending(true);
 
-            await axios.post(
-                "/api/employer/companyProfile/invite",
-                employerToInvite,
-                {withCredentials: true}
+            await api.post(
+                "/employer/companyProfile/invite",
+                employerToInvite
             );
 
             setIsSending(false);

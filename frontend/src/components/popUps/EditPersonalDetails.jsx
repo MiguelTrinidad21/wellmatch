@@ -2,7 +2,7 @@ import PrimaryButton from "../buttons/PrimaryButton"
 import { userStore } from "../../zustand/userState"
 import { useState, useEffect } from "react";
 import { BiLoaderAlt } from "react-icons/bi";
-import axios from "axios";
+import api from "../../apis/axios.js";
 
 export default function EditPersonalDetails({ cancelFunc, userType }) {
     const forEmployers = userType === "employer" || "admin"
@@ -25,13 +25,9 @@ export default function EditPersonalDetails({ cancelFunc, userType }) {
 
         try {
             if (forEmployers) {
-                await axios.patch("/api/employer/editPersonalDetails", newInfo,
-                    {withCredentials: true}
-                );
+                await api.patch("/employer/editPersonalDetails", newInfo);
             } else {
-                await axios.patch("/api/applicant/editPersonalDetails", newInfo,
-                    {withCredentials: true}
-                );
+                await api.patch("/applicant/editPersonalDetails", newInfo);
             }
 
             handleCurrentUser({

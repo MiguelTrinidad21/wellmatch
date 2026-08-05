@@ -4,7 +4,7 @@ import { BiLoaderAlt } from "react-icons/bi";
 import PrimaryButton from "../buttons/PrimaryButton";
 import { useState } from "react";
 import Translucent from "../overlay/Translucent";
-import axios from "axios";
+import api from "../../apis/axios.js";
 
 
 export default function AddResumeForm({ toggleForm, refresh }) {
@@ -27,9 +27,7 @@ export default function AddResumeForm({ toggleForm, refresh }) {
         setIsLoading(true);
 
         try {
-            await axios.post("/api/applicant/uploadResume", formData, {
-                withCredentials: true
-            })
+            await api.post("/applicant/uploadResume", formData)
 
             setErrors({})
             refresh();

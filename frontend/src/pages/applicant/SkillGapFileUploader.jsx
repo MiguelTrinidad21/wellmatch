@@ -14,7 +14,7 @@ import { userStore } from "../../zustand/userState";
 import { resumeStore } from "../../zustand/skillGapResume";
 import { locationStore } from "../../zustand/stateHandlers";
 import { tooltipStore } from "../../zustand/stateHandlers";
-import axios from "axios";
+import api from "../../apis/axios";
 
 
 
@@ -57,7 +57,7 @@ export default function SkillGapFileUploader() {
                     return;
                 }
 
-                await axios.get("/api/applicant/authorize", {
+                await api.get("/applicant/authorize", {
                     params: {
                         applicantID: currentUser.applicantID
                     }
@@ -85,9 +85,7 @@ export default function SkillGapFileUploader() {
     useEffect(() => {
         async function getAllResumes() {
             try {
-                const allResumes = await axios.get("/api/applicant/getAllResumes", {
-                    withCredentials: true
-                })
+                const allResumes = await api.get("/applicant/getAllResumes")
 
                 setAllResumes(allResumes.data?.allResumes);
             } catch (error) {
@@ -127,9 +125,7 @@ export default function SkillGapFileUploader() {
                 const formData = new FormData();
                 formData.append("resume", uploadedResume);
 
-                const uploadResponse = await axios.post("/api/applicant/uploadResume", formData, {
-                    withCredentials: true,
-                })
+                const uploadResponse = await api.post("/applicant/uploadResume", formData)
                 const uploadedResumeData = uploadResponse.data.resumeToAnalyze;
                 setResumeToAnalyze(uploadedResumeData);
                 setErrors({issue: ""})

@@ -11,7 +11,7 @@ import { TbBuildingCommunity } from "react-icons/tb";
 import { userStore } from "../../zustand/userState";
 import { useState, useEffect } from "react";
 import { useNavigate, Link, useParams } from "react-router-dom";
-import axios from "axios";
+import api from "../../apis/axios";
 
 
 export default function ViewJobDescription() {
@@ -31,7 +31,7 @@ export default function ViewJobDescription() {
                     return;
                 }
 
-                await axios.get("/api/employer/authorize", {
+                await api.get("/employer/authorize", {
                     params: {
                         employerID: currentUser.employerID
                     }
@@ -59,9 +59,7 @@ export default function ViewJobDescription() {
     useEffect(() => {
         async function getJob() {
             try {
-                const jobDesc = await axios.get(`/api/employer/viewJob/${jobID}`, {
-                    withCredentials: true
-                })
+                const jobDesc = await api.get(`/employer/viewJob/${jobID}`)
 
                 setSelectedJob(jobDesc.data);
                 console.log(jobDesc.data)

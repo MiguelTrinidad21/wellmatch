@@ -20,7 +20,7 @@ import { GoInfo } from "react-icons/go";
 import { FiBriefcase } from "react-icons/fi";
 import { FiAward } from "react-icons/fi";
 import { RiGraduationCapLine } from "react-icons/ri";
-import axios from "axios";
+import api from "../../apis/axios";
 
 
 export default function SkillGapReport() {
@@ -62,7 +62,7 @@ export default function SkillGapReport() {
                     return;
                 }
 
-                await axios.get("/api/employer/authorize", {
+                await api.get("/employer/authorize", {
                     params: {
                         employerID: currentUser.employerID
                     }
@@ -109,12 +109,11 @@ export default function SkillGapReport() {
     useEffect(() => {
         async function getSkillGapReport() {
             try {
-                const res = await axios.get("/api/employer/applications/skillGapReport", {
+                const res = await api.get("/employer/applications/skillGapReport", {
                     params: {
                         jobID,
                         resumeID
-                    },
-                    withCredentials: true
+                    }
                 });
                 console.log(res.data.skillGapReport)
                 setSkillGapAnalysis(res.data.skillGapReport);
@@ -130,9 +129,8 @@ export default function SkillGapReport() {
     useEffect(() => {
         async function getCandidateHistory() {
             try {
-                const res = await axios.get("/api/employer/applications/candidateHistory", {
-                    params: { applicantID },
-                    withCredentials: true
+                const res = await api.get("/employer/applications/candidateHistory", {
+                    params: { applicantID }
                 });
 
                 setWorkExp(res.data.workExp);
@@ -150,9 +148,8 @@ export default function SkillGapReport() {
     useEffect(() => {
         async function getJob() {
             try {
-                const jobDesc = await axios.get(`/api/employer/getAppliedJob`, {
-                    params: { jobID },
-                    withCredentials: true
+                const jobDesc = await api.get(`/employer/getAppliedJob`, {
+                    params: { jobID }
                 });
 
                 setSelectedJob(jobDesc.data);

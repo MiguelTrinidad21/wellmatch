@@ -5,7 +5,7 @@ import { useState, useEffect, useRef } from "react";
 import { companyStore } from "../../zustand/stateHandlers";
 import { userStore } from "../../zustand/userState";
 import PrimaryButton from "../buttons/PrimaryButton";
-import axios from "axios";
+import api from "../../apis/axios";
 
 
 export default function EditCompany({ handleEditCompanyBox }) {
@@ -53,8 +53,8 @@ export default function EditCompany({ handleEditCompanyBox }) {
             try {
                 setIsSearchingLocation(true);
 
-                const response = await axios.get(
-                    "/api/geoapify/autocomplete",
+                const response = await api.get(
+                    "/geoapify/autocomplete",
                     {
                         params: {
                             text: searchText.trim()
@@ -131,11 +131,10 @@ export default function EditCompany({ handleEditCompanyBox }) {
         }
 
         try {
-            const result = await axios.patch(
-                "/api/employer/editCompany",
+            const result = await api.patch(
+                "/employer/editCompany",
                 formData,
                 {
-                    withCredentials: true,
                     headers: {
                         "Content-Type": "multipart/form-data"
                     }

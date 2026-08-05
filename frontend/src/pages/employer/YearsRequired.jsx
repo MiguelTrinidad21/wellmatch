@@ -11,7 +11,7 @@ import { jobCreationStore } from "../../zustand/stateHandlers";
 import { userStore } from "../../zustand/userState";
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import axios from "axios";
+import api from "../../apis/axios";
 
 export default function YearsRequired({ mode = "create" }) {
     const { jobID } = useParams();
@@ -49,7 +49,7 @@ export default function YearsRequired({ mode = "create" }) {
                     return;
                 }
 
-                await axios.get("/api/employer/authorize", {
+                await api.get("/employer/authorize", {
                     params: {
                         employerID: currentUser.employerID
                     }
@@ -96,13 +96,9 @@ export default function YearsRequired({ mode = "create" }) {
 
         try {
             if (isEditMode) {
-                await axios.put(`/api/employer/updateJob/${jobID}`, createdJob, {
-                    withCredentials: true
-                });
+                await api.put(`/employer/updateJob/${jobID}`, createdJob);
             } else {
-                await axios.post("/api/employer/postJob", createdJob, {
-                    withCredentials: true
-                });
+                await api.post("/employer/postJob", createdJob);
             }
 
             setIsJobPosted(true);

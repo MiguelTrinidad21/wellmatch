@@ -8,7 +8,7 @@ import webLogo from '../../assets/WellMatch_Logo.png'
 import { sideBarStore } from "../../zustand/stateHandlers";
 import { userStore } from "../../zustand/userState";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
+import api from "../../apis/axios";
 
 
 export default function ApplicantSideBar() {
@@ -19,9 +19,7 @@ export default function ApplicantSideBar() {
 
     async function logoutApplicant() {
         try {
-            await axios.post("/api/applicant/logout", {}, {
-                withCredentials: true
-            })
+            await api.post("/applicant/logout", {})
             logoutUser();
             setApplicantActiveLink("Home")
             navigate("/applicant/login");

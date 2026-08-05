@@ -12,7 +12,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import PrimaryButton from "../buttons/PrimaryButton";
 import defaultCover from "../../assets/defaultCover.jpg"
-import axios from "axios";
+import api from "../../apis/axios";
 
 export default function EmployerSideMenu({ status }) {
     const { toggleSideBar, employerActiveLink, setEmployerActiveLink } = sideBarStore();
@@ -23,9 +23,7 @@ export default function EmployerSideMenu({ status }) {
     
     async function logoutEmployer() {
         try {
-            await axios.post("/api/employer/logout", {}, {
-                withCredentials: true
-            })
+            await api.post("/employer/logout", {})
             toggleSideBar()
             logoutUser();
             setEmployerActiveLink("Jobs")
@@ -40,11 +38,10 @@ export default function EmployerSideMenu({ status }) {
 
         async function fetchCompany() {
             try {
-                const result = await axios.get("/api/employer/company", {
+                const result = await api.get("/employer/company", {
                     params: {
                         companyID: currentUser.companyID
-                    },
-                    withCredentials: true
+                    }
                 });
                 setCompanyInfo(result.data);
 

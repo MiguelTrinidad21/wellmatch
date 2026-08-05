@@ -13,7 +13,7 @@ import { useState, useEffect } from "react";
 import { useNavigate, Link, useParams } from "react-router-dom";
 import { userStore } from "../../zustand/userState";
 import { resumeStore } from "../../zustand/skillGapResume";
-import axios from "axios";
+import api from "../../apis/axios";
 import { FiBriefcase } from "react-icons/fi";
 import { FiAward } from "react-icons/fi";
 import { RiGraduationCapLine } from "react-icons/ri";
@@ -52,7 +52,7 @@ export default function JobAppFinalStep() {
                     return;
                 }
 
-                await axios.get("/api/applicant/authorize", {
+                await api.get("/applicant/authorize", {
                     params: {
                         applicantID: currentUser.applicantID
                     }
@@ -80,9 +80,7 @@ export default function JobAppFinalStep() {
     useEffect(() => {
         async function getJobInfo() {
             try {
-                const result = await axios.get(`/api/applicant/viewJob/${jobID}`, {
-                    withCredentials: true
-                });
+                const result = await api.get(`/applicant/viewJob/${jobID}`);
     
                 setCurrentJob(result.data);
                 
@@ -97,9 +95,8 @@ export default function JobAppFinalStep() {
     useEffect(() => {
         async function getWorkExp() {
             try {
-                const allWorkExps = await axios.get("/api/applicant/getWorkExp", {
-                    params: {applicantID: currentUser.id},
-                    withCredentials: true
+                const allWorkExps = await api.get("/applicant/getWorkExp", {
+                    params: {applicantID: currentUser.id}
                 });
                 console.log(allWorkExps.data.workExperiences)
                 setWorkExp(allWorkExps.data.workExperiences);
@@ -115,9 +112,8 @@ export default function JobAppFinalStep() {
     useEffect(() => {
         async function getCredentials() {
             try {
-                const allCredentials = await axios.get("/api/applicant/getCredentials", {
-                    params: {applicantID: currentUser.id},
-                    withCredentials: true
+                const allCredentials = await api.get("/applicant/getCredentials", {
+                    params: {applicantID: currentUser.id}
                 });
                 setCredentials(allCredentials.data.credentials);
 
@@ -132,9 +128,8 @@ export default function JobAppFinalStep() {
     useEffect(() => {
         async function getEducation() {
             try {
-                const allEducation = await axios.get("/api/applicant/getEducation", {
-                    params: {applicantID: currentUser.id},
-                    withCredentials: true
+                const allEducation = await api.get("/applicant/getEducation", {
+                    params: {applicantID: currentUser.id}
                 });
 
                 setEducation(allEducation.data.education);
@@ -156,13 +151,12 @@ export default function JobAppFinalStep() {
         setIsSubmitting(true);
 
         try {
-            await axios.post(`/api/applicant/submitApplication/${jobID}`, {
+            await api.post(`/applicant/submitApplication/${jobID}`, {
                 resumeID: resumeToAnalyze.resumeID,
                 yearsExp: selectedYears,
                 jobTitle: currentJob.jobTitle,
                 companyName: currentJob.companyName,
-            },
-            { withCredentials: true }
+            }
         )
             setIsSubmitted(true);
             clearResumeToAnalyze();

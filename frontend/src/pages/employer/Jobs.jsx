@@ -9,7 +9,7 @@ import JobInfoSide from "../../components/popUps/JobInfoSide";
 import { userStore } from "../../zustand/userState";
 import { sideBarStore, jobCreationStore, jobInfoStore } from "../../zustand/stateHandlers";
 import { useState, useEffect, useCallback } from "react";
-import axios from "axios";
+import api from "../../apis/axios";
 import { useNavigate, Link } from "react-router-dom";
 import { TbBriefcase2 } from "react-icons/tb";
 import { TbBriefcaseOff } from "react-icons/tb";
@@ -77,7 +77,7 @@ export default function Jobs() {
                     return;
                 }
 
-                await axios.get("/api/employer/authorize", {
+                await api.get("/employer/authorize", {
                     params: {
                         employerID: currentUser.employerID
                     }
@@ -103,11 +103,10 @@ export default function Jobs() {
         async function getJobs() {
 
             try {
-                const allJobs = await axios.get("/api/employer/getJobs", {
+                const allJobs = await api.get("/employer/getJobs", {
                     params: { 
                         jobStatus
-                     },
-                    withCredentials: true
+                     }
                 })
 
                 setListOfJobs(allJobs.data.fetchedJobs);
@@ -203,8 +202,7 @@ export default function Jobs() {
         setJobHasChanged(!jobHasChanged)
 
         try {
-            axios.patch(`/api/employer/job/close/${closingJobID}`, 
-                { withCredentials: true }
+            api.patch(`/employer/job/close/${closingJobID}`
             )
 
             // setJobHasChanged(!jobHasChanged);
@@ -225,8 +223,7 @@ export default function Jobs() {
         setJobHasChanged(!jobHasChanged)
 
         try {
-            axios.patch(`/api/employer/job/reOpen/${reOpenJobID}`, 
-                { withCredentials: true }
+            api.patch(`/employer/job/reOpen/${reOpenJobID}`
             )
 
             // setJobHasChanged(!jobHasChanged);

@@ -2,7 +2,7 @@ import { IoClose } from "react-icons/io5";
 import PrimaryButton from "../buttons/PrimaryButton";
 import { useState } from "react";
 import Translucent from "../overlay/Translucent";
-import axios from "axios";
+import api from "../../apis/axios.js";
 import YearSelector from "../others/YearSelector";
 
 
@@ -38,9 +38,7 @@ export default function EducationForm({ toggleForm, refresh }) {
         e.preventDefault();
 
         try {
-            await axios.post("/api/applicant/addEducation", educationInfo, {
-                withCredentials: true
-            })
+            await api.post("/applicant/addEducation", educationInfo)
 
             refresh();
             toggleForm();

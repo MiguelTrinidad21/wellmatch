@@ -19,7 +19,7 @@ import { RiGroupLine } from "react-icons/ri";
 import { FaUsersSlash } from "react-icons/fa";
 import { FiCalendar } from "react-icons/fi";
 import { useNavigate, Link, useParams } from "react-router-dom";
-import axios from "axios";
+import api from "../../apis/axios";
 import { formatDistanceToNow } from 'date-fns';
 import ReactPaginateModule from "react-paginate";
 
@@ -58,14 +58,13 @@ export default function ViewApplicants() {
         setStatus(status);
 
         try {
-            const res = await axios.get(`/api/employer/fetchApplicants`, {
+            const res = await api.get(`/employer/fetchApplicants`, {
                 params: {
                     jobID,
                     status,
                     page,
                     limit: applicantsPerPage
-                },
-                withCredentials: true
+                }
             });
 
             setJobTitle(res?.data?.jobTitle);
@@ -81,9 +80,8 @@ export default function ViewApplicants() {
     async function updateStatus(applicationID, currentStatus, nextStatus) {
         setIsUpdating(true);
         try {
-            await axios.patch("/api/employer/updateApplicationStatus",
-                {applicationID, nextStatus},
-                {withCredentials: true}
+            await api.patch("/employer/updateApplicationStatus",
+                {applicationID, nextStatus}
             );
             
             setShowConfirm(false);
@@ -99,9 +97,8 @@ export default function ViewApplicants() {
     async function rejectApplicant(applicationID, currentStatus) {
         setIsUpdating(true)
         try {
-            await axios.patch("/api/employer/rejectApplicant", 
-                { applicationID },
-                { withCredentials: true }
+            await api.patch("/employer/rejectApplicant", 
+                { applicationID }
             );
 
             setShowReject(false);
@@ -117,9 +114,8 @@ export default function ViewApplicants() {
     async function rejectAllApplicants(currentStatus) {
         setIsUpdating(true);
         try {
-            await axios.patch("/api/employer/applications/rejectAll",
-                {jobID, currentStatus},
-                {withCredentials: true}
+            await api.patch("/employer/applications/rejectAll",
+                {jobID, currentStatus}
             );
 
             setShowRejectAll(false);
@@ -150,7 +146,7 @@ export default function ViewApplicants() {
                     return;
                 }
 
-                await axios.get("/api/employer/authorize", {
+                await api.get("/employer/authorize", {
                     params: {
                         employerID: currentUser.employerID
                     }

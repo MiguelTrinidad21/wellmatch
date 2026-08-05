@@ -8,7 +8,7 @@ import webLogo from '../../assets/WellMatch_Logo.png'
 import { sideBarStore } from "../../zustand/stateHandlers";
 import { userStore } from "../../zustand/userState";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
+import api from "../../apis/axios.js";
 
 
 export default function EmployerSideBar() {
@@ -18,9 +18,7 @@ export default function EmployerSideBar() {
 
     async function logoutEmployer() {
         try {
-            await axios.post("/api/employer/logout", {}, {
-                withCredentials: true
-            })
+            await api.post("/employer/logout", {})
             logoutUser();
             setEmployerActiveLink("Jobs")
             navigate("/employer/login");

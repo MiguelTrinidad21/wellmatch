@@ -10,7 +10,7 @@ import { useNavigate, Link, useParams } from "react-router-dom";
 import { userStore } from "../../zustand/userState";
 import { locationStore } from "../../zustand/stateHandlers";
 import { resumeStore } from "../../zustand/skillGapResume";
-import axios from "axios";
+import api from "../../apis/axios";
 
 
 export default function JobAppInitialStep() {
@@ -60,7 +60,7 @@ export default function JobAppInitialStep() {
                     return;
                 }
 
-                await axios.get("/api/applicant/authorize", {
+                await api.get("/applicant/authorize", {
                     params: {
                         applicantID: currentUser.applicantID
                     }
@@ -88,9 +88,7 @@ export default function JobAppInitialStep() {
     useEffect(() => {
         async function getAllResumes() {
             try {
-                const allResumes = await axios.get("/api/applicant/getAllResumes", {
-                    withCredentials: true
-                })
+                const allResumes = await api.get("/applicant/getAllResumes")
 
                 setAllResumes(allResumes.data?.allResumes);
             } catch (error) {
@@ -104,9 +102,7 @@ export default function JobAppInitialStep() {
     useEffect(() => {
         async function getJobInfo() {
             try {
-                const result = await axios.get(`/api/applicant/viewJob/${jobID}`, {
-                    withCredentials: true
-                });
+                const result = await api.get(`/applicant/viewJob/${jobID}`);
     
                 setCurrentJob(result.data);
                 

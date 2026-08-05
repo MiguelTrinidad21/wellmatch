@@ -17,7 +17,7 @@ import { locationStore } from "../../zustand/stateHandlers";
 import { jobInfoStore } from "../../zustand/stateHandlers";
 import { useState, useEffect } from "react";
 import { useNavigate, Link, useParams, useLocation } from "react-router-dom";
-import axios from "axios";
+import api from "../../apis/axios";
 
 
 export default function ViewJobInfo() {
@@ -43,7 +43,7 @@ export default function ViewJobInfo() {
                     return;
                 }
 
-                await axios.get("/api/applicant/authorize", {
+                await api.get("/applicant/authorize", {
                     params: {
                         applicantID: currentUser.applicantID
                     }
@@ -71,9 +71,7 @@ export default function ViewJobInfo() {
     useEffect(() => {
         async function getJob() {
             try {
-                const jobDesc = await axios.get(`/api/applicant/viewJob/${jobID}`, {
-                    withCredentials: true
-                })
+                const jobDesc = await api.get(`/applicant/viewJob/${jobID}`)
 
                 setSelectedJob(jobDesc.data);
                 console.log(jobDesc.data)
@@ -89,9 +87,7 @@ export default function ViewJobInfo() {
 
     useEffect(() => {
         async function fetchSavedJobs() {
-            const res = await axios.get("/api/applicant/getSavedJobs", {
-                withCredentials: true
-            });
+            const res = await api.get("/applicant/getSavedJobs");
             console.log(res.data.jobIDs)
             setSavedJobIDs(new Set(res.data.jobIDs));
         }
@@ -106,9 +102,7 @@ export default function ViewJobInfo() {
 
     async function saveJob(jobID) {
         try {
-            await axios.post("/api/applicant/saveJob", { jobID }, {
-                withCredentials: true
-            })
+            await api.post("/applicant/saveJob", { jobID })
 
             setIsJobSaved(!isJobSaved);
         } catch (error) {
@@ -118,9 +112,8 @@ export default function ViewJobInfo() {
 
     async function unsaveJob(jobID) {
         try {
-            await axios.delete("/api/applicant/unsaveJob", {
-                params: {jobID},
-                withCredentials: true
+            await api.delete("/applicant/unsaveJob", {
+                params: {jobID}
             })
 
             setIsJobSaved(!isJobSaved);

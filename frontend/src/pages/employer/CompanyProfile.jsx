@@ -20,7 +20,7 @@ import { useState, useEffect } from "react";
 import { userStore } from "../../zustand/userState";
 import { companyStore, sideBarStore } from "../../zustand/stateHandlers";
 import { useNavigate, Link } from "react-router-dom";
-import axios from "axios";
+import api from "../../apis/axios";
 
 export default function CompanyProfile() {
 
@@ -55,7 +55,7 @@ export default function CompanyProfile() {
                     return;
                 }
 
-                await axios.get("/api/employer/authorize", {
+                await api.get("/employer/authorize", {
                     params: {
                         employerID: currentUser.employerID
                     }
@@ -92,11 +92,10 @@ export default function CompanyProfile() {
 
         async function fetchCompany() {
             try {
-                const result = await axios.get("/api/employer/company", {
+                const result = await api.get("/employer/company", {
                     params: {
                         companyID: currentUser.companyID
-                    },
-                    withCredentials: true
+                    }
                 });
                 console.log(result.data)
                 setCompanyInfo(result.data);
@@ -112,12 +111,11 @@ export default function CompanyProfile() {
     useEffect(() => {
         async function getMembers() {
             try {
-                const allMembers = await axios.get("/api/employer/companyMembers", {
+                const allMembers = await api.get("/employer/companyMembers", {
                     params: {
                         companyID: currentUser.companyID,
                         employerID: currentUser.id
-                    },
-                    withCredentials: true
+                    }
                 });
                 // console.log(allMembers.data.companyMembers)
                 setCompanyMembers(allMembers.data.companyMembers);
@@ -137,9 +135,8 @@ export default function CompanyProfile() {
     async function removeEmployer() {
         setIsRemoving(true);
         try {
-            await axios.delete("/api/employer/removeEmployer", {
-                params: { memberID, companyID: companyInfo.companyID },
-                withCredentials: true
+            await api.delete("/employer/removeEmployer", {
+                params: { memberID, companyID: companyInfo.companyID }
             })
             setShowDelete(false);
             setShowConfirm(true)

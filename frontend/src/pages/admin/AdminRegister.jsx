@@ -3,7 +3,7 @@ import Footer from "../../components/others/Footer";
 import Overlay from "../../components/overlay/OverlayMobile";
 import PrimaryButton from "../../components/buttons/PrimaryButton";
 import { useState, useEffect } from "react";
-import axios from 'axios'
+import api from "../../apis/axios";
 import { FiEye } from "react-icons/fi";
 import { FiEyeOff } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
@@ -55,8 +55,8 @@ export default function AdminRegister() {
             try {
                 setIsSearchingLocation(true);
 
-                const response = await axios.get(
-                    "/api/geoapify/autocomplete",
+                const response = await api.get(
+                    "/geoapify/autocomplete",
                     {
                         params: {
                             text: searchText.trim()
@@ -122,9 +122,7 @@ export default function AdminRegister() {
         }
 
         try {
-            await axios.post("/api/employer/register", adminInfo, {
-                withCredentials: true
-            })
+            await api.post("/employer/register", adminInfo)
             setShowPopUp(true);
 
         } catch (error) {

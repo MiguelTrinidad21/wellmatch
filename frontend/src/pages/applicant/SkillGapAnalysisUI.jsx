@@ -21,7 +21,7 @@ import { GoInfo } from "react-icons/go";
 import { FaBookOpen } from "react-icons/fa";
 import { ImWrench } from "react-icons/im";
 import { BsAwardFill } from "react-icons/bs";
-import axios from "axios";
+import api from "../../apis/axios";
 
 
 export default function SkillGapAnalysisUI() {   
@@ -65,7 +65,7 @@ export default function SkillGapAnalysisUI() {
                     return;
                 }
 
-                await axios.get("/api/applicant/authorize", {
+                await api.get("/applicant/authorize", {
                     params: {
                         applicantID: currentUser.applicantID
                     }
@@ -122,11 +122,8 @@ export default function SkillGapAnalysisUI() {
 
             try {
 
-                const skillGapReport = await axios.post(
-                    `/api/applicant/${jobID}/${resumeID}/skillgap`,
-                    {
-                        withCredentials: true
-                    }
+                const skillGapReport = await api.post(
+                    `/applicant/${jobID}/${resumeID}/skillgap`
                 );                    
                 console.log(skillGapReport.data.skillGapReport);
 
@@ -145,9 +142,7 @@ export default function SkillGapAnalysisUI() {
     useEffect(() => {
         async function getJob() {
             try {
-                const jobDesc = await axios.get(`/api/applicant/viewJob/${jobID}`, {
-                    withCredentials: true
-                })
+                const jobDesc = await api.get(`/applicant/viewJob/${jobID}`)
 
                 setSelectedJob(jobDesc.data);
                 console.log(jobDesc.data)

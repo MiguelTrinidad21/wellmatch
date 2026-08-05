@@ -24,7 +24,7 @@ import { userStore } from "../../zustand/userState";
 import { sideBarStore } from "../../zustand/stateHandlers";
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import axios from "axios";
+import api from "../../apis/axios";
 
 
 export default function MyProfile() {
@@ -82,9 +82,8 @@ export default function MyProfile() {
     async function handleWorkExpDeletion(workExpID) {
         try {
             console.log(workExpID)
-            await axios.delete("/api/applicant/delete/workExp", {
-                params: { workExpID },
-                withCredentials: true
+            await api.delete("/applicant/delete/workExp", {
+                params: { workExpID }
             });
 
             refreshData(setRefreshWorkExp);
@@ -97,9 +96,8 @@ export default function MyProfile() {
 
     async function handleCredsDeletion(credID) {
         try {
-            await axios.delete("/api/applicant/delete/credential", {
-                params: { credID },
-                withCredentials: true
+            await api.delete("/applicant/delete/credential", {
+                params: { credID }
             });
 
             refreshData(setRefreshCredentials);
@@ -112,9 +110,8 @@ export default function MyProfile() {
 
     async function handleEducationDeletion(educID) {
         try {
-            await axios.delete("/api/applicant/delete/education", {
-                params: { educID },
-                withCredentials: true
+            await api.delete("/applicant/delete/education", {
+                params: { educID }
             });
 
             refreshData(setRefreshEducation);
@@ -127,9 +124,8 @@ export default function MyProfile() {
 
     async function makeResumeDefault(resumeID) {
         try {
-            await axios.patch("/api/applicant/resume/makeDefault", {}, {
-                params: { resumeID: resumeID },
-                withCredentials: true
+            await api.patch("/applicant/resume/makeDefault", {}, {
+                params: { resumeID: resumeID }
             })
 
             refreshData(setRefreshResumes);
@@ -140,9 +136,8 @@ export default function MyProfile() {
 
     async function handleResumeDeletion(resumeID) {
         try {
-            await axios.delete("/api/applicant/delete/resume", {
-                params: { resumeID },
-                withCredentials: true
+            await api.delete("/applicant/delete/resume", {
+                params: { resumeID }
             })
 
             refreshData(setRefreshResumes);
@@ -175,7 +170,7 @@ export default function MyProfile() {
                     return;
                 }
 
-                const result = await axios.get("/api/applicant/authorize", {
+                const result = await api.get("/applicant/authorize", {
                     params: {
                         applicantID: currentUser.applicantID
                     }
@@ -202,9 +197,8 @@ export default function MyProfile() {
     useEffect(() => {
         async function getWorkExp() {
             try {
-                const allWorkExps = await axios.get("/api/applicant/getWorkExp", {
-                    params: {applicantID: currentUser.id},
-                    withCredentials: true
+                const allWorkExps = await api.get("/applicant/getWorkExp", {
+                    params: {applicantID: currentUser.id}
                 });
                 // console.log(allWorkExps.data.workExperiences)
                 setWorkExp(allWorkExps.data.workExperiences);
@@ -220,9 +214,8 @@ export default function MyProfile() {
     useEffect(() => {
         async function getCredentials() {
             try {
-                const allCredentials = await axios.get("/api/applicant/getCredentials", {
-                    params: {applicantID: currentUser.id},
-                    withCredentials: true
+                const allCredentials = await api.get("/applicant/getCredentials", {
+                    params: {applicantID: currentUser.id}
                 });
                 // console.log(allCredentials.data.credentials)
                 setCredentials(allCredentials.data.credentials);
@@ -238,9 +231,7 @@ export default function MyProfile() {
     useEffect(() => {
         async function getResumes() {
             try {
-                const result = await axios.get("/api/applicant/getAllResumes", {
-                    withCredentials: true
-                });
+                const result = await api.get("/applicant/getAllResumes");
                 // console.log(allCredentials.data.credentials)
                 setResumes(result.data.allResumes);
 
@@ -256,9 +247,8 @@ export default function MyProfile() {
     useEffect(() => {
         async function getEducation() {
             try {
-                const allEducation = await axios.get("/api/applicant/getEducation", {
-                    params: {applicantID: currentUser.id},
-                    withCredentials: true
+                const allEducation = await api.get("/applicant/getEducation", {
+                    params: {applicantID: currentUser.id}
                 });
                 // console.log(allEducation.data.education)
                 setEducation(allEducation.data.education);

@@ -10,10 +10,10 @@ import { userStore } from "../../zustand/userState";
 import { sideBarStore } from "../../zustand/stateHandlers";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import { IoPersonSharp } from "react-icons/io5";
 import { GoShieldLock } from "react-icons/go";
 import { VscWarning } from "react-icons/vsc";
+import api from "../../apis/axios";
 
 export default function AccountSettings() {
     const { currentUser, logoutUser } = userStore();
@@ -41,7 +41,7 @@ export default function AccountSettings() {
                     return;
                 }
 
-                await axios.get("/api/employer/authorize", {
+                await api.get("/employer/authorize", {
                     params: {
                         employerID: currentUser.employerID
                     }

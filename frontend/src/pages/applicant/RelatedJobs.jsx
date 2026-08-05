@@ -22,7 +22,7 @@ import { AiOutlineLaptop } from "react-icons/ai"
 import { TbBuildingCommunity } from "react-icons/tb";
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useNavigate, Link, useLocation } from "react-router-dom";
-import axios from "axios";
+import api from "../../apis/axios";
 import ReactPaginateModule from "react-paginate";
 import JobInfoSide from "../../components/popUps/JobInfoSide";
 import useIsDesktop from "../../hooks/useIsDesktop";
@@ -87,7 +87,7 @@ export default function RelatedJobs() {
                     return;
                 }
 
-                await axios.get("/api/applicant/authorize", {
+                await api.get("/applicant/authorize", {
                     params: {
                         applicantID: currentUser.applicantID
                     }
@@ -168,8 +168,8 @@ export default function RelatedJobs() {
             try {
                 setIsSearchingLocation(true);
 
-                const response = await axios.get(
-                    "/api/geoapify/autocomplete",
+                const response = await api.get(
+                    "/geoapify/autocomplete",
                     {
                         params: {
                             text: searchText.trim()
@@ -192,9 +192,7 @@ export default function RelatedJobs() {
 
     useEffect(() => {
         async function fetchSavedJobs() {
-            const res = await axios.get("/api/applicant/getSavedJobs", {
-                withCredentials: true
-            });
+            const res = await api.get("/applicant/getSavedJobs");
 
             setSavedJobIDs(new Set(res.data.jobIDs));
         }
@@ -208,9 +206,7 @@ export default function RelatedJobs() {
 
     async function saveJob(jobID) {
         try {
-            await axios.post("/api/applicant/saveJob", { jobID }, {
-                withCredentials: true
-            })
+            await api.post("/applicant/saveJob", { jobID })
 
             setIsJobSaved(!isJobSaved);
         } catch (error) {
@@ -220,9 +216,8 @@ export default function RelatedJobs() {
 
     async function unsaveJob(jobID) {
         try {
-            await axios.delete("/api/applicant/unsaveJob", {
-                params: {jobID},
-                withCredentials: true
+            await api.delete("/applicant/unsaveJob", {
+                params: {jobID}
             })
 
             setIsJobSaved(!isJobSaved);
@@ -265,14 +260,13 @@ export default function RelatedJobs() {
             setIsSearchingJob(true);
             setJobInfo({})
 
-            const jobResults = await axios.get("/api/applicant/searchJobs", {
+            const jobResults = await api.get("/applicant/searchJobs", {
                 params: {
                     jobTitle: jobSearch.jobTitle,
                     location: jobSearch.location,
                     page,
                     limit: jobsPerPage
-                },
-                withCredentials: true
+                }
             });
 
             setJobSearchResults(jobResults.data || []);

@@ -8,7 +8,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 import { jobCreationStore } from "../../zustand/stateHandlers";
 import { userStore } from "../../zustand/userState";
-import axios from "axios";
+import api from "../../apis/axios";
 
 export default function CreateJobPost({ mode = "create" }) {
     const { jobID } = useParams();
@@ -39,7 +39,7 @@ export default function CreateJobPost({ mode = "create" }) {
                     return;
                 }
 
-                await axios.get("/api/employer/authorize", {
+                await api.get("/employer/authorize", {
                     params: {
                         employerID: currentUser.employerID
                     }
@@ -72,7 +72,7 @@ export default function CreateJobPost({ mode = "create" }) {
             try {
                 setIsSearchingLocation(true);
 
-                const response = await axios.get("/api/geoapify/autocomplete", {
+                const response = await api.get("/geoapify/autocomplete", {
                     params: {
                         text: searchText
                     }
@@ -106,9 +106,7 @@ export default function CreateJobPost({ mode = "create" }) {
             if (!isEditMode) return;
 
             try {
-                const response = await axios.get(`/api/employer/jobs/${jobID}`, {
-                    withCredentials: true
-                });
+                const response = await api.get(`/employer/jobs/${jobID}`);
 
                 const job = response.data.jobToEdit;
                 setShouldSearchLocation(false);

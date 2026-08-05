@@ -4,7 +4,7 @@ import { useState } from "react";
 import Translucent from "../overlay/Translucent";
 import YearSelector from "../others/YearSelector";
 import MonthSelector from "../others/MonthSelector";
-import axios from "axios";
+import api from "../../apis/axios.js";
 
 
 export default function WorkHistoryForm({ toggleForm, refresh }) {
@@ -54,9 +54,7 @@ export default function WorkHistoryForm({ toggleForm, refresh }) {
         }
 
         try {
-            await axios.post("/api/applicant/addWorkExp", workInfo, {
-                withCredentials: true
-            })
+            await api.post("/applicant/addWorkExp", workInfo)
 
             refresh();
             toggleForm();

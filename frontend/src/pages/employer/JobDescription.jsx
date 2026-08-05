@@ -11,7 +11,7 @@ import TextEditor from "../../components/others/TextEditor"
 import { useState, useEffect } from "react";
 import { userStore } from "../../zustand/userState";
 import { tooltipStore } from "../../zustand/stateHandlers";
-import axios from "axios";
+import api from "../../apis/axios";
 
 export default function JobDescription({ mode = "create" }) {
     const { jobID } = useParams();
@@ -49,7 +49,7 @@ export default function JobDescription({ mode = "create" }) {
                     return;
                 }
 
-                await axios.get("/api/employer/authorize", {
+                await api.get("/employer/authorize", {
                     params: {
                         employerID: currentUser.employerID
                     }

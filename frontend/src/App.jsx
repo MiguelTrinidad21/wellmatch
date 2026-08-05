@@ -35,7 +35,7 @@ import ApplicantAccountSettings from './pages/applicant/AccountSettings';
 import { useEffect } from 'react';
 import { userStore } from './zustand/userState';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import axios from 'axios';
+import api from './apis/axios';
 
 function App() {
   const { currentUser, handleCurrentUser, setAuthChecked } = userStore();
@@ -43,9 +43,7 @@ function App() {
   useEffect(() => {
     async function checkAuth() {
         try {
-            const res = await axios.get("/api/auth/me", {
-                withCredentials: true
-            });
+            const res = await api.get("/auth/me");
 
             handleCurrentUser(res.data.user);
         } catch (error) {

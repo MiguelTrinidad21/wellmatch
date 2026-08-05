@@ -10,7 +10,7 @@ import { FiEye } from "react-icons/fi";
 import { FiEyeOff } from "react-icons/fi";
 import { BiLoaderAlt } from "react-icons/bi";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import api from "../../apis/axios";
 
 export default function ApplicantRegister() {
     const navigate = useNavigate();
@@ -58,8 +58,8 @@ export default function ApplicantRegister() {
             try {
                 setIsSearchingLocation(true);
 
-                const response = await axios.get(
-                    "/api/geoapify/autocomplete",
+                const response = await api.get(
+                    "/geoapify/autocomplete",
                     {
                         params: {
                             text: searchText.trim()
@@ -142,9 +142,7 @@ export default function ApplicantRegister() {
         setIsLoading(true);
 
         try {
-            await axios.post("/api/applicant/register", formData, {
-                withCredentials: true,
-            })
+            await api.post("/applicant/register", formData)
 
             setIsLoading(false)
             setShowPopUp(true);

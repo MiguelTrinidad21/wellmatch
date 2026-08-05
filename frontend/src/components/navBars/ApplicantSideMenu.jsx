@@ -11,7 +11,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import PrimaryButton from "../buttons/PrimaryButton";
 import defaultProfile from "../../assets/defaultProfile.jpg"
-import axios from "axios";
+import api from "../../apis/axios.js";
 
 export default function ApplicantSideMenu({ status }) {
     const { toggleSideBar, applicantActiveLink, setApplicantActiveLink } = sideBarStore();
@@ -21,9 +21,7 @@ export default function ApplicantSideMenu({ status }) {
     
     async function logoutApplicant() {
         try {
-            await axios.post("/api/applicant/logout", {}, {
-                withCredentials: true
-            })
+            await api.post("/applicant/logout", {})
             toggleSideBar()
             logoutUser();
             setApplicantActiveLink("Home")

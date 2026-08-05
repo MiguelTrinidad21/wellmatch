@@ -14,7 +14,7 @@ import { FaBuilding } from "react-icons/fa";
 import { FaLocationDot } from "react-icons/fa6";
 import { HiOutlineBookmarkSlash } from "react-icons/hi2";
 import useIsDesktop from "../../hooks/useIsDesktop"; 
-import axios from "axios";
+import api from "../../apis/axios";
 
 export default function SavedJobs() {
     const isDesktop = useIsDesktop();
@@ -48,7 +48,7 @@ export default function SavedJobs() {
                     return;
                 }
 
-                await axios.get("/api/applicant/authorize", {
+                await api.get("/applicant/authorize", {
                     params: {
                         applicantID: currentUser.applicantID
                     }
@@ -68,9 +68,7 @@ export default function SavedJobs() {
 
     useEffect(() => {
         async function fetchSavedJobs() {
-            const res = await axios.get("/api/applicant/getSavedJobs", {
-                withCredentials: true
-            });
+            const res = await api.get("/applicant/getSavedJobs");
             console.log(res.data.savedJobs)
             setSavedJobs(res.data.savedJobs);
         }
@@ -134,9 +132,8 @@ export default function SavedJobs() {
 
     async function unsaveJob(jobID) {
         try {
-            await axios.delete("/api/applicant/unsaveJob", {
-                params: {jobID},
-                withCredentials: true
+            await api.delete("/applicant/unsaveJob", {
+                params: {jobID}
             })
 
             setIsJobSaved(!isJobSaved);

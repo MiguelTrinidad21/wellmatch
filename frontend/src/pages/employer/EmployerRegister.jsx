@@ -11,7 +11,7 @@ import Translucent from "../../components/overlay/Translucent";
 import ConfirmationBox from "../../components/popUps/ConfirmationBox";
 import PrimaryButton from "../../components/buttons/PrimaryButton";
 
-import axios from "axios";
+import api from "../../apis/axios";
 
 export default function EmployerRegister() {
     const [searchParams] = useSearchParams();
@@ -41,8 +41,8 @@ export default function EmployerRegister() {
             try {
                 setIsLoading(true);
 
-                const response = await axios.get(
-                    `/api/employer/invitations/verify/${token}`,
+                const response = await api.get(
+                    `/employer/invitations/verify/${token}`,
                 );
 
                 setIsTokenVerified(true)
@@ -83,8 +83,7 @@ export default function EmployerRegister() {
         }
 
         try {
-            await axios.post(`/api/employer/registerCoEmployer/${token}`, employerInfo,
-                {withCredentials: true}
+            await api.post(`/employer/registerCoEmployer/${token}`, employerInfo
             )
             setShowPopUp(true);
 

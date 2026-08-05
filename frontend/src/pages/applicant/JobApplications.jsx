@@ -10,7 +10,6 @@ import { sideBarStore } from "../../zustand/stateHandlers";
 import { jobInfoStore } from "../../zustand/stateHandlers";
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import axios from "axios";
 import { FaPaperPlane } from "react-icons/fa6";
 import { FaListCheck } from "react-icons/fa6";
 import { HiMiniVideoCamera } from "react-icons/hi2";
@@ -23,6 +22,7 @@ import { FiCalendar } from "react-icons/fi";
 import ReactPaginateModule from "react-paginate";
 import useIsDesktop from "../../hooks/useIsDesktop";
 import JobInfoSide from "../../components/popUps/JobInfoSide";
+import api from "../../apis/axios";
 
 export default function JobApplications() {
     const isDesktop = useIsDesktop();
@@ -68,7 +68,7 @@ export default function JobApplications() {
                     return;
                 }
 
-                const result = await axios.get("/api/applicant/authorize", {
+                const result = await api.get("/applicant/authorize", {
                     params: {
                         applicantID: currentUser.applicantID
                     }
@@ -94,13 +94,12 @@ export default function JobApplications() {
 
     async function getApplications(page = 1) {
         try {
-            const allApplications = await axios.get("/api/applicant/applications", {
+            const allApplications = await api.get("/applicant/applications", {
                 params: { 
                     status,
                     page,
                     limit: applicationsPerPage
-                },
-                withCredentials: true
+                }
             })
             console.log(allApplications.data.applications)
             setJobs(allApplications.data.applications);
@@ -130,9 +129,7 @@ export default function JobApplications() {
 
     async function withdrawApplication(applicationID) {
         try {
-            await axios.delete(`/api/applicant/withdrawApplication/${applicationID}`, {
-                withCredentials: true
-            })
+            await api.delete(`/applicant/withdrawApplication/${applicationID}`)
             setShowWarning(false);
             setOpenConfirm(true);
             setUpdated(!updated);

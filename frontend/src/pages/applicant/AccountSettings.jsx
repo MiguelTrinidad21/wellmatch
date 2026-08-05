@@ -9,7 +9,7 @@ import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { userStore } from "../../zustand/userState";
 import { sideBarStore } from "../../zustand/stateHandlers";
-import axios from "axios";
+import api from "../../apis/axios";
 import { IoPersonSharp } from "react-icons/io5";
 import { GoShieldLock } from "react-icons/go";
 import { VscWarning } from "react-icons/vsc";
@@ -38,7 +38,7 @@ export default function AccountSettings() {
                     return;
                 }
 
-                await axios.get("/api/applicant/authorize", {
+                await api.get("/applicant/authorize", {
                     params: {
                         applicantID: currentUser.applicantID
                     }
@@ -68,9 +68,7 @@ export default function AccountSettings() {
     
     async function logout() {
         try {
-            await axios.post("/api/applicant/logout", {}, {
-                withCredentials: true
-            });
+            await api.post("/applicant/logout", {});
             logoutUser()
             navigate("/applicant/login")
         } catch (error) {

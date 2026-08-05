@@ -7,7 +7,7 @@ import { IoClose } from "react-icons/io5";
 import { FiEye } from "react-icons/fi";
 import { FiEyeOff } from "react-icons/fi";
 import { BiLoaderAlt } from "react-icons/bi";
-import axios from "axios";
+import api from "../../apis/axios.js";
 
 
 export function EditInfoForm({ toggleForm, confirmFunc }) {
@@ -31,9 +31,7 @@ export function EditInfoForm({ toggleForm, confirmFunc }) {
 
 
         try {
-            const updated = await axios.patch("/api/employer/updatePersonalDetails", credentials, {
-                withCredentials: true
-            });
+            const updated = await api.patch("/employer/updatePersonalDetails", credentials);
 
             handleCurrentUser(updated.data.user);
             toggleForm();
@@ -187,9 +185,7 @@ export function ChangePasswordForm({ toggleForm, confirmFunc }) {
         }
 
         try {
-            const updated = await axios.patch("/api/employer/changePassword", credentials, {
-                withCredentials: true
-            });
+            const updated = await api.patch("/employer/changePassword", credentials);
 
             toggleForm();
             confirmFunc();
@@ -346,12 +342,11 @@ export function DeleteAccountForm({ toggleForm, confirmFunc }) {
 
 
         try {
-            const updated = await axios.delete("/api/employer/deleteAccount", {
+            const updated = await api.delete("/employer/deleteAccount", {
                 params: {
                     email: credentials.email,
                     password: credentials.password
-                },
-                withCredentials: true
+                }
             }                
             );
 
