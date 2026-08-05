@@ -237,13 +237,13 @@ export async function deleteAccount(req, res) {
 
         // Fix #3 — soft delete instead of hard delete
         await connection.query(`
-            UPDATE credentials SET status = 'deleted' WHERE applicantID = ?`, [id]);
+            DELETE FROM credentials WHERE applicantID = ?`, [id]);
 
         await connection.query(`
-            UPDATE workExperiences SET status = 'deleted' WHERE applicantID = ?`, [id]);
+            DELETE FROM workExperiences WHERE applicantID = ?`, [id]);
 
         await connection.query(`
-            UPDATE education SET status = 'deleted' WHERE applicantID = ?`, [id]);
+            DELETE FROM education WHERE applicantID = ?`, [id]);
 
         await connection.query(`
             UPDATE applications
