@@ -11,7 +11,7 @@ const database = mysql.createPool({
   waitForConnections: true,
   connectionLimit: 10,
   ...(process.env.PROJECT_STATUS === "production" && {
-    ssl: { rejectUnauthorized: true }
+    ssl: { rejectUnauthorized: false }
   })
 });
 
