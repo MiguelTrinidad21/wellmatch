@@ -221,7 +221,7 @@ export default function RecommendedJobs() {
 
     useEffect(() => {
         async function fetchSavedJobs() {
-            const res = await axios.get("/applicant/getSavedJobs");
+            const res = await api.get("/applicant/getSavedJobs");
 
             setSavedJobIDs(new Set(res.data.jobIDs));
         }
@@ -274,7 +274,7 @@ export default function RecommendedJobs() {
 
     async function saveJob(jobID) {
         try {
-            await axios.post("/applicant/saveJob", { jobID })
+            await api.post("/applicant/saveJob", { jobID })
 
             setIsJobSaved(!isJobSaved);
         } catch (error) {
@@ -284,7 +284,7 @@ export default function RecommendedJobs() {
 
     async function unsaveJob(jobID) {
         try {
-            await axios.delete("/applicant/unsaveJob", {
+            await api.delete("/applicant/unsaveJob", {
                 params: {jobID}
             })
 
@@ -336,7 +336,7 @@ export default function RecommendedJobs() {
 
             setIsSearchingJob(true);
 
-            const jobResults = await axios.get("/applicant/searchJobs", {
+            const jobResults = await api.get("/applicant/searchJobs", {
                 params: {
                     jobTitle: jobSearch.jobTitle,
                     location: jobSearch.location,
@@ -356,7 +356,7 @@ export default function RecommendedJobs() {
 
     const fetchRecommendedJobs = useCallback(async (page = 1) => {
         try {
-            const response = await axios.get("/applicant/recommendedJobs", {
+            const response = await api.get("/applicant/recommendedJobs", {
                 params:{
                     page,
                     limit: jobsPerPage
