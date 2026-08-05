@@ -9,6 +9,8 @@ import { verifyToken } from './middlewares/authorizeUser.js';
 dotenv.config();
 
 const app = express();
+app.set('trust proxy', 1);
+
 const serverPort = process.env.PORT || process.env.SERVER_PORT || 5000;
 
 
