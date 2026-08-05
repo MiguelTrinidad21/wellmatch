@@ -5,6 +5,12 @@ import jwt from "jsonwebtoken";
 
 dotenv.config();
 
+const cookieOptions = {
+    httpOnly: true,
+    secure: process.env.PROJECT_STATUS === "production",
+    sameSite: process.env.PROJECT_STATUS === "production" ? "None" : "Lax",
+};
+
 export async function registerAdmin(req, res) {
     const {
         firstName,
@@ -195,9 +201,7 @@ export async function loginEmployer(req, res) {
         )
 
         res.cookie("token", token, {
-            httpOnly: true,
-            secure: false, //Set to true for production
-            sameSite: "Lax", //Set to "None" for production
+            ...cookieOptions,
             maxAge: 24 * 60 * 60 * 1000
         })
             .json({user: employerInfo}
@@ -212,11 +216,7 @@ export async function loginEmployer(req, res) {
 }
 
 export function logoutEmployer(req, res) {
-    res.clearCookie("token", {
-        httpOnly: true,
-        secure: false,
-        sameSite: "Lax"
-    });
+    res.clearCookie("token", cookieOptions);
 
     return res.status(200).json({
         message: "Logged out successfully"

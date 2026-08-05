@@ -349,10 +349,6 @@ export default function RelatedJobs() {
         }
     }, [loading, verified, navigate]);
 
-    // if (loading) {
-    //     return <Loading />
-    // }
-
     if (!verified) {
         return null;
     }

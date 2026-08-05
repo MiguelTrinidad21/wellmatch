@@ -498,7 +498,7 @@ export default function SkillGapReport() {
 
                             <section className="rounded-2xl shadow-sm border-2 border-[#E8ECEF] bg-white p-4 w-full">
                                 <p className="text-sm text-gray-600 font-semibold mb-3">SCORES BREAKDOWN</p>
-                                <div className={`bg-[#F4F1F8] rounded-xl grid ${selectedJob.preferredQualifications ? "grid-cols-2" : "grid-cols-1"} p-4`}>
+                                <div className={`bg-[#F4F1F8] rounded-xl grid ${(selectedJob.preferredQualifications && skillGapAnalysis.scoresBreakdown.secondarySkillScore !== null) ? "grid-cols-2" : "grid-cols-1"} p-4`}>
                                     <div className="text-center">
                                         <MatchScore 
                                             type="breakdown"
@@ -509,7 +509,7 @@ export default function SkillGapReport() {
                                         <p className="text-[12px] xl:text-sm">Weighted 80%</p>
                                     </div>
 
-                                    {selectedJob.preferredQualifications && 
+                                    {(selectedJob.preferredQualifications && skillGapAnalysis.scoresBreakdown.secondarySkillScore !== null) && 
                                         <div className="text-center">
                                             <MatchScore 
                                                 type="breakdown"

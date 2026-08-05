@@ -176,7 +176,9 @@ export default function EditCompany({ handleEditCompanyBox }) {
     return (
         <div className="w-[90%] max-h-[90%] overflow-y-scroll scrollbar-none z-40 fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 p-5 bg-[#F9FAFB] rounded-2xl md:w-100">
             <div className="relative">
-            <MdClose onClick={cancelChanges} size={30} className="fixed top-3 right-3 cursor-pointer" />
+                <button onClick={cancelChanges} className={`fixed top-3 right-3 ${isLoading ? "cursor-not-allowed" : "cursor-pointer"}`}>
+                    <MdClose size={30} />
+                </button>
 
             </div>
 
@@ -326,8 +328,8 @@ export default function EditCompany({ handleEditCompanyBox }) {
 
                 </div>
                 <div className="w-full flex justify-end gap-4">
-                    <PrimaryButton disabled={isLoading} className={`bg-gray-100 text-black! px-4 border-2 border-gray-300 ${isLoading && "opacity-50"}`} onClick={cancelChanges}>Cancel</PrimaryButton>
-                    <PrimaryButton disabled={isLoading} type="submit" className={`px-7 ${isLoading && "opacity-50"}`}>
+                    <PrimaryButton disabled={isLoading} onClick={cancelChanges} className={`bg-gray-100 text-black! px-4 border-2 border-gray-300 ${isLoading && "opacity-50 cursor-not-allowed!"}`} >Cancel</PrimaryButton>
+                    <PrimaryButton disabled={isLoading} type="submit" className={`px-7 ${isLoading && "opacity-50 cursor-progress"}`}>
                         {isLoading ? 
                             <>
                                 <BiLoaderAlt className="animate-spin inline mr-3" />

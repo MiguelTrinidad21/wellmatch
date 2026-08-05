@@ -429,6 +429,8 @@ export function DeleteAccountForm({ toggleForm, confirmFunc }) {
                     </div>
                     {errors.password && <p className="text-[12px] text-red-600 mb-5">{errors.password}</p>}
 
+                    {errors.adminCount && <p className="text-center text-[12px] text-red-600 mb-5">{errors.adminCount}</p>}
+
 
                     <div className="flex justify-end gap-3">
                         <PrimaryButton disabled={isLoading} className={`bg-[#F3F4F6] text-black! ${isLoading ? "opacity-50" : undefined}`} onClick={toggleForm}>Cancel</PrimaryButton>

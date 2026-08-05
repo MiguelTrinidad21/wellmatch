@@ -237,7 +237,7 @@ export default function CompanyProfile() {
                                 <div className="w-23 h-23 xl:w-30 xl:h-30 rounded-xl border-5 border-white hidden lg:block">
                                     <img className="w-full h-full object-cover rounded-lg" src={companyInfo.profilePhotoURL ? `${companyInfo.profilePhotoURL}` : defaultCover} alt="Company Logo" />
                                 </div>                                
-                                <div className="lg:max-w-55">
+                                <div className="lg:max-w-55 xl:max-w-75">
                                     <h1 className="font-bold text-2xl xl:text-3xl mb-1 wrap-break-word">{companyInfo.companyName}</h1>
                                     <p className="flex text-sm xl:text-lg items-center gap-2 text-gray-500 font-semibold wrap-break-word">
                                         <SlLocationPin />

@@ -270,6 +270,16 @@ export async function deleteAccount(req, res) {
             );
 
             await connection.query(`
+                DELETE sj
+                FROM savedJobs sj
+                INNER JOIN jobs j
+                ON sj.jobID = j.jobID
+                WHERE j.companyID = ?
+                `,
+                [companyID]
+            );
+
+            await connection.query(`
                 UPDATE jobs SET status = 'deleted'
                 WHERE companyID = ?
                 `, [companyID]
@@ -284,7 +294,7 @@ export async function deleteAccount(req, res) {
             await connection.query(`
                 UPDATE companies
                 SET
-                    companyName = 'Deleted Company',
+                    companyName = CONCAT('DeletedCompany_', companyID),
                     location = NULL,
                     profilePhotoURL = NULL,
                     profilePhotoPublicID = NULL,
@@ -325,6 +335,13 @@ export async function deleteAccount(req, res) {
         );
 
         await connection.commit();
+
+        res.clearCookie("token", {
+            httpOnly: true,
+            secure: process.env.PROJECT_STATUS === "production",
+            sameSite: process.env.PROJECT_STATUS === "production" ? "None" : "Lax",
+        });
+        
         return res.status(200).json({
             message: "Employer account deleted successfully"
         });

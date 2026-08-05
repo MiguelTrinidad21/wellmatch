@@ -3,6 +3,7 @@ import SideBarOverlay from "../../components/overlay/SideBarOverlay";
 import ApplicantSideBar from "../../components/navBars/ApplicantSideBar";
 import SkillGapLoader from "../../components/others/SkillGapLoader";
 import MatchScore from "../../components/others/MatchScore";
+import ConfirmationBox from "../../components/popUps/ConfirmationBox";
 import PrimaryButton from "../../components/buttons/PrimaryButton";
 import JobSkillEvidence from "../../components/popUps/JobSkillEvidence";
 import ResumeViewerModal from "../../components/others/ResumeViewerModal";
@@ -51,6 +52,8 @@ export default function SkillGapAnalysisUI() {
 
     const [selectedJob, setSelectedJob] = useState(null);
     const [skillGapAnalysis, setSkillGapAnalysis] = useState(null);
+
+    const [jobIsDeleted, setJobIsDeleted] = useState(false);
 
     const [showResumeViewer, setShowResumeViewer] = useState(false);
 
@@ -148,6 +151,7 @@ export default function SkillGapAnalysisUI() {
 
                 setSelectedJob(jobDesc.data);
                 console.log(jobDesc.data)
+                if (selectedJob?.status === "deleted") setJobIsDeleted(true)
             } catch (error) {
                 console.log(error)
             } finally {
@@ -190,6 +194,14 @@ export default function SkillGapAnalysisUI() {
 
                 <div className="w-full min-h-screen bg-[#F3F4F6] relative">
                     <AuthNavBar />
+
+                    {
+                        jobIsDeleted &&
+                        <ConfirmationBox
+                            text="This job is no longer available because the company has been removed from WellMatch."
+                            onClick={() => setJobIsDeleted(false)}
+                        />
+                    }
 
                     {showResumeViewer &&
                         <>
@@ -292,6 +304,14 @@ export default function SkillGapAnalysisUI() {
             <div className="w-full min-h-screen bg-[#F3F4F6] relative">
                 <AuthNavBar />
 
+                {
+                    jobIsDeleted &&
+                    <ConfirmationBox
+                        text="This job is no longer available because the company has been removed from WellMatch."
+                        onClick={() => setJobIsDeleted(false)}
+                    />
+                }                
+
                 {showResumeViewer &&
                     <>
                         <Translucent />
@@ -385,7 +405,7 @@ export default function SkillGapAnalysisUI() {
 
                             <section className="rounded-2xl shadow-sm bg-white p-4 w-full border-2 border-[#E8ECEF]">
                                 <p className="text-sm text-gray-600 mb-3 font-semibold">SCORES BREAKDOWN</p>
-                                <div className={`bg-[#F4F1F8] rounded-xl grid ${selectedJob.preferredQualifications ? "grid-cols-2" : "grid-cols-1"} p-4`}>
+                                <div className={`bg-[#F4F1F8] rounded-xl grid ${(selectedJob.preferredQualifications && skillGapAnalysis.scoresBreakdown.secondarySkillScore !== null) ? "grid-cols-2" : "grid-cols-1"} p-4`}>
                                     <div className="text-center">
                                         <MatchScore 
                                             type="breakdown"
@@ -396,7 +416,8 @@ export default function SkillGapAnalysisUI() {
                                         <p className="text-[12px]">Weighted 80%</p>
                                     </div>
 
-                                    {selectedJob.preferredQualifications && 
+                                    {
+                                        (selectedJob.preferredQualifications && skillGapAnalysis.scoresBreakdown.secondarySkillScore !== null) &&
                                         <div className="text-center">
                                             <MatchScore 
                                                 type="breakdown"

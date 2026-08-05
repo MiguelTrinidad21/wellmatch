@@ -1,9 +1,16 @@
 import database from "../../configs/database.js";
 import bcrypt from "bcryptjs";
-import dotenv from "dotenv";
+import "dotenv/config";
 import jwt from "jsonwebtoken";
 import { uploadResume } from "../../helpers/uploadToCloudinary.js";
 import { processResume, generateFileHash } from "../../helpers/resumeExtractor.js";
+
+const cookieOptions = {
+    httpOnly: true,
+    secure: process.env.PROJECT_STATUS === "production",
+    sameSite: process.env.PROJECT_STATUS === "production" ? "None" : "Lax",
+};
+
 
 export async function registerApplicant(req, res) {
     const {
@@ -187,9 +194,7 @@ export async function loginApplicant(req, res) {
         )
 
         res.cookie("token", token, {
-            httpOnly: true,
-            secure: false, //Set to true for production
-            sameSite: "Lax", //Set to "None" for production
+            ...cookieOptions,
             maxAge: 24 * 60 * 60 * 1000
         })
             .json({user: applicantInfo}
@@ -204,11 +209,7 @@ export async function loginApplicant(req, res) {
 }
 
 export function logoutApplicant(req, res) {
-    res.clearCookie("token", {
-        httpOnly: true,
-        secure: false,
-        sameSite: "Lax"
-    });
+    res.clearCookie("token", cookieOptions);
 
     return res.status(200).json({
         message: "Logged out successfully"

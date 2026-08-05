@@ -145,7 +145,7 @@ export default function EmployerRegister() {
                 )}
 
                 <div className="w-full p-6">
-                    <h1 className="mb-6 text-center text-xl font-bold">You are invited to join {invitation.companyName}</h1>
+                    <h1 className="mb-6 text-center text-xl xl:text-2xl xl:mt-6 xl:mb-11 font-bold">You are invited to join {invitation.companyName}</h1>
 
                     <form className="w-full m-auto bg-white rounded-3xl shadow-lg p-6 mb-6 md:p-10 md:w-100 lg:w-120" onSubmit={handleSubmit}>
                         <h2 className="text-center text-lg mb-4 font-bold">Create Your Account</h2>
@@ -197,7 +197,7 @@ export default function EmployerRegister() {
                                     placeholder="Enter your password" 
                                     className={`p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-green-600 ${errors.invalidPass ? 'border-red-600 focus:border-red-600 mb-1!' : 'border-gray-300'}`} 
                                 />
-                                <div onClick={handlePass} className="absolute top-1/2 -translate-y-1/2 right-2">
+                                <div onClick={handlePass} className="cursor-pointer absolute top-1/2 -translate-y-1/2 right-2">
                                     {showPassword ? <FiEyeOff /> : <FiEye />}
                                 </div>
                             </div>
@@ -215,7 +215,7 @@ export default function EmployerRegister() {
                                     placeholder="Re-type your password" 
                                     className={`p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-green-600 ${errors.confirmPass ? 'border-red-600 focus:border-red-600 mb-1!' : 'border-gray-300'}`} 
                                 />
-                                <div onClick={handleConfirmPass} className="absolute top-1/2 -translate-y-1/2 right-2">
+                                <div onClick={handleConfirmPass} className="cursor-pointer absolute top-1/2 -translate-y-1/2 right-2">
                                     {showConfirmPassword ? <FiEyeOff /> : <FiEye />}
                                 </div>
                             </div>

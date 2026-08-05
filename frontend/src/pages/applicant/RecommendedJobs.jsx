@@ -7,6 +7,7 @@ import ApplicantSideBar from "../../components/navBars/ApplicantSideBar";
 import JobInfoSide from "../../components/popUps/JobInfoSide";
 import defaultPhoto from "../../assets/defaultCover.jpg"
 import { LuBriefcase } from "react-icons/lu";
+import { LuSearch } from "react-icons/lu";
 import { MdOutlineLocationOn } from "react-icons/md";
 import { PiMoneyWavy } from "react-icons/pi";
 import { FaRegBookmark } from "react-icons/fa";
@@ -513,270 +514,281 @@ export default function RecommendedJobs() {
                                     <BiLoaderAlt size={25} className="animate-spin mb-3" />
                                     <p className="animate-pulse font-bold text-md">Finding relevant jobs</p>
                                 </div>
+
                             :
                                 <>
                                     <div className="md:flex md:justify-between md:items-center md:mb-9">
                                         <h1 className="text-xl font-bold mb-2 md:flex md:items-center md:mb-0 md:text-[22px] xl:text-2xl">Recommended Jobs</h1>
                                         <p className="text-sm text-gray-500 font-semibold mb-4 md:flex md:items-center md:mb-0 md:text-[16px]">Found {totalJobs} jobs for you</p>
                                     </div>
-                                    
-                                    <div className="w-full xl:grid xl:grid-cols-2 xl:gap-5">
-                                        {/* Tihs is the left column */}
-                                        <div ref={leftColRef} className="flex flex-col gap-6 w-full">
-                                            <div className="w-full grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-1 lg:gap-6">
-                                                {recommendedJobs.map((job) => {
-                                                    return (
-                                                        <div 
-                                                            onClick={() => setJobInfo({
-                                                                jobID: job.jobID,
-                                                                coverPhotoURL: job.coverPhotoURL,
-                                                                profilePhotoURL: job.profilePhotoURL,
-                                                                jobTitle: job.jobTitle,
-                                                                companyName: job.companyName,
-                                                                location: job.location,
-                                                                workType: job.workType,
-                                                                workPlaceOption: job.workPlaceOption,
-                                                                minSalary: job.minSalary,
-                                                                maxSalary: job.maxSalary,
-                                                                jobOverview: job.jobOverview,
-                                                                jobDuties: job.jobDuties,
-                                                                requiredQualifications: job.requiredQualifications,
-                                                                preferredQualifications: job.preferredQualifications,
-                                                                workingConditions: job.workingConditions,
-                                                                jobBenefits: job.jobBenefits
-                                                            })} 
-                                                            key={job.jobID} className="xl:cursor-pointer box-border border-3 border-transparent hover:border-green-600 transition-all duration-200 ease-in w-full h-full bg-white shadow-md rounded-2xl p-4 relative md:p-8 flex flex-col"
-                                                        >
 
-                                                            <div className={`w-25 mb-3 md:w-30 xl:absolute xl:top-7 xl:right-8`}>
-                                                                <img className={`w-full rounded-lg` } src={job.profilePhotoURL ? job.profilePhotoURL : defaultPhoto}  alt="" />
-                                                            </div>
-                                                            <h1 className="text-xl font-bold wrap-break-word xl:w-70 ">{job.jobTitle}</h1>
-                                                            <p className="text-md font-medium text-gray-500 mb-5">{job.companyName}</p>
-                                                            <div className="relative w-full mb-2">
-                                                                <MdOutlineLocationOn size={20} className="absolute top-1/2 -translate-y-1/2" />
-                                                                <span className="pl-7">{job.location}</span>
-                                                            </div>
-                                                            <div className="relative w-full mb-2">
-                                                                <LuBriefcase size={20} className="absolute top-1/2 -translate-y-1/2" />
-                                                                <span className="pl-7">{job.workType}</span>
-                                                            </div>
-                                                            <div className="relative w-full mb-5">
-                                                                <PiMoneyWavy size={20} className="absolute top-1/2 -translate-y-1/2" />
-                                                                <span className="pl-7">{job.minSalary.toLocaleString()} - {job.maxSalary.toLocaleString()}</span>
-                                                            </div>
-
-                                                            {
-                                                                savedJobIDs.has(job.jobID) ?
-                                                                    <FaBookmark  className="absolute top-4 right-4 text-green-700 md:top-8 md:right-8 xl:top-auto xl:bottom-8" size={20} 
-                                                                        onClick={(e) => {
-                                                                            e.stopPropagation();
-                                                                            unsaveJob(job.jobID);
-                                                                        }} 
-                                                                    />
-                                                                :
-                                                                    <FaRegBookmark className="absolute top-4 right-4 md:top-8 md:right-8 xl:top-auto xl:bottom-8" size={20} 
-                                                                        onClick={(e) => {
-                                                                            e.stopPropagation();
-                                                                            saveJob(job.jobID);
-                                                                        }} 
-                                                                    />
-                                                            }                                                        
-
-                                                            <PrimaryButton 
-                                                                onClick={() => displayJobInfo(
-                                                                    job.jobID,
-                                                                    job.coverPhotoURL,
-                                                                    job.profilePhotoURL,
-                                                                    job.jobTitle,
-                                                                    job.companyName,
-                                                                    job.location,
-                                                                    job.workType,
-                                                                    job.workPlaceOption,
-                                                                    job.minSalary,
-                                                                    job.maxSalary,
-                                                                    job.jobOverview,
-                                                                    job.jobDuties,
-                                                                    job.requiredQualifications,
-                                                                    job.preferredQualifications,
-                                                                    job.workingConditions,
-                                                                    job.jobBenefits
-                                                                )} 
-                                                                className="w-full mt-auto xl:hidden"
-                                                            >
-                                                                View Job Description
-                                                            </PrimaryButton>
-                                                        
-                                                        </div>
-                                                    )
-                                                })}
+                                    {
+                                        totalJobs === 0 ?
+                                            <div className="w-full flex flex-col items-center gap-3">
+                                                <LuSearch className="text-gray-500" size={70}/>
+                                                <h1 className="text-gray-800 font-bold text-lg">Nothing to Recommend Yet</h1>
+                                                <p className="text-gray-600 font-medium text-sm text-center lg:text-[1rem]">Search job positions to discover available opportunities.</p>
                                             </div>
-                                            {totalPages > 1 && (
-                                            <ReactPaginate
-                                                pageCount={totalPages}
-                                                forcePage={currentPage - 1}
-                                                onPageChange={handlePageClick}
-                                                previousLabel="<"
-                                                nextLabel=">"
-                                                breakLabel="..."
-                                                marginPagesDisplayed={2}
-                                                pageRangeDisplayed={3}
-                                                containerClassName="flex justify-center items-center gap-4 my-6 w-full"
-                                                pageLinkClassName="px-4 py-3 rounded-lg text-lg cursor-pointer"
-                                                activeLinkClassName="bg-[#2B2B2B] text-white cursor-pointer"
-                                                previousLinkClassName="px-4 py-2 rounded-md bg-white shadow cursor-pointer"
-                                                nextLinkClassName="px-4 py-2 rounded-md bg-white shadow cursor-pointer"
-                                                disabledClassName="opacity-40 cursor-not-allowed"
-                                            />
-                                            )}
-                                        </div>
+                                        :
+                                            <div className="w-full xl:grid xl:grid-cols-2 xl:gap-5">
+                                                {/* Tihs is the left column */}
+                                                <div ref={leftColRef} className="flex flex-col gap-6 w-full">
+                                                    <div className="w-full grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-1 lg:gap-6">
+                                                        {recommendedJobs.map((job) => {
+                                                            return (
+                                                                <div 
+                                                                    onClick={() => setJobInfo({
+                                                                        jobID: job.jobID,
+                                                                        coverPhotoURL: job.coverPhotoURL,
+                                                                        profilePhotoURL: job.profilePhotoURL,
+                                                                        jobTitle: job.jobTitle,
+                                                                        companyName: job.companyName,
+                                                                        location: job.location,
+                                                                        workType: job.workType,
+                                                                        workPlaceOption: job.workPlaceOption,
+                                                                        minSalary: job.minSalary,
+                                                                        maxSalary: job.maxSalary,
+                                                                        jobOverview: job.jobOverview,
+                                                                        jobDuties: job.jobDuties,
+                                                                        requiredQualifications: job.requiredQualifications,
+                                                                        preferredQualifications: job.preferredQualifications,
+                                                                        workingConditions: job.workingConditions,
+                                                                        jobBenefits: job.jobBenefits
+                                                                    })} 
+                                                                    key={job.jobID} className="xl:cursor-pointer box-border border-3 border-transparent hover:border-green-600 transition-all duration-200 ease-in w-full h-full bg-white shadow-md rounded-2xl p-4 relative md:p-8 flex flex-col"
+                                                                >
 
-                                        {/* This is the right column */}
-                                        <div className="hidden xl:block xl:sticky xl:top-22 xl:self-start">
-                                            <div 
-                                                ref={rightColScrollRef}
-                                                style={{
-                                                    maxHeight: leftColHeight 
-                                                        ? `min(${leftColHeight}px, calc(100vh - 6rem))`
-                                                        : `calc(100vh - 6rem)`
-                                                    }}  
-                                                className="hidden xl:block bg-white w-full min-w-0 shadow-md rounded-2xl overflow-y-auto"
-                                            >
-                                                {
-                                                    !jobInfo.jobID ? <h1 className="text-center font-semibold text-gray-500 my-70">Select a job post to view information</h1>
-                                                    :
-                                                        <>
-                                                            <div className="w-full rounded-tl-2xl rounded-tr-2xl ">
-                                                                <img 
-                                                                    src={jobInfo.coverPhotoURL ? jobInfo.coverPhotoURL : defaultPhoto} 
-                                                                    alt="cover photo"
-                                                                    className="w-full h-45 object-cover rounded-tl-2xl rounded-tr-2xl md:h-55"
-                                                                />
-                                                            </div>
-
-                                                            <div className="p-4 w-full mb-3 md:p-7">
-                                                                <div className="w-full relative mb-4 overflow-hidden">
-                                                                    <img 
-                                                                        src={jobInfo.profilePhotoURL ? jobInfo.profilePhotoURL : defaultPhoto} 
-                                                                        alt="profile photo"
-                                                                        className="w-25 object-cover rounded-sm md:rounded-xl md:w-30"
-                                                                    />
-                                                                    <PrimaryButton 
-                                                                        onClick={() => {
-                                                                            setPrevLocation(location.pathname);
-                                                                            navigate(`/applicant/viewJob/${jobInfo.jobID}/chooseFile`);
-                                                                        }} 
-                                                                        className="absolute top-0 right-0 text-black! bg-green-300 hover:bg-green-400 transition-colors duration-200 ease-in rounded-lg px-5 max-w-[60%] text-center whitespace-normal text-sm"
-                                                                    >
-                                                                        View Skill Gap Analysis
-                                                                    </PrimaryButton>
-                                                                </div>
-                                                                <div className="w-full mb-4">
-                                                                    <h1 className="text-xl font-bold">{jobInfo.jobTitle}</h1>
-                                                                    <p className="text-gray-500 mb-6">{jobInfo.companyName}</p>
+                                                                    <div className={`w-25 mb-3 md:w-30 xl:absolute xl:top-7 xl:right-8`}>
+                                                                        <img className={`w-full rounded-lg` } src={job.profilePhotoURL ? job.profilePhotoURL : defaultPhoto}  alt="" />
+                                                                    </div>
+                                                                    <h1 className="text-xl font-bold wrap-break-word xl:w-70 ">{job.jobTitle}</h1>
+                                                                    <p className="text-md font-medium text-gray-500 mb-5">{job.companyName}</p>
                                                                     <div className="relative w-full mb-2">
-                                                                        <MdOutlineLocationOn className="absolute top-1/2 -translate-y-1/2" />
-                                                                        <span className="pl-7 text-sm md:text-[16px]">{jobInfo.location}</span>
+                                                                        <MdOutlineLocationOn size={20} className="absolute top-1/2 -translate-y-1/2" />
+                                                                        <span className="pl-7">{job.location}</span>
                                                                     </div>
                                                                     <div className="relative w-full mb-2">
-                                                                        <LuBriefcase className="absolute top-1/2 -translate-y-1/2" />
-                                                                        <span className="pl-7 text-sm md:text-[1rem]">{jobInfo.workType}</span>
-                                                                    </div>
-                                                                    <div className="relative w-full mb-2">
-                                                                        {jobInfo.workPlaceOption === "On-site" ? <FaRegBuilding className="absolute top-1/2 -translate-y-1/2"/> 
-                                                                        : jobInfo.workPlaceOption === "Remote" ? <AiOutlineLaptop className="absolute top-1/2 -translate-y-1/2" />
-                                                                        : <TbBuildingCommunity className="absolute top-1/2 -translate-y-1/2" />                                
-                                                                        }
-                                                                        <span className="pl-7 text-sm md:text-[1rem]">{jobInfo.workPlaceOption}</span>
+                                                                        <LuBriefcase size={20} className="absolute top-1/2 -translate-y-1/2" />
+                                                                        <span className="pl-7">{job.workType}</span>
                                                                     </div>
                                                                     <div className="relative w-full mb-5">
-                                                                        <PiMoneyWavy className="absolute top-1/2 -translate-y-1/2" />
-                                                                        <span className="pl-7 text-sm md:text-[1rem]">{jobInfo?.minSalary?.toLocaleString()} - {jobInfo?.maxSalary?.toLocaleString()}</span>
+                                                                        <PiMoneyWavy size={20} className="absolute top-1/2 -translate-y-1/2" />
+                                                                        <span className="pl-7">{job.minSalary.toLocaleString()} - {job.maxSalary.toLocaleString()}</span>
                                                                     </div>
-                                                                </div>
-                                                                <div className="lg:flex lg:gap-3">
-                                                                    <PrimaryButton 
-                                                                        onClick={() => {
-                                                                            setPrevLocation(location.pathname);
-                                                                            navigate(`/applicant/viewJob/${jobInfo.jobID}/apply`);
-                                                                        }} 
-                                                                        className="w-full mb-2 lg:mb-0"
-                                                                    >
-                                                                        Apply Now
-                                                                    </PrimaryButton>
+
                                                                     {
-                                                                        savedJobIDs.has(jobInfo.jobID) ?
-                                                                            <SecondaryButton onclick={() => unsaveJob(jobInfo.jobID)} className="w-full py-2 font-bold! border-none bg-green-100 lg:py-0">Saved</SecondaryButton>
+                                                                        savedJobIDs.has(job.jobID) ?
+                                                                            <FaBookmark  className="absolute top-4 right-4 text-green-700 md:top-8 md:right-8 xl:top-auto xl:bottom-8" size={20} 
+                                                                                onClick={(e) => {
+                                                                                    e.stopPropagation();
+                                                                                    unsaveJob(job.jobID);
+                                                                                }} 
+                                                                            />
                                                                         :
-                                                                            <SecondaryButton onclick={() => saveJob(jobInfo.jobID)} className="w-full py-2 font-bold! lg:py-0">Save</SecondaryButton>
-                                                                    }
-                                                                    
+                                                                            <FaRegBookmark className="absolute top-4 right-4 md:top-8 md:right-8 xl:top-auto xl:bottom-8" size={20} 
+                                                                                onClick={(e) => {
+                                                                                    e.stopPropagation();
+                                                                                    saveJob(job.jobID);
+                                                                                }} 
+                                                                            />
+                                                                    }                                                        
+
+                                                                    <PrimaryButton 
+                                                                        onClick={() => displayJobInfo(
+                                                                            job.jobID,
+                                                                            job.coverPhotoURL,
+                                                                            job.profilePhotoURL,
+                                                                            job.jobTitle,
+                                                                            job.companyName,
+                                                                            job.location,
+                                                                            job.workType,
+                                                                            job.workPlaceOption,
+                                                                            job.minSalary,
+                                                                            job.maxSalary,
+                                                                            job.jobOverview,
+                                                                            job.jobDuties,
+                                                                            job.requiredQualifications,
+                                                                            job.preferredQualifications,
+                                                                            job.workingConditions,
+                                                                            job.jobBenefits
+                                                                        )} 
+                                                                        className="w-full mt-auto xl:hidden"
+                                                                    >
+                                                                        View Job Description
+                                                                    </PrimaryButton>
+                                                                
                                                                 </div>
-                                                            </div>
+                                                            )
+                                                        })}
+                                                    </div>
+                                                    {totalPages > 1 && (
+                                                    <ReactPaginate
+                                                        pageCount={totalPages}
+                                                        forcePage={currentPage - 1}
+                                                        onPageChange={handlePageClick}
+                                                        previousLabel="<"
+                                                        nextLabel=">"
+                                                        breakLabel="..."
+                                                        marginPagesDisplayed={2}
+                                                        pageRangeDisplayed={3}
+                                                        containerClassName="flex justify-center items-center gap-4 my-6 w-full"
+                                                        pageLinkClassName="px-4 py-3 rounded-lg text-lg cursor-pointer"
+                                                        activeLinkClassName="bg-[#2B2B2B] text-white cursor-pointer"
+                                                        previousLinkClassName="px-4 py-2 rounded-md bg-white shadow cursor-pointer"
+                                                        nextLinkClassName="px-4 py-2 rounded-md bg-white shadow cursor-pointer"
+                                                        disabledClassName="opacity-40 cursor-not-allowed"
+                                                    />
+                                                    )}
+                                                </div>
 
-                                                            <div className="w-full px-4 pb-4 md:p-7">
-                                                                <h1 className="text-lg font-bold text-center mb-2">Job Desciption</h1>
-                                                                <p className="text-justify indent-8 text-[15px] mb-3">{jobInfo.jobOverview}</p>
+                                                {/* This is the right column */}
+                                                <div className="hidden xl:block xl:sticky xl:top-22 xl:self-start">
+                                                    <div 
+                                                        ref={rightColScrollRef}
+                                                        style={{
+                                                            maxHeight: leftColHeight 
+                                                                ? `min(${leftColHeight}px, calc(100vh - 6rem))`
+                                                                : `calc(100vh - 6rem)`
+                                                            }}  
+                                                        className="hidden xl:block bg-white w-full min-w-0 shadow-md rounded-2xl overflow-y-auto"
+                                                    >
+                                                        {
+                                                            !jobInfo.jobID ? <h1 className="text-center font-semibold text-gray-500 my-70">Select a job post to view information</h1>
+                                                            :
+                                                                <>
+                                                                    <div className="w-full rounded-tl-2xl rounded-tr-2xl ">
+                                                                        <img 
+                                                                            src={jobInfo.coverPhotoURL ? jobInfo.coverPhotoURL : defaultPhoto} 
+                                                                            alt="cover photo"
+                                                                            className="w-full h-45 object-cover rounded-tl-2xl rounded-tr-2xl md:h-55"
+                                                                        />
+                                                                    </div>
 
-                                                                <h2 className="font-bold">Job Responsibilities</h2>
-                                                                <div
-                                                                    className="prose max-w-none text-[15px] [&_ul]:list-disc [&_ul]:pl-6 [&_li]:text-black [&_li::marker]:text-black"
-                                                                    dangerouslySetInnerHTML={{
-                                                                        __html: jobInfo.jobDuties?.replace(/&nbsp;/g, ' ')
-                                                                    }}
-                                                                />
+                                                                    <div className="p-4 w-full mb-3 md:p-7">
+                                                                        <div className="w-full relative mb-4 overflow-hidden">
+                                                                            <img 
+                                                                                src={jobInfo.profilePhotoURL ? jobInfo.profilePhotoURL : defaultPhoto} 
+                                                                                alt="profile photo"
+                                                                                className="w-25 object-cover rounded-sm md:rounded-xl md:w-30"
+                                                                            />
+                                                                            <PrimaryButton 
+                                                                                onClick={() => {
+                                                                                    setPrevLocation(location.pathname);
+                                                                                    navigate(`/applicant/viewJob/${jobInfo.jobID}/chooseFile`);
+                                                                                }} 
+                                                                                className="absolute top-0 right-0 text-black! bg-green-300 hover:bg-green-400 transition-colors duration-200 ease-in rounded-lg px-5 max-w-[60%] text-center whitespace-normal text-sm"
+                                                                            >
+                                                                                View Skill Gap Analysis
+                                                                            </PrimaryButton>
+                                                                        </div>
+                                                                        <div className="w-full mb-4">
+                                                                            <h1 className="text-xl font-bold">{jobInfo.jobTitle}</h1>
+                                                                            <p className="text-gray-500 mb-6">{jobInfo.companyName}</p>
+                                                                            <div className="relative w-full mb-2">
+                                                                                <MdOutlineLocationOn className="absolute top-1/2 -translate-y-1/2" />
+                                                                                <span className="pl-7 text-sm md:text-[16px]">{jobInfo.location}</span>
+                                                                            </div>
+                                                                            <div className="relative w-full mb-2">
+                                                                                <LuBriefcase className="absolute top-1/2 -translate-y-1/2" />
+                                                                                <span className="pl-7 text-sm md:text-[1rem]">{jobInfo.workType}</span>
+                                                                            </div>
+                                                                            <div className="relative w-full mb-2">
+                                                                                {jobInfo.workPlaceOption === "On-site" ? <FaRegBuilding className="absolute top-1/2 -translate-y-1/2"/> 
+                                                                                : jobInfo.workPlaceOption === "Remote" ? <AiOutlineLaptop className="absolute top-1/2 -translate-y-1/2" />
+                                                                                : <TbBuildingCommunity className="absolute top-1/2 -translate-y-1/2" />                                
+                                                                                }
+                                                                                <span className="pl-7 text-sm md:text-[1rem]">{jobInfo.workPlaceOption}</span>
+                                                                            </div>
+                                                                            <div className="relative w-full mb-5">
+                                                                                <PiMoneyWavy className="absolute top-1/2 -translate-y-1/2" />
+                                                                                <span className="pl-7 text-sm md:text-[1rem]">{jobInfo?.minSalary?.toLocaleString()} - {jobInfo?.maxSalary?.toLocaleString()}</span>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div className="lg:flex lg:gap-3">
+                                                                            <PrimaryButton 
+                                                                                onClick={() => {
+                                                                                    setPrevLocation(location.pathname);
+                                                                                    navigate(`/applicant/viewJob/${jobInfo.jobID}/apply`);
+                                                                                }} 
+                                                                                className="w-full mb-2 lg:mb-0"
+                                                                            >
+                                                                                Apply Now
+                                                                            </PrimaryButton>
+                                                                            {
+                                                                                savedJobIDs.has(jobInfo.jobID) ?
+                                                                                    <SecondaryButton onclick={() => unsaveJob(jobInfo.jobID)} className="w-full py-2 font-bold! border-none bg-green-100 lg:py-0">Saved</SecondaryButton>
+                                                                                :
+                                                                                    <SecondaryButton onclick={() => saveJob(jobInfo.jobID)} className="w-full py-2 font-bold! lg:py-0">Save</SecondaryButton>
+                                                                            }
+                                                                            
+                                                                        </div>
+                                                                    </div>
 
-                                                                <h2 className="font-bold">Required Qualifications</h2>
-                                                                <div
-                                                                    className="prose max-w-none text-[15px] [&_ul]:list-disc [&_ul]:pl-6 [&_li]:text-black [&_li::marker]:text-black"
-                                                                    dangerouslySetInnerHTML={{
-                                                                        __html: jobInfo.requiredQualifications?.replace(/&nbsp;/g, ' ')
-                                                                    }}
-                                                                />
+                                                                    <div className="w-full px-4 pb-4 md:p-7">
+                                                                        <h1 className="text-lg font-bold text-center mb-2">Job Desciption</h1>
+                                                                        <p className="text-justify indent-8 text-[15px] mb-3">{jobInfo.jobOverview}</p>
 
-                                                                {jobInfo.preferredQualifications &&
-                                                                    <>
-                                                                        <h2 className="font-bold">Preferred Qualifications</h2>
+                                                                        <h2 className="font-bold">Job Responsibilities</h2>
                                                                         <div
                                                                             className="prose max-w-none text-[15px] [&_ul]:list-disc [&_ul]:pl-6 [&_li]:text-black [&_li::marker]:text-black"
                                                                             dangerouslySetInnerHTML={{
-                                                                                __html: jobInfo.preferredQualifications?.replace(/&nbsp;/g, ' ')
+                                                                                __html: jobInfo.jobDuties?.replace(/&nbsp;/g, ' ')
                                                                             }}
-                                                                        />                                
-                                                                    </>                           
-                                                                }
+                                                                        />
 
-                                                                {jobInfo.workingConditions &&
-                                                                    <>
-                                                                        <h2 className="font-bold">Working Conditions</h2>
+                                                                        <h2 className="font-bold">Required Qualifications</h2>
                                                                         <div
                                                                             className="prose max-w-none text-[15px] [&_ul]:list-disc [&_ul]:pl-6 [&_li]:text-black [&_li::marker]:text-black"
                                                                             dangerouslySetInnerHTML={{
-                                                                                __html: jobInfo.workingConditions?.replace(/&nbsp;/g, ' ')
+                                                                                __html: jobInfo.requiredQualifications?.replace(/&nbsp;/g, ' ')
                                                                             }}
-                                                                        />                                
-                                                                    </>                           
-                                                                }
+                                                                        />
 
-                                                                {jobInfo.jobBenefits &&
-                                                                    <>
-                                                                        <h2 className="font-bold">Job Benefits</h2>
-                                                                        <div
-                                                                            className="prose max-w-none text-[15px] [&_ul]:list-disc [&_ul]:pl-6 [&_li]:text-black [&_li::marker]:text-black"
-                                                                            dangerouslySetInnerHTML={{
-                                                                                __html: jobInfo.jobBenefits?.replace(/&nbsp;/g, ' ')
-                                                                            }}
-                                                                        />                                
-                                                                    </>                           
-                                                                }
-                                                            </div>                                                                                                                                                               
-                                                        </>
-                                                }
-                                            </div>                            
+                                                                        {jobInfo.preferredQualifications &&
+                                                                            <>
+                                                                                <h2 className="font-bold">Preferred Qualifications</h2>
+                                                                                <div
+                                                                                    className="prose max-w-none text-[15px] [&_ul]:list-disc [&_ul]:pl-6 [&_li]:text-black [&_li::marker]:text-black"
+                                                                                    dangerouslySetInnerHTML={{
+                                                                                        __html: jobInfo.preferredQualifications?.replace(/&nbsp;/g, ' ')
+                                                                                    }}
+                                                                                />                                
+                                                                            </>                           
+                                                                        }
 
-                                        </div>
-                                        
-                                    </div>
+                                                                        {jobInfo.workingConditions &&
+                                                                            <>
+                                                                                <h2 className="font-bold">Working Conditions</h2>
+                                                                                <div
+                                                                                    className="prose max-w-none text-[15px] [&_ul]:list-disc [&_ul]:pl-6 [&_li]:text-black [&_li::marker]:text-black"
+                                                                                    dangerouslySetInnerHTML={{
+                                                                                        __html: jobInfo.workingConditions?.replace(/&nbsp;/g, ' ')
+                                                                                    }}
+                                                                                />                                
+                                                                            </>                           
+                                                                        }
+
+                                                                        {jobInfo.jobBenefits &&
+                                                                            <>
+                                                                                <h2 className="font-bold">Job Benefits</h2>
+                                                                                <div
+                                                                                    className="prose max-w-none text-[15px] [&_ul]:list-disc [&_ul]:pl-6 [&_li]:text-black [&_li::marker]:text-black"
+                                                                                    dangerouslySetInnerHTML={{
+                                                                                        __html: jobInfo.jobBenefits?.replace(/&nbsp;/g, ' ')
+                                                                                    }}
+                                                                                />                                
+                                                                            </>                           
+                                                                        }
+                                                                    </div>                                                                                                                                                               
+                                                                </>
+                                                        }
+                                                    </div>                            
+
+                                                </div>
+                                                
+                                            </div>
+                                    }
+                                    
 
                                 </>
                             }

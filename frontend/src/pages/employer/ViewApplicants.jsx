@@ -536,7 +536,7 @@ export default function ViewApplicants() {
                                                                 <td className="px-6 py-5 text-center w-48 max-w-48 wrap-break-word font-semibold">{`${item.firstName} ${item.lastName}`}</td>
                                                                 <td className="px-6 py-5 text-center w-48 max-w-48 wrap-break-word font-semibold">{new Date(item.applicationDate).toLocaleDateString('en-US', dateFormat)}</td>
                                                                 {
-                                                                    item.overallScore ?
+                                                                    item.overallScore !== null ?
                                                                         <td className="px-6 py-5 text-center w-48 max-w-48 wrap-break-word font-semibold">{`${item.overallScore}%`}</td>
                                                                     : item.concatJobSkills === null ?
                                                                         <td className="px-6 py-5 text-center w-48 max-w-48 wrap-break-word font-semibold">Not Applicable</td>

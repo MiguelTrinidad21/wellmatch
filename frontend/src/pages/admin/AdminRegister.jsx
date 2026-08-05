@@ -256,7 +256,7 @@ export default function AdminRegister() {
                         />
 
                         {isSearchingLocation && (
-                            <p className="mt-1 text-xs text-gray-500">
+                            <p className="mt-1 absolute top-full left-0 text-xs text-gray-500">
                                 Searching locations...
                             </p>
                         )}
