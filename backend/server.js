@@ -9,7 +9,7 @@ import { verifyToken } from './middlewares/authorizeUser.js';
 dotenv.config();
 
 const app = express();
-const serverPort = process.env.SERVER_PORT;
+const serverPort = process.env.PORT || process.env.SERVER_PORT || 5000;
 
 
 app.use(cors({
