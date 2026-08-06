@@ -25,7 +25,13 @@ const upload = multer({
 const uploadApplicantResume = upload.single("resume");
 
 export default function handleMulterResumeUpload(req, res, next) {
+    console.log("multer — content-type header:", req.headers["content-type"]);
+
     uploadApplicantResume(req, res, function (error) {
+        if (error) {
+            console.log("multer — error occurred:", error.message, error.code);
+        }
+
         if (error instanceof multer.MulterError) {
             if (error.code === "LIMIT_FILE_SIZE") {
                 return res.status(400).json({
@@ -51,12 +57,15 @@ export default function handleMulterResumeUpload(req, res, next) {
         }
 
         if (!req.file) {
+            console.log("multer — no file received");
             return res.status(400).json({
                 message: "Please upload a resume.",
                 issue: "noResume",
                 field: "resume"
             });
         }
+
+        console.log("multer — file received:", req.file?.originalname, req.file?.size, req.file?.mimetype);
 
         next();
     });

@@ -34,7 +34,10 @@ export default function AddResumeForm({ toggleForm, refresh }) {
             toggleForm();
             
         } catch (error) {
-            console.log(error);
+            console.log("FULL ERROR OBJECT:", error);
+            console.log("error.message:", error.message);
+            console.log("error.code:", error.code);
+            console.log("error.response:", error.response);
 
             const message = error.response?.data?.message || "An error occurred";
 
