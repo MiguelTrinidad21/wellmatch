@@ -8,13 +8,18 @@ import { IoChevronDown } from "react-icons/io5";
 import { useState, useEffect } from "react";
 import { useNavigate, Link, useParams } from "react-router-dom";
 import { userStore } from "../../zustand/userState";
-import { locationStore } from "../../zustand/stateHandlers";
+import { locationStore, sideBarStore } from "../../zustand/stateHandlers";
 import { resumeStore } from "../../zustand/skillGapResume";
 import api from "../../apis/axios";
+import useLockBodyScroll from "../../hooks/useLockBodyScroll";
 
 
 export default function JobAppInitialStep() {
     const navigate = useNavigate();
+
+    const { sideBarStatus } = sideBarStore();
+    useLockBodyScroll(sideBarStatus);
+
     const { prevLocation } = locationStore();
     console.log(prevLocation)
     const { currentUser } = userStore();

@@ -11,6 +11,7 @@ import defaultCover from "../../assets/defaultCover.jpg"
 import { IoChevronDown } from "react-icons/io5";
 import { useState, useEffect } from "react";
 import { useNavigate, Link, useParams } from "react-router-dom";
+import { sideBarStore } from "../../zustand/stateHandlers";
 import { userStore } from "../../zustand/userState";
 import { resumeStore } from "../../zustand/skillGapResume";
 import api from "../../apis/axios";
@@ -20,12 +21,15 @@ import { RiGraduationCapLine } from "react-icons/ri";
 import { BiLoaderAlt } from "react-icons/bi";
 import ApplicantSideBar from "../../components/navBars/ApplicantSideBar";
 import SideBarOverlay from "../../components/overlay/SideBarOverlay";
+import useLockBodyScroll from "../../hooks/useLockBodyScroll";
 
 
 export default function JobAppFinalStep() {
     const navigate = useNavigate();
     const { currentUser } = userStore();
     const { resumeToAnalyze, selectedYears, clearResumeToAnalyze } = resumeStore();
+    const { sideBarStatus } = sideBarStore();
+    useLockBodyScroll(sideBarStatus);    
 
     const { jobID } = useParams();
 

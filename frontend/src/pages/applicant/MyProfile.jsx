@@ -25,12 +25,14 @@ import { sideBarStore } from "../../zustand/stateHandlers";
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import api from "../../apis/axios";
+import useLockBodyScroll from "../../hooks/useLockBodyScroll";
 
 
 export default function MyProfile() {
     const navigate = useNavigate();
     const { currentUser, handleCurrentUser } = userStore();
-    const { setApplicantActiveLink } = sideBarStore();
+    const { setApplicantActiveLink, sideBarStatus } = sideBarStore();
+    useLockBodyScroll(sideBarStatus);
 
     const [verified, setVerified] = useState(false);
     const [loading, setLoading] = useState(true);

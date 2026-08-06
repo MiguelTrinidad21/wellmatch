@@ -9,15 +9,19 @@ import { FaRegBuilding } from "react-icons/fa6";
 import { AiOutlineLaptop } from "react-icons/ai";
 import { TbBuildingCommunity } from "react-icons/tb";
 import { userStore } from "../../zustand/userState";
+import { sideBarStore } from "../../zustand/stateHandlers";
 import { useState, useEffect } from "react";
 import { useNavigate, Link, useParams } from "react-router-dom";
 import api from "../../apis/axios";
+import useLockBodyScroll from "../../hooks/useLockBodyScroll";
 
 
 export default function ViewJobDescription() {
     const navigate = useNavigate();
     const { jobID } = useParams();
     const { currentUser } = userStore();
+    const { sideBarStatus } = sideBarStore();
+    useLockBodyScroll(sideBarStatus);
 
     const [verified, setVerified] = useState(false);
     const [loading, setLoading] = useState(true);

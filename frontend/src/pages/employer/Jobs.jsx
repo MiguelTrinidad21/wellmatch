@@ -27,14 +27,17 @@ import PrimaryButton from "../../components/buttons/PrimaryButton";
 import SecondaryButton from "../../components/buttons/SecondaryButton"
 import useIsDesktop from "../../hooks/useIsDesktop";
 import ReactPaginateModule from "react-paginate";
+import useLockBodyScroll from "../../hooks/useLockBodyScroll";
 
 export default function Jobs() {
     const ReactPaginate = ReactPaginateModule.default || ReactPaginateModule;
 
     const { currentUser } = userStore();
-    const { setEmployerActiveLink } = sideBarStore();
     const { displayJob, setDisplayJob, setJobInfo } = jobInfoStore();
     const { clearCreatedJob } = jobCreationStore();
+    const { setEmployerActiveLink, sideBarStatus } = sideBarStore();
+    useLockBodyScroll(sideBarStatus);
+    
     const isDesktop = useIsDesktop();
     const navigate = useNavigate();
 

@@ -21,12 +21,16 @@ import { userStore } from "../../zustand/userState";
 import { companyStore, sideBarStore } from "../../zustand/stateHandlers";
 import { useNavigate, Link } from "react-router-dom";
 import api from "../../apis/axios";
+import useLockBodyScroll from "../../hooks/useLockBodyScroll";
+
 
 export default function CompanyProfile() {
 
     const { currentUser } = userStore();
     const { companyInfo, setCompanyInfo } = companyStore();
-    const { setEmployerActiveLink } = sideBarStore();
+    const { setEmployerActiveLink, sideBarStatus } = sideBarStore();
+    useLockBodyScroll(sideBarStatus);
+    
     const navigate = useNavigate();
 
     const [companyMembers, setCompanyMembers] = useState([]);

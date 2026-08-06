@@ -10,8 +10,9 @@ import { useNavigate, useParams } from "react-router-dom";
 import TextEditor from "../../components/others/TextEditor"
 import { useState, useEffect } from "react";
 import { userStore } from "../../zustand/userState";
-import { tooltipStore } from "../../zustand/stateHandlers";
+import { tooltipStore, sideBarStore } from "../../zustand/stateHandlers";
 import api from "../../apis/axios";
+import useLockBodyScroll from "../../hooks/useLockBodyScroll";
 
 export default function JobDescription({ mode = "create" }) {
     const { jobID } = useParams();
@@ -20,6 +21,9 @@ export default function JobDescription({ mode = "create" }) {
     const { createdJob, setCreatedJob } = jobCreationStore();
     const { currentUser } = userStore();
     const { setShowTip } = tooltipStore();
+    const { sideBarStatus } = sideBarStore();
+    useLockBodyScroll(sideBarStatus);
+
     const navigate = useNavigate();
 
     const [loading, setLoading] = useState(true);

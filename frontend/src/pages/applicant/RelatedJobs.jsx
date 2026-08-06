@@ -26,6 +26,7 @@ import api from "../../apis/axios";
 import ReactPaginateModule from "react-paginate";
 import JobInfoSide from "../../components/popUps/JobInfoSide";
 import useIsDesktop from "../../hooks/useIsDesktop";
+import useLockBodyScroll from "../../hooks/useLockBodyScroll";
 
 
 export default function RelatedJobs() {
@@ -42,7 +43,9 @@ export default function RelatedJobs() {
     const navigate = useNavigate();
     const { currentUser } = userStore();
     const { setPrevLocation } = locationStore();
-    const { setApplicantActiveLink } = sideBarStore();
+    const { setApplicantActiveLink, sideBarStatus } = sideBarStore();
+    useLockBodyScroll(sideBarStatus);
+    
     const { 
         jobSearchResults, 
         setJobSearchResults, 

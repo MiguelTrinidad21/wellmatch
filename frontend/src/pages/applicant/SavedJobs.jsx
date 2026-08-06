@@ -14,13 +14,15 @@ import { FaBuilding } from "react-icons/fa";
 import { FaLocationDot } from "react-icons/fa6";
 import { HiOutlineBookmarkSlash } from "react-icons/hi2";
 import useIsDesktop from "../../hooks/useIsDesktop"; 
+import useLockBodyScroll from "../../hooks/useLockBodyScroll";
 import api from "../../apis/axios";
 
 export default function SavedJobs() {
     const isDesktop = useIsDesktop();
     const navigate = useNavigate();
     const { currentUser } = userStore();
-    const { setApplicantActiveLink } = sideBarStore();
+    const { setApplicantActiveLink, sideBarStatus } = sideBarStore();
+    useLockBodyScroll(sideBarStatus);
 
     const [verified, setVerified] = useState(false);
     const [loading, setLoading] = useState(true);

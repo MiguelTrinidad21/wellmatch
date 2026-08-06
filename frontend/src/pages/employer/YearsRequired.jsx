@@ -7,11 +7,13 @@ import Loading from "../../components/others/Loading";
 import Translucent from "../../components/overlay/Translucent"
 import { BiLoaderAlt } from "react-icons/bi";
 import { FaArrowLeftLong } from "react-icons/fa6";
-import { jobCreationStore } from "../../zustand/stateHandlers";
+import { jobCreationStore, sideBarStore } from "../../zustand/stateHandlers";
 import { userStore } from "../../zustand/userState";
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import api from "../../apis/axios";
+import useLockBodyScroll from "../../hooks/useLockBodyScroll";
+
 
 export default function YearsRequired({ mode = "create" }) {
     const { jobID } = useParams();
@@ -19,6 +21,9 @@ export default function YearsRequired({ mode = "create" }) {
 
     const { createdJob, setCreatedJob, clearCreatedJob } = jobCreationStore();
     const { currentUser } = userStore();
+    const { sideBarStatus } = sideBarStore();
+    useLockBodyScroll(sideBarStatus);
+
     const navigate = useNavigate();
 
     const [yearsRequired, setYearsRequired] = useState("");

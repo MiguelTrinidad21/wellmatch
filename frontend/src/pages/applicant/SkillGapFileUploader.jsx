@@ -12,9 +12,9 @@ import { useState, useEffect, useRef } from "react";
 import { useNavigate, Link, useParams } from "react-router-dom";
 import { userStore } from "../../zustand/userState";
 import { resumeStore } from "../../zustand/skillGapResume";
-import { locationStore } from "../../zustand/stateHandlers";
-import { tooltipStore } from "../../zustand/stateHandlers";
+import { locationStore, tooltipStore, sideBarStore } from "../../zustand/stateHandlers";
 import api from "../../apis/axios";
+import useLockBodyScroll from "../../hooks/useLockBodyScroll";
 
 
 
@@ -22,6 +22,10 @@ export default function SkillGapFileUploader() {
     const tooltipRef = useRef(null);
 
     const navigate = useNavigate();
+
+    const { sideBarStatus } = sideBarStore();
+    useLockBodyScroll(sideBarStatus);
+        
     const { currentUser } = userStore();
     const { setShowTip, textToCompare } = tooltipStore();
     const { prevLocation } = locationStore();

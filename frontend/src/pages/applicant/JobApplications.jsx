@@ -6,8 +6,7 @@ import PrimaryButton from "../../components/buttons/PrimaryButton";
 import DeleteItemBox from "../../components/popUps/DeleteItemBox"
 import ConfirmationBox from "../../components/popUps/ConfirmationBox"
 import { userStore } from "../../zustand/userState";
-import { sideBarStore } from "../../zustand/stateHandlers";
-import { jobInfoStore } from "../../zustand/stateHandlers";
+import { jobInfoStore, sideBarStore } from "../../zustand/stateHandlers";
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { FaPaperPlane } from "react-icons/fa6";
@@ -23,13 +22,17 @@ import ReactPaginateModule from "react-paginate";
 import useIsDesktop from "../../hooks/useIsDesktop";
 import JobInfoSide from "../../components/popUps/JobInfoSide";
 import api from "../../apis/axios";
+import useLockBodyScroll from "../../hooks/useLockBodyScroll";
 
 export default function JobApplications() {
     const isDesktop = useIsDesktop();
     const ReactPaginate = ReactPaginateModule.default || ReactPaginateModule;
     const navigate = useNavigate();
+
     const { currentUser } = userStore();
-    const { setApplicantActiveLink } = sideBarStore();
+    const { setApplicantActiveLink, sideBarStatus } = sideBarStore();
+    useLockBodyScroll(sideBarStatus);
+    
     const { 
         displayJob, 
         setDisplayJob, 

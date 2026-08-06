@@ -6,9 +6,10 @@ import Loading from "../../components/others/Loading";
 import { IoChevronDown } from "react-icons/io5";
 import { useNavigate, useParams } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
-import { jobCreationStore } from "../../zustand/stateHandlers";
+import { jobCreationStore, sideBarStore } from "../../zustand/stateHandlers";
 import { userStore } from "../../zustand/userState";
 import api from "../../apis/axios";
+import useLockBodyScroll from "../../hooks/useLockBodyScroll";
 
 export default function CreateJobPost({ mode = "create" }) {
     const { jobID } = useParams();
@@ -17,6 +18,9 @@ export default function CreateJobPost({ mode = "create" }) {
 
     const { createdJob, setCreatedJob, clearCreatedJob } = jobCreationStore();
     const { currentUser } = userStore();
+    const { sideBarStatus } = sideBarStore();
+    useLockBodyScroll(sideBarStatus);
+        
     const navigate = useNavigate();
 
     const [locationSuggestions, setLocationSuggestions] = useState([]);

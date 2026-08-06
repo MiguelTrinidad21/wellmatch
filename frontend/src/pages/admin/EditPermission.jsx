@@ -5,10 +5,12 @@ import Loading from "../../components/others/Loading"
 import ConfirmationBox from "../../components/popUps/ConfirmationBox";
 import { FaCheck } from "react-icons/fa6";
 import { userStore } from "../../zustand/userState";
+import { sideBarStore } from "../../zustand/stateHandlers.js";
 import { useState, useEffect } from "react"
 import { useNavigate, Link, useParams } from "react-router-dom";
 import api from "../../apis/axios.js"
 import PrimaryButton from "../../components/buttons/PrimaryButton";
+import useLockBodyScroll from "../../hooks/useLockBodyScroll.js";
 
 export default function EditPermission(req, res) {
     const navigate = useNavigate();
@@ -21,6 +23,9 @@ export default function EditPermission(req, res) {
     const [verified, setVerified] = useState(false);
     const [loading, setLoading] = useState(true);
     const [showConfirm, setShowConfirm] = useState(false);
+    
+    const { sideBarStatus } = sideBarStore();
+    useLockBodyScroll(sideBarStatus);
 
     const adminPrivelages = [
         {

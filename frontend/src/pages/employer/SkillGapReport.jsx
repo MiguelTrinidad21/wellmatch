@@ -10,7 +10,7 @@ import Translucent from "../../components/overlay/Translucent";
 import { useState, useEffect, useRef } from "react";
 import { useNavigate, Link, useParams } from "react-router-dom";
 import { userStore } from "../../zustand/userState";
-import { resumeStore } from "../../zustand/skillGapResume";
+import { sideBarStore } from "../../zustand/stateHandlers";
 import defaultCover from "../../assets/defaultProfile.jpg"
 import { MdOutlineEmail } from "react-icons/md";
 import { SlLocationPin } from "react-icons/sl";
@@ -21,14 +21,17 @@ import { FiBriefcase } from "react-icons/fi";
 import { FiAward } from "react-icons/fi";
 import { RiGraduationCapLine } from "react-icons/ri";
 import api from "../../apis/axios";
+import useLockBodyScroll from "../../hooks/useLockBodyScroll";
 
 
 export default function SkillGapReport() {
 
     const navigate = useNavigate();
     const { applicantID, jobID, resumeID } = useParams();
-    const { currentUser } = userStore();
     const [verified, setVerified] = useState(false);
+    const { currentUser } = userStore();
+    const { sideBarStatus } = sideBarStore();
+    useLockBodyScroll(sideBarStatus);    
 
     const leftColRef = useRef(null);
     const [leftColHeight, setLeftColHeight] = useState(null);

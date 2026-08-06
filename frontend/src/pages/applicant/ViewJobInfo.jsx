@@ -13,19 +13,22 @@ import { FaRegBuilding } from "react-icons/fa6";
 import { AiOutlineLaptop } from "react-icons/ai";
 import { TbBuildingCommunity } from "react-icons/tb";
 import { userStore } from "../../zustand/userState";
-import { locationStore } from "../../zustand/stateHandlers";
-import { jobInfoStore } from "../../zustand/stateHandlers";
+import { locationStore, jobInfoStore, sideBarStore } from "../../zustand/stateHandlers";
 import { useState, useEffect } from "react";
 import { useNavigate, Link, useParams, useLocation } from "react-router-dom";
 import api from "../../apis/axios";
+import useLockBodyScroll from "../../hooks/useLockBodyScroll";
 
 
 export default function ViewJobInfo() {
     const navigate = useNavigate();
     const { jobID } = useParams();
+
     const { currentUser } = userStore();
     const { isJobSaved, setIsJobSaved } = jobInfoStore();
     const { setPrevLocation } = locationStore();
+    const { sideBarStatus } = sideBarStore();
+    useLockBodyScroll(sideBarStatus);    
 
     const location = useLocation();
 

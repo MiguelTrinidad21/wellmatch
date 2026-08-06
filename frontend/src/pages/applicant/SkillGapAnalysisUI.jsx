@@ -8,11 +8,12 @@ import PrimaryButton from "../../components/buttons/PrimaryButton";
 import JobSkillEvidence from "../../components/popUps/JobSkillEvidence";
 import ResumeViewerModal from "../../components/others/ResumeViewerModal";
 import Translucent from "../../components/overlay/Translucent";
+import defaultProfile from "../../assets/defaultProfile.jpg"
 import { useState, useEffect, useRef } from "react";
 import { useNavigate, Link, useParams } from "react-router-dom";
 import { userStore } from "../../zustand/userState";
+import { sideBarStore } from "../../zustand/stateHandlers";
 import { resumeStore } from "../../zustand/skillGapResume";
-import defaultProfile from "../../assets/defaultProfile.jpg"
 import { MdOutlineEmail } from "react-icons/md";
 import { SlLocationPin } from "react-icons/sl";
 import { IoIosCheckmark } from "react-icons/io";
@@ -22,11 +23,15 @@ import { FaBookOpen } from "react-icons/fa";
 import { ImWrench } from "react-icons/im";
 import { BsAwardFill } from "react-icons/bs";
 import api from "../../apis/axios";
+import useLockBodyScroll from "../../hooks/useLockBodyScroll";
 
 
 export default function SkillGapAnalysisUI() {   
     
     const navigate = useNavigate();
+
+    const { sideBarStatus } = sideBarStore();
+    useLockBodyScroll(sideBarStatus);
     
     const { resumeToAnalyze, selectedOption } = resumeStore();
     const { currentUser } = userStore();

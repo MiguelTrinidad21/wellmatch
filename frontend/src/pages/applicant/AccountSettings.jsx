@@ -13,11 +13,13 @@ import api from "../../apis/axios";
 import { IoPersonSharp } from "react-icons/io5";
 import { GoShieldLock } from "react-icons/go";
 import { VscWarning } from "react-icons/vsc";
+import useLockBodyScroll from "../../hooks/useLockBodyScroll.js";
 
 export default function AccountSettings() {
     const navigate = useNavigate();
     const { currentUser, logoutUser } = userStore();
-    const { setApplicantActiveLink } = sideBarStore();
+    const { setApplicantActiveLink, sideBarStatus } = sideBarStore();
+    useLockBodyScroll(sideBarStatus);
 
     const [verified, setVerified] = useState(false);
     const [loading, setLoading] = useState(true);

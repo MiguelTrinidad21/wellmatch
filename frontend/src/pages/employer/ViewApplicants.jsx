@@ -22,6 +22,7 @@ import { useNavigate, Link, useParams } from "react-router-dom";
 import api from "../../apis/axios";
 import { formatDistanceToNow } from 'date-fns';
 import ReactPaginateModule from "react-paginate";
+import useLockBodyScroll from "../../hooks/useLockBodyScroll";
 
 export default function ViewApplicants() {
     const ReactPaginate = ReactPaginateModule.default || ReactPaginateModule;
@@ -29,7 +30,8 @@ export default function ViewApplicants() {
     const navigate = useNavigate();
     const { jobID } = useParams();
     const { currentUser } = userStore();
-    const { setEmployerActiveLink } = sideBarStore();
+    const { setEmployerActiveLink, sideBarStatus } = sideBarStore();
+    useLockBodyScroll(sideBarStatus);
 
     const [verified, setVerified] = useState(false);
     const [loading, setLoading] = useState(true);
