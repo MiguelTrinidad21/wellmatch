@@ -16,7 +16,8 @@ const serverPort = process.env.PORT || process.env.SERVER_PORT || 5000;
 
 app.use(cors({
     origin: process.env.FRONTEND_URL,
-    credentials: true
+    credentials: true,
+    exposedHeaders: ['Content-Disposition']
 }));
 app.use(express.json());
 app.use(cookieParser());

@@ -113,7 +113,7 @@ const ResumeViewerModal = ({ resumeID, onClose, user }) => {
                 </div>
 
                 {/* Body */}
-                <div ref={docxContainerRef} className="flex-1 overflow-auto p-4">
+                <div className="flex-1 overflow-auto p-4">
 
                     {loading && (
                         <div className="flex items-center justify-center h-full">

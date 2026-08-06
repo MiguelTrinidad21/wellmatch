@@ -425,7 +425,7 @@ export default function RelatedJobs() {
                         <>
                             <div className="md:flex md:justify-between md:items-center md:mb-9">
                                 <h1 className="text-xl font-bold mb-2 md:flex md:items-center md:mb-0 md:text-[22px]">Related Jobs</h1>
-                                <p className="text-sm text-gray-500 mb-4 md:flex md:items-center md:mb-0 md:text-[16px]">{`Found ${totalJobs} ${totalJobs.length > 1 ? "jobs" : "job"} for you`}</p>
+                                <p className="text-sm text-gray-500 mb-4 md:flex md:items-center md:mb-0 md:text-[16px]">{`Found ${totalJobs} ${totalJobs > 1 ? "jobs" : "job"} for you`}</p>
                             </div>
 
                             {jobSearchResults?.relatedJobs?.length === 0 ?

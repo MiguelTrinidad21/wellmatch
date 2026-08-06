@@ -252,17 +252,17 @@ export async function viewResume(req, res) {
 
         const { cloudinaryPublicID, origFileName } = rows;
 
-        // ✅ Use Cloudinary Admin API to get the actual secure_url with version
         const cloudinaryResource = await cloudinary.api.resource(cloudinaryPublicID, {
             resource_type: 'raw',
             type: 'upload',
         });
 
         const fileUrl = cloudinaryResource.secure_url;
-        console.log("Streaming from:", fileUrl);
 
-        // ✅ Backend fetches from Cloudinary
-        const fileResponse = await axios.get(fileUrl, { responseType: 'stream' });
+        const fileResponse = await axios.get(fileUrl, { 
+            responseType: 'stream',
+            timeout: 30000 // 30s, generous for a resume file
+        });
 
         const isDocx = origFileName?.toLowerCase().endsWith('.docx');
 
@@ -273,12 +273,23 @@ export async function viewResume(req, res) {
             : 'application/pdf'
         );
 
-        // ✅ Stream directly to frontend — URL never exposed
+        // Handle stream errors explicitly
+        fileResponse.data.on('error', (streamErr) => {
+            console.error('Stream error while piping resume:', streamErr);
+            if (!res.headersSent) {
+                res.status(500).json({ message: "Streaming resume failed" });
+            } else {
+                res.end();
+            }
+        });
+
         fileResponse.data.pipe(res);
 
     } catch (error) {
         console.error(error);
-        return res.status(500).json({ message: "Viewing resume failed" });
+        if (!res.headersSent) {
+            return res.status(500).json({ message: "Viewing resume failed" });
+        }
     }
 }
 
