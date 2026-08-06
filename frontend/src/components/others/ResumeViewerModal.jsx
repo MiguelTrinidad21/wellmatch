@@ -44,34 +44,25 @@ const ResumeViewerModal = ({ resumeID, onClose, user }) => {
         const fetchResume = async () => {
             try {
                 setLoading(true);
-                const token = localStorage.getItem('token');
 
-                let response;
+                const endpoint = isApplicant
+                    ? `/applicant/viewResume/${resumeID}`
+                    : `/employer/viewResume/${resumeID}`;
 
-                if (isApplicant) {
-                    response = await fetch(`/api/applicant/viewResume/${resumeID}`, {
-                        headers: { 'Authorization': `Bearer ${token}` }
-                    });
-
-                } else {
-                    response = await fetch(`/api/employer/viewResume/${resumeID}`, {
-                        headers: { 'Authorization': `Bearer ${token}` }
-                    });                    
-                }
+                const response = await fetch(`${import.meta.env.VITE_API_URL}${endpoint}`, {
+                    credentials: 'include' // sends the httpOnly cookie automatically
+                });
 
                 if (!response.ok) throw new Error(`Error: ${response.status}`);
 
-                // Get filename from response header
                 const disposition = response.headers.get('Content-Disposition');
                 const nameMatch = disposition?.match(/filename="(.+)"/);
                 const fileName = nameMatch?.[1] ?? 'resume';
                 setOrigFileName(fileName);
 
-                // ✅ Convert streamed response to blob for docx-preview / react-pdf
                 const rawBlob = await response.blob();
-                console.log('Blob size:', rawBlob.size, 'type:', rawBlob.type);
                 setBlob(rawBlob);
-                setFileUrl(URL.createObjectURL(rawBlob)); // only for download button
+                setFileUrl(URL.createObjectURL(rawBlob));
 
             } catch (err) {
                 console.error('❌ Error:', err.message);
