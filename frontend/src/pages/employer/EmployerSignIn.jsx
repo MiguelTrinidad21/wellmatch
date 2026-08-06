@@ -50,7 +50,7 @@ export default function EmployerSignIn() {
 
     return (
         <>
-            <div className="w-full min-h-screen flex flex-col relative bg-[#F3F4F6]">
+            <div className="w-full min-h-dvh flex flex-col relative bg-[#F3F4F6]">
                 <PublicNavBar />
                 <Overlay />
 

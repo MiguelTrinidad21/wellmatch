@@ -4,7 +4,7 @@ import "dotenv/config";
 import formatDate from "../../utils/formatDate.js";
 
 export async function submitApplication(req, res) {
-    const { id, firstName, email } = req.user;
+    const { id } = req.user;
     const { resumeID, yearsExp, jobTitle, companyName } = req.body
     const { jobID } = req.params
 
@@ -16,6 +16,21 @@ export async function submitApplication(req, res) {
     ];
 
     try {
+        const [applicantRows] = await database.query(`
+            SELECT firstName, email
+            FROM applicants
+            WHERE applicantID = ?
+            LIMIT 1
+            `,
+            [id]
+        );
+
+        if (applicantRows.length === 0) {
+            return res.status(404).json({ message: "Applicant account not found" });
+        }
+
+        const { firstName, email } = applicantRows[0];
+                
         const [rows] = await database.query(`
             SELECT status
             FROM applications

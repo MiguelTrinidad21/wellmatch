@@ -181,8 +181,22 @@ export async function loginEmployer(req, res) {
             })
         }
 
-        const employerInfo = {
+        const tokenPayload = {
             userType: employer.role === "Employer" ? "employer" : "admin",
+            id: employer.employerID,
+            compMemID: employer.compMemID,
+            companyID: employer.companyID,
+            role: employer.role
+        };
+
+        const token = jwt.sign(
+            tokenPayload,
+            process.env.JWT_SECRET,
+            { expiresIn: "1d" }
+        )
+
+        const employerInfo = {
+            userType: tokenPayload.userType,
             id: employer.employerID,
             email: employer.email,
             firstName: employer.firstName,
@@ -193,12 +207,6 @@ export async function loginEmployer(req, res) {
             companyPhoto: employer.profilePhotoURL,
             role: employer.role
         };
-
-        const token = jwt.sign(
-            employerInfo, 
-            process.env.JWT_SECRET,
-            {expiresIn: "1d"}
-        )
 
         res.cookie("token", token, {
             ...cookieOptions,

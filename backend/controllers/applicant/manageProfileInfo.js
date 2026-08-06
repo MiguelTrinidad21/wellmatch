@@ -162,7 +162,7 @@ export async function getCredentials(req, res) {
 }
 
 export async function deleteCredential(req, res) {
-    const { id, email } = req.user;
+    const { id } = req.user;
     const { credID } = req.query;
 
     try {
@@ -290,7 +290,7 @@ export async function deleteEducation(req, res) {
 
 export async function updateInfo(req, res) {
     try {
-        const { id, email } = req.user;
+        const { id } = req.user;
 
         const {
             firstName,
@@ -302,7 +302,9 @@ export async function updateInfo(req, res) {
 
         const [applicantRows] = await database.query(
             `
-            SELECT 
+            SELECT
+                email,
+                profilePhotoURL, 
                 profilePhotoPublicID
             FROM applicants
             WHERE applicantID = ?
@@ -318,9 +320,10 @@ export async function updateInfo(req, res) {
         }
 
         const applicant = applicantRows[0];
+        const email = applicant.email;
 
-        let profilePhotoURL = null;
-        let profilePhotoPublicID = null;
+        let profilePhotoURL = applicant.profilePhotoURL;
+        let profilePhotoPublicID = applicant.profilePhotoPublicID;
 
         if (profilePhoto) {
             if (applicant.profilePhotoPublicID) {

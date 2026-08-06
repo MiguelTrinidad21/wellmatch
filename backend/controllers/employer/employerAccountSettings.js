@@ -4,6 +4,11 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import crypto from "crypto";
 
+const cookieOptions = {
+    httpOnly: true,
+    secure: process.env.PROJECT_STATUS === "production",
+    sameSite: process.env.PROJECT_STATUS === "production" ? "None" : "Lax",
+};
 
 export async function updatePersonalDetails(req, res) {
     const { 
@@ -11,8 +16,6 @@ export async function updatePersonalDetails(req, res) {
         userType,
         compMemID,
         companyID,
-        companyName,
-        companyPhoto,
         role
      } = req.user;
 
@@ -81,6 +84,13 @@ export async function updatePersonalDetails(req, res) {
             [id]
         );
 
+        const [[company]] = await database.query(`
+            SELECT companyName, profilePhotoURL AS companyPhoto
+            FROM companies WHERE companyID = ? LIMIT 1
+            `,
+            [companyID]
+        );
+
         const employerInfo = {
             userType,
             id,
@@ -89,8 +99,8 @@ export async function updatePersonalDetails(req, res) {
             lastName: employer.lastName,
             compMemID,
             companyID,
-            companyName,
-            companyPhoto,
+            companyName: company.companyName,
+            companyPhoto: company.companyPhoto,
             role
         };
 
@@ -101,9 +111,7 @@ export async function updatePersonalDetails(req, res) {
         )
 
         res.cookie("token", token, {
-            httpOnly: true,
-            secure: false, //Set to true for production
-            sameSite: "Lax", //Set to "None" for production
+            ...cookieOptions,
             maxAge: 24 * 60 * 60 * 1000
         })
             .json({user: employerInfo}

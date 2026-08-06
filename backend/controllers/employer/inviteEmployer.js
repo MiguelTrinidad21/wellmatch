@@ -6,13 +6,7 @@ import "dotenv/config"
 export async function sendEmployerInvitationEmail(req, res) {
     const { email } = req.body;
 
-    const {
-        companyID,
-        companyName,
-        id,
-        firstName,
-        lastName
-    } = req.user;
+    const { companyID, id } = req.user;
 
     const normalizedEmail = email.trim().toLowerCase();
 
@@ -31,6 +25,15 @@ export async function sendEmployerInvitationEmail(req, res) {
 
         await connection.beginTransaction();
         transactionStarted = true;
+
+        const [[inviter]] = await connection.query(`
+            SELECT firstName, lastName FROM employers WHERE employerID = ? LIMIT 1
+            `, [id]
+        );
+        const [[company]] = await connection.query(`
+            SELECT companyName FROM companies WHERE companyID = ? LIMIT 1
+            `, [companyID]
+        );
 
         const [[{ isExistingMember }]] = await connection.query(
             `
@@ -124,9 +127,9 @@ export async function sendEmployerInvitationEmail(req, res) {
             ],
             templateId: 2,
             params: {
-                inviterFirstName: firstName,
-                inviterLastName: lastName,
-                companyName,
+                inviterFirstName: inviter.firstName,
+                inviterLastName: inviter.lastName,
+                companyName: company.companyName,
                 inviteLink
             }
         });

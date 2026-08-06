@@ -177,6 +177,17 @@ export async function loginApplicant(req, res) {
             })
         }
 
+        const tokenPayload = {
+            userType: "applicant",
+            id: applicant.applicantID
+        };
+
+        const token = jwt.sign(
+            tokenPayload,
+            process.env.JWT_SECRET,
+            { expiresIn: "1d" }
+        )
+
         const applicantInfo = {
             userType: "applicant",
             id: applicant.applicantID,
@@ -186,12 +197,6 @@ export async function loginApplicant(req, res) {
             address: applicant.address,
             profilePhoto: applicant.profilePhotoURL
         };
-
-        const token = jwt.sign(
-            applicantInfo, 
-            process.env.JWT_SECRET,
-            {expiresIn: "1d"}
-        )
 
         res.cookie("token", token, {
             ...cookieOptions,

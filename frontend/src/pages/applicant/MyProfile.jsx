@@ -175,7 +175,7 @@ export default function MyProfile() {
                         applicantID: currentUser.applicantID
                     }
                 });
-
+                console.log(currentUser)
                 setVerified(true);
             } catch (error) {
                 console.log(error);
@@ -260,10 +260,7 @@ export default function MyProfile() {
 
         getEducation();
     }, [refreshEducation]);
-
-    useEffect(() => {
-        setApplicantActiveLink("My Profile")
-    }, [])    
+ 
 
     if (loading) {
         return <Loading />
@@ -486,7 +483,10 @@ export default function MyProfile() {
                                         <div key={item.educationID} className="relative w-full bg-[#F3F4F6] shadow-md rounded-2xl p-4">
                                             <h2 className="font-bold mb-1 text-lg">{item.courseName}</h2>
                                             <p className="text-gray-700 font-medium mb-3">{item.institution}</p>
-                                            <p className="text-gray-700 text-sm">{item.graduatedAt ? `Graduated ${item.graduatedAt}` : `Expected finish ${item.willFinishAt}`}</p>
+                                            {
+                                                (item.graduatedAt !== null || item.willFinishAt !== null) &&
+                                                <p className="text-gray-700 text-sm">{item.graduatedAt ? `Graduated ${item.graduatedAt}` : `Expected finish ${item.willFinishAt}`}</p>
+                                            }
                                             <button onClick={() => {
                                                 setEducID(item.educationID);
                                                 toggleWarning(setDeleteEduc);
