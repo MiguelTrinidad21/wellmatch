@@ -23,6 +23,7 @@ import { TbBuildingCommunity } from "react-icons/tb";
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useNavigate, Link, useLocation } from "react-router-dom";
 import useIsDesktop from "../../hooks/useIsDesktop"; 
+import useLockBodyScroll from "../../hooks/useLockBodyScroll";
 import api from "../../apis/axios";
 import ReactPaginateModule from "react-paginate";
 
@@ -43,7 +44,7 @@ export default function RecommendedJobs() {
     const navigate = useNavigate();
     const { currentUser } = userStore();
     const { setPrevLocation } = locationStore();
-    const { setApplicantActiveLink } = sideBarStore();
+    const { setApplicantActiveLink, sideBarStatus } = sideBarStore();
 
     const { 
         displayJob, 
@@ -82,6 +83,8 @@ export default function RecommendedJobs() {
     const [totalJobs, setTotalJobs] = useState(0);
 
     const jobsPerPage = 10;
+
+    useLockBodyScroll(sideBarStatus)
 
     useEffect(() => {
         async function checkApplicant() {
