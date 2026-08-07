@@ -14,16 +14,13 @@ app.set('trust proxy', 1);
 
 const serverPort = process.env.PORT || process.env.SERVER_PORT || 5000;
 
-app.use((req, res, next) => {
-    console.log(`[${new Date().toISOString()}] ${req.method} ${req.originalUrl} — Origin: ${req.headers.origin}`);
-    next();
-});
-
 app.use(cors({
     origin: process.env.FRONTEND_URL,
     credentials: true,
-    exposedHeaders: ['Content-Disposition']
+    exposedHeaders: ['Content-Disposition'],
+    maxAge: 600
 }));
+
 app.use(express.json());
 app.use(cookieParser());
 

@@ -21,8 +21,6 @@ export default function AddResumeForm({ toggleForm, refresh }) {
             setErrors({ message: "Please select a resume to upload" })
             return;
         }
-
-        alert("FILE INFO: name=" + resume.name + " size=" + resume.size + " type=" + resume.type + " isFile=" + (resume instanceof File));
         
         formData.append("resume", resume);
 
@@ -36,7 +34,6 @@ export default function AddResumeForm({ toggleForm, refresh }) {
             toggleForm();
             
         } catch (error) {
-            alert("ERROR CAUGHT: " + error.message + " | name: " + error.name + " | stack: " + error.stack);
             console.log(error);
 
             const message = error.response?.data?.message || "An error occurred";
