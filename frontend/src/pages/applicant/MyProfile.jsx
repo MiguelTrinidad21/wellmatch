@@ -399,8 +399,8 @@ export default function MyProfile() {
                                 <div className="w-full flex flex-col gap-5 md:grid md:grid-cols-2 md:gap-5">
                                     {workExp?.map((work) => (
                                         <div key={work.workExpID} className="relative w-full bg-[#F3F4F6] shadow-md rounded-2xl p-4">
-                                            <h2 className="font-bold mb-1 text-lg">{work.jobTitle}</h2>
-                                            <p className="text-gray-700 font-medium mb-3">{work.companyName}</p>
+                                            <h2 className="font-bold mb-1 text-lg wrap-break-word">{work.jobTitle}</h2>
+                                            <p className="text-gray-700 font-medium mb-3 wrap-break-word">{work.companyName}</p>
                                             <p className="text-gray-700 text-sm">{`${work.startDate} - ${work.endDate}`}</p>
                                             <button onClick={() => {
                                                 setWorkExpID(work.workExpID);
@@ -441,8 +441,8 @@ export default function MyProfile() {
                                 <div className="w-full flex flex-col gap-5 md:grid md:grid-cols-2 md:gap-5">
                                     {credentials?.map((cred) => (
                                         <div key={cred.credentialID} className="relative w-full bg-[#F3F4F6] shadow-md rounded-2xl p-4">
-                                            <h2 className="font-bold mb-1 text-lg">{cred.credentialTitle}</h2>
-                                            <p className="text-gray-700 font-medium mb-3">{cred.issuedBy}</p>
+                                            <h2 className="font-bold mb-1 text-lg wrap-break-word">{cred.credentialTitle}</h2>
+                                            <p className="text-gray-700 font-medium mb-3 wrap-break-word">{cred.issuedBy}</p>
                                             <p className="text-gray-700 text-sm">{`${cred.issueDate} - ${cred.expiryDate ? cred.expiryDate : "No expiry"}`}</p>
                                             <button onClick={() => {
                                                 setCredID(cred.credentialID);
@@ -483,8 +483,8 @@ export default function MyProfile() {
                                 <div className="w-full flex flex-col gap-5 md:grid md:grid-cols-2 md:gap-5">
                                     {education?.map((item) => (
                                         <div key={item.educationID} className="relative w-full bg-[#F3F4F6] shadow-md rounded-2xl p-4">
-                                            <h2 className="font-bold mb-1 text-lg">{item.courseName}</h2>
-                                            <p className="text-gray-700 font-medium mb-3">{item.institution}</p>
+                                            <h2 className="font-bold mb-1 text-lg wrap-break-word">{item.courseName}</h2>
+                                            <p className="text-gray-700 font-medium mb-3 wrap-break-word">{item.institution}</p>
                                             {
                                                 (item.graduatedAt !== null || item.willFinishAt !== null) &&
                                                 <p className="text-gray-700 text-sm">{item.graduatedAt ? `Graduated ${item.graduatedAt}` : `Expected finish ${item.willFinishAt}`}</p>
@@ -539,8 +539,8 @@ export default function MyProfile() {
                                                 :
                                                     <div className="h-6"></div>
                                             }
-                                            <h2 className="font-bold mb-1 text-lg">{item.origFileName.replace(/\.(pdf|docx)$/i, "")}</h2>
-                                            <p className="text-gray-500 font-medium text-sm">{item.origFileName}</p>
+                                            <h2 className="font-bold mb-1 text-lg wrap-break-word">{item.origFileName.replace(/\.(pdf|docx)$/i, "")}</h2>
+                                            <p className="text-gray-500 font-medium text-sm wrap-break-word">{item.origFileName}</p>
 
                                             <div className="absolute top-4  right-4">
                                                 <div data-resume-menu className="relative">
