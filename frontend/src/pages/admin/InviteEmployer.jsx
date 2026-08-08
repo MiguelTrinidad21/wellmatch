@@ -7,14 +7,11 @@ import { MdMailOutline } from "react-icons/md";
 import api from "../../apis/axios";
 import ConfirmationBox from "../../components/popUps/ConfirmationBox";
 import Translucent from "../../components/overlay/Translucent";
-import Loading from "../../components/others/Loading";
 
 export default function InviteEmployer({ cancelFunc, setInviteSent }) {
     const navigate = useNavigate();
 
     const { currentUser } = userStore();
-    const [verified, setVerified] = useState(false);
-    const [loading, setLoading] = useState(true);
     const [employerToInvite, setEmployerToInvite] = useState({
         email: ""
     });

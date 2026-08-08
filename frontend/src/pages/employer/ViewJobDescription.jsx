@@ -34,8 +34,6 @@ export default function ViewJobDescription() {
                 console.log(jobDesc.data)
             } catch (error) {
                 console.log(error)
-            } finally {
-                setLoading(false);
             }
         }
 

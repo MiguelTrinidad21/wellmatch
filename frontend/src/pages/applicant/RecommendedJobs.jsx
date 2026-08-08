@@ -346,8 +346,6 @@ export default function RecommendedJobs() {
             setCurrentPage(response.data?.pagination?.currentPage || 1);
         } catch (error) {
             console.error("Fetching recommended jobs failed:", error);
-        } finally {
-            setLoading(false);
         }
     }, []);
 
