@@ -9,11 +9,13 @@ import JobSkillEvidence from "../../components/popUps/JobSkillEvidence";
 import ResumeViewerModal from "../../components/others/ResumeViewerModal";
 import Translucent from "../../components/overlay/Translucent";
 import defaultProfile from "../../assets/defaultProfile.jpg"
+
 import { useState, useEffect, useRef } from "react";
 import { useNavigate, Link, useParams } from "react-router-dom";
 import { userStore } from "../../zustand/userState";
 import { sideBarStore } from "../../zustand/stateHandlers";
 import { resumeStore } from "../../zustand/skillGapResume";
+
 import { MdOutlineEmail } from "react-icons/md";
 import { SlLocationPin } from "react-icons/sl";
 import { IoIosCheckmark } from "react-icons/io";
@@ -22,6 +24,7 @@ import { GoInfo } from "react-icons/go";
 import { FaBookOpen } from "react-icons/fa";
 import { ImWrench } from "react-icons/im";
 import { BsAwardFill } from "react-icons/bs";
+
 import api from "../../apis/axios";
 import useLockBodyScroll from "../../hooks/useLockBodyScroll";
 
@@ -40,7 +43,6 @@ export default function SkillGapAnalysisUI() {
     const leftColRef = useRef(null);
     const [leftColHeight, setLeftColHeight] = useState(null);
     
-    const [verified, setVerified] = useState(false);
 
     const [showEvidence, setShowEvidence] = useState(false);
     const [evidenceStatus, setEvidenceStatus] = useState("");
@@ -62,30 +64,6 @@ export default function SkillGapAnalysisUI() {
 
     const [showResumeViewer, setShowResumeViewer] = useState(false);
 
-    useEffect(() => {
-        async function checkApplicant() {
-            try {
-                if (!currentUser || Object.keys(currentUser).length === 0) {
-                    setVerified(false);
-                    return;
-                }
-
-                await api.get("/applicant/authorize", {
-                    params: {
-                        applicantID: currentUser.applicantID
-                    }
-                });
-                // console.log(currentUser)
-
-                setVerified(true);
-            } catch (error) {
-                console.log(error);
-                setVerified(false);
-            }
-        }
-
-        checkApplicant();
-    }, [currentUser]);
 
     useEffect(() => {
         if (!leftColRef.current) return;
@@ -114,11 +92,6 @@ export default function SkillGapAnalysisUI() {
         };
     }, [skillGapLoaded, jobLoaded]);
 
-    useEffect(() => {
-        if (!loading && !verified) {
-            navigate("/forbidden");
-        }
-    }, [loading, verified, navigate]);
 
     useEffect(() => {
 
@@ -167,9 +140,6 @@ export default function SkillGapAnalysisUI() {
         return <SkillGapLoader />
     }
 
-    if (!verified) {
-        return null;
-    }
 
     if (!selectedJob || !skillGapAnalysis) {
         return (

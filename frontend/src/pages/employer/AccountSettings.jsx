@@ -5,7 +5,6 @@ import PrimaryButton from "../../components/buttons/PrimaryButton";
 import Translucent from "../../components/overlay/Translucent"
 import { EditInfoForm, ChangePasswordForm, DeleteAccountForm } from "../../components/popUps/EmployerAccSettingsForms";
 import ConfirmationBox from "../../components/popUps/ConfirmationBox";
-import Loading from "../../components/others/Loading";
 import { userStore } from "../../zustand/userState";
 import { sideBarStore } from "../../zustand/stateHandlers";
 import { useState, useEffect } from "react";
@@ -30,54 +29,12 @@ export default function AccountSettings() {
     const [showConfirmPass, setShowConfirmPass] = useState(false);
     const [showConfirmDelete, setShowConfirmDelete] = useState(false);
 
-    const [loading, setLoading] = useState(true);
-    const [verified, setVerified] = useState(false);
 
-    useEffect(() => {
-        async function checkEmployer() {
-            setLoading(true);
-            try {
-                console.log(currentUser);
-                if (!currentUser || Object.keys(currentUser).length === 0) {
-                    setVerified(false);
-                    return;
-                }
-
-                await api.get("/employer/authorize", {
-                    params: {
-                        employerID: currentUser.employerID
-                    }
-                });
-
-                setVerified(true);
-            } catch (error) {
-                console.log(error);
-                setVerified(false);
-            } finally {
-                setLoading(false);
-            }
-        }
-
-        checkEmployer();
-    }, [currentUser]);
 
     useEffect(() => {
         setEmployerActiveLink("Account Settings")
     }, [])
 
-    useEffect(() => {
-        if (!loading && !verified) {
-            navigate("/forbidden", { replace: true });
-        }
-    }, [loading, verified, navigate]);
-
-    if (loading) {
-        return <Loading />
-    }
-
-    if (!verified) {
-        return null;
-    }
 
     return (
         <div className="lg:flex relative w-full">

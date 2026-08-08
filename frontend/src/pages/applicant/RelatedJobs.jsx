@@ -1,10 +1,10 @@
 import AuthNavBar from "../../components/navBars/AuthNavBar";
 import SideBarOverlay from "../../components/overlay/SideBarOverlay"
-import Loading from "../../components/others/Loading"
 import PrimaryButton from "../../components/buttons/PrimaryButton";
 import SecondaryButton from "../../components/buttons/SecondaryButton"
 import ApplicantSideBar from "../../components/navBars/ApplicantSideBar";
 import defaultPhoto from "../../assets/defaultCover.jpg"
+
 import { LuBriefcase } from "react-icons/lu";
 import { MdOutlineLocationOn } from "react-icons/md";
 import { PiMoneyWavy } from "react-icons/pi";
@@ -13,13 +13,14 @@ import { FaBookmark } from "react-icons/fa";
 import { IoSearchSharp } from "react-icons/io5";
 import { LuSearchX } from "react-icons/lu";
 import { BiLoaderAlt } from "react-icons/bi";
+import { FaRegBuilding } from "react-icons/fa6";
+import { AiOutlineLaptop } from "react-icons/ai"
+import { TbBuildingCommunity } from "react-icons/tb";
+
 import { userStore } from "../../zustand/userState";
 import { jobInfoStore, locationStore } from "../../zustand/stateHandlers";
 import { jobSearchStore } from "../../zustand/jobSearching";
 import { sideBarStore } from "../../zustand/stateHandlers";
-import { FaRegBuilding } from "react-icons/fa6";
-import { AiOutlineLaptop } from "react-icons/ai"
-import { TbBuildingCommunity } from "react-icons/tb";
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useNavigate, Link, useLocation } from "react-router-dom";
 import api from "../../apis/axios";
@@ -66,8 +67,7 @@ export default function RelatedJobs() {
 
     const location = useLocation();
 
-    const [verified, setVerified] = useState(false);
-    const [loading, setLoading] = useState(true);
+
     const [isSearchingJob, setIsSearchingJob] = useState(false);
 
     const [locationSuggestions, setLocationSuggestions] = useState([]);
@@ -82,31 +82,6 @@ export default function RelatedJobs() {
 
     const jobsPerPage = 10;
 
-    useEffect(() => {
-        async function checkApplicant() {
-            try {
-                if (!currentUser || Object.keys(currentUser).length === 0) {
-                    setVerified(false);
-                    return;
-                }
-
-                await api.get("/applicant/authorize", {
-                    params: {
-                        applicantID: currentUser.applicantID
-                    }
-                });
-
-                setVerified(true);
-            } catch (error) {
-                console.log(error);
-                setVerified(false);
-            } finally {
-                setLoading(false);
-            }
-        }
-
-        checkApplicant();
-    }, [currentUser]);
 
     useEffect(() => {
         if (!leftColNode) return;
@@ -339,16 +314,7 @@ export default function RelatedJobs() {
         }
     }
 
-    
-    useEffect(() => {
-        if (!loading && !verified) {
-            navigate("/forbidden");
-        }
-    }, [loading, verified, navigate]);
 
-    if (!verified) {
-        return null;
-    }
 
     return (
         <div className="lg:flex relative w-full">

@@ -3,7 +3,6 @@ import SideBarOverlay from "../../components/overlay/SideBarOverlay";
 import EmployerSideBar from "../../components/navBars/EmployerSideBar";
 import PrimaryButton from "../../components/buttons/PrimaryButton";
 import ConfirmationBox from "../../components/popUps/ConfirmationBox"
-import Loading from "../../components/others/Loading";
 import Translucent from "../../components/overlay/Translucent"
 import { BiLoaderAlt } from "react-icons/bi";
 import { FaArrowLeftLong } from "react-icons/fa6";
@@ -29,8 +28,6 @@ export default function YearsRequired({ mode = "create" }) {
     const [yearsRequired, setYearsRequired] = useState("");
     const [isJobPosted, setIsJobPosted] = useState(false);
     const [isPosting, setIsPosting] = useState(false);
-    const [verified, setVerified] = useState(false);
-    const [loading, setLoading] = useState(true);
     const [submitError, setSubmitError] = useState("");
     
     const experienceOptions = [
@@ -44,38 +41,9 @@ export default function YearsRequired({ mode = "create" }) {
         { label: "More than 5 years", value: "6" },
     ];
 
-    useEffect(() => {
-        async function checkEmployer() {
-            try {
-                // console.log(currentUser);
-                if (!currentUser || Object.keys(currentUser).length === 0) {
-                    setVerified(false);
-                    setLoading(false);
-                    return;
-                }
-
-                await api.get("/employer/authorize", {
-                    params: {
-                        employerID: currentUser.employerID
-                    }
-                });
-
-                setVerified(true);
-            } catch (error) {
-                // console.log(error);
-                setVerified(false);
-                navigate("/forbidden");
-            } finally {
-                setLoading(false);
-            }
-        }
-
-        checkEmployer();
-    }, [currentUser]);
 
     function hidePopUp() {
         setIsJobPosted(false);
-        // clearCreatedJob();
         navigate("/employer/jobs");
     }
 
@@ -117,9 +85,6 @@ export default function YearsRequired({ mode = "create" }) {
         }
     }
 
-    if (loading) {
-            return <Loading />
-        }
 
 
     return (

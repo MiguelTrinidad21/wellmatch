@@ -1,13 +1,15 @@
 import AuthNavBar from "../../components/navBars/AuthNavBar";
 import SideBarOverlay from "../../components/overlay/SideBarOverlay";
 import EmployerSideBar from "../../components/navBars/EmployerSideBar";
-import Loading from "../../components/others/Loading"
 import PrimaryButton from "../../components/buttons/PrimaryButton";
 import ConfirmationDialog from "../../components/popUps/ConfirmationDialog";
 import WarningBox from "../../components/popUps/DeleteItemBox";
+
 import { userStore } from "../../zustand/userState";
 import { sideBarStore } from "../../zustand/stateHandlers";
 import { useState, useEffect } from "react";
+import { useNavigate, Link, useParams } from "react-router-dom";
+
 import { FaUserPlus } from "react-icons/fa6";;
 import { FaListCheck } from "react-icons/fa6";
 import { HiMiniVideoCamera } from "react-icons/hi2";
@@ -18,10 +20,10 @@ import { MdGroups } from "react-icons/md";
 import { RiGroupLine } from "react-icons/ri";
 import { FaUsersSlash } from "react-icons/fa";
 import { FiCalendar } from "react-icons/fi";
-import { useNavigate, Link, useParams } from "react-router-dom";
-import api from "../../apis/axios";
 import { formatDistanceToNow } from 'date-fns';
+
 import ReactPaginateModule from "react-paginate";
+import api from "../../apis/axios";
 import useLockBodyScroll from "../../hooks/useLockBodyScroll";
 import useIsDesktop from "../../hooks/useIsDesktop";
 
@@ -34,9 +36,6 @@ export default function ViewApplicants() {
     const { currentUser } = userStore();
     const { setEmployerActiveLink, sideBarStatus } = sideBarStore();
     useLockBodyScroll(sideBarStatus);
-
-    const [verified, setVerified] = useState(false);
-    const [loading, setLoading] = useState(true);
 
     const [status, setStatus] = useState("submitted");
     const [applicationID, setApplicationID] = useState(null);
@@ -142,50 +141,11 @@ export default function ViewApplicants() {
         setEmployerActiveLink("Applicants")
     }, [])
 
-    useEffect(() => {
-        async function checkApplicant() {
-            try {
-                if (!currentUser || Object.keys(currentUser).length === 0) {
-                    setVerified(false);
-                    return;
-                }
-
-                await api.get("/employer/authorize", {
-                    params: {
-                        employerID: currentUser.employerID
-                    }
-                });
-
-                setVerified(true);
-            } catch (error) {
-                console.log(error);
-                setVerified(false);
-            } finally {
-                setLoading(false);
-            }
-        }
-
-        checkApplicant();
-    }, [currentUser]);
-
 
     useEffect(() => {
         fetchApplicants(1, "submitted"); 
     }, []);
 
-    useEffect(() => {
-        if (!loading && !verified) {
-            navigate("/forbidden", { replace: true });
-        }
-    }, [loading, verified, navigate]);
-
-    if (loading) {
-        return <Loading />
-    }
-
-    if (!verified) {
-        return null;
-    }
 
     return (
         <div className="lg:flex relative w-full min-w-0">

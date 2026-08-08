@@ -3,7 +3,6 @@ import SideBarOverlay from "../../components/overlay/SideBarOverlay";
 import EmployerSideBar from "../../components/navBars/EmployerSideBar";
 import PrimaryButton from "../../components/buttons/PrimaryButton";
 import Tooltip from "../../components/others/Tooltip";
-import Loading from "../../components/others/Loading";
 import { FaArrowLeftLong } from "react-icons/fa6";
 import { jobCreationStore } from "../../zustand/stateHandlers";
 import { useNavigate, useParams } from "react-router-dom";
@@ -26,8 +25,6 @@ export default function JobDescription({ mode = "create" }) {
 
     const navigate = useNavigate();
 
-    const [loading, setLoading] = useState(true);
-    const [verified, setVerified] = useState(false);
     const [errors, setErrors] = useState({
         issue: "",
         message: ""
@@ -44,33 +41,6 @@ export default function JobDescription({ mode = "create" }) {
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, []);
 
-    useEffect(() => {
-        async function checkEmployer() {
-            try {
-                if (!currentUser || Object.keys(currentUser).length === 0) {
-                    setVerified(false);
-                    setLoading(false);
-                    return;
-                }
-
-                await api.get("/employer/authorize", {
-                    params: {
-                        employerID: currentUser.employerID
-                    }
-                });
-                // console.log(createdJob)
-                setVerified(true);
-            } catch (error) {
-                console.log(error);
-                setVerified(false);
-                navigate("/forbidden");
-            } finally {
-                setLoading(false);
-            }
-        }
-
-        checkEmployer();
-    }, [currentUser]);
 
     function isQuillEmpty(html) {
         const text = new DOMParser()
@@ -117,9 +87,6 @@ export default function JobDescription({ mode = "create" }) {
         }
     }
 
-    if (loading) {
-        return <Loading />
-    }
 
     return (
         <div className="lg:flex relative w-full">

@@ -29,7 +29,6 @@ export default function SkillGapReport() {
 
     const navigate = useNavigate();
     const { applicantID, jobID, resumeID } = useParams();
-    const [verified, setVerified] = useState(false);
     const { currentUser } = userStore();
     const { sideBarStatus } = sideBarStore();
     useLockBodyScroll(sideBarStatus);    
@@ -59,30 +58,6 @@ export default function SkillGapReport() {
     const [noSkillGapReport, setNoSkillGapReport] = useState(false);
     const loading = !skillGapLoaded
 
-    useEffect(() => {
-        async function checkEmployer() {
-            try {
-                if (!currentUser || Object.keys(currentUser).length === 0) {
-                    setVerified(false);
-                    return;
-                }
-
-                await api.get("/employer/authorize", {
-                    params: {
-                        employerID: currentUser.employerID
-                    }
-                });
-                console.log(currentUser)
-
-                setVerified(true);
-            } catch (error) {
-                console.log(error);
-                setVerified(false);
-            }
-        }
-
-        checkEmployer();
-    }, [currentUser]);
 
     useEffect(() => {
         if (!leftColRef.current) return;
@@ -90,7 +65,6 @@ export default function SkillGapReport() {
         const el = leftColRef.current;
 
         const updateHeight = () => {
-            // Only lock height on md+ screens (two-column layout)
             if (window.innerWidth >= 768) {
                 setLeftColHeight(el.offsetHeight);
             } else {
@@ -169,11 +143,6 @@ export default function SkillGapReport() {
         getJob()
     }, [jobID])
 
-    useEffect(() => {
-        if (!loading && !verified) {
-            navigate("/forbidden");
-        }
-    }, [loading, verified, navigate]);
 
     if (noSkillGapReport) {
         return <NoSkillGapReport />
@@ -184,9 +153,6 @@ export default function SkillGapReport() {
         return <SkillGapLoader />
     }
 
-    if (!verified) {
-        return null;
-    }
 
 
     if (

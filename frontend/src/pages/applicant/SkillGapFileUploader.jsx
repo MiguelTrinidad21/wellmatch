@@ -1,13 +1,14 @@
 import AuthNavBar from "../../components/navBars/AuthNavBar";
 import SideBarOverlay from "../../components/overlay/SideBarOverlay";
 import ApplicantSideBar from "../../components/navBars/ApplicantSideBar";
-import Loading from "../../components/others/Loading"
 import PrimaryButton from "../../components/buttons/PrimaryButton";
 import Tooltip from "../../components/others/Tooltip";
+
 import { IoMdInformationCircleOutline } from "react-icons/io";
 import { IoChevronDown } from "react-icons/io5";
 import { FiUpload } from "react-icons/fi";
 import { BiLoaderAlt } from "react-icons/bi";
+
 import { useState, useEffect, useRef } from "react";
 import { useNavigate, Link, useParams } from "react-router-dom";
 import { userStore } from "../../zustand/userState";
@@ -38,9 +39,6 @@ export default function SkillGapFileUploader() {
 
     const { jobID } = useParams();
 
-    const [verified, setVerified] = useState(false);
-    const [loading, setLoading] = useState(true);
-
     const [allResumes, setAllResumes] = useState([]);
     const [isResumeDropdownOpen, setIsResumeDropdownOpen] = useState(false);
     const [selectedResumeID, setSelectedResumeID] = useState("");
@@ -53,38 +51,6 @@ export default function SkillGapFileUploader() {
 
     const [errors, setErrors] = useState({issue: ""});
 
-    useEffect(() => {
-        async function checkApplicant() {
-            try {
-                if (!currentUser || Object.keys(currentUser).length === 0) {
-                    setVerified(false);
-                    return;
-                }
-
-                await api.get("/applicant/authorize", {
-                    params: {
-                        applicantID: currentUser.applicantID
-                    }
-                });
-                console.log(prevLocation)
-                setVerified(true);
-            } catch (error) {
-                console.log(error);
-                setVerified(false);
-            } finally {
-                
-                setLoading(false);
-            }
-        }
-
-        checkApplicant();
-    }, [currentUser]);
-
-    useEffect(() => {
-        if (!loading && !verified) {
-            navigate("/forbidden");
-        }
-    }, [loading, verified, navigate]);
 
     useEffect(() => {
         async function getAllResumes() {
@@ -150,13 +116,6 @@ export default function SkillGapFileUploader() {
         }
     }
 
-    if (loading) {
-        return <Loading />
-    }
-
-    if (!verified) {
-        return null;
-    }
 
 
     return (

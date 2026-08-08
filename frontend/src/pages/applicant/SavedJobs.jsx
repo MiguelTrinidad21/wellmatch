@@ -1,7 +1,6 @@
 import AuthNavBar from "../../components/navBars/AuthNavBar";
 import SideBarOverlay from "../../components/overlay/SideBarOverlay";
 import ApplicantSideBar from "../../components/navBars/ApplicantSideBar";
-import Loading from "../../components/others/Loading"
 import PrimaryButton from "../../components/buttons/PrimaryButton";
 import DeleteItemBox from "../../components/popUps/DeleteItemBox"
 import JobInfoSide from "../../components/popUps/JobInfoSide";
@@ -24,8 +23,6 @@ export default function SavedJobs() {
     const { setApplicantActiveLink, sideBarStatus } = sideBarStore();
     useLockBodyScroll(sideBarStatus);
 
-    const [verified, setVerified] = useState(false);
-    const [loading, setLoading] = useState(true);
     const [savedJobs, setSavedJobs] = useState([]);
 
     const [showDelBox, setShowDelBox] = useState(false)
@@ -42,31 +39,6 @@ export default function SavedJobs() {
         setSavedJobIDs
     } = jobInfoStore();
 
-    useEffect(() => {
-        async function checkApplicant() {
-            try {
-                if (!currentUser || Object.keys(currentUser).length === 0) {
-                    setVerified(false);
-                    return;
-                }
-
-                await api.get("/applicant/authorize", {
-                    params: {
-                        applicantID: currentUser.applicantID
-                    }
-                });
-
-                setVerified(true);
-            } catch (error) {
-                console.log(error);
-                setVerified(false);
-            } finally {
-                setLoading(false);
-            }
-        }
-
-        checkApplicant();
-    }, [currentUser]);
 
     useEffect(() => {
         async function fetchSavedJobs() {
@@ -78,12 +50,6 @@ export default function SavedJobs() {
         fetchSavedJobs();
     }, [isJobSaved])
     
-
-    useEffect(() => {
-        if (!loading && !verified) {
-            navigate("/forbidden");
-        }
-    }, [loading, verified, navigate]);
 
     useEffect(() => {
         setApplicantActiveLink("Saved Jobs")
@@ -145,13 +111,6 @@ export default function SavedJobs() {
         }
     }
 
-    if (loading) {
-        return <Loading />
-    }
-
-    if (!verified) {
-        return null;
-    }
 
     return (
         <div className="lg:flex relative w-full">

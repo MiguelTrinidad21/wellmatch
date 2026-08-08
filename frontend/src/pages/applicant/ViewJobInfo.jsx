@@ -1,7 +1,6 @@
 import AuthNavBar from "../../components/navBars/AuthNavBar";
 import ApplicantSideBar from "../../components/navBars/ApplicantSideBar";
 import SideBarOverlay from "../../components/overlay/SideBarOverlay";
-import Loading from "../../components/others/Loading"
 import PrimaryButton from "../../components/buttons/PrimaryButton";
 import SecondaryButton from "../../components/buttons/SecondaryButton"
 import defaultPhoto from "../../assets/defaultCover.jpg"
@@ -32,44 +31,10 @@ export default function ViewJobInfo() {
 
     const location = useLocation();
 
-    const [verified, setVerified] = useState(false);
-    const [loading, setLoading] = useState(true);
     const [selectedJob, setSelectedJob] = useState({});
 
     const [savedJobIDs, setSavedJobIDs] = useState(new Set());
 
-    useEffect(() => {
-        async function checkApplicant() {
-            try {
-                if (!currentUser || Object.keys(currentUser).length === 0) {
-                    setVerified(false);
-                    return;
-                }
-
-                await api.get("/applicant/authorize", {
-                    params: {
-                        applicantID: currentUser.applicantID
-                    }
-                });
-
-                setVerified(true);
-            } catch (error) {
-                console.log(error);
-                setVerified(false);
-            } finally {
-                
-                setLoading(false);
-            }
-        }
-
-        checkApplicant();
-    }, [currentUser]);
-
-    useEffect(() => {
-        if (!loading && !verified) {
-            navigate("/forbidden");
-        }
-    }, [loading, verified, navigate]);
 
     useEffect(() => {
         async function getJob() {
@@ -125,13 +90,6 @@ export default function ViewJobInfo() {
         }
     }
 
-    if (loading) {
-        return <Loading />
-    }
-
-    if (!verified) {
-        return null;
-    }
 
     return (
         <div className="lg:flex relative w-full">

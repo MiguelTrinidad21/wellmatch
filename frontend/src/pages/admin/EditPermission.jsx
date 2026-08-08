@@ -22,8 +22,6 @@ export default function EditPermission(req, res) {
     const [employerLoading, setEmployerLoading] = useState(true);
     const [role, setRole] = useState("Employer");
 
-    const [verified, setVerified] = useState(false);
-    const [loading, setLoading] = useState(true);
     const [showConfirm, setShowConfirm] = useState(false);
     
     const { sideBarStatus } = sideBarStore();
@@ -105,41 +103,9 @@ export default function EditPermission(req, res) {
         getEmployerInfo();
     }, [])
 
-    useEffect(() => {
-        async function checkAdmin() {
-            try {
-                if (!currentUser || Object.keys(currentUser).length === 0) {
-                    setVerified(false);
-                    return;
-                }
-
-                await api.get("/employer/authorizeAdmin", {
-                    params: {
-                        employerID: currentUser.employerID
-                    }
-                });
-
-                setVerified(true);
-            } catch (error) {
-                console.log(error);
-                setVerified(false);
-            } finally {
-                
-                setLoading(false);
-            }
-        }
-
-        checkAdmin();
-    }, [currentUser]);
 
     useEffect(() => {
-        if (!loading && !verified) {
-            navigate("/forbidden");
-        }
-    }, [loading, verified, navigate]);
-
-    useEffect(() => {
-        if (loading || employerLoading || !verified) return;
+        if (employerLoading) return;
 
         if (
             !employerInfo ||
@@ -148,14 +114,10 @@ export default function EditPermission(req, res) {
         ) {
             navigate("/forbidden");
         }
-    }, [loading, employerLoading, verified, employerInfo, currentUser, navigate]);
+    }, [employerLoading, employerInfo, currentUser, navigate]);
 
-    if (loading || employerLoading) {
+    if (employerLoading) {
         return <Loading />
-    }
-
-    if (!verified) {
-        return null;
     }
 
     if (
@@ -163,14 +125,6 @@ export default function EditPermission(req, res) {
         employerInfo?.employerID === currentUser.id
     ) {
         return <NotFoundPage />
-    }
-
-    if (
-        !employerInfo || 
-        employerInfo?.status === "inactive" || 
-        employerInfo?.companyID !== currentUser.companyID
-    ) {
-        navigate("/forbidden");
     }
 
     return (

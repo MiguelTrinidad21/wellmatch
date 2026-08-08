@@ -1,11 +1,11 @@
 import AuthNavBar from "../../components/navBars/AuthNavBar";
 import SideBarOverlay from "../../components/overlay/SideBarOverlay"
-import Loading from "../../components/others/Loading"
 import PrimaryButton from "../../components/buttons/PrimaryButton";
 import SecondaryButton from "../../components/buttons/SecondaryButton"
 import ApplicantSideBar from "../../components/navBars/ApplicantSideBar";
 import JobInfoSide from "../../components/popUps/JobInfoSide";
 import defaultPhoto from "../../assets/defaultCover.jpg"
+
 import { LuBriefcase } from "react-icons/lu";
 import { LuSearch } from "react-icons/lu";
 import { MdOutlineLocationOn } from "react-icons/md";
@@ -14,12 +14,13 @@ import { FaRegBookmark } from "react-icons/fa";
 import { FaBookmark } from "react-icons/fa";
 import { IoSearchSharp } from "react-icons/io5";
 import { BiLoaderAlt } from "react-icons/bi";
-import { userStore } from "../../zustand/userState";
-import { jobSearchStore } from "../../zustand/jobSearching";
-import { sideBarStore, jobInfoStore, locationStore } from "../../zustand/stateHandlers";
 import { FaRegBuilding } from "react-icons/fa6";
 import { AiOutlineLaptop } from "react-icons/ai"
 import { TbBuildingCommunity } from "react-icons/tb";
+
+import { userStore } from "../../zustand/userState";
+import { jobSearchStore } from "../../zustand/jobSearching";
+import { sideBarStore, jobInfoStore, locationStore } from "../../zustand/stateHandlers";
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useNavigate, Link, useLocation } from "react-router-dom";
 import useIsDesktop from "../../hooks/useIsDesktop"; 
@@ -64,9 +65,7 @@ export default function RecommendedJobs() {
         setJobSearch
     } = jobSearchStore();
 
-    const location = useLocation();
-    const [verified, setVerified] = useState(false);
-    const [loading, setLoading] = useState(true);
+    const location = useLocation();;
     const [recommendedJobs, setRecommendedJobs] = useState([]);
 
     const [resumeStatus, setResumeStatus] = useState("");
@@ -85,32 +84,6 @@ export default function RecommendedJobs() {
     const jobsPerPage = 10;
 
     useLockBodyScroll(sideBarStatus)
-
-    useEffect(() => {
-        async function checkApplicant() {
-            try {
-                if (!currentUser || Object.keys(currentUser).length === 0) {
-                    setVerified(false);
-                    return;
-                }
-
-                await api.get("/applicant/authorize", {
-                    params: {
-                        applicantID: currentUser.applicantID
-                    }
-                });
-
-                setVerified(true);
-            } catch (error) {
-                console.log(error);
-                setVerified(false);
-            } finally {
-                setLoading(false);
-            }
-        }
-
-        checkApplicant();
-    }, [currentUser]);
 
     useEffect(() => {
         if (!leftColNode) return;
@@ -382,7 +355,7 @@ export default function RecommendedJobs() {
         fetchRecommendedJobs(1);
     }, [fetchRecommendedJobs]);
 
-    // Poll every 5 seconds ONLY while resume is processing
+
     useEffect(() => {
         if (resumeStatus !== "processing") {
             return;
@@ -395,19 +368,7 @@ export default function RecommendedJobs() {
         return () => clearInterval(intervalID);
     }, [resumeStatus, fetchRecommendedJobs]);
     
-    useEffect(() => {
-        if (!loading && !verified) {
-            navigate("/forbidden", { replace: true });
-        }
-    }, [loading, verified, navigate]);
 
-    if (loading) {
-        return <Loading />
-    }
-
-    if (!verified) {
-        return null;
-    }
 
     return (
         <div  className="lg:flex relative w-full">

@@ -1,7 +1,6 @@
 import AuthNavBar from "../../components/navBars/AuthNavBar";
 import SideBarOverlay from "../../components/overlay/SideBarOverlay";
 import EmployerSideBar from "../../components/navBars/EmployerSideBar";
-import Loading from "../../components/others/Loading"
 import WarningBox from "../../components/popUps/WarningBox";
 import Translucent from "../../components/overlay/Translucent";
 import ConfirmationDialog from "../../components/popUps/ConfirmationDialog";
@@ -41,8 +40,6 @@ export default function Jobs() {
     const isDesktop = useIsDesktop();
     const navigate = useNavigate();
 
-    const [verified, setVerified] = useState(false);
-    const [loading, setLoading] = useState(true);
     const [jobStatus, setJobStatus] = useState("open");
     const [listOfJobs, setListOfJobs] = useState([]);
 
@@ -65,38 +62,6 @@ export default function Jobs() {
 
     const jobsPerPage = 6;
  
-    useEffect(() => {
-        setEmployerActiveLink("jobs")
-    }, [])
-
-    useEffect(() => {
-        async function checkEmployer() {
-            setLoading(true);
-
-            try {
-                // console.log(currentUser);
-                if (!currentUser || Object.keys(currentUser).length === 0) {
-                    setVerified(false);
-                    return;
-                }
-
-                await api.get("/employer/authorize", {
-                    params: {
-                        employerID: currentUser.employerID
-                    }
-                });
-
-                setVerified(true);
-            } catch (error) {
-                console.log(error);
-                setVerified(false);
-            } finally {
-                setLoading(false);
-            }
-        }
-
-        checkEmployer();
-    }, [currentUser]);
 
     useEffect(() => {
         setEmployerActiveLink("Jobs")
@@ -208,7 +173,6 @@ export default function Jobs() {
             api.patch(`/employer/job/close/${closingJobID}`
             )
 
-            // setJobHasChanged(!jobHasChanged);
             setIsJobToClose(!isJobToClose)
             setJobStatus("closed")
         } catch (error) {
@@ -216,25 +180,21 @@ export default function Jobs() {
             setClosingError("Closing job failed. Please try again")
         } finally {
             setIsJobClosing(false);
-            // setJobHasChanged(!jobHasChanged);
         }
     }
 
 
     async function reopenJob() {
-        // setIsJobClosing(true);
         setJobHasChanged(!jobHasChanged)
 
         try {
             api.patch(`/employer/job/reOpen/${reOpenJobID}`
             )
 
-            // setJobHasChanged(!jobHasChanged);
             setIsJobToOpen(false);
             setJobStatus("open")
         } catch (error) {
             console.log(error)
-            // setClosingError("Closing job failed. Please try again")
         } 
     }
     
@@ -249,19 +209,6 @@ export default function Jobs() {
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, []);
 
-    useEffect(() => {
-        if (!loading && !verified) {
-            navigate("/forbidden", { replace: true });
-        }
-    }, [loading, verified, navigate]);
-
-    if (loading) {
-        return <Loading />
-    }
-
-    if (!verified) {
-        return null;
-    }
 
 
     return (

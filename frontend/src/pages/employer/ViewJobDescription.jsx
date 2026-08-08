@@ -1,5 +1,4 @@
 import AuthNavBar from "../../components/navBars/AuthNavBar";
-import Loading from "../../components/others/Loading"
 import defaultPhoto from "../../assets/defaultCover.jpg"
 import { LuBriefcase } from "react-icons/lu";
 import { MdOutlineLocationOn } from "react-icons/md";
@@ -23,42 +22,8 @@ export default function ViewJobDescription() {
     const { sideBarStatus } = sideBarStore();
     useLockBodyScroll(sideBarStatus);
 
-    const [verified, setVerified] = useState(false);
-    const [loading, setLoading] = useState(true);
     const [selectedJob, setSelectedJob] = useState({});
 
-    useEffect(() => {
-        async function checkEmployer() {
-            try {
-                if (!currentUser || Object.keys(currentUser).length === 0) {
-                    setVerified(false);
-                    return;
-                }
-
-                await api.get("/employer/authorize", {
-                    params: {
-                        employerID: currentUser.employerID
-                    }
-                });
-
-                setVerified(true);
-            } catch (error) {
-                console.log(error);
-                setVerified(false);
-            } finally {
-                
-                setLoading(false);
-            }
-        }
-
-        checkEmployer();
-    }, [currentUser]);
-
-    useEffect(() => {
-        if (!loading && !verified) {
-            navigate("/forbidden");
-        }
-    }, [loading, verified, navigate]);
 
     useEffect(() => {
         async function getJob() {
@@ -77,14 +42,6 @@ export default function ViewJobDescription() {
         getJob()
     }, [])
 
-
-    if (loading) {
-        return <Loading />
-    }
-
-    if (!verified) {
-        return null;
-    }
 
     return (
         <>

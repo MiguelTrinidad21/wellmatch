@@ -2,7 +2,6 @@ import AuthNavBar from "../../components/navBars/AuthNavBar";
 import SideBarOverlay from "../../components/overlay/SideBarOverlay";
 import EmployerSideBar from "../../components/navBars/EmployerSideBar";
 import PrimaryButton from "../../components/buttons/PrimaryButton";
-import Loading from "../../components/others/Loading";
 import { IoChevronDown } from "react-icons/io5";
 import { useNavigate, useParams } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
@@ -29,38 +28,8 @@ export default function CreateJobPost({ mode = "create" }) {
     const [lastSelectedLocation, setLastSelectedLocation] = useState(createdJob.location);
     const [shouldSearchLocation, setShouldSearchLocation] = useState(false);
     
-    const [verified, setVerified] = useState(false);
-    const [loading, setLoading] = useState(true);
     const [salaryError, setSalaryError] = useState("")
 
-
-    useEffect(() => {
-        async function checkEmployer() {
-            try {
-                if (!currentUser || Object.keys(currentUser).length === 0) {
-                    setVerified(false);
-                    setLoading(false);
-                    return;
-                }
-
-                await api.get("/employer/authorize", {
-                    params: {
-                        employerID: currentUser.employerID
-                    }
-                });
-
-                setVerified(true);
-            } catch (error) {
-                console.log(error);
-                setVerified(false);
-                navigate("/forbidden");
-            } finally {
-                setLoading(false);
-            }
-        }
-
-        checkEmployer();
-    }, [currentUser]);
 
     useEffect(() => {
         if (!shouldSearchLocation) return;
@@ -176,9 +145,6 @@ export default function CreateJobPost({ mode = "create" }) {
         setLocationSuggestions([]);
     }
 
-    if (loading) {
-        return <Loading />
-    }
 
     return (
         <div className="lg:flex relative w-full">

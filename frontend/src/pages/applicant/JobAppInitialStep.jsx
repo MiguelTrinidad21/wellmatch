@@ -1,7 +1,6 @@
 import AuthNavBar from "../../components/navBars/AuthNavBar";
 import SideBarOverlay from "../../components/overlay/SideBarOverlay";
 import ApplicantSideBar from "../../components/navBars/ApplicantSideBar";
-import Loading from "../../components/others/Loading"
 import PrimaryButton from "../../components/buttons/PrimaryButton";
 import defaultCover from "../../assets/defaultCover.jpg"
 import { IoChevronDown } from "react-icons/io5";
@@ -33,9 +32,6 @@ export default function JobAppInitialStep() {
 
     const { jobID } = useParams();
 
-    const [verified, setVerified] = useState(false);
-    const [loading, setLoading] = useState(true);
-
     const [allResumes, setAllResumes] = useState([]);
     const [isResumeDropdownOpen, setIsResumeDropdownOpen] = useState(false);
     const [selectedResumeID, setSelectedResumeID] = useState("");
@@ -58,38 +54,6 @@ export default function JobAppInitialStep() {
         { label: "More than 5 years", value: "6" },
     ];
 
-    useEffect(() => {
-        async function checkApplicant() {
-            try {
-                if (!currentUser || Object.keys(currentUser).length === 0) {
-                    setVerified(false);
-                    return;
-                }
-
-                await api.get("/applicant/authorize", {
-                    params: {
-                        applicantID: currentUser.applicantID
-                    }
-                });
-
-                setVerified(true);
-            } catch (error) {
-                console.log(error);
-                setVerified(false);
-            } finally {
-                
-                setLoading(false);
-            }
-        }
-
-        checkApplicant();
-    }, [currentUser]);
-
-    useEffect(() => {
-        if (!loading && !verified) {
-            navigate("/forbidden");
-        }
-    }, [loading, verified, navigate]);
 
     useEffect(() => {
         async function getAllResumes() {
@@ -137,14 +101,6 @@ export default function JobAppInitialStep() {
         navigate(`/applicant/viewJob/${jobID}/apply/submit`);
     }
 
-
-    if (loading) {
-        return <Loading />
-    }
-
-    if (!verified) {
-        return null;
-    }
 
 
     return (

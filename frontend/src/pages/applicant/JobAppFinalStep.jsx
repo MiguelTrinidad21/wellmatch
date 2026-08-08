@@ -1,7 +1,5 @@
 import AuthNavBar from "../../components/navBars/AuthNavBar";
 import Overlay from "../../components/overlay/OverlayMobile";
-import Footer from "../../components/others/Footer"
-import Loading from "../../components/others/Loading"
 import PrimaryButton from "../../components/buttons/PrimaryButton";
 import SecondaryButton from "../../components/buttons/SecondaryButton";
 import ConfirmationBox from "../../components/popUps/ConfirmationBox";
@@ -34,9 +32,6 @@ export default function JobAppFinalStep() {
 
     const { jobID } = useParams();
 
-    const [verified, setVerified] = useState(false);
-    const [loading, setLoading] = useState(true);
-
     const [currentJob, setCurrentJob] = useState({});
 
     const [workExp, setWorkExp] = useState([]);
@@ -48,39 +43,6 @@ export default function JobAppFinalStep() {
     const [errors, setErrors] = useState("");
 
     
-
-    useEffect(() => {
-        async function checkApplicant() {
-            try {
-                if (!currentUser || Object.keys(currentUser).length === 0) {
-                    setVerified(false);
-                    return;
-                }
-
-                await api.get("/applicant/authorize", {
-                    params: {
-                        applicantID: currentUser.applicantID
-                    }
-                });
-
-                setVerified(true);
-            } catch (error) {
-                console.log(error);
-                setVerified(false);
-            } finally {
-                
-                setLoading(false);
-            }
-        }
-
-        checkApplicant();
-    }, [currentUser]);
-
-    useEffect(() => {
-        if (!loading && !verified) {
-            navigate("/forbidden");
-        }
-    }, [loading, verified, navigate]);
 
     useEffect(() => {
         async function getJobInfo() {
@@ -174,13 +136,6 @@ export default function JobAppFinalStep() {
         }
     }
 
-    if (loading) {
-        return <Loading />
-    }
-
-    if (!verified) {
-        return null;
-    }
 
 
     return (

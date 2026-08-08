@@ -1,7 +1,6 @@
 import AuthNavBar from "../../components/navBars/AuthNavBar";
 import SideBarOverlay from "../../components/overlay/SideBarOverlay";
 import ApplicantSideBar from "../../components/navBars/ApplicantSideBar";
-import Loading from "../../components/others/Loading"
 import PrimaryButton from "../../components/buttons/PrimaryButton";
 import WorkHistoryForm from "../../components/popUps/WorkHistoryForm";
 import CredentialsForm from "../../components/popUps/CredentialsForm";
@@ -33,9 +32,6 @@ export default function MyProfile() {
     const { currentUser, handleCurrentUser } = userStore();
     const { setApplicantActiveLink, sideBarStatus } = sideBarStore();
     useLockBodyScroll(sideBarStatus);
-
-    const [verified, setVerified] = useState(false);
-    const [loading, setLoading] = useState(true);
     
     const [workExp, setWorkExp] = useState([]);
     const [refreshWorkExp, setRefreshWorkExp] = useState(false);
@@ -164,37 +160,6 @@ export default function MyProfile() {
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, []);
 
-    useEffect(() => {
-        async function checkApplicant() {
-            try {
-                if (!currentUser || Object.keys(currentUser).length === 0) {
-                    setVerified(false);
-                    return;
-                }
-
-                const result = await api.get("/applicant/authorize", {
-                    params: {
-                        applicantID: currentUser.applicantID
-                    }
-                });
-                console.log(currentUser)
-                setVerified(true);
-            } catch (error) {
-                console.log(error);
-                setVerified(false);
-            } finally {
-                setLoading(false);
-            }
-        }
-
-        checkApplicant();
-    }, [currentUser]);    
-
-    useEffect(() => {
-        if (!loading && !verified) {
-            navigate("/forbidden", { replace: true });
-        }
-    }, [loading, verified, navigate]);
 
     useEffect(() => {
         async function getWorkExp() {
@@ -263,14 +228,6 @@ export default function MyProfile() {
         getEducation();
     }, [refreshEducation]);
  
-
-    if (loading) {
-        return <Loading />
-    }
-
-    if (!verified) {
-        return null;
-    }
 
     return (
         <div className="lg:flex relative w-full">
@@ -358,9 +315,6 @@ export default function MyProfile() {
 
 
                 <div className="w-full p-6 md:p-15 lg:p-10 xl:px-30">
-                    {/* <section className="">
-
-                    </section> */}
 
                     <section className="flex gap-3 relative w-full xl:w-[80%] mb-10 md:gap-10 md:mb-15">
                         <div className="w-14 h-14 shrink-0 md:w-30 md:h-30 xl:w-40 xl:h-40">

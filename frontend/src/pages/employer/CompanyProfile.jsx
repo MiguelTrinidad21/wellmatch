@@ -5,7 +5,6 @@ import SideBarOverlay from "../../components/overlay/SideBarOverlay";
 import EmployerSideBar from "../../components/navBars/EmployerSideBar";
 import Translucent from "../../components/overlay/Translucent";
 import EditCompany from "../../components/popUps/EditCompany";
-import Loading from "../../components/others/Loading";
 import WarningBox from "../../components/popUps/DeleteItemBox";
 import ConfirmationBox from "../../components/popUps/ConfirmationBox"
 import InviteEmployer from "../admin/InviteEmployer";
@@ -34,8 +33,6 @@ export default function CompanyProfile() {
     const navigate = useNavigate();
 
     const [companyMembers, setCompanyMembers] = useState([]);
-    const [verified, setVerified] = useState(false);
-    const [loading, setLoading] = useState(true);
     const [editCompany, setEditCompany] = useState(false);
 
     const [showDelete, setShowDelete] = useState(false);
@@ -49,33 +46,6 @@ export default function CompanyProfile() {
     const [showInvite, setShowInvite] = useState(false);
     const [inviteSent, setInviteSent] = useState(false);
 
-    useEffect(() => {
-        async function checkEmployer() {
-            try {
-
-                if (!currentUser || Object.keys(currentUser).length === 0) {
-                    setVerified(false);
-                    setLoading(false);
-                    return;
-                }
-
-                await api.get("/employer/authorize", {
-                    params: {
-                        employerID: currentUser.employerID
-                    }
-                });
-
-                setVerified(true);
-            } catch (error) {
-                console.log(error);
-                setVerified(false);
-            } finally {
-                setLoading(false);
-            }
-        }
-
-        checkEmployer();
-    }, [currentUser]);
 
     useEffect(() => {
         setEmployerActiveLink("Company Profile");
@@ -153,14 +123,6 @@ export default function CompanyProfile() {
         }
     }
 
-
-    if (loading) {
-        return <Loading />
-    }
-
-    if (!verified) {
-        navigate("/forbidden");
-    }
 
 
     return (
