@@ -49,7 +49,7 @@ export async function fetchApplicants(req, res) {
             INNER JOIN applicants ap
                 ON a.applicantID = ap.applicantID
             INNER JOIN jobs j
-                ON a.jobID = J.jobID
+                ON a.jobID = j.jobID
             WHERE a.jobID = ?
                 AND a.status IN ('not selected', 'withdraw')
             ORDER BY
