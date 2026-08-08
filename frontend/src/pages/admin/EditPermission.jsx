@@ -3,6 +3,7 @@ import SideBarOverlay from "../../components/overlay/SideBarOverlay";
 import EmployerSideBar from "../../components/navBars/EmployerSideBar";
 import Loading from "../../components/others/Loading"
 import ConfirmationBox from "../../components/popUps/ConfirmationBox";
+import NotFoundPage from "../errors/NotFoundPage.jsx";
 import { FaCheck } from "react-icons/fa6";
 import { userStore } from "../../zustand/userState";
 import { sideBarStore } from "../../zustand/stateHandlers.js";
@@ -18,6 +19,7 @@ export default function EditPermission(req, res) {
     const { memberID } = useParams();
 
     const [employerInfo, setEmployerInfo] = useState({});
+    const [employerLoading, setEmployerLoading] = useState(true);
     const [role, setRole] = useState("Employer");
 
     const [verified, setVerified] = useState(false);
@@ -91,9 +93,12 @@ export default function EditPermission(req, res) {
                 });
 
                 setEmployerInfo(res.data);
+                
 
             } catch (error) {
                 console.log(error);
+            } finally {
+                setEmployerLoading(false);
             }
         }
 
@@ -133,12 +138,39 @@ export default function EditPermission(req, res) {
         }
     }, [loading, verified, navigate]);
 
-    if (loading) {
+    useEffect(() => {
+        if (loading || employerLoading || !verified) return;
+
+        if (
+            !employerInfo ||
+            employerInfo?.status === "inactive" ||
+            employerInfo?.companyID !== currentUser.companyID
+        ) {
+            navigate("/forbidden");
+        }
+    }, [loading, employerLoading, verified, employerInfo, currentUser, navigate]);
+
+    if (loading || employerLoading) {
         return <Loading />
     }
 
     if (!verified) {
         return null;
+    }
+
+    if (
+        !employerInfo || 
+        employerInfo?.employerID === currentUser.id
+    ) {
+        return <NotFoundPage />
+    }
+
+    if (
+        !employerInfo || 
+        employerInfo?.status === "inactive" || 
+        employerInfo?.companyID !== currentUser.companyID
+    ) {
+        navigate("/forbidden");
     }
 
     return (
@@ -164,13 +196,13 @@ export default function EditPermission(req, res) {
                     <h1 className="font-bold text-2xl mb-4">Individual Details</h1>
 
                     <section className="flex gap-4 w-full">
-                        <div className="w-15 h-15 p-2 bg-green-600 font-bold text-white text-2xl rounded-full flex items-center justify-center">
+                        <div className="shrink-0 w-14 h-14 p-2 bg-green-600 font-bold text-white text-2xl rounded-full flex items-center justify-center">
                             {`${employerInfo.firstName?.charAt(0)}${employerInfo.lastName?.charAt(0)}`}
                         </div>
 
-                        <div className="flex-1">
-                            <h2 className="font-bold text-lg mb-1">{employerInfo.firstName}&nbsp;{employerInfo.lastName}</h2>
-                            <p>{employerInfo.email}</p>
+                        <div className="flex-1 min-w-0">
+                            <h2 className="font-bold text-lg mb-1 wrap-break-word">{employerInfo.firstName}&nbsp;{employerInfo.lastName}</h2>
+                            <p className="wrap-break-word">{employerInfo.email}</p>
                         </div>
                     </section>
 

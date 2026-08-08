@@ -22,6 +22,7 @@ import { BiLoaderAlt } from "react-icons/bi";
 import ApplicantSideBar from "../../components/navBars/ApplicantSideBar";
 import SideBarOverlay from "../../components/overlay/SideBarOverlay";
 import useLockBodyScroll from "../../hooks/useLockBodyScroll";
+import { HiOutlineBriefcase } from "react-icons/hi2";
 
 
 export default function JobAppFinalStep() {
@@ -213,20 +214,18 @@ export default function JobAppFinalStep() {
                 }
                 
                 <div className="w-full min-h-[calc(100vh-64px)] p-6 flex flex-col justify-center items-center gap-5 md:p-15">
-                    <div className="w-full flex gap-3 md:w-fit">
-                        <div className="w-30 rounded-lg">
-                            <img className="w-full object-cover rounded-lg" src={currentJob.profilePhotoURL ? currentJob.profilePhotoURL : defaultCover} alt="" />
+                    <div className="shadow-sm flex items-center gap-3 md:gap-5 w-full md:w-120 bg-white rounded-2xl p-4 md:p-5 mb-5">
+                        <div className="bg-green-100 p-1 w-11 h-11 rounded-xl flex justify-center items-center min-w-0 shrink-0">
+                            <HiOutlineBriefcase size={25} className="text-green-700"/>
                         </div>
-
-                        <div className="flex-1">
-                            <p className="text-sm text-gray-500">Applying for</p>
-                            <h1 className="text-xl font-bold text-gray-900">{currentJob.jobTitle}</h1>
-                            <p className="text-gray-700 font-semibold">{currentJob.companyName}</p>
-                            {/* <Link to={`/applicant/viewJob/${jobID}`} className="underline underline-offset-4 text-sm text-blue-600 font-medium">View job description</Link> */}
+                        <div className="max-w-100 xl:max-w-150">
+                            <p className="text-sm text-gray-600">Applying for</p>
+                            <p className="font-bold text-xl mb-3">{currentJob.jobTitle}</p>
+                            <p className="text-gray-800 text-lg font-medium">{currentJob.companyName}</p>
                         </div>
-                    </div>
+                    </div>  
 
-                    <div className="bg-white shadow-lg rounded-2xl p-4 w-full md:max-w-120 lg:max-w-150 md:p-8">
+                    <div className="bg-white shadow-lg rounded-2xl p-4 w-full md:w-120 lg:max-w-150 md:p-8">
                         <h2 className="font-bold text-xl mb-3">Review WellMatch Profile</h2>
                         <p className="text-[12px] text-gray-500 mb-5 font-semibold md:text-sm">Your profile is part of your job application. Make sure you review it carefully.</p>
 
@@ -287,10 +286,8 @@ export default function JobAppFinalStep() {
                                                 <h1 className="font-bold text-lg mb-1">{item.courseName}</h1>
                                                 <p className="text-[#6366F1] font-semibold mb-1">{item.institution}</p>
                                                 {
-                                                    item.graduatedAt ? 
-                                                        <p className="text-gray-500 font-semibold text-[13px]">{`Graduated at ${item.issueDate}`}</p>
-                                                    :    
-                                                        <p className="text-gray-500 font-semibold text-[13px]">{`Expected to finish at ${item.willFinishAt}`}</p>
+                                                    (item.graduatedAt !== null || item.willFinishAt !== null) &&
+                                                    <p className="text-gray-700 text-sm">{item.graduatedAt ? `Graduated in ${item.graduatedAt}` : `Expected to finish in ${item.willFinishAt}`}</p>
                                                 }
                                             </div>
                                         </div>
@@ -302,10 +299,10 @@ export default function JobAppFinalStep() {
                         </div>
                         
                         <div className="flex justify-between w-full">
-                            <PrimaryButton disabled={isSubmitting} to={`/applicant/viewJob/${jobID}/apply`} className="bg-gray-200 text-black! px-4 xl:px-7">Back</PrimaryButton>
+                            <PrimaryButton disabled={isSubmitting} to={`/applicant/viewJob/${jobID}/apply`} className="text-[12px]! md:text-[1rem]! md:px-5 bg-gray-200 text-black! px-4 xl:px-7">Back</PrimaryButton>
                             <div className="flex gap-2 xl:gap-4" >
-                                <SecondaryButton disabled={isSubmitting} to="/applicant/myProfile" className="px-5 xl:px-7 fon-bold! xl:text-[1rem]!">Edit</SecondaryButton>
-                                <PrimaryButton className={`xl:px-7 xl:text-[1rem]! ${isSubmitting ? "opacity-50" : undefined}`} disabled={isSubmitting} onClick={submitApplication}>
+                                <SecondaryButton disabled={isSubmitting} to="/applicant/myProfile" className="text-[12px]! md:text-[1rem]! px-5 md:px-6 xl:px-7 fon-bold! xl:text-[1rem]!">Edit</SecondaryButton>
+                                <PrimaryButton className={`text-[12px]! md:text-[1rem]! md:px-6 xl:px-7 xl:text-[1rem]! ${isSubmitting ? "opacity-50" : undefined}`} disabled={isSubmitting} onClick={submitApplication}>
                                     {
                                         isSubmitting ?
                                             <span className="flex gap-2 items-center justify-center">

@@ -60,7 +60,7 @@ export default function ApplicantSignIn() {
                 <div className="w-full flex-1 flex justify-center items-center p-6 md:px-15 md:py-10 lg:px-20 min-h-0">
                     <div className="flex flex-col min-h-0 w-full lg:flex-row lg:w-240 lg:h-140 lg:overflow-hidden lg:rounded-3xl lg:shadow-xl">
                         <div className="w-full text-center mb-5 lg:hidden">
-                            <h1 className="text-3xl font-extrabold bg-linear-to-r from-[#166534] via-[#16A34A] to-[#4ADE80] bg-clip-text text-transparent mb-2 md:text-5xl md:mb-5" >Your Career Starts Here</h1>
+                            <h1 className="text-[26px] font-extrabold bg-linear-to-r from-[#166534] via-[#16A34A] to-[#4ADE80] bg-clip-text text-transparent mb-2 md:text-5xl md:mb-5" >Your Career Starts Here</h1>
                         </div>
 
                         {/* Image column */}
@@ -75,7 +75,7 @@ export default function ApplicantSignIn() {
                         </div>
 
                     
-                        <form onSubmit={handleSubmit} className="m-auto flex items-center w-full h-full min-h-0 overflow-y-auto bg-white rounded-3xl shadow-lg p-6 md:w-100 lg:w-1/2 lg:rounded-tl-none lg:shadow-none lg:rounded-bl-none lg:p-15">
+                        <form onSubmit={handleSubmit} className="m-auto flex items-center w-full h-full min-h-0 overflow-y-auto bg-white rounded-2xl shadow-lg p-6 md:w-100 lg:w-1/2 lg:rounded-tl-none lg:shadow-none lg:rounded-bl-none lg:p-15">
                             <div className="w-full">
                                 <h2 className="text-left text-gray-900 mb-2 font-bold text-2xl lg:text-3xl lg:mb-4 ">Welcome back</h2>
                                 <p className="text-gray-500 font-semibold text-[17px] mb-10">Sign in to continue your career journey with WellMatch.</p>

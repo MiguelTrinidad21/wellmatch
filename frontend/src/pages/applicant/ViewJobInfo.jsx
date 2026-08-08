@@ -77,7 +77,7 @@ export default function ViewJobInfo() {
                 const jobDesc = await api.get(`/applicant/viewJob/${jobID}`)
 
                 setSelectedJob(jobDesc.data);
-                console.log(jobDesc.data)
+                // console.log(jobDesc.data)
             } catch (error) {
                 console.log(error)
             } finally {
@@ -91,7 +91,7 @@ export default function ViewJobInfo() {
     useEffect(() => {
         async function fetchSavedJobs() {
             const res = await api.get("/applicant/getSavedJobs");
-            console.log(res.data.jobIDs)
+            // console.log(res.data.jobIDs)
             setSavedJobIDs(new Set(res.data.jobIDs));
         }
 
@@ -148,18 +148,18 @@ export default function ViewJobInfo() {
                             <img 
                                 src={selectedJob.coverPhotoURL ? selectedJob.coverPhotoURL : defaultPhoto} 
                                 alt="cover photo"
-                                className="w-full h-45 object-cover rounded-tl-2xl rounded-tr-2xl md:h-55"
+                                className="w-full h-40 object-cover rounded-tl-2xl rounded-tr-2xl md:h-55"
                             />
                         </div>
 
-                        <div className="p-4 w-full mb-3 md:p-7">
-                            <div className="w-full relative mb-4">
+                        <div className="p-3 w-full mb-3 md:p-7">
+                            <div className="w-full relative mb-6">
                                 <img 
                                     src={selectedJob.profilePhotoURL ? selectedJob.profilePhotoURL : defaultPhoto} 
                                     alt="profile photo"
-                                    className="w-25 object-cover rounded-sm md:rounded-xl md:w-30"
+                                    className="w-25 object-cover rounded-lg md:rounded-xl md:w-30"
                                 />
-                                <PrimaryButton to={`/applicant/viewJob/${jobID}/chooseFile`} className="absolute top-0 right-0 rounded-md bg-gray-800! text-[12px] md:text-sm">View Skill Gap Analysis</PrimaryButton>
+                                <PrimaryButton to={`/applicant/viewJob/${jobID}/chooseFile`} className="absolute top-0 right-0 rounded-md bg-gray-800! text-[10px] md:text-sm">View Skill Gap Analysis</PrimaryButton>
                             </div>
                             <div className="w-full mb-4">
                                 <h1 className="text-xl font-bold">{selectedJob.jobTitle}</h1>

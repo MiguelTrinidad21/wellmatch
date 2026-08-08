@@ -75,7 +75,7 @@ export default function SkillGapAnalysisUI() {
                         applicantID: currentUser.applicantID
                     }
                 });
-                console.log(currentUser)
+                // console.log(currentUser)
 
                 setVerified(true);
             } catch (error) {
@@ -123,7 +123,7 @@ export default function SkillGapAnalysisUI() {
     useEffect(() => {
 
         async function getSkillGapReport() {
-            console.log(resumeToAnalyze)
+            // console.log(resumeToAnalyze)
 
             try {
 
@@ -150,7 +150,7 @@ export default function SkillGapAnalysisUI() {
                 const jobDesc = await api.get(`/applicant/viewJob/${jobID}`)
 
                 setSelectedJob(jobDesc.data);
-                console.log(jobDesc.data)
+                // console.log(jobDesc.data)
                 if (selectedJob?.status === "deleted") setJobIsDeleted(true)
             } catch (error) {
                 console.log(error)
@@ -174,7 +174,7 @@ export default function SkillGapAnalysisUI() {
     if (!selectedJob || !skillGapAnalysis) {
         return (
             <div className="w-full min-h-screen flex items-center justify-center bg-[#F3F4F6]">
-                <p className="text-gray-600 text-sm">Something went wrong. Please refresh and try again.</p>
+                <p className="text-gray-600 text-sm text-center">Something went wrong. Please refresh and try again.</p>
             </div>
         );
     }
@@ -219,7 +219,7 @@ export default function SkillGapAnalysisUI() {
 
                             <div ref={leftColRef} className="w-full flex flex-col gap-4 xl:w-100">
                                 <section className="rounded-2xl shadow-sm bg-white p-4 border-2 border-[#E8ECEF]">
-                                    <div className="flex gap-2 mb-4">
+                                    <div className="hidden lg:flex gap-2 mb-4">
                                         <div className="w-19 h-19 shrink-0">
                                             <img className="w-full h-full rounded-full object-cover" src={`${currentUser.profilePhoto ? currentUser.profilePhoto : defaultProfile}`} alt="" />
                                         </div>
@@ -238,6 +238,27 @@ export default function SkillGapAnalysisUI() {
                                             }
                                         </div>
                                     </div>
+                                    <div className="flex flex-col items-center gap-1 mb-4 lg:hidden">
+                                        <div className="w-19 h-19 shrink-0">
+                                            <img className="w-full h-full rounded-full object-cover" src={`${currentUser.profilePhoto ? currentUser.profilePhoto : defaultProfile}`} alt="" />
+                                        </div>
+                                        <div className="w-full border-b border-gray-300 pb-1">
+                                            <h1 className="text-center text-lg font-bold wrap-break-word">{`${currentUser.firstName} ${currentUser.lastName}`}</h1>
+                                        </div>
+                                        <div className="w-full">
+                                            <div className="flex items-start gap-2 w-full">
+                                                <MdOutlineEmail className="shrink-0 mt-1" />
+                                                <p className="text-[15px] wrap-break-word min-w-0">{currentUser.email}</p>
+                                            </div>
+                                            {
+                                                currentUser.address &&
+                                                <div className="flex items-start gap-2 w-full">
+                                                    <SlLocationPin className="shrink-0 mt-1" />
+                                                    <p className="text-[15px] wrap-break-word min-w-0">{currentUser.address}</p>
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>                                    
 
                                     <div className="flex flex-col w-full items-center justify-center gap-4">
                                         <div className="flex items-start gap-4 rounded-2xl bg-[#2A1F54] w-65 p-4 text-white">
@@ -250,7 +271,7 @@ export default function SkillGapAnalysisUI() {
                                             </div>
                                         </div>
 
-                                        <PrimaryButton onClick={() => setShowResumeViewer(true)} className="w-65 hover:bg-green-600 transition-colors duration-200 ease-in" >View Resume</PrimaryButton>
+                                        <PrimaryButton onClick={() => setShowResumeViewer(true)} className="w-full md:w-65 hover:bg-green-600 transition-colors duration-200 ease-in" >View Resume</PrimaryButton>
                                     </div>
 
                                 </section>
@@ -340,13 +361,13 @@ export default function SkillGapAnalysisUI() {
 
                         <div ref={leftColRef} className="w-full flex flex-col gap-4 xl:w-100">
                             <section className="rounded-2xl shadow-sm bg-white p-4 border-2 border-[#E8ECEF]">
-                                <div className="flex gap-2 mb-4">
+                                <div className="hidden lg:flex gap-2 mb-4">
                                     <div className="w-19 h-19 shrink-0">
                                         <img className="w-full h-full rounded-full object-cover" src={`${currentUser.profilePhoto ? currentUser.profilePhoto : defaultProfile}`} alt="" />
                                     </div>
                                     <div className="flex-1 min-w-0">
                                         <h1 className="text-lg font-bold wrap-break-word">{`${currentUser.firstName} ${currentUser.lastName}`}</h1>
-                                         <div className="flex items-start gap-2 w-full">
+                                        <div className="flex items-start gap-2 w-full">
                                             <MdOutlineEmail className="shrink-0 mt-1" />
                                             <p className="wrap-break-word min-w-0">{currentUser.email}</p>
                                         </div>
@@ -358,16 +379,37 @@ export default function SkillGapAnalysisUI() {
                                             </div>
                                         }
                                     </div>
+                                </div>                                
+                                <div className="flex flex-col items-center gap-1 mb-4 lg:hidden">
+                                    <div className="w-19 h-19 shrink-0">
+                                        <img className="w-full h-full rounded-full object-cover" src={`${currentUser.profilePhoto ? currentUser.profilePhoto : defaultProfile}`} alt="" />
+                                    </div>
+                                    <div className="w-full border-b border-gray-300 pb-1">
+                                        <h1 className="text-center text-lg font-bold wrap-break-word">{`${currentUser.firstName} ${currentUser.lastName}`}</h1>
+                                    </div>
+                                    <div className="w-full">
+                                         <div className="flex items-start gap-2 w-full">
+                                            <MdOutlineEmail className="shrink-0 mt-1" />
+                                            <p className="text-[15px] wrap-break-word min-w-0">{currentUser.email}</p>
+                                        </div>
+                                        {
+                                            currentUser.address &&
+                                            <div className="flex items-start gap-2 w-full">
+                                                <SlLocationPin className="shrink-0 mt-1" />
+                                                <p className="text-[15px] wrap-break-word min-w-0">{currentUser.address}</p>
+                                            </div>
+                                        }
+                                    </div>
                                 </div>
 
                                 <div className="flex flex-col w-full justify-center items-center gap-4">
-                                    <div className="rounded-2xl bg-[#2A1F54] w-65 p-4">
+                                    <div className="rounded-2xl bg-[#2A1F54] w-full md:w-65 p-4">
                                         <h1 className="text-white font-bold text-center mb-3">OVERALL MATCH SCORE</h1>
                                         <MatchScore type="overall" score={skillGapAnalysis.overallScore} />
                                         <p className="text-center text-white font-semibold mt-3">{skillGapAnalysis.scoresBreakdown.interpretation}</p>
                                     </div>
 
-                                    <PrimaryButton onClick={() => setShowResumeViewer(true)} className="w-65 hover:bg-green-600 transition-colors duration-200 ease-in" >View Resume</PrimaryButton>
+                                    <PrimaryButton onClick={() => setShowResumeViewer(true)} className="w-full md:w-65 hover:bg-green-600 transition-colors duration-200 ease-in" >View Resume</PrimaryButton>
                                 </div>
 
                             </section>
@@ -410,7 +452,7 @@ export default function SkillGapAnalysisUI() {
                                         <MatchScore 
                                             type="breakdown"
                                             score={skillGapAnalysis.scoresBreakdown.coreSkillScore}
-                                            className="w-25! h-25!"    
+                                            className="w-24! h-24! md:25! md:h-25!"    
                                         />
                                         <p className="text-[12px] font-semibold mt-2">Required Skills</p>
                                         <p className="text-[12px]">Weighted 80%</p>
@@ -422,7 +464,7 @@ export default function SkillGapAnalysisUI() {
                                             <MatchScore 
                                                 type="breakdown"
                                                 score={skillGapAnalysis.scoresBreakdown.secondarySkillScore}
-                                                className="w-25! h-25!"    
+                                                className="w-24! h-24! md:25! md:h-25!"    
                                             />
                                                 <p className="text-[12px] font-semibold mt-2">Preferred Skills</p>
                                                 <p className="text-[12px]">Weighted 20%</p>

@@ -66,7 +66,7 @@ export default function SkillGapFileUploader() {
                         applicantID: currentUser.applicantID
                     }
                 });
-
+                console.log(prevLocation)
                 setVerified(true);
             } catch (error) {
                 console.log(error);
@@ -124,7 +124,7 @@ export default function SkillGapFileUploader() {
                 navigate(`/applicant/viewJob/${jobID}/${selectedResume.resumeID}/skillGapReport`);
             } else {
                 setIsUploading(true);
-                console.log(selectedOption)
+                // console.log(selectedOption)
 
                 const formData = new FormData();
                 formData.append("resume", uploadedResume);
@@ -209,12 +209,12 @@ export default function SkillGapFileUploader() {
                                     </span>
                                 </label>
 
-                                <div className="w-64 ml-6 relative min-w-0">
+                                <div className="w-50 ml-6 relative min-w-0">
                                     <button
                                         type="button"
                                         disabled={selectedOption !== "select"}
                                         onClick={() => setIsResumeDropdownOpen(!isResumeDropdownOpen)}
-                                        className={`w-full border rounded-lg p-2 pr-9 text-left truncate ${
+                                        className={`w-full border rounded-lg p-2 pr-9 text-sm text-left truncate ${
                                             selectedOption === "select"
                                                 ? "text-black border-gray-300 cursor-pointer"
                                                 : "text-gray-400 border-gray-200 cursor-not-allowed bg-gray-50"

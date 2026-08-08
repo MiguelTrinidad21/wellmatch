@@ -70,9 +70,9 @@ export default function CredentialsForm({ toggleForm, refresh }) {
             <Translucent />
         
             <div className="w-[85%] max-h-[90%] overflow-y-scroll scrollbar-none p-5 bg-[#F3F4F6] fixed top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 z-50 rounded-2xl md:w-100 md:p-7 md:pt-10">
-                <IoClose onClick={toggleForm} size={20} className="cursor-pointer absolute top-2 right-2 md:top-4 md:right-4 md:h-7 md:w-7" />
+                <IoClose onClick={toggleForm}  className="cursor-pointer absolute top-2 right-2 md:top-4 md:right-4 w-6 h-6 md:h-7 md:w-7" />
 
-                <h1 className="font-bold text-xl mb-3 text-center">Credentials</h1>
+                <h1 className="font-bold text-xl mt-6 md:mt-0 mb-3 text-center">Credentials</h1>
 
                 <form onSubmit={handleSubmit} className="w-full">
                     <div className="flex flex-col w-full mb-4">

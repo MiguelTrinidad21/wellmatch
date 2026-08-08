@@ -41,13 +41,15 @@ export async function fetchApplicants(req, res) {
 
     if (status === "not selected") {
         [allApplicants] = await database.query(`
-            SELECT a.*, s.overallScore, ap.firstName, ap.lastName
+            SELECT a.*, s.overallScore, ap.firstName, ap.lastName, j.concatJobSkills
             FROM applications a
             LEFT JOIN skillGapAnalysis s
                 ON a.jobID = s.jobID
                 AND a.resumeID = s.resumeID
             INNER JOIN applicants ap
                 ON a.applicantID = ap.applicantID
+            INNER JOIN jobs j
+                ON a.jobID = J.jobID
             WHERE a.jobID = ?
                 AND a.status IN ('not selected', 'withdraw')
             ORDER BY

@@ -347,7 +347,7 @@ export default function RecommendedJobs() {
                     limit: jobsPerPage
                 }
             });
-            console.log(jobResults.data)
+            // console.log(jobResults.data)
             setJobSearchResults(jobResults.data || []);
             navigate("/applicant/searchJobs");
         } catch (error) {
@@ -365,7 +365,7 @@ export default function RecommendedJobs() {
                     limit: jobsPerPage
                 }
             });
-            console.log(response.data?.sortedRecommendedJobs)
+            // console.log(response.data?.sortedRecommendedJobs)
             setResumeStatus(response.data?.resumeStatus);
             setRecommendedJobs(response.data?.sortedRecommendedJobs || []);
             setTotalJobs(response.data?.pagination?.totalJobs || 0);
@@ -419,7 +419,7 @@ export default function RecommendedJobs() {
                 <AuthNavBar />
 
                 <div className="w-full bg-linear-to-t from-[#098B5F] to-[#10B981] flex items-center justify-center flex-col p-6 md:px-15 lg:p-10 xl:p-20">
-                    <h1 className="text-xl font-bold text-white mb-5 md:text-3xl lg:text-4xl lg:mb-10 xl:text-5xl">Find jobs that match your skills</h1>
+                    <h1 className="text-center text-xl font-bold text-white mb-5 md:text-3xl lg:text-4xl lg:mb-10 xl:text-5xl">Find jobs that match your skills</h1>
 
                     <form onSubmit={handleSubmit} className="flex flex-col gap-2 xl:flex-row">
                         <div className="relative w-full flex items-center">
@@ -617,24 +617,97 @@ export default function RecommendedJobs() {
                                                             )
                                                         })}
                                                     </div>
-                                                    {totalPages > 1 && (
+                                                {totalPages > 1 && (
                                                     <ReactPaginate
                                                         pageCount={totalPages}
                                                         forcePage={currentPage - 1}
                                                         onPageChange={handlePageClick}
+
                                                         previousLabel="<"
                                                         nextLabel=">"
                                                         breakLabel="..."
-                                                        marginPagesDisplayed={2}
-                                                        pageRangeDisplayed={3}
-                                                        containerClassName="flex justify-center items-center gap-4 my-6 w-full"
-                                                        pageLinkClassName="px-4 py-3 rounded-lg text-lg cursor-pointer"
-                                                        activeLinkClassName="bg-[#2B2B2B] text-white cursor-pointer"
-                                                        previousLinkClassName="px-4 py-2 rounded-md bg-white shadow cursor-pointer"
-                                                        nextLinkClassName="px-4 py-2 rounded-md bg-white shadow cursor-pointer"
-                                                        disabledClassName="opacity-40 cursor-not-allowed"
+
+                                                        // Responsive page count
+                                                        marginPagesDisplayed={isDesktop ? 2 : 1}
+                                                        pageRangeDisplayed={isDesktop ? 3 : 1}
+
+                                                        containerClassName="
+                                                            flex
+                                                            justify-center
+                                                            items-center
+                                                            gap-1
+                                                            sm:gap-2
+                                                            my-6
+                                                            w-full
+                                                        "
+
+                                                        pageLinkClassName="
+                                                            flex
+                                                            items-center
+                                                            justify-center
+                                                            min-w-9
+                                                            h-9
+                                                            px-2
+                                                            rounded-lg
+                                                            text-sm
+                                                            sm:min-w-10
+                                                            sm:h-10
+                                                            sm:px-4
+                                                            sm:text-base
+                                                            cursor-pointer
+                                                            transition-colors
+                                                            duration-200
+                                                        "
+
+                                                        activeLinkClassName="
+                                                            bg-[#2B2B2B]
+                                                            text-white
+                                                        "
+
+                                                        previousLinkClassName="
+                                                            flex
+                                                            items-center
+                                                            justify-center
+                                                            min-w-9
+                                                            h-9
+                                                            px-2
+                                                            rounded-md
+                                                            bg-white
+                                                            shadow
+                                                            text-sm
+                                                            sm:min-w-10
+                                                            sm:h-10
+                                                            sm:px-4
+                                                            sm:text-base
+                                                            cursor-pointer
+                                                            hover:bg-gray-100
+                                                        "
+
+                                                        nextLinkClassName="
+                                                            flex
+                                                            items-center
+                                                            justify-center
+                                                            min-w-9
+                                                            h-9
+                                                            px-2
+                                                            rounded-md
+                                                            bg-white
+                                                            shadow
+                                                            text-sm
+                                                            sm:min-w-10
+                                                            sm:h-10
+                                                            sm:px-4
+                                                            sm:text-base
+                                                            cursor-pointer
+                                                            hover:bg-gray-100
+                                                        "
+
+                                                        disabledClassName="
+                                                            opacity-40
+                                                            pointer-events-none
+                                                        "
                                                     />
-                                                    )}
+                                                )}
                                                 </div>
 
                                                 {/* This is the right column */}

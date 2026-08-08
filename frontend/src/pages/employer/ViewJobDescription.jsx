@@ -98,7 +98,7 @@ export default function ViewJobDescription() {
                             <img 
                                 src={selectedJob.coverPhotoURL ? selectedJob.coverPhotoURL : defaultPhoto} 
                                 alt="cover photo"
-                                className="w-full h-45 object-cover rounded-tl-2xl rounded-tr-2xl md:h-55"
+                                className="w-full h-40 object-cover rounded-tl-2xl rounded-tr-2xl md:h-55"
                             />
                         </div>
 
@@ -107,7 +107,7 @@ export default function ViewJobDescription() {
                                 <img 
                                     src={selectedJob.profilePhotoURL ? selectedJob.profilePhotoURL : defaultPhoto} 
                                     alt="cover photo"
-                                    className="w-20 object-cover rounded-sm md:rounded-xl md:w-30"
+                                    className="w-25 object-cover rounded-md md:rounded-xl md:w-30"
                                 />
                                 
                             </div>

@@ -248,13 +248,13 @@ export default function EditCompany({ handleEditCompanyBox }) {
                 <hr className="mt-5 mb-4 border-t-2 border-gray-300" />
 
                 <div className="w-full">
-                    <h1 className="font-bold text-xl mb-2">Company Photos</h1>
+                    {/* <h1 className="font-bold text-xl mb-2">Company Photos</h1> */}
 
                     <div className="w-full mb-5">
                         <p className="font-semibold">Company Logo</p>
 
                         {profilePicName ? (
-                            <p className="mb-2 text-sm font-medium text-gray-700">
+                            <p className="mb-2 text-sm font-medium text-gray-700 wrap-break-word">
                                 {profilePicName}
                             </p>
                         ) : <p className="mb-2 text-[13px] font-medium text-gray-500">Upload your company logo (5MB max)</p>}
@@ -290,7 +290,7 @@ export default function EditCompany({ handleEditCompanyBox }) {
                         <p className="font-semibold">Cover Photo</p>
 
                         {coverPicName ? (
-                            <p className="mb-2 text-sm font-medium text-gray-700">{coverPicName}</p>
+                            <p className="mb-2 text-sm font-medium text-gray-700 wrap-break-word">{coverPicName}</p>
                         ) : 
                             <p className="mb-2 text-[13px] font-medium text-gray-500">Upload company cover photo (5MB max)</p>
                         }
@@ -327,12 +327,12 @@ export default function EditCompany({ handleEditCompanyBox }) {
 
                 </div>
                 <div className="w-full flex justify-end gap-4">
-                    <PrimaryButton disabled={isLoading} onClick={cancelChanges} className={`bg-gray-100 text-black! px-4 border-2 border-gray-300 ${isLoading && "opacity-50 cursor-not-allowed!"}`} >Cancel</PrimaryButton>
-                    <PrimaryButton disabled={isLoading} type="submit" className={`px-7 ${isLoading && "opacity-50 cursor-progress"}`}>
+                    <PrimaryButton disabled={isLoading} onClick={cancelChanges} className={`bg-gray-100 text-black! text-sm! px-4 border-2 border-gray-300 ${isLoading && "opacity-50 cursor-not-allowed!"}`} >Cancel</PrimaryButton>
+                    <PrimaryButton disabled={isLoading} type="submit" className={`px-5 text-sm! ${isLoading && "opacity-50 cursor-progress"}`}>
                         {isLoading ? 
                             <>
                                 <BiLoaderAlt className="animate-spin inline mr-3" />
-                                Saving...
+                                Saving
                             </>
                         : "Save"}
                     </PrimaryButton>

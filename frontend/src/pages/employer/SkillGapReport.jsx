@@ -6,6 +6,7 @@ import MatchScore from "../../components/others/MatchScore";
 import PrimaryButton from "../../components/buttons/PrimaryButton";
 import JobSkillEvidence from "../../components/popUps/JobSkillEvidence";
 import ResumeViewerModal from "../../components/others/ResumeViewerModal";
+import NoSkillGapReport from "../../components/others/NoSkillGapReport";
 import Translucent from "../../components/overlay/Translucent";
 import { useState, useEffect, useRef } from "react";
 import { useNavigate, Link, useParams } from "react-router-dom";
@@ -55,6 +56,7 @@ export default function SkillGapReport() {
     const [selectedJob, setSelectedJob] = useState([]);
     
     const [skillGapAnalysis, setSkillGapAnalysis] = useState(null);
+    const [noSkillGapReport, setNoSkillGapReport] = useState(false);
     const loading = !skillGapLoaded
 
     useEffect(() => {
@@ -115,7 +117,8 @@ export default function SkillGapReport() {
                 const res = await api.get("/employer/applications/skillGapReport", {
                     params: {
                         jobID,
-                        resumeID
+                        resumeID,
+                        applicantID
                     }
                 });
                 console.log(res.data.skillGapReport)
@@ -123,6 +126,7 @@ export default function SkillGapReport() {
                 setSkillGapLoaded(true);
             } catch (error) {
                 console.log(error);
+                setNoSkillGapReport(true);
             }
         }
 
@@ -171,6 +175,11 @@ export default function SkillGapReport() {
         }
     }, [loading, verified, navigate]);
 
+    if (noSkillGapReport) {
+        return <NoSkillGapReport />
+    }
+
+
     if (loading) {
         return <SkillGapLoader />
     }
@@ -179,6 +188,7 @@ export default function SkillGapReport() {
         return null;
     }
 
+
     if (
         skillGapAnalysis.matchedSkills === null &&
         skillGapAnalysis.missingSkills === null &&
@@ -186,7 +196,6 @@ export default function SkillGapReport() {
         skillGapAnalysis.scoreExplanation === null &&
         skillGapAnalysis.scoresBreakdown === null
     ) {
-        // console.log("dito")
         return (
             <div className="lg:flex relative w-full">
                 <SideBarOverlay />
@@ -221,9 +230,9 @@ export default function SkillGapReport() {
                     <div className="w-full min-h-[calc(100vh-64px)] p-6 md:py-10 md:px-15 lg:px-10 xl:px-30">
 
                         <div className="w-full grid grid-cols-1 gap-4 md:grid-cols-2 md:items-start xl:flex">
-                            <div ref={leftColRef} className="w-full flex flex-col gap-4 xl:w-100">
-                                <section className="rounded-2xl shadow-sm border-2 border-[#E8ECEF] bg-white p-4">
-                                    <div className="flex gap-2 mb-4">
+                           <div ref={leftColRef} className="w-full flex flex-col gap-4 xl:w-100">
+                                <section className="rounded-2xl shadow-sm bg-white p-4 border-2 border-[#E8ECEF]">
+                                    <div className="hidden lg:flex gap-2 mb-4">
                                         <div className="w-19 h-19 shrink-0">
                                             <img className="w-full h-full rounded-full object-cover" src={`${skillGapAnalysis.profilePhotoURL ? skillGapAnalysis.profilePhotoURL : defaultCover}`} alt="" />
                                         </div>
@@ -242,21 +251,44 @@ export default function SkillGapReport() {
                                             }
                                         </div>
                                     </div>
+                                    <div className="flex flex-col items-center gap-1 mb-4 lg:hidden">
+                                        <div className="w-19 h-19 shrink-0">
+                                            <img className="w-full h-full rounded-full object-cover" src={`${skillGapAnalysis.profilePhotoURL ? skillGapAnalysis.profilePhotoURL : defaultCover}`} alt="" />
+                                        </div>
+                                        <div className="w-full border-b border-gray-300 pb-1">
+                                            <h1 className="text-center text-lg font-bold wrap-break-word">{`${skillGapAnalysis.firstName} ${skillGapAnalysis.lastName}`}</h1>
+                                        </div>
+                                        <div className="w-full">
+                                            <div className="flex items-start gap-2 w-full">
+                                                <MdOutlineEmail className="shrink-0 mt-1" />
+                                                <p className="text-[15px] wrap-break-word min-w-0">{skillGapAnalysis.email}</p>
+                                            </div>
+                                            {
+                                                skillGapAnalysis.address &&
+                                                <div className="flex items-start gap-2 w-full">
+                                                    <SlLocationPin className="shrink-0 mt-1" />
+                                                    <p className="text-[15px] wrap-break-word min-w-0">{skillGapAnalysis.address}</p>
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>                                    
 
                                     <div className="flex flex-col w-full items-center justify-center gap-4">
-                                        <div className="flex items-start gap-4 rounded-2xl bg-[#2A1F54] w-65 p-4 text-white">
+                                        <div className="flex items-start gap-4 rounded-2xl bg-[#2A1F54] w-full md:w-65 p-4 text-white">
                                             <div className="w-5">
                                                 <GoInfo className="h-5 w-5"/>
                                             </div>
                                             <div>
-                                                <h1 className="font-bold text-lg mb-1">Skill gap analysis not available for this job post</h1>
+                                                <h1 className="font-bold md:text-lg mb-1">Skill gap analysis not available for this job post</h1>
                                                 <p className="text-sm">This job post doesn't specify any required skills or experience, so there's nothing to compare against the applicant's resume. Review the job requirements and resume directly to assess fit.</p>
                                             </div>
                                         </div>
 
-                                        <PrimaryButton onClick={() => setShowResumeViewer(true)} className="w-65 hover:bg-green-600 transition-colors duration-200 ease-in" >View Resume</PrimaryButton>
-                                    </div>                              
+                                        <PrimaryButton onClick={() => setShowResumeViewer(true)} className="w-full md:w-65 hover:bg-green-600 transition-colors duration-200 ease-in" >View Resume</PrimaryButton>
+                                    </div>
+
                                 </section>
+
                             </div>
 
                             <div className="w-full flex flex-col gap-4 md:overflow-y-auto md:pr-1 xl:flex-1" style={leftColHeight ? { maxHeight: `${leftColHeight}px` } : undefined}>
@@ -383,8 +415,8 @@ export default function SkillGapReport() {
 
                     <div className="w-full grid grid-cols-1 gap-4 md:grid-cols-2 md:items-start xl:flex">
                         <div ref={leftColRef} className="w-full flex flex-col gap-4 xl:w-100">
-                            <section className="rounded-2xl shadow-sm border-2 border-[#E8ECEF] bg-white p-4">
-                                <div className="flex gap-2 mb-4">
+                            <section className="rounded-2xl shadow-sm bg-white p-4 border-2 border-[#E8ECEF]">
+                                <div className="hidden lg:flex gap-2 mb-4">
                                     <div className="w-19 h-19 shrink-0">
                                         <img className="w-full h-full rounded-full object-cover" src={`${skillGapAnalysis.profilePhotoURL ? skillGapAnalysis.profilePhotoURL : defaultCover}`} alt="" />
                                     </div>
@@ -402,17 +434,39 @@ export default function SkillGapReport() {
                                             </div>
                                         }
                                     </div>
+                                </div>                                
+                                <div className="flex flex-col items-center gap-1 mb-4 lg:hidden">
+                                    <div className="w-19 h-19 shrink-0">
+                                        <img className="w-full h-full rounded-full object-cover" src={`${skillGapAnalysis.profilePhotoURL ? skillGapAnalysis.profilePhotoURL : defaultCover}`} alt="" />
+                                    </div>
+                                    <div className="w-full border-b border-gray-300 pb-1">
+                                        <h1 className="text-center text-lg font-bold wrap-break-word">{`${skillGapAnalysis.firstName} ${skillGapAnalysis.lastName}`}</h1>
+                                    </div>
+                                    <div className="w-full">
+                                         <div className="flex items-start gap-2 w-full">
+                                            <MdOutlineEmail className="shrink-0 mt-1" />
+                                            <p className="text-[15px] wrap-break-word min-w-0">{skillGapAnalysis.email}</p>
+                                        </div>
+                                        {
+                                            skillGapAnalysis.address &&
+                                            <div className="flex items-start gap-2 w-full">
+                                                <SlLocationPin className="shrink-0 mt-1" />
+                                                <p className="text-[15px] wrap-break-word min-w-0">{skillGapAnalysis.address}</p>
+                                            </div>
+                                        }
+                                    </div>
                                 </div>
 
                                 <div className="flex flex-col w-full justify-center items-center gap-4">
-                                    <div className="rounded-2xl bg-[#2A1F54] w-65 p-4">
+                                    <div className="rounded-2xl bg-[#2A1F54] w-full md:w-65 p-4">
                                         <h1 className="text-white font-bold text-center mb-3">OVERALL MATCH SCORE</h1>
                                         <MatchScore type="overall" score={skillGapAnalysis.overallScore} />
                                         <p className="text-center text-white font-semibold mt-3">{skillGapAnalysis.scoresBreakdown.interpretation}</p>
                                     </div>
 
-                                    <PrimaryButton onClick={() => setShowResumeViewer(true)} className="w-65" >View Resume</PrimaryButton>
-                                </div>                                
+                                    <PrimaryButton onClick={() => setShowResumeViewer(true)} className="w-full md:w-65 hover:bg-green-600 transition-colors duration-200 ease-in" >View Resume</PrimaryButton>
+                                </div>
+
                             </section>
 
                             <section className="rounded-2xl shadow-sm border-2 border-[#E8ECEF] bg-white p-4 w-full">
@@ -503,7 +557,7 @@ export default function SkillGapReport() {
                                         <MatchScore 
                                             type="breakdown"
                                             score={skillGapAnalysis.scoresBreakdown.coreSkillScore}
-                                            className="w-25! h-25!"    
+                                            className="w-24! h-24! md:25! md:h-25!"    
                                         />
                                         <p className="text-[12px] xl:text-sm font-semibold mt-2">Required Skills</p>
                                         <p className="text-[12px] xl:text-sm">Weighted 80%</p>
@@ -514,7 +568,7 @@ export default function SkillGapReport() {
                                             <MatchScore 
                                                 type="breakdown"
                                                 score={skillGapAnalysis.scoresBreakdown.secondarySkillScore}
-                                                className="w-25! h-25!"    
+                                                className="w-24! h-24! md:25! md:h-25!"    
                                             />
                                                 <p className="text-[12px] xl:text-sm font-semibold mt-2">Preferred Skills</p>
                                                 <p className="text-[12px] xl:text-sm">Weighted 20%</p>

@@ -23,9 +23,11 @@ import api from "../../apis/axios";
 import { formatDistanceToNow } from 'date-fns';
 import ReactPaginateModule from "react-paginate";
 import useLockBodyScroll from "../../hooks/useLockBodyScroll";
+import useIsDesktop from "../../hooks/useIsDesktop";
 
 export default function ViewApplicants() {
     const ReactPaginate = ReactPaginateModule.default || ReactPaginateModule;
+    const isDesktop = useIsDesktop();
 
     const navigate = useNavigate();
     const { jobID } = useParams();
@@ -68,7 +70,7 @@ export default function ViewApplicants() {
                     limit: applicantsPerPage
                 }
             });
-
+            console.log(res?.data?.allApplicants)
             setJobTitle(res?.data?.jobTitle);
             setApplicantList(res?.data?.allApplicants);
             setTotalApplicants(res?.data?.pagination?.totalApplicants);
@@ -133,7 +135,7 @@ export default function ViewApplicants() {
 
     function handlePageClick(event) {
         const selectedPage = event.selected + 1;
-        fetchApplicants(selectedPage);
+        fetchApplicants(selectedPage, status);
     }
     
     useEffect(() => {
@@ -315,7 +317,7 @@ export default function ViewApplicants() {
                     jobID === "selectFirst" ?
                         <div className="w-full absolute top-1/2 -translate-y-1/2 flex flex-col gap-2 items-center">
                             <MdGroups className="text-gray-500" size={45} />
-                            <p className="text-gray-500">Select a job to see the list of its applicants</p>
+                            <p className="text-gray-500 text-sm md:text-[1rem]">Select a job to see the list of its applicants</p>
     
                             <PrimaryButton to="/employer/jobs">Select a job</PrimaryButton>
                         </div>
@@ -325,35 +327,35 @@ export default function ViewApplicants() {
                                 status === "submitted" &&
                                 <>
                                     <h1 className="font-bold text-2xl mb-2 text-center">New Applicants</h1>
-                                    <p className="text-gray-600 text-center font-semibold mb-10">Review newly submitted applications and decide which candidates to move forward.</p>                                
+                                    <p className="text-gray-600 text-center font-semibold mb-10 text-sm md:text-[1rem]">Review newly submitted applications and decide which candidates to move forward.</p>                                
                                 </>
                             }
                             {
                                 status === "shortlisted" &&
                                 <>
                                     <h1 className="font-bold text-2xl mb-2 text-center">Shortlisted Applicants</h1>
-                                    <p className="text-gray-600 text-center font-semibold mb-10">Compare your shortlisted candidates and select who to invite for the next stage.</p>                                
+                                    <p className="text-gray-600 text-center font-semibold mb-10 text-sm md:text-[1rem]">Compare your shortlisted candidates and select who to invite for the next stage.</p>                                
                                 </>
                             }
                             {
                                 status === "interview" &&
                                 <>
                                     <h1 className="font-bold text-2xl mb-2 text-center">Interview Candidates</h1>
-                                    <p className="text-gray-600 text-center font-semibold mb-10">Manage applicants currently in the interview stage and track their progress.</p>                                
+                                    <p className="text-gray-600 text-center font-semibold mb-10 text-sm md:text-[1rem]">Manage applicants currently in the interview stage and track their progress.</p>                                
                                 </>
                             }
                             {
                                 status === "hired" &&
                                 <>
                                     <h1 className="font-bold text-2xl mb-2 text-center">Offers Sent</h1>
-                                    <p className="text-gray-600 text-center font-semibold mb-10">View applicants who have received this job offer from your company.</p>                                
+                                    <p className="text-gray-600 text-center font-semibold mb-10 text-sm md:text-[1rem]">View applicants who have received this job offer from your company.</p>                                
                                 </>
                             }
                             {
                                 status === "not selected" &&
                                 <>
                                     <h1 className="font-bold text-2xl mb-2 text-center">Past Applicants</h1>
-                                    <p className="text-gray-600 text-center font-semibold mb-10">View applications that are no longer active, including rejected and withdrawn applicants.</p>                                
+                                    <p className="text-gray-600 text-center font-semibold mb-10 text-sm md:text-[1rem]">View applications that are no longer active, including rejected and withdrawn applicants.</p>                                
                                 </>
                             }
 
@@ -362,31 +364,31 @@ export default function ViewApplicants() {
                                 applicantList.length === 0 ?
                                 <div className="w-full flex flex-col items-center gap-3 mt-10 text-gray-500">
                                     <FaUsersSlash size={45} />
-                                    <p>There are no applicants in this section</p>
+                                    <p className="text-sm md:text-[1rem]">There are no applicants in this section</p>
                                 </div>
                             :   
                                 <div className="w-full">
 
-                                    <div className="rounded-2xl mb-10 flex items-center justify-between w-full p-5 bg-white">
-                                        <div className="flex items-center gap-3">
-                                            <div className="bg-green-100 p-1 w-11 h-11 rounded-xl flex justify-center items-center">
+                                    <div className="rounded-2xl mb-10 flex items-center justify-between w-full p-4 md:p-5 bg-white">
+                                        <div className="flex items-center gap-3 md:gap-4">
+                                            <div className="bg-green-100 min-w-0 shrink-0 p-1 w-11 h-11 rounded-xl flex justify-center items-center">
                                                 <HiOutlineBriefcase size={25} className="text-green-700"/>
                                             </div>
                                             <div className="max-w-100 xl:max-w-150">
                                                 <p className="text-sm text-gray-600">Applicants for</p>
-                                                <p className="font-bold text-xl">{jobTitle}</p>
+                                                <p className="font-bold text-lg">{jobTitle}</p>
                                             </div>
                                         </div>
                                         <div className="hidden md:flex rounded-xl border border-gray-300 py-2 p-5 items-center gap-2 bg-white">
                                             <RiGroupLine className="text-gray-700" />
-                                            <p className="text-gray-600 font-medium text-sm"><span className="text-black font-bold text-[1rem]">{applicantList.length}</span>{`${applicantList.length > 1 ? " applicants" : " applicant"}`}</p>
+                                            <p className="text-gray-600 font-medium text-sm"><span className="text-black font-bold text-[1rem]">{totalApplicants}</span>&nbsp;{`${totalApplicants > 1 ? "applicants" : "applicant"}`}</p>
                                         </div>                                        
                                     </div>
 
                                     <div className="flex justify-between items-center mb-3">
-                                        <div className="md:hidden rounded-xl border border-gray-300 py-2 p-5 flex items-center gap-2 bg-white">
+                                        <div className="md:hidden rounded-xl border border-gray-300 py-2 px-2 flex items-center gap-2 bg-white">
                                             <RiGroupLine className="text-gray-700" />
-                                            <p className="text-gray-600 font-medium text-sm"><span className="text-black font-bold text-[1rem]">{applicantList.length}</span>{`${applicantList.length > 1 ? " applicants" : " applicant"}`}</p>
+                                            <p className="text-gray-600 font-medium text-sm"><span className="text-black font-bold text-[1rem]">{totalApplicants}</span>{`${totalApplicants > 1 ? " applicants" : " applicant"}`}</p>
                                         </div>
                                         {
                                             activeStatus.includes(status) &&
@@ -403,38 +405,34 @@ export default function ViewApplicants() {
                                     <div className="w-full flex flex-col gap-3">
                                         {
                                             applicantList?.map((item) => (
-                                                <div key={item.applicationID} className="w-full rounded-2xl shadow-md bg-white p-4 md:hidden">
-                                                    <div className="flex justify-between gap-10">
-                                                        <div className="flex-1 min-w-0">
-                                                            <h1 className="font-bold text-xl mb-1">{`${item.firstName} ${item.lastName}`}</h1>
-                                                            
-                                                        </div>
-
+                                                <div key={item.applicationID} className="w-full rounded-2xl shadow-sm bg-white p-4 md:hidden">
+                                                    <div className="mb-10">
                                                         {status === "not selected" ?
-                                                            <div className="shrink-0 bg-red-50 p-1 rounded-md max-h-fit border border-red-400">
-                                                                <h2 className="font-bold text-[16px] text-red-600">{item.status === "not selected" ? "Rejected" : "Withdrew"}</h2>
+                                                            <div className="w-fit ml-auto bg-red-50 p-1 rounded-md max-h-fit border border-red-400">
+                                                                <h2 className="font-bold text-[16px] text-right text-red-600">{item.status === "not selected" ? "Rejected" : "Withdrew"}</h2>
                                                             </div>
-                                                        : item.overallScore ?
-                                                            <div className={`shrink-0 p-1 rounded-md max-h-fit border ${(item.overallScore >= 60) ? "bg-[#F0FDF4] border-green-400 text-green-600" : "bg-[#FFF1F2] border-red-600 text-red-600"}`}>
-                                                                <h2 className="font-bold text-[16px]">{`${item.overallScore}% Match`}</h2>
+                                                        : item.overallScore !== null ?
+                                                            <div className={`ml-auto w-fit p-1 rounded-md max-h-fit border ${(item.overallScore >= 60) ? "bg-[#F0FDF4] border-green-400 text-green-600" : "bg-[#FFF1F2] border-red-600 text-red-600"}`}>
+                                                                <h2 className="font-bold text-[16px] text-right">{`${item.overallScore}% Match`}</h2>
                                                             </div>  
-                                                        : item.concatJobSkills === null ?
-                                                            <div className={`shrink-0 p-1 rounded-md max-h-fit border bg-slate-100 border-slate-300`}>
-                                                                <h2 className="font-bold text-sm text-gray-800">Not Applicable</h2>
+                                                        : (item.concatJobSkills === null && item.overallScore === null) ||
+                                                          (item.firstName === "Deleted" && item.overallScore === null) ?
+                                                            <div className={`ml-auto w-fit p-1 rounded-md max-h-fit border bg-slate-100 border-slate-300`}>
+                                                                <h2 className="font-bold text-sm text-gray-800 text-right">Not Applicable</h2>
                                                             </div>  
                                                         :
-                                                            <div className={`shrink-0 p-1 rounded-md max-h-fit border bg-slate-100 border-slate-300`}>
-                                                                <h2 className="font-bold text-sm text-gray-800">Awaiting Review</h2>
+                                                            <div className={`ml-auto p-1 rounded-md w-fit border bg-slate-100 border-slate-300`}>
+                                                                <h2 className="font-bold w-full text-sm text-gray-800 text-right">Awaiting Review</h2>
                                                             </div>  
                                                         }                                                                                            
                                                     </div>
 
-
-                                                    <p className="text-gray-500 my-10 text-sm flex items-center gap-2"><FiCalendar size={18} />{`Submitted on ${new Date(item.applicationDate).toLocaleDateString('en-US', dateFormat)}`}</p>
+                                                    <h1 className="font-bold text-lg mb-2">{`${item.firstName} ${item.lastName}`}</h1>                                                            
+                                                    <p className="text-gray-500 mb-10 text-sm flex items-center gap-2"><FiCalendar size={18} />{`Submitted on ${new Date(item.applicationDate).toLocaleDateString('en-US', dateFormat)}`}</p>
                                                     
             
                                                     <div className="flex justify-between text-sm">
-                                                        <PrimaryButton to={`/employer/applications/skillGapReport/${item.applicantID}/${item.jobID}/${item.resumeID}`} >View Profile</PrimaryButton>
+                                                        <PrimaryButton to={`/employer/applications/skillGapReport/${item.applicantID}/${item.jobID}/${item.resumeID}`} className="text-[14px]!" >View Profile</PrimaryButton>
                                                         {
                                                             status === "submitted" &&
                                                             <div className="flex gap-4">
@@ -443,7 +441,7 @@ export default function ViewApplicants() {
                                                                         setApplicationID(item.applicationID)
                                                                         setShowReject(true)
                                                                     }} 
-                                                                    className="text-red-600! bg-white px-0!"
+                                                                    className="text-red-600! bg-white px-0! text-[12px]!"
                                                                 >
                                                                     Reject
                                                                 </PrimaryButton>
@@ -453,7 +451,7 @@ export default function ViewApplicants() {
                                                                         setApplicationID(item.applicationID)
                                                                         setShowConfirm(true)
                                                                     }} 
-                                                                    className="text-green-600! bg-white px-0!"
+                                                                    className="text-green-600! bg-white px-0! text-[12px]!"
                                                                 >
                                                                     Interested
                                                                 </PrimaryButton>
@@ -467,7 +465,7 @@ export default function ViewApplicants() {
                                                                         setApplicationID(item.applicationID)
                                                                         setShowReject(true)
                                                                     }} 
-                                                                    className="text-red-600! bg-white px-0!"
+                                                                    className="text-red-600! bg-white px-0! text-[12px]!"
                                                                 >
                                                                     Reject
                                                                 </PrimaryButton>
@@ -477,7 +475,7 @@ export default function ViewApplicants() {
                                                                         setApplicationID(item.applicationID)
                                                                         setShowConfirm(true)
                                                                     }} 
-                                                                    className="text-green-600! bg-white px-0!"
+                                                                    className="text-green-600! bg-white px-0! text-[12px]!"
                                                                 >
                                                                     Interview
                                                                 </PrimaryButton>
@@ -491,7 +489,7 @@ export default function ViewApplicants() {
                                                                         setApplicationID(item.applicationID)
                                                                         setShowReject(true)
                                                                     }} 
-                                                                    className="text-red-600! bg-white px-0!"
+                                                                    className="text-red-600! bg-white px-0! text-[12px]!"
                                                                 >
                                                                     Reject
                                                                 </PrimaryButton>
@@ -501,7 +499,7 @@ export default function ViewApplicants() {
                                                                         setApplicationID(item.applicationID)
                                                                         setShowConfirm(true)
                                                                     }} 
-                                                                    className="text-green-600! bg-white px-0!"
+                                                                    className="text-green-600! bg-white px-0! text-[12px]!"
                                                                 >
                                                                     Send&nbsp;Offer
                                                                 </PrimaryButton>
@@ -536,7 +534,8 @@ export default function ViewApplicants() {
                                                                 {
                                                                     item.overallScore !== null ?
                                                                         <td className="px-6 py-5 text-center w-48 max-w-48 wrap-break-word font-semibold">{`${item.overallScore}%`}</td>
-                                                                    : item.concatJobSkills === null ?
+                                                                    : (item.concatJobSkills === null && item.overallScore === null) ||
+                                                                      (item.firstName === "Deleted" && item.overallScore === null) ?
                                                                         <td className="px-6 py-5 text-center w-48 max-w-48 wrap-break-word font-semibold">Not Applicable</td>
                                                                     :
                                                                         <td className="px-6 py-5 text-center w-48 max-w-48 wrap-break-word font-semibold">Awaiting review</td>
@@ -638,17 +637,90 @@ export default function ViewApplicants() {
                                     pageCount={totalPages}
                                     forcePage={currentPage - 1}
                                     onPageChange={handlePageClick}
+
                                     previousLabel="<"
                                     nextLabel=">"
                                     breakLabel="..."
-                                    marginPagesDisplayed={2}
-                                    pageRangeDisplayed={3}
-                                    containerClassName="flex justify-center items-center gap-4 mt-8 w-full"
-                                    pageLinkClassName="px-4 py-3 rounded-lg text-lg"
-                                    activeLinkClassName="bg-[#2B2B2B] text-white"
-                                    previousLinkClassName="px-4 py-2 rounded-md bg-white shadow"
-                                    nextLinkClassName="px-4 py-2 rounded-md bg-white shadow"
-                                    disabledClassName="opacity-40 cursor-not-allowed"
+
+                                    // Responsive page count
+                                    marginPagesDisplayed={isDesktop ? 2 : 1}
+                                    pageRangeDisplayed={isDesktop ? 3 : 1}
+
+                                    containerClassName="
+                                        flex
+                                        justify-center
+                                        items-center
+                                        gap-1
+                                        sm:gap-2
+                                        my-6
+                                        w-full
+                                    "
+
+                                    pageLinkClassName="
+                                        flex
+                                        items-center
+                                        justify-center
+                                        min-w-9
+                                        h-9
+                                        px-2
+                                        rounded-lg
+                                        text-sm
+                                        sm:min-w-10
+                                        sm:h-10
+                                        sm:px-4
+                                        sm:text-base
+                                        cursor-pointer
+                                        transition-colors
+                                        duration-200
+                                    "
+
+                                    activeLinkClassName="
+                                        bg-[#2B2B2B]
+                                        text-white
+                                    "
+
+                                    previousLinkClassName="
+                                        flex
+                                        items-center
+                                        justify-center
+                                        min-w-9
+                                        h-9
+                                        px-2
+                                        rounded-md
+                                        bg-white
+                                        shadow
+                                        text-sm
+                                        sm:min-w-10
+                                        sm:h-10
+                                        sm:px-4
+                                        sm:text-base
+                                        cursor-pointer
+                                        hover:bg-gray-100
+                                    "
+
+                                    nextLinkClassName="
+                                        flex
+                                        items-center
+                                        justify-center
+                                        min-w-9
+                                        h-9
+                                        px-2
+                                        rounded-md
+                                        bg-white
+                                        shadow
+                                        text-sm
+                                        sm:min-w-10
+                                        sm:h-10
+                                        sm:px-4
+                                        sm:text-base
+                                        cursor-pointer
+                                        hover:bg-gray-100
+                                    "
+
+                                    disabledClassName="
+                                        opacity-40
+                                        pointer-events-none
+                                    "
                                 />
                             )}
                             

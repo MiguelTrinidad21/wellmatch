@@ -5,6 +5,7 @@ import Loading from "../../components/others/Loading"
 import PrimaryButton from "../../components/buttons/PrimaryButton";
 import defaultCover from "../../assets/defaultCover.jpg"
 import { IoChevronDown } from "react-icons/io5";
+import { HiOutlineBriefcase } from "react-icons/hi2";
 import { useState, useEffect } from "react";
 import { useNavigate, Link, useParams } from "react-router-dom";
 import { userStore } from "../../zustand/userState";
@@ -155,20 +156,19 @@ export default function JobAppInitialStep() {
                 <AuthNavBar />
                 
                 <div className="w-full min-h-[calc(100vh-64px)] p-6 flex flex-col justify-center items-center gap-5 md:p-15">
-                    <div className="w-full flex gap-3 md:gap-5 md:max-w-120">
-                        <div className="w-30 rounded-lg">
-                            <img className="w-full object-cover rounded-lg" src={currentJob.profilePhotoURL ? currentJob.profilePhotoURL : defaultCover} alt="" />
+                    <div className="shadow-sm flex items-center gap-3 md:gap-5 w-full md:w-120 bg-white rounded-2xl p-4 md:p-5 mb-5">
+                        <div className="bg-green-100 p-1 w-11 h-11 rounded-xl flex justify-center items-center min-w-0 shrink-0">
+                            <HiOutlineBriefcase size={25} className="text-green-700"/>
                         </div>
-
-                        <div className="flex-1">
-                            <p className="text-sm text-gray-500 mb-2">Applying for</p>
-                            <h1 className="text-xl mb-2 font-bold text-gray-900">{currentJob.jobTitle}</h1>
-                            <p className="text-gray-700 font-semibold">{currentJob.companyName}</p>
-                            {/* <Link to={`/applicant/viewJob/${jobID}`} className="underline underline-offset-4 text-sm text-blue-600 font-medium">View job description</Link> */}
+                        <div className="max-w-100 xl:max-w-150">
+                            <p className="text-sm text-gray-600">Applying for</p>
+                            <p className="font-bold text-xl mb-3">{currentJob.jobTitle}</p>
+                            <p className="text-gray-800 text-lg font-medium">{currentJob.companyName}</p>
                         </div>
-                    </div>
+                    </div>                    
 
-                    <div className="bg-white shadow-lg rounded-2xl p-6 w-full md:w-120 lg:p-10">
+
+                    <div className="bg-white shadow-lg rounded-2xl p-6 w-full md:w-120 lg:max-w-150 lg:p-10">
                         <h2 className="font-bold text-lg mb-3">Choose Resume</h2>
                         <p className="text-[13px] xl:text-sm font-medium mb-5 text-gray-600">
                             <a

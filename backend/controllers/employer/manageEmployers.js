@@ -4,11 +4,15 @@ import crypto from "crypto"
 
 export async function getEmployerInfo(req, res) {
     const { memberID } = req.query;
+    const { id, companyID } = req.user;
 
     try {
         const [[employerInfo]] = await database.query(`
             SELECT
                 c.compMemID,
+                c.status,
+                c.companyID,
+                e.employerID,
                 e.firstName,
                 e.lastName,
                 e.email
@@ -19,6 +23,14 @@ export async function getEmployerInfo(req, res) {
             `,
             [memberID]
         );
+
+        if (employerInfo.status === "inactive") {
+            return res.status(410).json({ message: "User is deleted permanently" });
+        }
+
+        if (employerInfo.companyID !== companyID) {
+            return res.status(403).json({ message: "Forbidden access" });
+        }
 
         return res.status(200).json(employerInfo);
         

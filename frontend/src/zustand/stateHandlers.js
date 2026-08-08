@@ -134,3 +134,47 @@ export const jobCreationStore = create(
         }
     )
 );
+
+// export const applicationStatusStore = create(
+//     persist(
+//         (set) => ({
+//             applicantStatus: "submitted",
+
+//             setCreatedJob: (newData) =>
+//                 set((state) => ({
+//                     createdJob: {
+//                         ...state.createdJob,
+//                         ...newData
+//                     }
+//                 })),
+
+//             clearCreatedJob: () =>
+//                 set({
+//                     createdJob: {
+//                         jobTitle: "",
+//                         location: "",
+//                         workplaceOption: "",
+//                         workType: "",
+//                         payRangeFrom: "",
+//                         payRangeTo: "",
+//                         jobOverview: "",
+//                         jobDuties: "",
+//                         requiredQualifications: "",
+//                         preferredQualifications: "",
+//                         workingConditions: "",
+//                         jobBenefits: "",
+//                         yearsRequired: "0",
+//                     },
+//                 }),
+//         }),
+//         {
+//             name: "wellmatch-job-creation",
+//             storage: createJSONStorage(() => localStorage),
+//             partialize: (state) => ({
+//                 createdJob: state.createdJob,
+//             })
+//         }
+//     )
+// );
+
+

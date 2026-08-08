@@ -59,9 +59,9 @@ export default function AddResumeForm({ toggleForm, refresh }) {
                 
 
                 <h1 className="font-bold text-xl mb-3 text-center">Add resumé</h1>
-                <p className="mb-3">Add up to 5 resumés. Accepted file type: pdf and docx (5MB limit)</p>
+                <p className="mb-3 text-sm md:text-[1rem]">Add up to 5 resumés. Accepted file type: pdf and docx (5MB limit)</p>
                 
-                <div className="mb-3 w-full h-50 flex flex-col justify-center items-center border-2 border-gray-500 border-dashed rounded-2xl ">
+                <div className="mb-3 p-2 w-full h-50 flex flex-col justify-center items-center border-2 border-gray-500 border-dashed rounded-2xl ">
                     {resumeFileName && (
                         <p className="mb-2 text-sm font-medium text-gray-700">
                             {resumeFileName}

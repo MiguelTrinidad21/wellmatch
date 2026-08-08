@@ -218,13 +218,13 @@ export default function ApplicantRegister() {
                         />
 
                         {isSearchingLocation && (
-                            <p className="mt-1 text-xs text-gray-500">
+                            <p className="absolute top-full left-0 mt-1 text-xs text-gray-500">
                                 Searching locations...
                             </p>
                         )}
 
                         {locationSuggestions.length > 0 && (
-                            <ul className="absolute z-30 mt-1 max-h-60 w-full overflow-y-auto rounded-lg border bg-white shadow-lg">
+                            <ul className="absolute z-30 max-h-60 w-full overflow-y-auto rounded-lg border bg-white shadow-lg">
                                 {locationSuggestions.map((place) => (
                                     <li
                                         key={place.placeId}

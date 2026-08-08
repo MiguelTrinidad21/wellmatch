@@ -153,7 +153,12 @@ export default function JobDescription({ mode = "create" }) {
                         <div className="w-full mb-6">
                             <div className="relative flex items-center w-max gap-2">
                                 <label className="font-semibold text-lg mb-1" htmlFor="jobOverview">Job Overview</label>
-                                <Tooltip data-tooltip  textToCompare="Provide a brief overview of the role, its primary purpose, and how it contributes to the organization." text="Provide a brief overview of the role, its primary purpose, and how it contributes to the organization." />
+                                <Tooltip 
+                                    data-tooltip  
+                                    textToCompare="Provide a brief overview of the role, its primary purpose, and how it contributes to the organization." 
+                                    text="Provide a brief overview of the role, its primary purpose, and how it contributes to the organization." 
+                                    className="left-1/4 md:left-1/2"
+                                />
                             </div>
                             <textarea 
                                 className="p-4 lg:px-4 rounded-xl h-40 block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-green-600 placeholder:italic"
@@ -170,7 +175,12 @@ export default function JobDescription({ mode = "create" }) {
                         <div className="w-full mb-6">
                             <div className="relative flex items-center w-max gap-2">
                                 <label className="block font-semibold text-lg mb-1" htmlFor="duties">Job Responsibilities</label>
-                                <Tooltip data-tooltip textToCompare="List the main duties and responsibilities of the position." text="List the main duties and responsibilities of the position." />
+                                <Tooltip 
+                                    data-tooltip 
+                                    textToCompare="List the main duties and responsibilities of the position." 
+                                    text="List the main duties and responsibilities of the position." 
+                                    className="left-1/4 md:left-1/2"
+                                />
                             </div>
                             <TextEditor 
                                 value={createdJob.jobDuties} 
@@ -184,7 +194,12 @@ export default function JobDescription({ mode = "create" }) {
                         <div className="w-full mb-6">
                             <div className="relative flex items-center w-max gap-2">
                                 <label className="block font-semibold text-lg mb-1" htmlFor="duties">Required Qualifications</label>
-                                <Tooltip data-tooltip textToCompare="Specify the minimum qualifications necessary to perform the job successfully." text="Specify the minimum qualifications necessary to perform the job successfully." />
+                                <Tooltip 
+                                    data-tooltip 
+                                    textToCompare="Specify the minimum qualifications necessary to perform the job successfully." 
+                                    text="Specify the minimum qualifications necessary to perform the job successfully." 
+                                    className="left-1/4 md:left-1/2"
+                                />
                             </div>
                             <TextEditor 
                                 value={createdJob.requiredQualifications} 
@@ -198,7 +213,12 @@ export default function JobDescription({ mode = "create" }) {
                         <div className="w-full mb-6">
                             <div className="relative flex items-center w-max gap-2">
                                 <label className="block font-semibold text-lg mb-1" htmlFor="duties">Preferred Qualifications</label>
-                                <Tooltip data-tooltip textToCompare="List additional qualifications, skills, certifications, or experiences that are desirable but not required. (Optional)" text="List additional qualifications, skills, certifications, or experiences that are desirable but not required. (Optional)" />
+                                <Tooltip 
+                                    data-tooltip 
+                                    textToCompare="List additional qualifications, skills, certifications, or experiences that are desirable but not required. (Optional)" 
+                                    text="List additional qualifications, skills, certifications, or experiences that are desirable but not required. (Optional)" 
+                                    className="left-1/4 md:left-1/2"
+                                />
                             </div>
                             <TextEditor 
                                 value={createdJob.preferredQualifications} 
@@ -211,7 +231,12 @@ export default function JobDescription({ mode = "create" }) {
                         <div className="w-full mb-6">
                             <div className="relative flex items-center w-max gap-2">
                                 <label className="block font-semibold text-lg mb-1" htmlFor="duties">Working Conditions</label>
-                                <Tooltip data-tooltip  textToCompare="Describe the work setup, schedule, location, and any special working conditions associated with the role. (Optional)" text="Describe the work setup, schedule, location, and any special working conditions associated with the role. (Optional)" />
+                                <Tooltip 
+                                    data-tooltip  
+                                    textToCompare="Describe the work setup, schedule, location, and any special working conditions associated with the role. (Optional)" 
+                                    text="Describe the work setup, schedule, location, and any special working conditions associated with the role. (Optional)" 
+                                    className="left-1/4 md:left-1/2"
+                                />
                             </div>
                             <TextEditor 
                                 value={createdJob.workingConditions} 
@@ -224,7 +249,12 @@ export default function JobDescription({ mode = "create" }) {
                         <div className="w-full mb-6">
                             <div className="relative flex items-center w-max gap-2">
                                 <label className="block font-semibold text-lg mb-1" htmlFor="duties">Job Benefits</label>
-                                <Tooltip data-tooltip textToCompare="Provide information about the compensation package, employee benefits, and other perks offered for the position. (Optional)" text="Provide information about the compensation package, employee benefits, and other perks offered for the position. (Optional)" />
+                                <Tooltip 
+                                    data-tooltip 
+                                    textToCompare="Provide information about the compensation package, employee benefits, and other perks offered for the position. (Optional)" 
+                                    text="Provide information about the compensation package, employee benefits, and other perks offered for the position. (Optional)" 
+                                    className="left-1/4 md:left-1/2"
+                                />
                             </div>
                             <TextEditor 
                                 value={createdJob.jobBenefits} 
@@ -239,13 +269,13 @@ export default function JobDescription({ mode = "create" }) {
                         <div className="flex justify-between w-full">
                             <PrimaryButton
                                 to={isEditMode ? `/employer/jobs/${jobID}/edit` : "/employer/createJob"}
-                                className="bg-white text-black! border-2 border-gray-400"
+                                className="bg-white text-black! border-2 border-gray-400 text-sm md:text-[1rem]!"
                             >
                                 <span className="flex items-center justify-center gap-2">
                                     <FaArrowLeftLong />Back
                                 </span>
                             </PrimaryButton>
-                            <PrimaryButton type="submit" className="px-8">Next</PrimaryButton>
+                            <PrimaryButton type="submit" className="text-sm px-6 md:text-[1rem]! md:px-8">Next</PrimaryButton>
                         </div>
                         
                     </form>

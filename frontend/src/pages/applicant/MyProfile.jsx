@@ -15,7 +15,7 @@ import defaultProfile from "../../assets/defaultProfile.jpg"
 import { MdOutlineEmail } from "react-icons/md";
 import { SlLocationPin } from "react-icons/sl";
 import { FaCheck } from "react-icons/fa6";
-import { FiEdit } from "react-icons/fi";
+import { MdEdit } from "react-icons/md";
 import { FiDownload } from "react-icons/fi";
 import { IoMdAdd } from "react-icons/io";
 import { FaTrashCan } from "react-icons/fa6";
@@ -358,27 +358,34 @@ export default function MyProfile() {
 
 
                 <div className="w-full p-6 md:p-15 lg:p-10 xl:px-30">
-                    <section className="flex gap-2 relative w-full xl:w-[80%] mb-10 md:gap-10 md:mb-15">
-                        <div className="w-19 h-19 shrink-0 md:w-30 md:h-30 xl:w-40 xl:h-40">
+                    {/* <section className="">
+
+                    </section> */}
+
+                    <section className="flex gap-3 relative w-full xl:w-[80%] mb-10 md:gap-10 md:mb-15">
+                        <div className="w-14 h-14 shrink-0 md:w-30 md:h-30 xl:w-40 xl:h-40">
                             <img className="w-full h-full rounded-full object-cover" src={`${currentUser.profilePhoto ? currentUser.profilePhoto : defaultProfile}`} alt="" />
                         </div>
-                        <div className="pr-5 flex flex-col min-w-0 md:gap-4 md:pr-42">
-                            <h1 className="text-lg font-bold wrap-break-word md:text-3xl">{`${currentUser.firstName} ${currentUser.lastName}`}</h1>
+                        <div className="pr-5 flex flex-col min-w-0 max-w-50 md:max-w-fit md:gap-4 md:pr-42">
+                            <h1 className="text-[15px] font-bold wrap-break-word md:text-3xl">{`${currentUser.firstName} ${currentUser.lastName}`}</h1>
                             <div className="relative w-full text-gray-700 font-medium">
                                 <MdOutlineEmail className=" absolute top-1/2 -translate-y-1/2 left-0 md:w-6 md:h-6" />
-                                <p className="pl-6 wrap-break-word md:pl-10 md:text-xl">{currentUser.email}</p>
+                                <p className="text-sm pl-6 wrap-break-word md:pl-10 md:text-xl">{currentUser.email}</p>
                             </div>
                             <div className="relative w-full text-gray-700 font-medium">
-                                <SlLocationPin className="absolute top-1/2 -translate-y-1/2 left-0 md:w-5 md:h-5" />
-                                <p className="pl-6 wrap-break-word md:pl-10 md:text-xl">{currentUser.address}</p>
+                                <SlLocationPin className="absolute  md:top-1/2 md:-translate-y-1/2 top-0 left-0 w-4 h-4 md:w-5 md:h-5" />
+                                <p className="text-sm pl-6 wrap-break-word md:pl-10 md:text-xl">{currentUser.address}</p>
                             </div>
                         </div>
 
                         <PrimaryButton onClick={() => toggleForm(setOpenEditForm)} className="hidden rounded-lg px-5 md:flex md:items-center md:gap-2 md:absolute md:top-0 md:right-0 ">
-                            <FiEdit size={20} />
+                            <MdEdit size={20} />
                             Edit details
                         </PrimaryButton>
-                        <FiEdit size={20} onClick={() => toggleForm(setOpenEditForm)} className=" text-green-600 font-bold absolute top-0 right-0 md:hidden" />
+
+                        <PrimaryButton onClick={() => toggleForm(setOpenEditForm)} className="rounded-md p-1.5! absolute top-0 right-0 md:hidden">
+                            <MdEdit size={20} />
+                        </PrimaryButton>
                     </section>
 
                     <section className="w-full xl:w-[80%] p-5 mb-6 bg-white rounded-2xl shadow-md md:mb-10">
@@ -487,7 +494,7 @@ export default function MyProfile() {
                                             <p className="text-gray-700 font-medium mb-3 wrap-break-word">{item.institution}</p>
                                             {
                                                 (item.graduatedAt !== null || item.willFinishAt !== null) &&
-                                                <p className="text-gray-700 text-sm">{item.graduatedAt ? `Graduated ${item.graduatedAt}` : `Expected finish ${item.willFinishAt}`}</p>
+                                                <p className="text-gray-700 text-sm">{item.graduatedAt ? `Graduated in ${item.graduatedAt}` : `Expected to finish in ${item.willFinishAt}`}</p>
                                             }
                                             <button onClick={() => {
                                                 setEducID(item.educationID);

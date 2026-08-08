@@ -149,10 +149,10 @@ export default function AccountSettings() {
                         </div>
 
                         <h2 className="font-semibold text-lg xl:text-xl xl:mb-1 text-gray-700">Name</h2>
-                        <p className="text-gray-500 font-medium xl:text-lg mb-5">{currentUser.firstName}&nbsp;{currentUser.lastName}</p>                        
+                        <p className="text-gray-500 font-medium xl:text-lg mb-5 wrap-break-word">{currentUser.firstName}&nbsp;{currentUser.lastName}</p>                        
 
                         <h2 className="font-semibold text-lg xl:text-xl xl:mb-1 text-gray-700">Email Address</h2>
-                        <p className="text-gray-500 font-medium xl:text-lg mb-5">{currentUser.email}</p>
+                        <p className="text-gray-500 font-medium xl:text-lg mb-5 wrap-break-word">{currentUser.email}</p>
 
                         <h2 className="font-semibold text-lg xl:text-xl xl:mb-1 text-gray-700">Permission</h2>
                         <p className="text-gray-500 font-medium xl:text-lg mb-5">You have an {currentUser.role} privilege</p>

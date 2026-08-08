@@ -18,7 +18,9 @@ const ResumeViewerModal = ({ resumeID, onClose, user }) => {
     const [numPages, setNumPages] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+
     const docxContainerRef = useRef(null);
+    const pdfContainerRef = useRef(null);
     const [containerWidth, setContainerWidth] = useState(null);
 
     const isDocx = origFileName?.toLowerCase().endsWith('.docx');
@@ -27,18 +29,19 @@ const ResumeViewerModal = ({ resumeID, onClose, user }) => {
 
     useEffect(() => {
         const updateWidth = () => {
-            if (docxContainerRef.current) {
-                const style = window.getComputedStyle(docxContainerRef.current);
+            const activeRef = isDocx ? docxContainerRef.current : pdfContainerRef.current;
+            if (activeRef) {
+                const style = window.getComputedStyle(activeRef);
                 const paddingLeft = parseFloat(style.paddingLeft);
                 const paddingRight = parseFloat(style.paddingRight);
-                setContainerWidth(docxContainerRef.current.clientWidth - paddingLeft - paddingRight);
+                setContainerWidth(activeRef.clientWidth - paddingLeft - paddingRight);
             }
         };
 
         updateWidth();
         window.addEventListener('resize', updateWidth);
         return () => window.removeEventListener('resize', updateWidth);
-    }, []);
+    }, [isDocx, blob]);
 
     useEffect(() => {
         const fetchResume = async () => {
@@ -50,7 +53,7 @@ const ResumeViewerModal = ({ resumeID, onClose, user }) => {
                     : `/employer/viewResume/${resumeID}`;
 
                 const response = await fetch(`${import.meta.env.VITE_API_URL}${endpoint}`, {
-                    credentials: 'include' // sends the httpOnly cookie automatically
+                    credentials: 'include'
                 });
 
                 if (!response.ok) throw new Error(`Error: ${response.status}`);
@@ -66,7 +69,7 @@ const ResumeViewerModal = ({ resumeID, onClose, user }) => {
 
             } catch (err) {
                 console.error('❌ Error:', err.message);
-                setError('Network timed out. Please try again.');
+                setError('Resume not available. Please try again.');
             } finally {
                 setLoading(false);
             }
@@ -101,7 +104,7 @@ const ResumeViewerModal = ({ resumeID, onClose, user }) => {
 
                 {/* Header */}
                 <div className="relative px-6 py-4 border-b flex justify-between bg-green-600 rounded-tl-xl rounded-tr-xl text-white">
-                    <h2 className="font-semibold text-sm">
+                    <h2 className="font-semibold text-sm wrap-break-word w-[80%]">
                         {origFileName ?? 'Loading...'}
                     </h2>
                     <button
@@ -134,7 +137,7 @@ const ResumeViewerModal = ({ resumeID, onClose, user }) => {
 
                     {/* PDF — react-pdf */}
                     {!loading && !error && isPdf && blob && (
-                        <div className="flex flex-col items-center gap-4">
+                        <div ref={pdfContainerRef} className="flex flex-col items-center gap-4 w-full">
                             <Document
                                 file={blob}
                                 onLoadSuccess={({ numPages }) => setNumPages(numPages)}

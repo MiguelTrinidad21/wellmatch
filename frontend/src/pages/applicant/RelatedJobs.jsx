@@ -273,7 +273,7 @@ export default function RelatedJobs() {
             });
 
             setJobSearchResults(jobResults.data || []);
-            console.log(jobResults.data)
+            // console.log(jobResults.data)
             setTotalJobs(jobResults.data?.pagination?.totalJobs || 0);
             setTotalPages(jobResults.data?.pagination?.totalPages || 0);
             setCurrentPage(jobResults.data?.pagination?.currentPage || 1);
@@ -361,7 +361,7 @@ export default function RelatedJobs() {
 
 
                 <div className="w-full bg-linear-to-t from-[#098B5F] to-[#10B981] flex items-center justify-center flex-col p-6 md:px-15 lg:p-10 xl:p-20">
-                    <h1 className="text-xl font-bold text-white mb-5 md:text-3xl lg:text-4xl lg:mb-10 xl:text-5xl">Find jobs that match your skills</h1>
+                    <h1 className="text-center text-xl font-bold text-white mb-5 md:text-3xl lg:text-4xl lg:mb-10 xl:text-5xl">Find jobs that match your skills</h1>
 
                     <form onSubmit={handleSubmit} className="flex flex-col gap-2 xl:flex-row">
                         <div className="relative w-full flex items-center">
@@ -518,23 +518,98 @@ export default function RelatedJobs() {
                                                 )
                                                 
                                             })}
-                                        </div>                        
+                                        </div>
+                      
                                         {totalPages > 1 && (
                                             <ReactPaginate
+                                                key={`${jobSearch.jobTitle}-${jobSearch.location}-${totalPages}`}
                                                 pageCount={totalPages}
                                                 forcePage={currentPage - 1}
                                                 onPageChange={handlePageClick}
+
                                                 previousLabel="<"
                                                 nextLabel=">"
                                                 breakLabel="..."
-                                                marginPagesDisplayed={2}
-                                                pageRangeDisplayed={3}
-                                                containerClassName="flex justify-center items-center gap-4 mt-6 w-full"
-                                                pageLinkClassName="cursor-pointer px-4 py-3 rounded-lg text-lg"
-                                                activeLinkClassName="cursor-pointer bg-[#2B2B2B] text-white"
-                                                previousLinkClassName="cursor-pointer px-4 py-2 rounded-md bg-white shadow"
-                                                nextLinkClassName="cursor-pointer px-4 py-2 rounded-md bg-white shadow"
-                                                disabledClassName="opacity-40 cursor-not-allowed"
+
+                                                // Responsive page count
+                                                marginPagesDisplayed={isDesktop ? 2 : 1}
+                                                pageRangeDisplayed={isDesktop ? 3 : 1}
+
+                                                containerClassName="
+                                                    flex
+                                                    justify-center
+                                                    items-center
+                                                    gap-1
+                                                    sm:gap-2
+                                                    my-6
+                                                    w-full
+                                                "
+
+                                                pageLinkClassName="
+                                                    flex
+                                                    items-center
+                                                    justify-center
+                                                    min-w-9
+                                                    h-9
+                                                    px-2
+                                                    rounded-lg
+                                                    text-sm
+                                                    sm:min-w-10
+                                                    sm:h-10
+                                                    sm:px-4
+                                                    sm:text-base
+                                                    cursor-pointer
+                                                    transition-colors
+                                                    duration-200
+                                                "
+
+                                                activeLinkClassName="
+                                                    bg-[#2B2B2B]
+                                                    text-white
+                                                "
+
+                                                previousLinkClassName="
+                                                    flex
+                                                    items-center
+                                                    justify-center
+                                                    min-w-9
+                                                    h-9
+                                                    px-2
+                                                    rounded-md
+                                                    bg-white
+                                                    shadow
+                                                    text-sm
+                                                    sm:min-w-10
+                                                    sm:h-10
+                                                    sm:px-4
+                                                    sm:text-base
+                                                    cursor-pointer
+                                                    hover:bg-gray-100
+                                                "
+
+                                                nextLinkClassName="
+                                                    flex
+                                                    items-center
+                                                    justify-center
+                                                    min-w-9
+                                                    h-9
+                                                    px-2
+                                                    rounded-md
+                                                    bg-white
+                                                    shadow
+                                                    text-sm
+                                                    sm:min-w-10
+                                                    sm:h-10
+                                                    sm:px-4
+                                                    sm:text-base
+                                                    cursor-pointer
+                                                    hover:bg-gray-100
+                                                "
+
+                                                disabledClassName="
+                                                    opacity-40
+                                                    pointer-events-none
+                                                "
                                             />
                                         )}
                                     </div>

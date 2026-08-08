@@ -45,7 +45,7 @@ export async function getJobInfo(req, res) {
 }
 
 export async function getSkillGapReport(req, res) {
-    const { jobID, resumeID } = req.query;
+    const { jobID, resumeID, applicantID } = req.query;
 
     if (!resumeID || !jobID) {
         return res.status(400).json({
@@ -53,7 +53,17 @@ export async function getSkillGapReport(req, res) {
         });
     }
 
+
     try {
+
+        const [[applicant]] = await database.query(`
+            SELECT applicantID, status
+            FROM applicants
+            WHERE applicantID = ?
+            LIMIT 1
+            `,
+            [applicantID]
+        );
 
         const [existingReport] = await database.query(
             `
@@ -81,6 +91,10 @@ export async function getSkillGapReport(req, res) {
                 message: "Existing skill gap report detected",
                 skillGapReport: formatReport(existingReport[0])
             });
+        }
+
+        if (existingReport.length === 0 && applicant.status === "deleted") {
+            return res.status(404).json({ message: "Skill gap report is not available for this deleted applicant." });
         }
 
         const skillGapResult = await skillGapService(resumeID, jobID);

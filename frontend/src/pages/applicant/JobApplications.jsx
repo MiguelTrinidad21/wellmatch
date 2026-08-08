@@ -18,6 +18,7 @@ import { TbBriefcaseOff } from "react-icons/tb";
 import { GrLocation } from "react-icons/gr";
 import { FiBriefcase } from "react-icons/fi";
 import { FiCalendar } from "react-icons/fi";
+import { PiTarget } from "react-icons/pi";
 import ReactPaginateModule from "react-paginate";
 import useIsDesktop from "../../hooks/useIsDesktop";
 import JobInfoSide from "../../components/popUps/JobInfoSide";
@@ -280,40 +281,40 @@ export default function JobApplications() {
                 </div>
 
                 <div className="w-full p-6 md:p-15 xl:px-30">
-                    <section className="w-full text-center mb-5">
+                    <section className="w-full text-sm text-center mb-5">
                         {
                             status === "submitted" &&
                             <>
-                                <h1 className="text-[22px] font-bold mb-3">Your Submitted Applications</h1>
-                                <p className="font-medium text-gray-700">View the applications you've successfully submitted to employers and track their progress.</p>
+                                <h1 className="text-[22px] font-bold mb-3">Submitted Applications</h1>
+                                <p className="font-medium text-gray-700 text-sm md:text-[1rem]">View the applications you've successfully submitted to employers and track their progress.</p>
                             </>
                         }
                         {
                             status === "shortlisted" &&
                             <>
                                 <h1 className="text-[22px] font-bold mb-3">Shortlisted Applications</h1>
-                                <p className="font-medium text-gray-700">View applications where you've been shortlisted by employers for the next stage of the recruitment process.</p>
+                                <p className="font-medium text-gray-700 text-sm md:text-[1rem]">View applications where you've been shortlisted by employers for the next stage of the recruitment process.</p>
                             </>
                         }
                         {
                             status === "interview" &&
                             <>
                                 <h1 className="text-[22px] font-bold mb-3">Interview Invitations</h1>
-                                <p className="font-medium text-gray-700">View applications where you've been invited to the interview stage and stay updated on upcoming interview opportunities.</p>
+                                <p className="font-medium text-gray-700 text-sm md:text-[1rem]">View applications where you've been invited to the interview stage and stay updated on upcoming interview opportunities.</p>
                             </>
                         }
                         {
                             status === "hired" &&
                             <>
                                 <h1 className="text-[22px] font-bold mb-3">Job Offers</h1>
-                                <p className="font-medium text-gray-700">View job offers you've received from employers and stay updated on your latest opportunities.</p>
+                                <p className="font-medium text-gray-700 text-sm md:text-[1rem]">View job offers you've received from employers and stay updated on your latest opportunities.</p>
                             </>
                         }
                         {
                             status === "not selected" &&
                             <>
                                 <h1 className="text-[22px] font-bold mb-3">Closed Applications</h1>
-                                <p className="font-medium text-gray-700">View applications that were not successful and continue exploring new opportunities on WellMatch.</p>
+                                <p className="font-medium text-gray-700 text-sm md:text-[1rem]">View applications that were not successful and continue exploring new opportunities on WellMatch.</p>
                                 
                             </>
                         }
@@ -332,29 +333,22 @@ export default function JobApplications() {
                                 {
                                     jobs?.map((item) => (
                                         <div key={item.applicationID} className="p-6 w-full rounded-2xl shadow-md bg-white md:hidden">
-                                            <div className="flex justify-between gap-10">
-                                                <div className="min-w-0 flex-1">
-                                                    <h2 className="font-bold mb-1 text-[16px] wrap-break-word">{item.jobTitle}</h2>
-                                                    <p className="text-gray-600 text-sm mb-7 wrap-break-word">{item.companyName}</p>
-                                                </div>
-
-                                                {
-                                                    item.overallScore !== null && 
-                                                    <div className={`shrink-0 p-1 rounded-md max-h-fit border ${item.overallScore >= 60 ? "bg-[#F0FDF4] border-green-400 text-green-600" : "bg-[#FFF1F2] border-red-600 text-red-600"} ${status !== "hired" ? "block" : "hidden"}`}>
-                                                        <h2 className="font-bold text-[16px]">{`${item.overallScore}% Match`}</h2>
-                                                    </div>
-                                                }
+                                            <div className="min-w-0 mb-7">
+                                                <h2 className="font-bold mb-1 text-[16px] wrap-break-word">{item.jobTitle}</h2>
+                                                <p className="text-gray-600 text-sm wrap-break-word">{item.companyName}</p>
                                             </div>
 
                                             {
                                                 status === "hired" ?
-                                                    <>
+                                                <>
                                                         <p className="text-gray-500 mb-2 text-sm flex items-center gap-2"><GrLocation size={18} />{item.location}</p>
                                                         <p className="text-gray-500 mb-2 text-sm flex items-center gap-2"><FiBriefcase size={18} />{item.workType}</p>
                                                         
                                                     </>
                                                 :
                                                     <>
+                                                        {item.overallScore !== null && <h2 className={`font-bold flex items-center gap-2 mb-2 text-sm ${item.overallScore >= 60 ? "text-green-600" : " text-red-600"} ${status !== "hired" ? "block" : "hidden"}`}><PiTarget />{`${item.overallScore}% Match`}</h2>}
+                                                             
                                                         <p className="text-gray-500 mb-2 text-sm flex items-center gap-2"><GrLocation size={18} />{item.location}</p>
                                                         <p className="text-gray-500 mb-10 text-sm flex items-center gap-2"><FiCalendar size={18} />{`Submitted on ${new Date(item.applicationDate).toLocaleDateString('en-US', dateFormat)}`}</p>
                                                     </>
@@ -487,17 +481,90 @@ export default function JobApplications() {
                             pageCount={totalPages}
                             forcePage={currentPage - 1}
                             onPageChange={handlePageClick}
+
                             previousLabel="<"
                             nextLabel=">"
                             breakLabel="..."
-                            marginPagesDisplayed={2}
-                            pageRangeDisplayed={3}
-                            containerClassName="flex justify-center items-center gap-4 mt-10 w-full"
-                            pageLinkClassName="px-4 py-3 rounded-lg text-lg"
-                            activeLinkClassName="bg-[#2B2B2B] text-white"
-                            previousLinkClassName="px-4 py-2 rounded-md bg-white shadow"
-                            nextLinkClassName="px-4 py-2 rounded-md bg-white shadow"
-                            disabledClassName="opacity-40 cursor-not-allowed"
+
+                            // Responsive page count
+                            marginPagesDisplayed={isDesktop ? 2 : 1}
+                            pageRangeDisplayed={isDesktop ? 3 : 1}
+
+                            containerClassName="
+                                flex
+                                justify-center
+                                items-center
+                                gap-1
+                                sm:gap-2
+                                my-6
+                                w-full
+                            "
+
+                            pageLinkClassName="
+                                flex
+                                items-center
+                                justify-center
+                                min-w-9
+                                h-9
+                                px-2
+                                rounded-lg
+                                text-sm
+                                sm:min-w-10
+                                sm:h-10
+                                sm:px-4
+                                sm:text-base
+                                cursor-pointer
+                                transition-colors
+                                duration-200
+                            "
+
+                            activeLinkClassName="
+                                bg-[#2B2B2B]
+                                text-white
+                            "
+
+                            previousLinkClassName="
+                                flex
+                                items-center
+                                justify-center
+                                min-w-9
+                                h-9
+                                px-2
+                                rounded-md
+                                bg-white
+                                shadow
+                                text-sm
+                                sm:min-w-10
+                                sm:h-10
+                                sm:px-4
+                                sm:text-base
+                                cursor-pointer
+                                hover:bg-gray-100
+                            "
+
+                            nextLinkClassName="
+                                flex
+                                items-center
+                                justify-center
+                                min-w-9
+                                h-9
+                                px-2
+                                rounded-md
+                                bg-white
+                                shadow
+                                text-sm
+                                sm:min-w-10
+                                sm:h-10
+                                sm:px-4
+                                sm:text-base
+                                cursor-pointer
+                                hover:bg-gray-100
+                            "
+
+                            disabledClassName="
+                                opacity-40
+                                pointer-events-none
+                            "
                         />
                     )}
                     

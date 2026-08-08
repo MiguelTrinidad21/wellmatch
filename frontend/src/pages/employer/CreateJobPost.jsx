@@ -341,8 +341,8 @@ export default function CreateJobPost({ mode = "create" }) {
                         {salaryError && <p className="text-[13px] text-red-600 mb-3">{salaryError}</p>}
 
                         <div className="flex justify-between w-full mt-8">
-                            <PrimaryButton onClick={cancelJobCreation} className="bg-white text-black! border-2 border-gray-400 md:px-5">Cancel</PrimaryButton>
-                            <PrimaryButton type="submit" className="px-8">Next</PrimaryButton>
+                            <PrimaryButton onClick={cancelJobCreation} className="bg-white text-black! border-2 border-gray-400 text-sm md:text-[1rem]! md:px-5">Cancel</PrimaryButton>
+                            <PrimaryButton type="submit" className="text-sm px-6 md:text-[1rem]! md:px-8">Next</PrimaryButton>
                         </div>
                     </form>
                 </div>
