@@ -510,7 +510,8 @@ export default function RecommendedJobs() {
                                                                         workingConditions: job.workingConditions,
                                                                         jobBenefits: job.jobBenefits
                                                                     })} 
-                                                                    key={job.jobID} className="xl:cursor-pointer box-border border-3 border-transparent hover:border-green-600 transition-all duration-200 ease-in w-full h-full bg-white shadow-md rounded-2xl p-4 relative md:p-8 flex flex-col"
+                                                                    key={job.jobID} 
+                                                                    className="xl:cursor-pointer box-border border-3 border-transparent hover:border-green-600 transition-all duration-200 ease-in w-full h-full bg-white shadow-md rounded-2xl p-4 m:p-6 relative md:p-8 flex flex-col"
                                                                 >
 
                                                                     <div className={`w-25 mb-3 md:w-30 xl:absolute xl:top-7 xl:right-8`}>

@@ -401,7 +401,7 @@ export default function ViewApplicants() {
                                                                         setApplicationID(item.applicationID)
                                                                         setShowReject(true)
                                                                     }} 
-                                                                    className="text-red-600! bg-white px-0! text-[12px]!"
+                                                                    className="text-red-600! bg-white px-0! text-[12px]! m:text-sm!"
                                                                 >
                                                                     Reject
                                                                 </PrimaryButton>
@@ -411,7 +411,7 @@ export default function ViewApplicants() {
                                                                         setApplicationID(item.applicationID)
                                                                         setShowConfirm(true)
                                                                     }} 
-                                                                    className="text-green-600! bg-white px-0! text-[12px]!"
+                                                                    className="text-green-600! bg-white px-0! text-[12px]! m:text-sm!"
                                                                 >
                                                                     Interested
                                                                 </PrimaryButton>
@@ -425,7 +425,7 @@ export default function ViewApplicants() {
                                                                         setApplicationID(item.applicationID)
                                                                         setShowReject(true)
                                                                     }} 
-                                                                    className="text-red-600! bg-white px-0! text-[12px]!"
+                                                                    className="text-red-600! bg-white px-0! text-[12px]! m:text-sm!"
                                                                 >
                                                                     Reject
                                                                 </PrimaryButton>
@@ -435,7 +435,7 @@ export default function ViewApplicants() {
                                                                         setApplicationID(item.applicationID)
                                                                         setShowConfirm(true)
                                                                     }} 
-                                                                    className="text-green-600! bg-white px-0! text-[12px]!"
+                                                                    className="text-green-600! bg-white px-0! text-[12px]! m:text-sm!"
                                                                 >
                                                                     Interview
                                                                 </PrimaryButton>
@@ -449,7 +449,7 @@ export default function ViewApplicants() {
                                                                         setApplicationID(item.applicationID)
                                                                         setShowReject(true)
                                                                     }} 
-                                                                    className="text-red-600! bg-white px-0! text-[12px]!"
+                                                                    className="text-red-600! bg-white px-0! text-[12px]! m:text-sm!"
                                                                 >
                                                                     Reject
                                                                 </PrimaryButton>
@@ -459,7 +459,7 @@ export default function ViewApplicants() {
                                                                         setApplicationID(item.applicationID)
                                                                         setShowConfirm(true)
                                                                     }} 
-                                                                    className="text-green-600! bg-white px-0! text-[12px]!"
+                                                                    className="text-green-600! bg-white px-0! text-[12px]! m:text-sm!"
                                                                 >
                                                                     Send&nbsp;Offer
                                                                 </PrimaryButton>

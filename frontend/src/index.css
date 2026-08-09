@@ -4,6 +4,7 @@
 
 @theme {
   --font-sans: "Inter", sans-serif;
+  --breakpoint-m: 23.4375rem;
 }
 
 html,

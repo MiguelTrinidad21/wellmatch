@@ -18,7 +18,7 @@ import useLockBodyScroll from "../../hooks/useLockBodyScroll.js";
 export default function AccountSettings() {
     const { currentUser, logoutUser } = userStore();
     const { setEmployerActiveLink, sideBarStatus } = sideBarStore();
-    useLockBodyScroll();
+    useLockBodyScroll(sideBarStatus);
     const navigate = useNavigate();
 
     const [openUpdateInfo, setOpenUpdateInfo] = useState(false);

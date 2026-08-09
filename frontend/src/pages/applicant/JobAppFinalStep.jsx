@@ -180,9 +180,9 @@ export default function JobAppFinalStep() {
                         </div>
                     </div>  
 
-                    <div className="bg-white shadow-lg rounded-2xl p-4 w-full md:w-120 lg:max-w-150 md:p-8">
+                    <div className="bg-white shadow-lg rounded-2xl p-4 m:p-5 w-full md:w-120 lg:max-w-150 md:p-8">
                         <h2 className="font-bold text-xl mb-3">Review WellMatch Profile</h2>
-                        <p className="text-[12px] text-gray-500 mb-5 font-semibold md:text-sm">Your profile is part of your job application. Make sure you review it carefully.</p>
+                        <p className="text-[12px] m:text-sm text-gray-500 mb-8 font-semibold md:text-sm">Your profile is part of your job application. Make sure you review it carefully.</p>
 
                         <div className="w-full border-b border-gray-300 mb-10 pb-5">
                             <p className="text-sm text-gray-700 font-bold mb-3">WORK EXPERIENCE</p>
@@ -254,10 +254,10 @@ export default function JobAppFinalStep() {
                         </div>
                         
                         <div className="flex justify-between w-full">
-                            <PrimaryButton disabled={isSubmitting} to={`/applicant/viewJob/${jobID}/apply`} className="text-[12px]! md:text-[1rem]! md:px-5 bg-gray-200 text-black! px-4 xl:px-7">Back</PrimaryButton>
+                            <PrimaryButton disabled={isSubmitting} to={`/applicant/viewJob/${jobID}/apply`} className="text-[12px]! m:text-sm! md:text-[1rem]! md:px-5 bg-gray-200 text-black! px-4 xl:px-7">Back</PrimaryButton>
                             <div className="flex gap-2 xl:gap-4" >
-                                <SecondaryButton disabled={isSubmitting} to="/applicant/myProfile" className="text-[12px]! md:text-[1rem]! px-5 md:px-6 xl:px-7 fon-bold! xl:text-[1rem]!">Edit</SecondaryButton>
-                                <PrimaryButton className={`text-[12px]! md:text-[1rem]! md:px-6 xl:px-7 xl:text-[1rem]! ${isSubmitting ? "opacity-50" : undefined}`} disabled={isSubmitting} onClick={submitApplication}>
+                                <SecondaryButton disabled={isSubmitting} to="/applicant/myProfile" className="text-[12px]! m:text-sm! md:text-[1rem]! px-5 m:px-6 xl:px-7 fon-bold!">Edit</SecondaryButton>
+                                <PrimaryButton className={`text-[12px]! m:text-sm! md:text-[1rem]! m:px-5 md:px-6 xl:px-7 ${isSubmitting ? "opacity-50" : undefined}`} disabled={isSubmitting} onClick={submitApplication}>
                                     {
                                         isSubmitting ?
                                             <span className="flex gap-2 items-center justify-center">

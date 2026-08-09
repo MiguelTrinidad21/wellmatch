@@ -78,7 +78,6 @@ export default function JobDescription({ mode = "create" }) {
             return;
         }
 
-        setErrors(null);
 
         if (isEditMode) {
             navigate(`/employer/jobs/${jobID}/edit/description/years`);

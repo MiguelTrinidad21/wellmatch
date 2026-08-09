@@ -320,14 +320,14 @@ export default function MyProfile() {
                         <div className="w-14 h-14 shrink-0 md:w-30 md:h-30 xl:w-40 xl:h-40">
                             <img className="w-full h-full rounded-full object-cover" src={`${currentUser.profilePhoto ? currentUser.profilePhoto : defaultProfile}`} alt="" />
                         </div>
-                        <div className="pr-5 flex flex-col min-w-0 max-w-50 md:max-w-fit md:gap-4 md:pr-42">
+                        <div className="flex flex-col min-w-0 max-w-40 m:max-w-50 md:max-w-78 md:gap-4 ">
                             <h1 className="text-[15px] font-bold wrap-break-word md:text-3xl">{`${currentUser.firstName} ${currentUser.lastName}`}</h1>
                             <div className="relative w-full text-gray-700 font-medium">
-                                <MdOutlineEmail className=" absolute top-1/2 -translate-y-1/2 left-0 md:w-6 md:h-6" />
+                                <MdOutlineEmail className=" absolute top-0.5 md:top-1/2 md:-translate-y-1/2 left-0 md:w-6 md:h-6" />
                                 <p className="text-sm pl-6 wrap-break-word md:pl-10 md:text-xl">{currentUser.email}</p>
                             </div>
                             <div className="relative w-full text-gray-700 font-medium">
-                                <SlLocationPin className="absolute  md:top-1/2 md:-translate-y-1/2 top-0 left-0 w-4 h-4 md:w-5 md:h-5" />
+                                <SlLocationPin className="absolute  md:top-1/2 md:-translate-y-1/2 top-0.5 left-0 w-4 h-4 md:w-5 md:h-5" />
                                 <p className="text-sm pl-6 wrap-break-word md:pl-10 md:text-xl">{currentUser.address}</p>
                             </div>
                         </div>

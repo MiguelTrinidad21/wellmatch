@@ -114,18 +114,18 @@ export default function ViewJobInfo() {
                             />
                         </div>
 
-                        <div className="p-3 w-full mb-3 md:p-7">
+                        <div className="p-3 m:p-4 w-full mb-3 md:p-7">
                             <div className="w-full relative mb-6">
                                 <img 
                                     src={selectedJob.profilePhotoURL ? selectedJob.profilePhotoURL : defaultPhoto} 
                                     alt="profile photo"
-                                    className="w-25 object-cover rounded-lg md:rounded-xl md:w-30"
+                                    className="w-25 m:w-27 object-cover rounded-lg md:rounded-xl md:w-30"
                                 />
-                                <PrimaryButton onClick={() => goAnalysis(jobID)} className="absolute top-0 right-0 rounded-md bg-gray-800! text-[10px] md:text-sm">View Skill Gap Analysis</PrimaryButton>
+                                <PrimaryButton onClick={() => goAnalysis(jobID)} className="absolute top-0 right-0 rounded-md bg-gray-800! text-[10px] m:text-[12px]! md:text-sm">View Skill Gap Analysis</PrimaryButton>
                             </div>
                             <div className="w-full mb-4">
                                 <h1 className="text-xl font-bold">{selectedJob.jobTitle}</h1>
-                                <p className="text-gray-500 mb-6">{selectedJob.companyName}</p>
+                                <p className="text-gray-500 font-medium mb-6">{selectedJob.companyName}</p>
                                 <div className="relative w-full mb-2">
                                     <MdOutlineLocationOn className="absolute top-1/2 -translate-y-1/2" />
                                     <span className="pl-7 text-sm md:text-[16px]">{selectedJob.location}</span>

@@ -18,11 +18,26 @@ function formatReport(report) {
 
 export async function skillGapController(req, res) {
     const { jobID, resumeID } = req.params;
+    const { id } = req.user;
 
     if (!resumeID || !jobID) {
         return res.status(400).json({
             message: "resumeID and jobID are required."
         });
+    }
+
+    const [rows] = await database.query(
+        `
+        SELECT 1 
+        FROM resumes 
+        WHERE resumeID = ? AND applicantID = ?
+        LIMIT 1
+        `,
+        [resumeID, id]
+    );
+
+    if (rows.length === 0) {
+        return res.status(403).json({ message: "You are not allowed to view this resume" })
     }
 
     try {

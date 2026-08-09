@@ -108,6 +108,10 @@ export default function SkillGapAnalysisUI() {
                 setSkillGapAnalysis(skillGapReport.data.skillGapReport);
             } catch (error) {
                 console.log(error);
+                
+                if (error.response && error.response.status === 403) {
+                    navigate("/forbidden")
+                }
             } finally {
                 setSkillGapLoaded(true);
             }
