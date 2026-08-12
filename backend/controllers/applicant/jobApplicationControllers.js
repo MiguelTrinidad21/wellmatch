@@ -106,9 +106,35 @@ export async function fetchApplications(req, res) {
     const { status, page = 1, limit = 10 } = req.query;
 
     const currentPage = Math.max(Number(page) || 1, 1);
-    const pageLimit = Math.min(Math.max(Number(limit) || 10, 1), 20);  
+    const pageLimit = Math.min(Math.max(Number(limit) || 10, 1), 20);
+    const offset = (currentPage - 1) * pageLimit;
 
     try {
+        // 1. Get total count matching the filters (no JOIN needed here since
+        // status/applicantID live on `applications` itself)
+        const [countRows] = await database.query(`
+            SELECT COUNT(*) AS total
+            FROM applications a
+            WHERE a.applicantID = ?
+            AND a.status = ?
+        `, [id, status]);
+
+        const totalApplications = countRows[0].total;
+        const totalPages = Math.ceil(totalApplications / pageLimit);
+
+        if (totalApplications === 0) {
+            return res.status(200).json({
+                applications: [],
+                pagination: {
+                    totalApplications: 0,
+                    totalPages: 0,
+                    currentPage,
+                    limit: pageLimit
+                }
+            });
+        }
+
+        // 2. Fetch only the rows needed for this page
         const [rows] = await database.query(`
             SELECT
                 a.*,
@@ -139,37 +165,19 @@ export async function fetchApplications(req, res) {
                 AND s.jobID = a.jobID
             WHERE a.applicantID = ?
             AND a.status = ?
-        `, [id, status]);
-
-        if (rows.length === 0) {
-            return res.status(200).json({
-                applications: rows,
-                pagination: {
-                    totalApplications: 0,
-                    totalPages: 0,
-                    currentPage,
-                    limit: pageLimit                   
-                }
-            });
-        }
-
-        const totalApplications = rows.length;
-        const totalPages = Math.ceil(totalApplications / pageLimit);
-
-        const startIndex = (currentPage - 1) * pageLimit;
-        const endIndex = startIndex + pageLimit;
-
-        const paginatedApplications = rows.slice(startIndex, endIndex);
+            ORDER BY a.applicationDate DESC
+            LIMIT ? OFFSET ?
+        `, [id, status, pageLimit, offset]);
 
         return res.status(200).json({
-            applications: paginatedApplications,
+            applications: rows,
             pagination: {
                 totalApplications,
                 totalPages,
                 currentPage,
                 limit: pageLimit
             }
-        });   
+        });
 
     } catch (error) {
         console.error(error);
