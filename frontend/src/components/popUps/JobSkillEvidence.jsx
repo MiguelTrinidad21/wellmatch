@@ -14,8 +14,8 @@ export default function JobSkillEvidence({
     return (
         <>
             <Translucent />
-            <div className={`fixed overflow-y-auto left-1/2 top-1/2 -translate-y-1/2 -translate-x-1/2 max-w-[90%] w-[90%] z-40 bg-slate-100 rounded-xl shadow-xl md:w-90`}>
-                <div className="w-full relative p-4 pt-5">
+            <div className={`fixed left-1/2 top-1/2 -translate-y-1/2 -translate-x-1/2 w-[90%] z-40 bg-slate-100 rounded-xl shadow-xl md:w-90`}>
+                <div className="w-full overflow-y-auto max-h-[90%] relative p-4 pt-5">
                     <IoClose size={25} onClick={toggleFunc} className="cursor-pointer absolute top-2 right-2" />
 
                     <h1 className={`font-bold text-sm ${isMatched ? "text-green-700" : "text-red-700"} mb-2`}>JOB REQUIREMENT</h1>
