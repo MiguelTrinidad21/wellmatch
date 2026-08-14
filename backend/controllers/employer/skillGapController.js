@@ -132,7 +132,7 @@ export async function getSkillGapReport(req, res) {
                     JSON.stringify(skillGapResult.matchedSkills),
                     JSON.stringify(skillGapResult.missingSkills),
                     matchScoreExplanation,
-                    upskillingRecommendations
+                    JSON.stringify(upskillingRecommendations)
                 ]
             );        
     
@@ -197,7 +197,11 @@ export async function getSkillGapReport(req, res) {
         
     } catch (error) {
         console.error(error);
-        return res.status(500).json({ message: "Fetching skill gap report failed" })
+        return res.status(500).json({ 
+            message: "Fetching skill gap report failed",
+            debug: error.message,
+            stack: error.stack
+        })
     }
 }
 
