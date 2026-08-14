@@ -325,10 +325,8 @@ export default function SkillGapReport() {
                                                         <h1 className="font-bold text-lg mb-1">{item.courseName}</h1>
                                                         <p className="text-[#6366F1] font-semibold mb-1">{item.institution}</p>
                                                         {
-                                                            item.graduatedAt ? 
-                                                                <p className="text-gray-500 font-semibold text-[13px]">{`Graduated at ${item.issueDate}`}</p>
-                                                            :    
-                                                                <p className="text-gray-500 font-semibold text-[13px]">{`Expected to finish at ${item.willFinishAt}`}</p>
+                                                            (item.graduatedAt !== null || item.willFinishAt !== null) &&
+                                                            <p className="text-gray-700 text-sm">{item.graduatedAt ? `Graduated in ${item.graduatedAt}` : `Expected to finish in ${item.willFinishAt}`}</p>
                                                         }
                                                     </div>
                                                 </div>
@@ -497,10 +495,8 @@ export default function SkillGapReport() {
                                                     <h1 className="font-bold text-lg mb-1">{item.courseName}</h1>
                                                     <p className="text-[#6366F1] font-semibold mb-1">{item.institution}</p>
                                                     {
-                                                        item.graduatedAt ? 
-                                                            <p className="text-gray-500 font-semibold text-[13px]">{`Graduated at ${item.issueDate}`}</p>
-                                                        :    
-                                                            <p className="text-gray-500 font-semibold text-[13px]">{`Expected to finish at ${item.willFinishAt}`}</p>
+                                                        (item.graduatedAt !== null || item.willFinishAt !== null) &&
+                                                        <p className="text-gray-700 text-sm">{item.graduatedAt ? `Graduated in ${item.graduatedAt}` : `Expected to finish in ${item.willFinishAt}`}</p>
                                                     }
                                                 </div>
                                             </div>
