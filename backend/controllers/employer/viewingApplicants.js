@@ -8,6 +8,25 @@ export async function fetchApplicants(req, res) {
         page = 1,
         limit = 10
     } = req.query;
+
+    const { companyID } = req.user;
+
+    const [[jobFromCompany]] = await database.query(`
+        SELECT EXISTS (
+            SELECT 1
+            FROM jobs
+            WHERE jobID = ?
+                AND companyID = ?
+        ) AS result
+        `,
+        [jobID, companyID]
+    );
+
+    if (!jobFromCompany.result) {
+        return res.status(403).json({ message: "You are not allowed to view the applicants of this job" });
+    }
+
+
     
     const currentPage = Math.max(Number(page) || 1, 1);
     const pageLimit = Math.min(Math.max(Number(limit) || 10, 1), 20);  

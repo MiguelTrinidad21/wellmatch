@@ -754,10 +754,10 @@ export default function RecommendedJobs() {
                                                                     </div>
 
                                                                     <div className="w-full px-4 pb-4 md:p-7">
-                                                                        <h1 className="text-lg font-bold text-center mb-2">Job Desciption</h1>
+                                                                        <h1 className="text-xl font-bold text-center mb-2">Job Desciption</h1>
                                                                         <p className="text-justify indent-8 text-[15px] mb-3">{jobInfo.jobOverview}</p>
 
-                                                                        <h2 className="font-bold">Job Responsibilities</h2>
+                                                                        <h2 className="font-bold text-xl mt-8">Job Responsibilities</h2>
                                                                         <div
                                                                             className="prose max-w-none text-[15px] [&_ul]:list-disc [&_ul]:pl-6 [&_li]:text-black [&_li::marker]:text-black"
                                                                             dangerouslySetInnerHTML={{
@@ -765,7 +765,7 @@ export default function RecommendedJobs() {
                                                                             }}
                                                                         />
 
-                                                                        <h2 className="font-bold">Required Qualifications</h2>
+                                                                        <h2 className="font-bold text-xl mt-8">Required Qualifications</h2>
                                                                         <div
                                                                             className="prose max-w-none text-[15px] [&_ul]:list-disc [&_ul]:pl-6 [&_li]:text-black [&_li::marker]:text-black"
                                                                             dangerouslySetInnerHTML={{
@@ -775,7 +775,7 @@ export default function RecommendedJobs() {
 
                                                                         {jobInfo.preferredQualifications &&
                                                                             <>
-                                                                                <h2 className="font-bold">Preferred Qualifications</h2>
+                                                                                <h2 className="font-bold text-xl mt-8">Preferred Qualifications</h2>
                                                                                 <div
                                                                                     className="prose max-w-none text-[15px] [&_ul]:list-disc [&_ul]:pl-6 [&_li]:text-black [&_li::marker]:text-black"
                                                                                     dangerouslySetInnerHTML={{
@@ -787,7 +787,7 @@ export default function RecommendedJobs() {
 
                                                                         {jobInfo.workingConditions &&
                                                                             <>
-                                                                                <h2 className="font-bold">Working Conditions</h2>
+                                                                                <h2 className="font-bold mt-8 text-xl">Working Conditions</h2>
                                                                                 <div
                                                                                     className="prose max-w-none text-[15px] [&_ul]:list-disc [&_ul]:pl-6 [&_li]:text-black [&_li::marker]:text-black"
                                                                                     dangerouslySetInnerHTML={{
@@ -799,7 +799,7 @@ export default function RecommendedJobs() {
 
                                                                         {jobInfo.jobBenefits &&
                                                                             <>
-                                                                                <h2 className="font-bold">Job Benefits</h2>
+                                                                                <h2 className="font-bold mt-8 text-xl">Job Benefits</h2>
                                                                                 <div
                                                                                     className="prose max-w-none text-[15px] [&_ul]:list-disc [&_ul]:pl-6 [&_li]:text-black [&_li::marker]:text-black"
                                                                                     dangerouslySetInnerHTML={{

@@ -391,7 +391,7 @@ export default function SkillGapAnalysisUI() {
                             <section className="rounded-2xl shadow-sm bg-white p-4 w-full border-2 border-[#E8ECEF]">
                                 <h1 className="font-bold text-lg">Job Requirements</h1>
 
-                                <h2 className="font-semibold">Required</h2>
+                                <h2 className="font-semibold mt-8 text-xl">Required:</h2>
                                 <div
                                     className="prose max-w-none text-[15px] [&_ul]:list-disc [&_ul]:pl-6 [&_li]:text-black [&_li::marker]:text-black"
                                     dangerouslySetInnerHTML={{
@@ -401,7 +401,7 @@ export default function SkillGapAnalysisUI() {
 
                                 {selectedJob.preferredQualifications &&
                                     <>
-                                        <h2 className="font-semibold mt-4">Preferred</h2>
+                                        <h2 className="font-semibold mt-8 text-xl">Preferred:</h2>
                                         <div
                                             className="prose max-w-none text-[15px] [&_ul]:list-disc [&_ul]:pl-6 [&_li]:text-black [&_li::marker]:text-black"
                                             dangerouslySetInnerHTML={{

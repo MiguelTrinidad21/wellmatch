@@ -77,6 +77,7 @@ export default function ViewApplicants() {
             setCurrentPage(res?.data?.pagination?.currentPage);
         } catch (error) {
             console.log(error);
+            navigate("/forbidden");
         }
     }
 

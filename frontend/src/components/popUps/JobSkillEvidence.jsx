@@ -24,7 +24,7 @@ export default function JobSkillEvidence({
                         <p className={`font-semibold ${isMatched ? "text-green-800" : "text-[#BE123C]"}  text-sm`}>{jobSkill}</p>
                     </div>
                     <h1 className={`font-bold ${isMatched ? "text-green-700" : "text-red-700"} text-sm mb-2`}>EVIDENCE FROM JOB POST</h1>
-                    <div className={`border-l-3 ${isMatched ? "border-l-green-600" : "border-l-red-600"} bg-white rounded-xl shadow-sm pl-4 py-2 `}>
+                    <div className={`border-l-3 ${isMatched ? "border-l-green-600" : "border-l-red-600"} bg-white rounded-xl shadow-sm pl-4 pr-2 py-2 `}>
                         <p className="text-sm">{jobEvidence}</p>
                     </div>
 
@@ -42,7 +42,7 @@ export default function JobSkillEvidence({
                                 <p className="font-semibold text-[#073789]  text-sm">{resumeSkill}</p>
                             </div>
                             <h1 className="font-bold text-[#073789] text-sm mb-2">EVIDENCE FROM RESUME</h1>
-                            <div className="border-l-3 border-l-blue-500 pl-4 py-2 max-h-50 overflow-y-scroll scrollbar-none bg-white rounded-xl shadow-sm">
+                            <div className="border-l-3 border-l-blue-500 pl-4 pr-2 py-2 max-h-50 overflow-y-scroll scrollbar-none bg-white rounded-xl shadow-sm">
                                 <p className="text-sm">{resumeEvidence}</p>
                             </div>                    
                         </>
