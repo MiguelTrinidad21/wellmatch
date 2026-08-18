@@ -432,10 +432,10 @@ export default function RelatedJobs() {
                                                         key={job.jobID} 
                                                         className="xl:cursor-pointer box-border border-3 border-transparent hover:border-green-600 transition-all duration-200 ease-in w-full h-full bg-white shadow-md rounded-2xl p-4 relative md:p-8 flex flex-col"
                                                     >
-                                                        <div className={`w-25 mb-3 md:w-30`}>
+                                                        <div className={`w-25 mb-3 md:w-30 xl:absolute xl:top-7 xl:right-8`}>
                                                             <img className={`w-full rounded-lg` } src={job.profilePhotoURL ? job.profilePhotoURL : defaultPhoto}  alt="" />
                                                         </div>
-                                                        <h1 className="text-xl font-bold">{job.jobTitle}</h1>
+                                                        <h1 className="text-xl font-bold wrap-break-word xl:w-62">{job.jobTitle}</h1>
                                                         <p className="text-md font-medium text-gray-500 mb-5">{job.companyName}</p>
                                                         <div className="relative w-full mb-2">
                                                             <MdOutlineLocationOn size={20} className="absolute top-1/2 -translate-y-1/2" />

@@ -233,6 +233,20 @@ Example: "cloud infrastructure (AWS/GCP/Azure)" → genuinely different platform
 
 Items connected by commas, bullets, "and", "&", or line breaks are separate REQUIRED skills unless the text clearly means alternatives.
 
+TRAILING "OR" SCOPE RULE:
+In a comma-separated list where a single "or" appears only before the 
+final item ("A, B, C or D"), the "or" scopes the WHOLE list as 
+alternatives — not just the last two items. Apply ANY_OF to all items, 
+not a partial split. Lists using "and" throughout are unaffected and 
+remain separate REQUIRED items. If the list items span different clauses 
+(e.g., a separate requirement plus a distinct "X or Y" sub-list), apply 
+this only to the sub-list actually joined by "or."
+
+Example: "administration, operations coordination, sales support or 
+customer service" → ANY_OF, all four as acceptableSkills.
+Counter-example: "administration, operations coordination, and customer 
+service" → three separate REQUIRED entries (no "or").
+
 ---
 
 STEP 6 — COMBINE TOOL-QUALIFIED SKILLS
@@ -411,6 +425,7 @@ FINAL DEDUPLICATION PASS — After assembling all skill objects, review the comp
 - Remove any skill appearing in both coreSkills and secondarySkills, keeping only the coreSkills version.
 - Remove any skill name that appears more than once within the same array.
 - Confirm every ANY_OF entry retains every distinct named alternative from its source sentence — re-read the original evidence sentence for each ANY_OF entry and verify no named alternative (e.g., a certification, tool, or platform) was silently dropped.
+- Re-check any comma list with a single trailing "or" — confirm ANY_OF captures every item in the list, not just the final two.
 
 ---
 
