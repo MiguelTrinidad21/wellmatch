@@ -317,7 +317,16 @@ Python | SQL | AWS | Microsoft Excel | QuickBooks | Cash handling | Patient care
 Python development | AWS experience | Excel skills | Cash handling experience | Patient care duties | Knowledge of food safety | Operating forklifts | Experience supporting SaaS products
 
 ✗ Not this (too broad):
-Technology | Management | Development | Operations | Healthcare | Finance | Computer skills | Welding | Nursing | Accounting | AI tools | Cloud products | Engineering workflows
+Technology | Management | Development | Operations | Healthcare | Finance | Nursing | Accounting | Business tools
+
+CHECKABILITY TEST (applies before excluding a generic-sounding term as 
+"too broad"): Extract a generic term if it names a recognizable class of 
+tool, software, or competency a resume could confirm or deny (e.g., 
+"spreadsheets" → Spreadsheet proficiency; "CRM systems"; "Welding"). 
+Apply the CONTEXTUAL QUALIFICATION RULE to name it clearly if ambiguous 
+alone. Exclude only if it names nothing checkable at all (e.g., "business 
+tools," "engineering workflows," "understanding of the business"). Applies to 
+all industries, not only office/IT roles.
 
 ✗ Not this (task-like sentences):
 "Assist customers with product concerns" → Customer service
@@ -739,7 +748,7 @@ Python | SQL | AWS | Microsoft Excel | QuickBooks | Cash handling | Patient care
 Python development | AWS experience | Excel skills | Cash handling experience | Patient care duties | Knowledge of food safety | Operating forklifts
 
 ✗ Not this (too broad):
-Technology | Management | Development | Operations | Healthcare | Finance | Computer skills | Welding | Nursing | Accounting | AI tools
+Technology | Management | Development | Operations | Healthcare | Finance | Nursing 
 
 ✗ Not this (task-like sentences):
 "Assisted customers with product concerns" → Customer service

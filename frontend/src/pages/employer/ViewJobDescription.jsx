@@ -86,7 +86,7 @@ export default function ViewJobDescription() {
                                 </div>
                                 <div className="relative w-full">
                                     <PiMoneyWavy className="absolute top-1/2 -translate-y-1/2" />
-                                    <span className="pl-7 text-sm md:text-[16px]">{selectedJob?.minSalary?.toLocaleString()} - {selectedJob?.maxSalary?.toLocaleString()}</span>
+                                    <span className="pl-7 text-sm md:text-[16px]">{`${selectedJob?.minSalary?.toLocaleString()} - ${selectedJob?.maxSalary?.toLocaleString()} per month`}</span>
                                 </div>
                             </div>
 

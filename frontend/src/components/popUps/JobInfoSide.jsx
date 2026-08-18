@@ -139,7 +139,7 @@ export default function JobInfoSide({ display }) {
                         </div>
                         <div className="relative w-full mb-5">
                             <PiMoneyWavy className="absolute top-1/2 -translate-y-1/2" />
-                            <span className="pl-7 text-sm md:text-[1rem]">{minSalary?.toLocaleString()} - {maxSalary?.toLocaleString()}</span>
+                            <span className="pl-7 text-sm md:text-[1rem]">{`${minSalary?.toLocaleString()} - ${maxSalary?.toLocaleString()} per month`}</span>
                         </div>
                     </div>
                     {

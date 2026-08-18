@@ -77,6 +77,7 @@ export default function YearsRequired({ mode = "create" }) {
             setIsJobPosted(true);
             setSubmitError("")
         } catch (error) {
+            console.log(error);
             setSubmitError(
                 isEditMode ? "Updating job failed. Please try again"
                 : "Posting job failed. Please try again")
