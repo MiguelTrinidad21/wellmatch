@@ -111,7 +111,7 @@ export default function CreateJobPost({ mode = "create" }) {
     function handleNext(e) {
         e.preventDefault();
 
-        if (createdJob.payRangeFrom > createdJob.payRangeTo) {
+        if (Number(createdJob.payRangeFrom) > Number(createdJob.payRangeTo)) {
             setSalaryError("Expected maximum salary must be higher than minimum salary");
             return;
         }
@@ -288,6 +288,8 @@ export default function CreateJobPost({ mode = "create" }) {
                                     type="number"
                                     id="from"
                                     value={createdJob.payRangeFrom}
+                                    min="0"
+                                    max="999999999"
                                     onChange={(e) => setCreatedJob({payRangeFrom: e.target.value})}
                                     required                             
                                 />
@@ -299,6 +301,8 @@ export default function CreateJobPost({ mode = "create" }) {
                                     type="number"
                                     id="to"
                                     value={createdJob.payRangeTo}
+                                    min="0"
+                                    max="999999999"
                                     onChange={(e) => setCreatedJob({payRangeTo: e.target.value})}
                                     required                            
                                 />                       
