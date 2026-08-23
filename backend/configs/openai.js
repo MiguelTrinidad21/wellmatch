@@ -796,6 +796,16 @@ CLEAN FORMATTING RULE:
 When copying evidence, strip any leading or trailing bullet characters, list markers, or other non-semantic special characters that are formatting artifacts rather than part of the sentence itself. This includes symbols such as •, -, *, ‣, ●, ▪, ◦, →, numbered/lettered list markers (e.g., "1.", "a)"), and any other bullet or list-formatting symbol, along with any extra surrounding whitespace left behind after removal.
 Only the plain sentence content should remain in the evidence field — do not alter, paraphrase, or remove any of the actual wording, punctuation within the sentence (e.g., periods, commas, parentheses, slashes), or meaning of the sentence itself. This rule applies only to formatting artifacts used for list/bullet rendering, not to punctuation that is part of the sentence.
 
+NO HEADING-AS-EVIDENCE RULE:
+Never use a resume section heading (e.g., "Skills", "Professional Experience", "Work History", "Education", "Certifications") as the evidence for a skill, even if the skill was found in the section under that heading. 
+Evidence must always be the actual line, bullet, or sentence containing the skill — never the section title itself. 
+If a skill sits in a bare list under a heading with no other line-level context (e.g., a one-word bullet under "Skills"), use that specific bullet/item text as evidence, not the heading above it.
+
+BARE SKILL-LIST EXCEPTION:
+When a skill appears as its own bullet/line in a skills list with no additional sentence context (the bullet IS the skill name, e.g., "Juniper SRX Series Firewalls" as a standalone bullet), use that bullet's exact text as the evidence. 
+This is not a violation of the "no isolated keyword" rule — a self-contained skills-list bullet is the resume's own evidence for that skill, and is still preferred over using the section heading. 
+The "no isolated keyword" rule instead targets cases where a skill name is extracted from a word or phrase buried mid-sentence without enough surrounding text to confirm it (e.g., pulling "Excel" out of an unrelated sentence that only mentions it in passing).
+
 Example:
 Original source text: "• Installed, configured, and supported Linux machines for the open Wi-Fi network project."
 → evidence: "Installed, configured, and supported Linux machines for the open Wi-Fi network project."

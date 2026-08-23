@@ -433,7 +433,7 @@ export default function SkillGapReport() {
 
                             </section>
 
-                            <section className="rounded-2xl shadow-sm border-2 border-[#E8ECEF] bg-white p-4 w-full">
+                            <section className="rounded-2xl shadow-sm bg-white p-4 w-full">
                                 <h1 className="font-bold text-xl mb-5">Candidate History</h1>
                                 <div className="w-full border-b-2 border-gray-100 mb-5">
                                     <p className="text-sm text-gray-700 font-semibold mb-3">WORK EXPERIENCE</p>
@@ -716,7 +716,7 @@ export default function SkillGapReport() {
 
                                 <div className="w-full flex items-start gap-3 bg-[#F0FDF4] rounded-md text-green-600 p-2">
                                     <GoInfo className="h-5 w-5" />
-                                    <p className="text-[12px] xl:text-sm font-semibold flex-1">To ensure fairness, this evaluation considers only information explicitly stated in the resume.</p>
+                                    <p className="text-[12px] xl:text-sm font-semibold flex-1">This skill gap analysis is AI-generated and may not be 100% accurate. Please review the results carefully and use your own judgment when evaluating the identified skill matches and gaps.</p>
                                 </div>
                             </section>                            
 

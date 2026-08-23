@@ -447,7 +447,7 @@ export default function SkillGapAnalysisUI() {
                                 </div>
                             </section>
 
-                            <section className="w-full grid grid-cols-1 gap-4 border-2 border-[#E8ECEF]">
+                            <section className="w-full grid grid-cols-1 gap-4">
                                 <div className="p-4 rounded-2xl shadow-sm bg-white border-l-4 border-l-green-600">
                                     <div className="flex gap-2 items-center mb-2">
                                         <div className="w-3 h-3 bg-green-600 inline-block rounded-full"></div>
@@ -629,7 +629,7 @@ export default function SkillGapAnalysisUI() {
 
                                 <div className="w-full flex items-start gap-3 bg-[#F0FDF4] rounded-md text-green-600 p-2">
                                     <GoInfo className="h-5 w-5" />
-                                    <p className="text-[12px] xl:text-sm font-semibold flex-1">To ensure fairness, this evaluation considers only information explicitly stated in the resume.</p>
+                                    <p className="text-[12px] xl:text-sm font-semibold flex-1">This skill gap analysis is AI-generated and may not be 100% accurate. Please review the results carefully and use your own judgment when evaluating the identified skill matches and gaps.</p>
                                 </div>
                             </section>
 

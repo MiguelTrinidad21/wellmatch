@@ -18,6 +18,6 @@ export default function compareJobOptionToResumeSkill(jobOption, resumeSkill) {
         resumeSkillName: resumeSkill.skillName,
         resumeEvidence: resumeSkill.evidence,
         skillSimilarity,
-        evidenceSimilarity: cleanedResumeSkill === cleanedResumeEvidence ? 0.52 : evidenceSimilarity
+        evidenceSimilarity
     };
 }

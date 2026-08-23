@@ -529,7 +529,7 @@ export default function RecommendedJobs() {
                                                                     </div>
                                                                     <div className="relative w-full mb-5">
                                                                         <PiMoneyWavy size={20} className="absolute top-1/2 -translate-y-1/2" />
-                                                                        <span className="pl-7">{job.minSalary.toLocaleString()} - {job.maxSalary.toLocaleString()}</span>
+                                                                        <span className="pl-7">{`${job.minSalary.toLocaleString()} - ${job.maxSalary.toLocaleString()} per month`}</span>
                                                                     </div>
 
                                                                     {
@@ -730,7 +730,7 @@ export default function RecommendedJobs() {
                                                                             </div>
                                                                             <div className="relative w-full mb-5">
                                                                                 <PiMoneyWavy className="absolute top-1/2 -translate-y-1/2" />
-                                                                                <span className="pl-7 text-sm md:text-[1rem]">{jobInfo?.minSalary?.toLocaleString()} - {jobInfo?.maxSalary?.toLocaleString()}</span>
+                                                                                <span className="pl-7 text-sm md:text-[1rem]">{`${jobInfo?.minSalary?.toLocaleString()} - ${jobInfo?.maxSalary?.toLocaleString()} per month`}</span>
                                                                             </div>
                                                                         </div>
                                                                         <div className="lg:flex lg:gap-3">
