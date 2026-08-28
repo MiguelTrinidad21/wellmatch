@@ -1,6 +1,7 @@
 import database from "../../configs/database.js";
 import cloudinary from "../../configs/cloudinary.js";
 import { uploadToCloudinary } from "../../helpers/uploadToCloudinary.js";
+import validAddress from "../../utils/validateAddress.js";
 
 
 export default async function updateCompanyImages(req, res) {
@@ -11,6 +12,24 @@ export default async function updateCompanyImages(req, res) {
 
         const profilePhoto = req.files?.profilePhoto?.[0];
         const coverPhoto = req.files?.coverPhoto?.[0];
+
+        if (!companyName || companyName.trim().length < 2 || companyName.trim().length > 100) {
+            return res.status(400).json({
+                message: "Enter a valid company name",
+                issue: "companyName",
+                field: "companyName"
+            })            
+        }
+
+        const trueAddress = validAddress(companyLocation);
+
+        if (!companyLocation || !trueAddress.valid) {
+            return res.status(400).json({
+                message: trueAddress.reason,
+                issue: trueAddress.issue,
+                field: trueAddress.issue
+            });
+        }        
 
         if (prevCompanyName !== companyName) {
             const [existingCompany] = await database.query(`

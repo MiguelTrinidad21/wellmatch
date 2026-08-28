@@ -1,7 +1,6 @@
 import PrimaryButton from "../../components/buttons/PrimaryButton";
 import Translucent from "../overlay/Translucent";
-import { useState, useEffect } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useState } from "react";
 import { userStore } from "../../zustand/userState";
 import { IoClose } from "react-icons/io5";
 import { FiEye } from "react-icons/fi";
@@ -151,7 +150,7 @@ export function ChangePasswordForm({ toggleForm, confirmFunc }) {
         e.preventDefault();
         setErrors({})
 
-        const { currentPassword, newPassword, retypePassword } = credentials;
+        const { newPassword, retypePassword } = credentials;
 
         if (!passwordRegex.test(newPassword)) {
             setErrors({

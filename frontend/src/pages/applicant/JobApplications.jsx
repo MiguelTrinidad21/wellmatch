@@ -287,7 +287,7 @@ export default function JobApplications() {
                             </section>
                         :
                             <section className="w-full flex flex-col gap-3 mt-10">
-                                <p className="text-sm text-gray-500 font-medium md:text-[16px]">{`${jobs.length} job ${jobs.length > 1 ? "applications" : "application"}`}</p>
+                                <p className="text-sm text-gray-500 font-medium md:text-[16px]">{`${totalApplications} job ${totalApplications > 1 ? "applications" : "application"}`}</p>
 
                                 {
                                     jobs?.map((item) => (

@@ -132,7 +132,6 @@ export default function ApplicantInfoForm({ toggleForm }) {
 
             const backendMessage = error.response?.data?.message;
             const backendIssue = error.response?.data?.issue;
-            const backendField = error.response?.data?.field;
 
             if (backendIssue && backendMessage) {
                 setErrors({
@@ -168,9 +167,12 @@ export default function ApplicantInfoForm({ toggleForm }) {
                             required
                             id="firstName"
                             value={firstName}
+                            minLength={2}
+                            maxLength={50}
                             onChange={(e) => setFirstName(e.target.value)}                       
-                            className="p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-green-600 overflow-x-scroll"
+                            className={`p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-green-600 ${errors.invalidFName ? "border-red-600 focus:border-red-600 mb-1!" : "border-gray-300"}`}
                         />
+                        {errors.invalidFName && <p className="text-red-600 text-[13px] mb-4">{errors.invalidFName}</p>}
                     </div>
 
                     <div className="flex flex-col w-full mb-4">
@@ -180,9 +182,12 @@ export default function ApplicantInfoForm({ toggleForm }) {
                             required
                             id="lastName"
                             value={lastName}
+                            minLength={2}
+                            maxLength={50}
                             onChange={(e) => setLastName(e.target.value)}                       
-                            className="p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-green-600 overflow-x-scroll"
+                            className={`p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-green-600 ${errors.invalidLName ? "border-red-600 focus:border-red-600 mb-1!" : "border-gray-300"}`}
                         />
+                        {errors.invalidLName && <p className="text-red-600 text-[13px] mb-4">{errors.invalidLName}</p>}
                     </div>
 
                     <div className="flex flex-col w-full mb-4">
@@ -195,8 +200,11 @@ export default function ApplicantInfoForm({ toggleForm }) {
                                 onChange={(e) => setAddress(e.target.value)} 
                                 autoComplete="off"
                                 required
-                                className="p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-green-600 overflow-x-scroll"
+                                minLength={5}
+                                maxLength={60}
+                                className={`p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-green-600 ${errors.invalidAddress ? "border-red-600 focus:border-red-600 mb-1!" : "border-gray-300"}`}
                             />
+                            {errors.invalidAddress && <p className="text-red-600 text-[13px] mb-4">{errors.invalidAddress}</p>}
 
                             {isSearchingLocation && (
                                 <p className="mt-1 text-xs text-gray-500">
@@ -261,10 +269,6 @@ export default function ApplicantInfoForm({ toggleForm }) {
                             />
                         </label>
                     </div>                    
-
-
-
-                    {/* {errors && <p>{errors}</p>} */}
 
                     <div className="w-full flex justify-end gap-4">
                         <PrimaryButton disabled={isLoading} onClick={toggleForm} className={`bg-gray-200 text-black! px-4 border-2 border-gray-500 ${isLoading && "opacity-50 cursor-not-allowed"}`} >Cancel</PrimaryButton>

@@ -166,8 +166,11 @@ export default function AdminRegister() {
                         onChange={(e) => setAdminInfo({...adminInfo, firstName: e.target.value})}
                         placeholder="Enter first name"
                         required
-                        className="p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-green-600"
+                        minLength={2}
+                        maxLength={50}
+                        className={`p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-green-600 ${errors.invalidFName ? "border-red-600 focus:border-red-600 mb-1!" : "border-gray-300"}`}
                     />
+                    {errors.invalidFName && <p className="text-red-600 text-[13px] mb-4">{errors.invalidFName}</p>} 
 
                     <label className="block font-medium mb-1" htmlFor="lastName">Last Name</label>
                     <input 
@@ -177,8 +180,11 @@ export default function AdminRegister() {
                         onChange={(e) => setAdminInfo({...adminInfo, lastName: e.target.value})}
                         placeholder="Enter last name"
                         required
-                        className="p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-green-600"
+                        minLength={2}
+                        maxLength={50}
+                        className={`p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-green-600 ${errors.invalidLName ? "border-red-600 focus:border-red-600 mb-1!" : "border-gray-300"}`}
                     />
+                    {errors.invalidLName && <p className="text-red-600 text-[13px] mb-4">{errors.invalidLName}</p>}
 
                     <label className="block font-medium mb-1" htmlFor="email">Email Address</label>
                     <input 
@@ -190,7 +196,7 @@ export default function AdminRegister() {
                         required
                         className={`p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-green-600 ${errors.email ? 'border-red-600 focus:border-red-600 mb-1!' : 'border-gray-300'}`}
                     />
-                    {errors.email && <p className="text-red-600 text-[13px] mb-4">* {errors.email}</p>}
+                    {errors.email && <p className="text-red-600 text-[13px] mb-4">{errors.email}</p>}
 
                     <label className="block font-medium mb-1" htmlFor="password">Password</label>
                     <div className="relative">
@@ -207,7 +213,7 @@ export default function AdminRegister() {
                             {showPassword ? <FiEyeOff /> : <FiEye />}
                         </div>                        
                     </div>
-                    {errors.invalidPass && <p className="text-red-600 text-[13px] mb-4">* {errors.invalidPass}</p>}
+                    {errors.invalidPass && <p className="text-red-600 text-[13px] mb-4">{errors.invalidPass}</p>}
 
                     <label className="block font-medium mb-1" htmlFor="confirmPass">Confirm Password</label>
                     <div className="relative">
@@ -224,19 +230,23 @@ export default function AdminRegister() {
                             {showConfirmPassword ? <FiEyeOff /> : <FiEye />}
                         </div>
                     </div>
-                    {errors.confirmPassword && <p className="text-red-600 text-[13px] mb-4">* {errors.confirmPassword}</p>}
+                    {errors.confirmPassword && <p className="text-red-600 text-[13px] mb-4">{errors.confirmPassword}</p>}
 
                     <label className="block font-medium mb-1" htmlFor="companyName">Company Name</label>
-                    <input 
+                    <input
                         type="text"
                         id="companyName"
                         value={adminInfo.companyName}
                         onChange={(e) => setAdminInfo({...adminInfo, companyName: e.target.value})}
                         placeholder="Enter company name"
                         required
-                        className={`p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-green-600 ${errors.company ? 'border-red-600 focus:border-red-600 mb-1!' : 'border-gray-300'}`}
+                        minLength={2}
+                        maxLength={100}
+                        className={`p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-green-600 ${(errors.company || errors.invalidCompName) ? 'border-red-600 focus:border-red-600 mb-1!' : 'border-gray-300'}`}
                     />
-                    {errors.company && <p className="text-red-600 text-[13px] mb-4">* {errors.company}</p>}
+
+                    {errors.company && <p className="text-red-600 text-[13px] mb-4">{errors.company}</p>}
+                    {errors.invalidCompName && <p className="text-red-600 text-[13px] mb-4">{errors.invalidCompName}</p>}
 
                     <label className="block font-medium mb-1" htmlFor="companyLocation">Company Location</label>
                     <div className="relative">
@@ -250,8 +260,11 @@ export default function AdminRegister() {
                             placeholder="Enter company location"
                             required
                             autoComplete="off"
-                            className="p-2 rounded-md block w-full border-2 border-gray-300 mb-2 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-green-600 overflow-x-scroll"
+                            minLength={5}
+                            maxLength={60}
+                            className={`p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-green-600 ${errors.invalidAddress ? 'border-red-600 focus:border-red-600 mb-1!' : 'border-gray-300'}`}
                         />
+                        {errors.invalidAddress && <p className="text-red-600 text-[13px] mb-4">{errors.invalidAddress}</p>}
 
                         {isSearchingLocation && (
                             <p className="mt-1 absolute top-full left-0 text-xs text-gray-500">
@@ -281,7 +294,7 @@ export default function AdminRegister() {
                     </div>
 
                     <PrimaryButton type="submit" className="w-full mt-10">Register</PrimaryButton>
-                    {errors.general && <div className="bg-red-100 text-red-600 p-3 mb-4 rounded">{errors.general}</div>}
+                    {errors.general && <div className="bg-red-100 rounded-md text-red-600 p-3 my-4">{errors.general}</div>}
                 </form>
             </div>
             {/* <Footer /> */}

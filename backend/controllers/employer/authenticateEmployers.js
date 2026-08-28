@@ -2,6 +2,8 @@ import database from "../../configs/database.js";
 import bcrypt from "bcryptjs";
 import dotenv from "dotenv";
 import jwt from "jsonwebtoken";
+import validAddress from "../../utils/validateAddress.js";
+import validPassword from "../../utils/validatePassword.js";
 
 dotenv.config();
 
@@ -23,6 +25,56 @@ export async function registerAdmin(req, res) {
     } = req.body;
 
     let connection;
+
+    if (!firstName || firstName.trim().length < 2 || firstName.trim().length > 50) {
+        return res.status(400).json({
+            message: "Enter valid first name",
+            issue: "invalidFName"
+        });
+    }
+
+    if (!lastName || lastName.trim().length < 2 || lastName.trim().length > 50) {
+        return res.status(400).json({
+            message: "Enter valid last name",
+            issue: "invalidLName"
+        });
+    }
+
+    const validPass = validPassword(password);
+
+    if (!password || !validPass.valid) {
+        return res.status(400).json({
+            message: validPass.message,
+            issue: validPass.issue
+        });        
+    }
+
+    if (!confirmPassword || (password !== confirmPassword)) {
+        return res.status(400).json({
+            message: "Password did not match",
+            issue: "confirmPassword"
+        });
+    }
+
+    if (
+        !companyName || 
+        companyName.trim().length < 2 || 
+        companyName.trim().length > 100
+    ) {
+        return res.status(400).json({
+            message: "Enter a valid company name",
+            issue: "invalidCompName"
+        });
+    }
+
+    const trueAddress = validAddress(companyLocation);
+
+    if (!companyLocation || !trueAddress.valid) {
+        return res.status(400).json({
+            message: trueAddress.reason,
+            issue: trueAddress.issue
+        });
+    }
 
     const normalizedEmail = emailAddress.trim().toLowerCase();
 
@@ -138,6 +190,21 @@ export async function registerAdmin(req, res) {
 
 export async function loginEmployer(req, res) {
     const { email, password } = req.body;
+
+    if (!email) {
+        return res.status(400).json({
+            message: "Enter your email address",
+            issue: "email"
+        });
+    }
+
+    if (!password) {
+        return res.status(400).json({
+            message: "Enter your password",
+            issue: "password"
+        });        
+    }
+
     const normalizedEmail = email.trim().toLowerCase();
 
     try {
@@ -320,10 +387,42 @@ export async function registerCoEmployer(req, res) {
         firstName,
         lastName,
         emailAddress,
-        password
+        password,
+        confirmPass
     } = req.body;
 
     let connection;
+
+    if (!firstName || firstName.trim().length < 2 || firstName.trim().length > 50) {
+        return res.status(400).json({
+            message: "Enter valid first name",
+            issue: "invalidFName"
+        });
+    }
+
+    if (!lastName || lastName.trim().length < 2 || lastName.trim().length > 50) {
+        return res.status(400).json({
+            message: "Enter valid last name",
+            issue: "invalidLName"
+        });
+    }
+
+    const validPass = validPassword(password);
+
+    if (!password || !validPass.valid) {
+        return res.status(400).json({
+            message: validPass.message,
+            issue: validPass.issue
+        });        
+    }
+
+    if (!confirmPass || (password !== confirmPass)) {
+        return res.status(400).json({
+            message: "Password did not match",
+            issue: "confirmPassword"
+        });
+    }
+
 
     try {
         if (!token) {

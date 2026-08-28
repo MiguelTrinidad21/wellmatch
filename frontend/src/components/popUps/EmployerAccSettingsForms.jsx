@@ -71,8 +71,11 @@ export function EditInfoForm({ toggleForm, confirmFunc }) {
                         onChange={(e) => setCredentials({...credentials, firstName: e.target.value})}
                         required
                         placeholder="Enter updated name"
-                        className={`p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-green-600`}
+                        minLength={2}
+                        maxLength={50}
+                        className={`p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-green-600 ${errors.invalidFName ? "border-red-600 focus:border-red-600 mb-1!" : "border-gray-300"}`}
                     />
+                    {errors.invalidFName && <p className="text-red-600 text-[13px] mb-4">{errors.invalidFName}</p>}
 
                     <label className="block font-semibold mb-1" htmlFor="lastName">Last Name</label>
                     <input 
@@ -82,8 +85,11 @@ export function EditInfoForm({ toggleForm, confirmFunc }) {
                         onChange={(e) => setCredentials({...credentials, lastName: e.target.value})}
                         required
                         placeholder="Enter updated name"
-                        className={`p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-green-600`}
+                        minLength={2}
+                        maxLength={50}
+                        className={`p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-green-600 ${errors.invalidLName ? "border-red-600 focus:border-red-600 mb-1!" : "border-gray-300"}`}
                     />
+                    {errors.invalidLName && <p className="text-red-600 text-[13px] mb-4">{errors.invalidLName}</p>}
 
 
                     <label className="block font-semibold mb-1" htmlFor="email">Email Address</label>

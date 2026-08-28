@@ -26,6 +26,20 @@ export async function updatePersonalDetails(req, res) {
         email, 
         password } = req.body;
 
+    if (!firstName || firstName.trim().length < 2 || firstName.trim().length > 50) {
+        return res.status(400).json({
+            message: "Enter valid first name",
+            issue: "invalidFName"
+        });
+    }
+
+    if (!lastName || lastName.trim().length < 2 || lastName.trim().length > 50) {
+        return res.status(400).json({
+            message: "Enter valid last name",
+            issue: "invalidLName"
+        });
+    }
+
     const normalizedEmail = email.trim().toLowerCase();
     const normalizedPrevEmail = prevEmail.trim().toLowerCase();
 

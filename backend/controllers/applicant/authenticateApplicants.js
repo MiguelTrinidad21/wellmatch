@@ -4,6 +4,8 @@ import "dotenv/config";
 import jwt from "jsonwebtoken";
 import { uploadResume } from "../../helpers/uploadToCloudinary.js";
 import { processResume, generateFileHash } from "../../helpers/resumeExtractor.js";
+import validAddress from "../../utils/validateAddress.js";
+import validPassword from "../../utils/validatePassword.js";
 
 const cookieOptions = {
     httpOnly: true,
@@ -18,8 +20,48 @@ export async function registerApplicant(req, res) {
         lastName,
         address,
         email,
-        password
+        password,
+        confirmPass
     } = req.body;
+    
+    if (!firstName || firstName.trim().length < 2 || firstName.trim().length > 50) {
+        return res.status(400).json({
+            message: "Enter valid first name",
+            issue: "invalidFName"
+        });
+    }
+
+    if (!lastName || lastName.trim().length < 2 || lastName.trim().length > 50) {
+        return res.status(400).json({
+            message: "Enter valid last name",
+            issue: "invalidLName"
+        });
+    }
+
+    const trueAddress = validAddress(address);
+
+    if (!address || (!trueAddress.valid)) {
+        return res.status(400).json({
+            message: trueAddress.reason,
+            issue: trueAddress.issue
+        });
+    }
+
+    const validPass = validPassword(password);
+
+    if (!password || !validPass.valid) {
+        return res.status(400).json({
+            message: validPass.message,
+            issue: validPass.issue
+        });        
+    }
+
+    if (!confirmPass || (password !== confirmPass)) {
+        return res.status(400).json({
+            message: "Password did not match",
+            issue: "confirmPassword"
+        });
+    }
 
     const resume = req.file;
 
@@ -150,6 +192,20 @@ export async function registerApplicant(req, res) {
 export async function loginApplicant(req, res) {
     const { email, password } = req.body;
     const normalizedEmail = email.trim().toLowerCase();
+
+    if (!email) {
+        return res.status(400).json({
+            message: "Enter your email address",
+            issue: "email"
+        });
+    }
+
+    if (!password) {
+        return res.status(400).json({
+            message: "Enter your password",
+            issue: "password"
+        });        
+    }
 
     try {
         const [result] = await database.query(`

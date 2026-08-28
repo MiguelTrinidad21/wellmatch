@@ -132,6 +132,7 @@ export default function ApplicantRegister() {
         formData.append("address", applicantInfo.address);
         formData.append("email", applicantInfo.email);
         formData.append("password", applicantInfo.password);
+        formData.append("confirmPass", applicantInfo.confirmPass);
 
         if (!resume) {
             return setErrors({noResume: "Please upload a resume."});
@@ -189,9 +190,12 @@ export default function ApplicantRegister() {
                         value={applicantInfo.firstName}
                         onChange={(e) => setApplicantInfo({...applicantInfo, firstName: e.target.value})}
                         placeholder="Enter first name"
+                        minLength={2}
+                        maxLength={50}
                         required
-                        className="p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-green-600"
+                        className={`p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-green-600 ${errors.invalidFName ? "border-red-600 focus:border-red-600 mb-1!" : "border-gray-300"}`}
                     />
+                    {errors.invalidFName && <p className="text-red-600 text-[13px] mb-4">{errors.invalidFName}</p>}
 
                     <label className="block font-medium mb-1" htmlFor="lastName">Last Name</label>
                     <input 
@@ -200,9 +204,12 @@ export default function ApplicantRegister() {
                         value={applicantInfo.lastName}
                         onChange={(e) => setApplicantInfo({...applicantInfo, lastName: e.target.value})}
                         placeholder="Enter last name"
+                        minLength={2}
+                        maxLength={50}
                         required
-                        className="p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-green-600"
+                        className={`p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-green-600 ${errors.invalidLName ? "border-red-600 focus:border-red-600 mb-1!" : "border-gray-300"}`}
                     />
+                    {errors.invalidLName && <p className="text-red-600 text-[13px] mb-4">{errors.invalidLName}</p>}
 
                     <label className="block font-medium mb-1" htmlFor="address">Address</label>
                     <div className="relative">
@@ -213,9 +220,12 @@ export default function ApplicantRegister() {
                             onChange={(e) => setApplicantInfo({...applicantInfo, address: e.target.value})}
                             placeholder="e.g. Tarlac City, Tarlac"
                             required
+                            minLength={4}
+                            maxLength={100}
                             autoComplete="off"
-                            className="p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-green-600 overflow-x-scroll"
+                            className={`p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-green-600 ${errors.invalidAddress ? "border-red-600 focus:border-red-600 mb-1!" : "border-gray-300"}`}
                         />
+                        {errors.invalidAddress && <p className="text-red-600 text-[13px] mb-4">{errors.invalidAddress}</p>}
 
                         {isSearchingLocation && (
                             <p className="absolute top-full left-0 mt-1 text-xs text-gray-500">
@@ -254,7 +264,7 @@ export default function ApplicantRegister() {
                         required
                         className={`p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-green-600 ${errors.email ? "border-red-600 focus:border-red-600 mb-1!" : "border-gray-300"}`}
                     />
-                    {errors.email && <p className="text-red-600 text-[13px] mb-4">* {errors.email}</p>}
+                    {errors.email && <p className="text-red-600 text-[13px] mb-4">{errors.email}</p>}
 
                     <label className="block font-medium mb-1" htmlFor="password">Password</label>
                     <div className="relative">
@@ -267,11 +277,11 @@ export default function ApplicantRegister() {
                             required
                             className={`p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-green-600 ${errors.invalidPass ? "focus:border-red-600 border-red-600 mb-1!" : "border-gray-300"}`}
                         />
-                        <div onClick={handlePass} className="absolute top-1/2 -translate-y-1/2 right-2">
+                        <div onClick={handlePass} className="absolute top-1/2 -translate-y-1/2 right-2 cursor-pointer">
                             {showPassword ? <FiEyeOff /> : <FiEye />}
                         </div>               
                     </div>
-                    {errors.invalidPass && <p className="text-red-600 text-[13px] mb-4">* {errors.invalidPass}</p>}
+                    {errors.invalidPass && <p className="text-red-600 text-[13px] mb-4">{errors.invalidPass}</p>}
 
                     <label className="block font-medium mb-1" htmlFor="confirmPass">Confirm Password</label>
                     <div className="relative">
@@ -284,11 +294,11 @@ export default function ApplicantRegister() {
                             required
                             className={`p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-green-600 ${errors.confirmPassword ? 'border-red-600 focus:border-red-600 mb-1!' : 'border-gray-300'}`}
                         />
-                        <div onClick={handleConfirmPass} className="absolute top-1/2 -translate-y-1/2 right-2">
+                        <div onClick={handleConfirmPass} className="absolute top-1/2 -translate-y-1/2 right-2 cursor-pointer">
                             {showConfirmPassword ? <FiEyeOff /> : <FiEye />}
                         </div>
                     </div>
-                    {errors.confirmPassword && <p className="text-red-600 text-[13px] mb-4">* {errors.confirmPassword}</p>}
+                    {errors.confirmPassword && <p className="text-red-600 text-[13px] mb-4">{errors.confirmPassword}</p>}
                     
 
                     <h3 className="block font-medium mb-1">Resume</h3>
@@ -300,9 +310,9 @@ export default function ApplicantRegister() {
                         </p>
                     )}
 
-                    {errors.noResume && <p className="text-red-600 text-[13px] my-2">* {errors.noResume}</p>}
-                    {errors.fileType && <p className="text-red-600 text-[13px] my-2">* {errors.fileType}</p>}
-                    {errors.fileSize && <p className="text-red-600 text-[13px] my-2">* {errors.fileSize}</p>}
+                    {errors.noResume && <p className="text-red-600 text-[13px] my-2">{errors.noResume}</p>}
+                    {errors.fileType && <p className="text-red-600 text-[13px] my-2">{errors.fileType}</p>}
+                    {errors.fileSize && <p className="text-red-600 text-[13px] my-2">{errors.fileSize}</p>}
 
                     <div className="mb-5">
                         <label className="cursor-pointer text-black text-sm font-semibold bg-[#86EFAC] rounded-lg py-2 px-5 inline-flex mb-5" htmlFor="resume">

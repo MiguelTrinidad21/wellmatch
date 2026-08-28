@@ -1,20 +1,33 @@
 import database from "../../configs/database.js";
 import { uploadToCloudinary } from "../../helpers/uploadToCloudinary.js";
 import cloudinary from "../../configs/cloudinary.js";
+import validAddress from "../../utils/validateAddress.js";
 
 export async function addWorkExp(req, res) {
     const { id } = req.user;
     let {
         jobTitle,
-        companyName,
-        startMonth,        
+        companyName,        
         startMonthLabel,   
-        startYear,
-        endMonth,          
+        startYear,          
         endMonthLabel,     
         endYear
     } = req.body;
 
+    if (!jobTitle || jobTitle.trim().length < 2 || jobTitle.trim().length > 100) {
+        return res.status(400).json({
+            message: "Enter a valid job title",
+            issue: "invalidTitle"
+        });
+    }
+
+    if (!companyName || companyName.trim().length < 2 || companyName.trim().length > 100) {
+        return res.status(400).json({
+            message: "Enter your previous company",
+            issue: "invalidCompany"
+        });
+    }
+    
 
     try {
         await database.query(`
@@ -95,14 +108,28 @@ export async function addCredential(req, res) {
     const { id } = req.user;
     let {
         credentialTitle,
-        issuedBy,
-        startMonth,        
+        issuedBy,        
         startMonthLabel,   
         startYear,
         endMonth,          
         endMonthLabel,     
         endYear
     } = req.body;
+
+
+    if (!credentialTitle || credentialTitle.trim().length < 2 || credentialTitle.trim().length > 150) {
+        return res.status(400).json({
+            message: "Enter a valid license or certification name",
+            issue: "invalidTitle"
+        })
+    }
+
+    if (!issuedBy || issuedBy.trim().length < 2 || issuedBy.trim().length > 150) {
+        return res.status(400).json({
+            message: "Enter a valid organization name",
+            issue: "invalidOrg"
+        })
+    }
 
     let expiryDate;
     if (!endMonth || !endMonthLabel || !endYear){
@@ -182,6 +209,9 @@ export async function deleteCredential(req, res) {
     }
 }
 
+
+
+
 export async function addEducation(req, res) {
     const { id } = req.user;
     let {
@@ -190,8 +220,20 @@ export async function addEducation(req, res) {
         year,
         qualiComplete
     } = req.body;
-    console.log(qualiComplete)
+    
+    if (!courseName || courseName.trim().length < 2 || courseName.trim().length > 150) {
+        return res.status(400).json({
+            message: "Enter a valid college program",
+            issue: "invalidTitle"
+        })
+    }
 
+    if (!institution || institution.trim().length < 2 || institution.trim().length > 200) {
+        return res.status(400).json({
+            message: "Enter a valid educational institution",
+            issue: "invalidOrg"
+        })
+    }
 
     try {
         if (qualiComplete) {
@@ -297,6 +339,29 @@ export async function updateInfo(req, res) {
             lastName,
             address
         } = req.body;
+        
+        if (!firstName || firstName.trim().length < 2 || firstName.trim().length > 50) {
+            return res.status(400).json({
+                message: "Enter valid first name",
+                issue: "invalidFName"
+            });
+        }
+
+        if (!lastName || lastName.trim().length < 2 || lastName.trim().length > 50) {
+            return res.status(400).json({
+                message: "Enter valid last name",
+                issue: "invalidLName"
+            });
+        }
+
+        const trueAddress = validAddress(address);
+
+        if (!address || (!trueAddress.valid)) {
+            return res.status(400).json({
+                message: trueAddress.reason,
+                issue: trueAddress.issue
+            });
+        }
 
         const profilePhoto = req.file
 

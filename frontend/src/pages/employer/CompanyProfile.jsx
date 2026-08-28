@@ -71,7 +71,7 @@ export default function CompanyProfile() {
                         companyID: currentUser.companyID
                     }
                 });
-                console.log(result.data)
+                // console.log(result.data)
                 setCompanyInfo(result.data);
 
             } catch (error) {

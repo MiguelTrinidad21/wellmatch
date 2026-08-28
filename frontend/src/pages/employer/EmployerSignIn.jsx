@@ -57,8 +57,7 @@ export default function EmployerSignIn() {
                 <div className="w-full flex-1 flex justify-center items-center p-6 md:px-15 md:py-10 lg:px-20 min-h-0">
                     <div className="flex flex-col min-h-0 w-full lg:flex-row lg:w-240 lg:h-140 lg:overflow-hidden lg:rounded-3xl lg:shadow-xl">
                         <div className="w-full text-center mb-5 lg:hidden">
-                            <h1 className="text-3xl pb-2 font-extrabold bg-linear-to-r from-[#166534] via-[#16A34A] to-[#4ADE80] bg-clip-text text-transparent mb-2 md:text-5xl md:mb-5" >Hire the Right Talent</h1>
-                            {/* <h2 className="font-semibold md:text-xl">Connect with top talent built for your team.</h2> */}
+                            <h1 className="text-3xl pb-2 font-extrabold bg-linear-to-r from-[#166534] via-[#16A34A] to-[#4ADE80] bg-clip-text text-transparent mb-2 md:text-5xl md:mb-5" >Hire the Right Talent</h1>                        
                         </div>
 
                         {/* Image column */}
@@ -87,7 +86,7 @@ export default function EmployerSignIn() {
                                     required
                                     className={`p-2 rounded-md block w-full border-2 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-green-600 md:mb-6 ${errors.email ? 'border-red-600 focus:border-red-600 mb-1!' : 'border-gray-300'}`}
                                 />
-                                {errors.email && <p className="text-red-600 text-[13px] mb-4">* {errors.email}</p>}
+                                {errors.email && <p className="text-red-600 text-[13px] mb-4">{errors.email}</p>}
 
                                 <label className="block text-gray-700 mb-1 font-medium" htmlFor="password">Password</label>
                                 <div className="relative">
@@ -104,7 +103,7 @@ export default function EmployerSignIn() {
                                         {showPassword ? <FiEyeOff /> : <FiEye />}
                                     </div>                        
                                 </div>
-                                {errors.password && <p className="text-red-600 text-[13px] mb-4">* {errors.password}</p>}
+                                {errors.password && <p className="text-red-600 text-[13px] mb-4">{errors.password}</p>}
 
                                 <PrimaryButton type="submit" className="w-full">Sign in</PrimaryButton>
 

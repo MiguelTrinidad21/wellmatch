@@ -90,13 +90,6 @@ export default function EditCompany({ handleEditCompanyBox }) {
         handleEditCompanyBox();
     }
 
-    function handleProfilePicName(e) {
-        const file = e.target.files[0];
-
-        if (errors?.profilePic) {
-            
-        }
-    }
 
     function handleSelectLocation(place) {
         const formatted = [
@@ -193,11 +186,13 @@ export default function EditCompany({ handleEditCompanyBox }) {
                             value={companyName}
                             onChange={(e) => setCompanyName(e.target.value)}
                             required
+                            minLength={2}
+                            maxLength={100}
                             className={`text-sm xl:text-[1rem] p-2 rounded-md block w-full border-2 mb-4 bg-slate-100 outline-none transition-colors duration-200 ease-in-out focus:border-green-600 ${errors?.companyName?.companyName ? 'border-red-600 focus:border-red-600 mb-1!' : 'border-gray-300'}`}
                         />
-                        {errors?.companyName?.companyName || errors?.companyName?.companyName ? (
+                        {errors?.companyName?.companyName ? (
                             <p className="text-red-600 text-[13px] mb-4">
-                                * {errors?.companyName?.companyName || errors?.companyName?.companyName}
+                                {errors?.companyName?.companyName}
                             </p>
                         ) : null}
                     </div>
@@ -205,17 +200,23 @@ export default function EditCompany({ handleEditCompanyBox }) {
 
 
                     <label className="font-semibold block mb-1" htmlFor="companyLocation">Location</label>
-                    <div className="relative">
+                    <div ref={toggleLocationRef} className="relative">
                         <input 
-                            ref={toggleLocationRef}
                             type="text"
                             id="companyLocation"
                             value={companyLocation}
                             onChange={(e) => setCompanyLocation(e.target.value)} 
                             autoComplete="off"
                             required
-                            className="block w-full overflow-x-scroll text-sm xl:text-[1rem] p-2 rounded-md border-2 border-gray-300 mb-4 bg-slate-100 outline-none transition-colors duration-200 ease-in-out focus:border-green-600"
+                            minLength={2}
+                            maxLength={60}
+                            className={`text-sm xl:text-[1rem] p-2 rounded-md block w-full border-2 mb-4 bg-slate-100 outline-none transition-colors duration-200 ease-in-out focus:border-green-600 ${errors?.invalidAddress?.invalidAddress ? 'border-red-600 focus:border-red-600 mb-1!' : 'border-gray-300'}`}
                         />
+                        {errors?.invalidAddress?.invalidAddress ? (
+                            <p className="text-red-600 text-[13px] mb-4">
+                                {errors?.invalidAddress?.invalidAddress}
+                            </p>
+                        ) : null}                        
 
                         {isSearchingLocation && (
                             <p className="mt-1 text-xs text-gray-500">
@@ -248,7 +249,6 @@ export default function EditCompany({ handleEditCompanyBox }) {
                 <hr className="mt-5 mb-4 border-t-2 border-gray-300" />
 
                 <div className="w-full">
-                    {/* <h1 className="font-bold text-xl mb-2">Company Photos</h1> */}
 
                     <div className="w-full mb-5">
                         <p className="font-semibold">Company Logo</p>

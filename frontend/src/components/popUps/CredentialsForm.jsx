@@ -20,7 +20,7 @@ export default function CredentialsForm({ toggleForm, refresh }) {
         endYear: null
     })
 
-    const [errors, setErrors] = useState("");
+    const [errors, setErrors] = useState({});
 
     function cancelForm() {
         setCredentialInfo({
@@ -43,7 +43,7 @@ export default function CredentialsForm({ toggleForm, refresh }) {
         const { startMonth, startYear, endMonth, endYear } = credentialInfo;
 
         if (!startMonth || !startYear) {
-            setErrors("Please indicate the issue date");
+            setErrors({startDate: "Please indicate the issue date"});
             return;
         }
 
@@ -51,7 +51,7 @@ export default function CredentialsForm({ toggleForm, refresh }) {
         const end = new Date(endYear, endMonth);
 
         if ((endMonth && endYear) && (start >= end)) {
-            setErrors("Issue date must be before expiry date");
+            setErrors({invalidDate: "Issue date must be before expiry date"});
             return;
         }
 
@@ -60,8 +60,18 @@ export default function CredentialsForm({ toggleForm, refresh }) {
 
             refresh();
             toggleForm();
+
         } catch (error) {
             console.log(error);
+
+            const issue = error.response?.data?.issue;
+            const message = error.response?.data?.message || "An error occurred";
+
+            if (issue) {
+                setErrors({ [issue]: message }); 
+            } else {
+                setErrors({ general: "An error occurred. Please try again" });
+            }               
         }
     }
 
@@ -82,9 +92,12 @@ export default function CredentialsForm({ toggleForm, refresh }) {
                             required
                             id="title"
                             value={credentialInfo.credentialTitle}
+                            minLength={2}
+                            maxLength={150}
                             onChange={(e) => setCredentialInfo({...credentialInfo, credentialTitle: e.target.value})}                       
-                            className="p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-green-600"
+                            className={`p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-green-600 ${errors.invalidTitle ? "border-red-600 focus:border-red-600 mb-1!" : "border-gray-300"}`}
                         />
+                        {errors.invalidTitle && <p className="text-red-600 text-[13px] mb-4"> {errors.invalidTitle}</p>}
                     </div>
 
                     <div className="flex flex-col w-full mb-4">
@@ -94,9 +107,12 @@ export default function CredentialsForm({ toggleForm, refresh }) {
                             required
                             id="company"
                             value={credentialInfo.issuedBy}
+                            minLength={2}
+                            maxLength={150}
                             onChange={(e) => setCredentialInfo({...credentialInfo, issuedBy: e.target.value})}                       
-                            className="p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-green-600"
+                            className={`p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-green-600 ${errors.invalidOrg ? "border-red-600 focus:border-red-600 mb-1!" : "border-gray-300"}`}
                         />
+                        {errors.invalidOrg && <p className="text-red-600 text-[13px] mb-4"> {errors.invalidOrg}</p>}
                     </div>
 
                     
@@ -124,7 +140,8 @@ export default function CredentialsForm({ toggleForm, refresh }) {
                         </div>      
                     </div>
                     
-                    {errors && <p className="text-red-600 text-sm text-center mb-4">{errors}</p>}
+                    {errors.invalidDate && <p className="text-red-600 text-[13px] mb-4"> {errors.invalidDate}</p>}
+                    {errors.startDate && <p className="text-red-600 text-[13px] mb-4"> {errors.startDate}</p>}
                     <div className="w-full flex flex-col">
                         <PrimaryButton type="submit" className="w-full">Add</PrimaryButton>
                         <PrimaryButton onClick={toggleForm} className="w-full text-black! bg-[#F3F4F6]!">Cancel</PrimaryButton>

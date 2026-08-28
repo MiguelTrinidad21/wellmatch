@@ -20,7 +20,7 @@ export default function WorkHistoryForm({ toggleForm, refresh }) {
         endYear: null
     })
 
-    const [errors, setErrors] = useState("");
+    const [errors, setErrors] = useState({});
 
     function cancelForm() {
         setWorkInfo({
@@ -40,7 +40,9 @@ export default function WorkHistoryForm({ toggleForm, refresh }) {
         const { startMonth, startYear, endMonth, endYear } = workInfo;
 
         if (!startMonth || !startYear || !endMonth || !endYear) {
-            setErrors("Please fill out all blank fields");
+            setErrors({
+                incompleteYear: "Please fill out all blank fields"
+            });
             return;
         }
 
@@ -49,7 +51,9 @@ export default function WorkHistoryForm({ toggleForm, refresh }) {
         const end = new Date(endYear, endMonth);
 
         if (start >= end) {
-            setErrors("Start date must be before end date");
+            setErrors({
+                invalidDate: "Start date must be before end date"
+            });
             return;
         }
 
@@ -58,10 +62,18 @@ export default function WorkHistoryForm({ toggleForm, refresh }) {
 
             refresh();
             toggleForm();
-            setErrors("");
+            setErrors({});
         } catch (error) {
             console.log(error);
-            setErrors("An error occurred. Please try again");
+
+            const issue = error.response?.data?.issue;
+            const message = error.response?.data?.message || "An error occurred";
+
+            if (issue) {
+                setErrors({ [issue]: message }); 
+            } else {
+                setErrors({ general: "An error occurred. Please try again" });
+            }            
         }
     }
 
@@ -84,9 +96,12 @@ export default function WorkHistoryForm({ toggleForm, refresh }) {
                             required
                             id="title"
                             value={workInfo.jobTitle}
+                            minLength={2}
+                            maxLength={100}
                             onChange={(e) => setWorkInfo({...workInfo, jobTitle: e.target.value})}                       
-                            className="p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-green-600"
+                            className={`p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-green-600 ${errors.invalidTitle ? "border-red-600 focus:border-red-600 mb-1!" : "border-gray-300"}`}
                         />
+                        {errors.invalidTitle && <p className="text-red-600 text-[13px] mb-4"> {errors.invalidTitle}</p>}
                     </div>
 
                     <div className="flex flex-col w-full mb-4">
@@ -96,9 +111,12 @@ export default function WorkHistoryForm({ toggleForm, refresh }) {
                             required
                             id="company"
                             value={workInfo.companyName}
+                            minLength={2}
+                            maxLength={100}
                             onChange={(e) => setWorkInfo({...workInfo, companyName: e.target.value})}                       
-                            className="p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-green-600"
+                            className={`p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-green-600 ${errors.invalidCompany ? "border-red-600 focus:border-red-600 mb-1!" : "border-gray-300"}`}
                         />
+                        {errors.invalidCompany && <p className="text-red-600 text-[13px] mb-4">{errors.invalidCompany}</p>}
                     </div>
 
                     <div className="w-full mb-4">
@@ -125,7 +143,8 @@ export default function WorkHistoryForm({ toggleForm, refresh }) {
                         </div>      
                     </div>
 
-                    {errors && <p className="text-red-600 text-sm text-center mb-4">{errors}</p>}
+                    {errors.invalidDate && <p className="text-red-600 text-[13px] mb-4">{errors.invalidDate}</p>}
+                    {errors.incompleteYear && <p className="text-red-600 text-[13px] mb-4">{errors.incompleteYear}</p>}
 
                     <div className="w-full flex flex-col">
                         <PrimaryButton type="submit" className="w-full">Add</PrimaryButton>

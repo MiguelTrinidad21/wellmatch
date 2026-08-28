@@ -16,6 +16,7 @@ export default function EducationForm({ toggleForm, refresh }) {
         qualiComplete: false
     })
 
+    const [errors, setErrors] = useState({});
 
     function handleCheckboxChange(event) {
         const checked = event.target.checked;
@@ -23,16 +24,6 @@ export default function EducationForm({ toggleForm, refresh }) {
         setEducationInfo({...educationInfo, qualiComplete: checked})
     };
 
-    function cancelForm() {
-        setEducationInfo({
-            courseName: "",
-            institution: "",
-            year: null,
-            qualiComplete: false
-        })
-
-        toggleForm();
-    }
     
     async function handleSubmit(e) {
         e.preventDefault();
@@ -44,6 +35,15 @@ export default function EducationForm({ toggleForm, refresh }) {
             toggleForm();
         } catch (error) {
             console.log(error);
+
+            const issue = error.response?.data?.issue;
+            const message = error.response?.data?.message || "An error occurred";
+
+            if (issue) {
+                setErrors({ [issue]: message }); 
+            } else {
+                setErrors({ general: "An error occurred. Please try again" });
+            }              
         }
     }
 
@@ -64,9 +64,12 @@ export default function EducationForm({ toggleForm, refresh }) {
                             required
                             id="title"
                             value={educationInfo.courseName}
+                            minLength={2}
+                            maxLength={150}
                             onChange={(e) => setEducationInfo({...educationInfo, courseName: e.target.value})}                       
-                            className="p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-green-600"
+                            className={`p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-green-600 ${errors.invalidTitle ? "border-red-600 focus:border-red-600 mb-1!" : "border-gray-300"}`}
                         />
+                        {errors.invalidTitle && <p className="text-red-600 text-[13px] mb-4"> {errors.invalidTitle}</p>}
                     </div>
 
                     <div className="flex flex-col w-full mb-4">
@@ -76,9 +79,12 @@ export default function EducationForm({ toggleForm, refresh }) {
                             required
                             id="company"
                             value={educationInfo.institution}
+                            minLength={2}
+                            maxLength={200}
                             onChange={(e) => setEducationInfo({...educationInfo, institution: e.target.value})}                       
-                            className="p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-green-600"
+                            className={`p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-green-600 ${errors.invalidOrg ? "border-red-600 focus:border-red-600 mb-1!" : "border-gray-300"}`}
                         />
+                        {errors.invalidOrg && <p className="text-red-600 text-[13px] mb-4">{errors.invalidOrg}</p>}
                     </div>
 
                     <div className="w-full mb-4 flex gap-2 items-center">

@@ -157,8 +157,11 @@ export default function EmployerRegister() {
                                 onChange={(e) => setEmployerInfo({...employerInfo, firstName: e.target.value})}
                                 required
                                 placeholder="Enter first name"
-                                className="p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-green-600" 
+                                minLength={2}
+                                maxLength={50}
+                                className={`p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-green-600 ${errors.invalidFName ? "border-red-600 focus:border-red-600 mb-1!" : "border-gray-300"}`} 
                             />
+                            {errors.invalidFName && <p className="text-red-600 text-[13px] mb-4">{errors.invalidFName}</p>}                            
                         </div>
 
                         <div className="w-full">
@@ -169,8 +172,11 @@ export default function EmployerRegister() {
                                 onChange={(e) => setEmployerInfo({...employerInfo, lastName: e.target.value})}
                                 required
                                 placeholder="Enter last name"
-                                className="p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-green-600" 
+                                minLength={2}
+                                maxLength={50}
+                                className={`p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-green-600 ${errors.invalidLName ? "border-red-600 focus:border-red-600 mb-1!" : "border-gray-300"}`} 
                             />
+                            {errors.invalidLName && <p className="text-red-600 text-[13px] mb-4">{errors.invalidLName}</p>}                        
                         </div>
 
                         <div className="w-full">
@@ -182,7 +188,7 @@ export default function EmployerRegister() {
                                 required
                                 className={`p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-green-600 ${errors.emailAddress ? 'border-red-600 focus:border-red-600 mb-1!' : 'border-gray-300'}`} 
                             />
-                            {errors.emailAddress && <p className="text-red-600 text-[13px] mb-4">* {errors.emailAddress}</p>}
+                            {errors.emailAddress && <p className="text-red-600 text-[13px] mb-4">{errors.emailAddress}</p>}
                         </div>
 
                         <div className="w-full">
@@ -200,7 +206,7 @@ export default function EmployerRegister() {
                                     {showPassword ? <FiEyeOff /> : <FiEye />}
                                 </div>
                             </div>
-                            {errors.invalidPass && <p className="text-red-600 text-[13px] mb-4">* {errors.invalidPass}</p>}
+                            {errors.invalidPass && <p className="text-red-600 text-[13px] mb-4">{errors.invalidPass}</p>}
                         </div>
 
                         <div className="w-full relative">
@@ -218,7 +224,7 @@ export default function EmployerRegister() {
                                     {showConfirmPassword ? <FiEyeOff /> : <FiEye />}
                                 </div>
                             </div>
-                            {errors.confirmPass && <p className="text-red-600 text-[13px] mb-4">* {errors.confirmPass}</p>}
+                            {errors.confirmPass && <p className="text-red-600 text-[13px] mb-4">{errors.confirmPass}</p>}
                         </div>
 
                         <PrimaryButton type="submit" className="w-full mt-10">Register</PrimaryButton>
