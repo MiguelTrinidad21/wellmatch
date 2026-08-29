@@ -2,16 +2,18 @@ import PublicNavBar from "../../components/navBars/PublicNavBar";
 import Footer from "../../components/others/Footer";
 import Overlay from "../../components/overlay/OverlayMobile";
 import PrimaryButton from "../../components/buttons/PrimaryButton";
+import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
-import api from "../../apis/axios";
 import { FiEye } from "react-icons/fi";
 import { FiEyeOff } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
+import api from "../../apis/axios";
 import ConfirmationBox from "../../components/popUps/ConfirmationBox";
 import Translucent from "../../components/overlay/Translucent";
 
 export default function AdminRegister() {
     const navigate = useNavigate();
+    const [isChecked, setIsChecked] = useState(false);
 
     const [adminInfo, setAdminInfo] = useState({
         firstName: "",
@@ -104,6 +106,11 @@ export default function AdminRegister() {
         setShowPopUp(false);
         navigate("/employer/login");
     }
+
+    function handleCheckboxChange(event) {
+        const checked = event.target.checked;
+        setIsChecked(checked);
+    };
 
     async function handleSubmit(e) {
         e.preventDefault();
@@ -293,7 +300,28 @@ export default function AdminRegister() {
                         )}
                     </div>
 
-                    <PrimaryButton type="submit" className="w-full mt-10">Register</PrimaryButton>
+                    <div className="w-full text-[12px] m:text-[13px] lg:text-sm rounded-lg bg-slate-100 p-2 m:p-3 lg:p-5 mb-4">
+                        <h1 className="font-bold mb-1 lg:mb-3 text-gray-800">TERMS AND CONDITIONS</h1>
+                        <p className="font-medium text-gray-700">
+                            <span>By creating a WellMatch account, you agree to our&nbsp;</span>
+                            <Link to="" className="text-blue-600 underline">Terms and Conditions</Link>
+                            <span>&nbsp;and acknowledge our&nbsp;</span>
+                            <Link to="" className="text-blue-600 underline">Privacy Policy</Link>.
+                        </p>
+                    </div>
+
+                    <div className="w-full mb-4 flex items-start gap-2">
+                        <input 
+                            type="checkbox"
+                            id="allow"
+                            checked={isChecked}
+                            onChange={handleCheckboxChange}                   
+                            className="w-4 h-4 lg:w-5 lg:h-5 border border-gray-400 rounded-md"
+                        />
+                        <label htmlFor="allow" className={`text-[12px] text-gray-700 font-medium lg:text-sm cursor-pointer ${isChecked ? " duration-100 ease-out" : undefined}`}>I have read and agree to the Terms and Conditions and Privacy Policy.</label>
+                    </div>  
+
+                    <PrimaryButton disabled={!isChecked} type="submit" className={`w-full ${!isChecked ? "opacity-60 cursor-not-allowed" : undefined}`}>Register</PrimaryButton>
                     {errors.general && <div className="bg-red-100 rounded-md text-red-600 p-3 my-4">{errors.general}</div>}
                 </form>
             </div>

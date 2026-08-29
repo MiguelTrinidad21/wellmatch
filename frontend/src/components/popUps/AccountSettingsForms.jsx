@@ -6,11 +6,17 @@ import { IoClose } from "react-icons/io5";
 import { FiEye } from "react-icons/fi";
 import { FiEyeOff } from "react-icons/fi";
 import { BiLoaderAlt } from "react-icons/bi";
+import { useNavigate } from "react-router-dom";
+import { applicantVerifyCodeStore } from "../../zustand/codeVerification";
 import api from "../../apis/axios";
 
 
-export function ChangeEmailForm({ toggleForm, confirmFunc }) {
-    const { currentUser, handleCurrentUser } = userStore();
+export function ChangeEmailForm({ toggleForm }) {
+    const navigate = useNavigate();
+
+    const { currentUser } = userStore();
+    const { setApplicantEmail } = applicantVerifyCodeStore();
+
     const [isLoading, setIsLoading] = useState(false);
     const [errors, setErrors] = useState({});
     const [showPassword, setShowPassword] = useState(false);
@@ -29,18 +35,18 @@ export function ChangeEmailForm({ toggleForm, confirmFunc }) {
         const normalizedPrevEmail = credentials.prevEmail.trim().toLowerCase();
 
         if (normalizedEmail === normalizedPrevEmail) {
-            setErrors({ sameEmail: "Enter a new email address" });
+            setErrors({ email: "Enter a new email address" });
             return;
         }
 
         setIsLoading(true);
 
         try {
-            const updated = await api.patch("/applicant/changeEmail", credentials);
+            await api.patch("/applicant/changeEmail", credentials);
 
-            handleCurrentUser(updated.data.user);
-            toggleForm();
-            confirmFunc();
+            setApplicantEmail(credentials.email);
+            navigate("/applicant/settings/emailUpdate");
+            
 
 
         } catch (error) {
@@ -78,9 +84,9 @@ export function ChangeEmailForm({ toggleForm, confirmFunc }) {
                         onChange={(e) => setCredentials({...credentials, email: e.target.value})}
                         required
                         placeholder="Enter new email address"
-                        className={`p-2 rounded-md block w-full border-2 border-gray-300 mb-5 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-green-600 ${errors.sameEmail ? "border-red-600 focus:border-red-600 mb-1!" : "border-gray-300"}`}
+                        className={`p-2 rounded-md block w-full border-2 border-gray-300 mb-5 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-green-600 ${errors.email ? "border-red-600 focus:border-red-600 mb-1!" : "border-gray-300"}`}
                     />
-                    {errors.sameEmail && <p className="text-sm text-red-600 mb-5">{errors.sameEmail}</p>}
+                    {errors.email && <p className="text-sm text-red-600 mb-5">{errors.email}</p>}
 
                     <label className="block font-semibold mb-1" htmlFor="password">Password&nbsp;<span className="text-gray-500">(for verification)</span></label>
                     <div className={`w-full relative ${errors.password ? "mb-1" : "mb-5"}`}>
