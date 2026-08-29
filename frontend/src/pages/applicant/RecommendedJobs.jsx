@@ -17,6 +17,7 @@ import { BiLoaderAlt } from "react-icons/bi";
 import { FaRegBuilding } from "react-icons/fa6";
 import { AiOutlineLaptop } from "react-icons/ai"
 import { TbBuildingCommunity } from "react-icons/tb";
+import { FaRegFileAlt } from "react-icons/fa";
 
 import { userStore } from "../../zustand/userState";
 import { jobSearchStore } from "../../zustand/jobSearching";
@@ -453,11 +454,13 @@ export default function RecommendedJobs() {
                     }
 
                     {(resumeStatus === "missing") &&
-                        <div className="">
-                            <h1 className="text-2xl font-bold">Recommended Jobs</h1>
-                            <p className="mt-2 text-gray-600">
+                        <div className="text-gray-500 mt-5 ">
+                            <FaRegFileAlt className="h-10 w-10 m-auto mb-5"/>
+                            <p className="mb-5 text-gray-600 text-center font-medium">
                                 Upload your resume first to get personalized job recommendations.
                             </p>
+
+                            <PrimaryButton to="/applicant/myProfile" className="m-auto w-fit md:w-50">Go to profile</PrimaryButton>
                         </div>
                     }
 

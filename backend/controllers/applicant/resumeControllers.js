@@ -93,10 +93,23 @@ export async function uploadAndAddResume(req, res) {
                 ? "active"
                 : "processing";
 
+        const [[row]] = await connection.query(
+            `SELECT EXISTS(
+                SELECT 1 FROM resumes 
+                WHERE applicantID = ?
+                AND isDefault = TRUE
+            ) AS resumeExists`,
+            [id]
+        );
+
+        const isDefaultResumePresent = Boolean(row.resumeExists);
+        const shouldBeDefault = !isDefaultResumePresent;
+
         await connection.beginTransaction();
 
         // Fix 2: Use nextResumeStatus in the INSERT instead of hardcoded 'processing'
         // so deleted resumes get inserted/updated with 'active' correctly
+
         const [newResume] = await connection.query(
             `
             INSERT INTO resumes (
@@ -108,7 +121,7 @@ export async function uploadAndAddResume(req, res) {
                 resumeStatus,
                 fileHash
             )
-            VALUES (?, ?, ?, FALSE, NOW(), ?, ?)
+            VALUES (?, ?, ?, ?, NOW(), ?, ?)
             ON DUPLICATE KEY UPDATE
                 resumeID = LAST_INSERT_ID(resumeID),
                 cloudinaryPublicID = VALUES(cloudinaryPublicID),
@@ -120,7 +133,8 @@ export async function uploadAndAddResume(req, res) {
                 id,
                 uploadedResume.public_id,
                 resume.originalname,
-                nextResumeStatus,   // Fix 2: was hardcoded 'processing' before
+                shouldBeDefault,
+                nextResumeStatus,
                 fileHash,
                 nextResumeStatus
             ]

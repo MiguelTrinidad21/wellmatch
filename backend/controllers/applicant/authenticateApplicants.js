@@ -1,11 +1,11 @@
 import database from "../../configs/database.js";
 import bcrypt from "bcryptjs";
+import crypto from "crypto";
 import "dotenv/config";
 import jwt from "jsonwebtoken";
-import { uploadResume } from "../../helpers/uploadToCloudinary.js";
-import { processResume, generateFileHash } from "../../helpers/resumeExtractor.js";
 import validAddress from "../../utils/validateAddress.js";
 import validPassword from "../../utils/validatePassword.js";
+import { sendVerificationEmail } from "../../utils/sendVerificationEmail.js";
 
 const cookieOptions = {
     httpOnly: true,
@@ -13,6 +13,9 @@ const cookieOptions = {
     sameSite: process.env.PROJECT_STATUS === "production" ? "None" : "Lax",
 };
 
+const CODE_EXPIRY_MINUTES = 10;
+const RESEND_COOLDOWN_SECONDS = 60;
+const MAX_ATTEMPTS = 5;
 
 export async function registerApplicant(req, res) {
     const {
@@ -63,25 +66,17 @@ export async function registerApplicant(req, res) {
         });
     }
 
-    const resume = req.file;
-
-    if (!resume) {
-        return res.status(400).json({
-            message: "Resume is required",
-            issue: "noResume"
-        });
-    }
+    const normalizedEmail = email.trim().toLowerCase();
+    const trimmedFirstName = firstName.trim();
+    const trimmedLastName = lastName.trim();
+    const trimmedAddress = address.trim();
 
     let connection;
-    let uploadedResume = null;
 
-    const normalizedEmail = email.trim().toLowerCase();
 
     try {
         const [existingApplicant] = await database.query(`
-            SELECT applicantID, status 
-            FROM applicants 
-            WHERE email = ?`,
+            SELECT applicantID FROM applicants WHERE email = ?`,
             [normalizedEmail]
         );
 
@@ -92,87 +87,371 @@ export async function registerApplicant(req, res) {
             });
         }
 
-        const hashedPassword = await bcrypt.hash(password, 10);
 
-        uploadedResume = await uploadResume(
-            resume.buffer,
-            "wellmatch/applicant/resume",
-            resume.originalname
+
+
+        const [pendingRows] = await database.query(
+            `SELECT createdAt FROM pendingApplicantRegistrations WHERE email = ?`,
+            [normalizedEmail]
         );
 
-        if (!uploadedResume) {
-            return res.status(500).json({
-                message: "Uploading resume failed"
-            });
+        if (pendingRows.length > 0) {
+            const secondsSinceLastSend =
+                (Date.now() - new Date(pendingRows[0].createdAt).getTime()) / 1000;
+
+            if (secondsSinceLastSend < RESEND_COOLDOWN_SECONDS) {
+                return res.status(429).json({
+                    message: `Please wait before requesting another code`,
+                    issue: "cooldown"
+                });
+            }
         }
+
+
+
+        const verificationCode = crypto.randomInt(100000, 999999).toString();
+        const hashedCode = crypto
+            .createHash("sha256")
+            .update(verificationCode)
+            .digest("hex");
+
+        const hashedPassword = await bcrypt.hash(password, 10);
 
         connection = await database.getConnection();
         await connection.beginTransaction();
 
-        const [applicantResult] = await connection.query(
+        await connection.query(
             `
-            INSERT INTO applicants 
-                (email, password, firstName, lastName, address, createdAt, status)
-            VALUES 
-                (?, ?, ?, ?, ?, NOW(), 'active')
-            `,
-            [
-                normalizedEmail,
+            INSERT INTO pendingApplicantRegistrations (
+                email,
+                verificationCode,
                 hashedPassword,
                 firstName,
                 lastName,
-                address
-            ]
-        );
-
-        const applicantID = applicantResult.insertId;
-        const fileHash = generateFileHash(resume.buffer);
-
-        const [newResume] = await connection.query(
-            `
-            INSERT INTO resumes (
-                applicantID,
-                cloudinaryPublicID,
-                origFileName,
-                isDefault,
-                uploadedAt,
-                resumeStatus,
-                fileHash
+                address,
+                attempts,
+                expiresAt,
+                createdAt
             )
-            VALUES (?, ?, ?, TRUE, NOW(), 'processing', ?)
+            VALUES (?, ?, ?, ?, ?, ?, 0, DATE_ADD(NOW(), INTERVAL ? MINUTE), NOW())
+            ON DUPLICATE KEY UPDATE
+                verificationCode = VALUES(verificationCode),
+                hashedPassword   = VALUES(hashedPassword),
+                firstName        = VALUES(firstName),
+                lastName         = VALUES(lastName),
+                address          = VALUES(address),
+                attempts         = 0,
+                expiresAt        = VALUES(expiresAt),
+                createdAt        = NOW()
             `,
             [
-                applicantID,
-                uploadedResume.public_id,
-                resume.originalname,
-                fileHash
+                normalizedEmail,
+                hashedCode,
+                hashedPassword,
+                trimmedFirstName,
+                trimmedLastName,
+                trimmedAddress,
+                CODE_EXPIRY_MINUTES
             ]
         );
- 
+
         await connection.commit();
         
-        processResume(resume, newResume.insertId).catch(async (error) => {
-            console.error("Resume extraction failed:", error);
+        await sendVerificationEmail(normalizedEmail, verificationCode);
 
-            try {
-                await database.query(`
-                    UPDATE resumes
-                    SET resumeStatus = 'failed'
-                    WHERE resumeID = ?
-                    `,
-                    [newResume.insertId]
-                )
-                
-            } catch (dbError) {
-                console.error("Failed to update resume status:", dbError);
-            }
-        })
-        
         return res.status(201).json({
-            message: "Applicant user has registered successfully"
+            message: "Verification code sent to your email",
+            email: normalizedEmail
         });
 
     } catch (err) {
+        console.error(err);
+        if (connection) {
+            await connection.rollback();
+        }
+
+        return res.status(500).json({
+            message: "Unable to connect to the server. Please try again.",
+            error: err.message
+        });
+
+    } finally {
+        if (connection) {
+            connection.release();
+        }
+    }
+}
+
+export async function verifyApplicantCode(req, res) {
+    const { code, applicantEmail } = req.body;
+
+    if (!applicantEmail || typeof applicantEmail !== "string") {
+        return res.status(400).json({
+            message: "Email is required",
+            issue: "missingEmail"
+        });
+    }
+    
+    if (!code || typeof code !== "string" || !/^\d{6}$/.test(code.trim())) {
+        return res.status(400).json({
+            message: "Enter a valid 6-digit code",
+            issue: "invalid"
+        });
+    }
+
+    const normalizedEmail = applicantEmail.trim().toLowerCase();
+    const submittedCode = code.trim();
+
+    let connection;
+
+    try {
+        connection = await database.getConnection();
+        await connection.beginTransaction();
+
+        // Lock the row for update to avoid race conditions
+        // (e.g. two rapid submit clicks incrementing attempts inconsistently)
+        const [pendingRows] = await connection.query(
+            `
+            SELECT
+                applicantRegID,
+                verificationCode,
+                hashedPassword,
+                firstName,
+                lastName,
+                address,
+                attempts,
+                expiresAt
+            FROM pendingApplicantRegistrations
+            WHERE email = ?
+            FOR UPDATE
+            `,
+            [normalizedEmail]
+        );
+
+        if (pendingRows.length === 0) {
+            await connection.rollback();
+            return res.status(404).json({
+                message: "No pending registration found for this email. Please register again.",
+                issue: "invalid"
+            });
+        }
+
+        const pending = pendingRows[0];
+
+        // 1. Check lockout FIRST — consistent behavior regardless of code correctness
+        if (pending.attempts >= MAX_ATTEMPTS) {
+            await connection.rollback();
+            return res.status(429).json({
+                message: "Too many incorrect attempts. Please request a new code.",
+                issue: "invalid"
+            });
+        }
+
+        // 2. Check expiry
+        const isExpired = new Date(pending.expiresAt).getTime() < Date.now();
+
+        if (isExpired) {
+            await connection.rollback();
+            return res.status(410).json({
+                message: "This code has expired. Please request a new code.",
+                issue: "invalid"
+            });
+        }
+
+        // 3. Check code match (hash the submitted code, compare using timing-safe comparison)
+        const hashedSubmittedCode = crypto
+            .createHash("sha256")
+            .update(submittedCode)
+            .digest("hex");
+
+        const storedCodeBuffer = Buffer.from(pending.verificationCode, "hex");
+        const submittedCodeBuffer = Buffer.from(hashedSubmittedCode, "hex");
+
+        const codesMatch =
+            storedCodeBuffer.length === submittedCodeBuffer.length &&
+            crypto.timingSafeEqual(storedCodeBuffer, submittedCodeBuffer);
+
+        if (!codesMatch) {
+            const attemptsRemaining = MAX_ATTEMPTS - (pending.attempts + 1);
+
+            await connection.query(
+                `UPDATE pendingApplicantRegistrations SET attempts = attempts + 1 WHERE applicantRegID = ?`,
+                [pending.applicantRegID]
+            );
+
+            await connection.commit();
+
+            return res.status(400).json({
+                message:
+                    attemptsRemaining > 0
+                        ? `Incorrect code. ${attemptsRemaining} attempt(s) remaining.`
+                        : "Incorrect code. Please request a new code.",
+                issue: "invalid",
+                attemptsRemaining: Math.max(attemptsRemaining, 0)
+            });
+        }
+
+        // 4. Code is correct — double-check email wasn't registered by a parallel request
+        const [existingApplicant] = await connection.query(
+            `SELECT applicantID FROM applicants WHERE email = ?`,
+            [normalizedEmail]
+        );
+
+        if (existingApplicant.length > 0) {
+            // Someone else completed registration for this email in the meantime
+            await connection.query(
+                `DELETE FROM pendingApplicantRegistrations WHERE applicantRegID = ?`,
+                [pending.applicantRegID]
+            );
+            await connection.commit();
+
+            return res.status(409).json({
+                message: "Email address is already registered",
+                issue: "email"
+            });
+        }
+
+        // 5. Create the real applicant account
+        const [insertResult] = await connection.query(
+            `
+            INSERT INTO applicants (
+                firstName,
+                lastName,
+                address,
+                email,
+                password,
+                createdAt
+            )
+            VALUES (?, ?, ?, ?, ?, NOW())
+            `,
+            [
+                pending.firstName,
+                pending.lastName,
+                pending.address,
+                normalizedEmail,
+                pending.hashedPassword
+            ]
+        );
+
+        // 6. Clean up the pending row — no longer needed
+        await connection.query(
+            `DELETE FROM pendingApplicantRegistrations WHERE applicantRegID = ?`,
+            [pending.applicantRegID]
+        );
+
+        await connection.commit();
+
+        return res.status(201).json({
+            message: "Account verified and registered successfully"
+        });
+
+    } catch (err) {
+        console.error(err);
+
+        if (connection) {
+            await connection.rollback();
+        }
+
+        return res.status(500).json({
+            message: "Unable to connect to the server. Please try again.",
+            error: err.message
+        });
+
+    } finally {
+        if (connection) {
+            connection.release();
+        }
+    }    
+}
+
+export async function resendApplicantCode(req, res) {
+    const { applicantEmail } = req.body;
+
+    if (!applicantEmail || typeof applicantEmail !== "string") {
+        return res.status(400).json({
+            message: "Email is required",
+            issue: "missingEmail"
+        });
+    }
+
+    const normalizedEmail = applicantEmail.trim().toLowerCase();
+
+    let connection;
+
+    try {
+        connection = await database.getConnection();
+        await connection.beginTransaction();
+
+        const [pendingRows] = await connection.query(
+            `
+            SELECT applicantRegID, createdAt
+            FROM pendingApplicantRegistrations
+            WHERE email = ?
+            FOR UPDATE
+            `,
+            [normalizedEmail]
+        );
+
+        if (pendingRows.length === 0) {
+            await connection.rollback();
+            return res.status(404).json({
+                message: "No pending registration found for this email. Please register again.",
+                issue: "notFound"
+            });
+        }
+
+        const pending = pendingRows[0];
+
+        // Cooldown check — prevent spamming resend
+        const secondsSinceLastSend =
+            (Date.now() - new Date(pending.createdAt).getTime()) / 1000;
+
+        if (secondsSinceLastSend < RESEND_COOLDOWN_SECONDS) {
+            await connection.rollback();
+            const secondsRemaining = Math.ceil(
+                RESEND_COOLDOWN_SECONDS - secondsSinceLastSend
+            );
+
+            return res.status(429).json({
+                message: `Please wait ${secondsRemaining} second(s) before requesting another code.`,
+                issue: "cooldown",
+                secondsRemaining
+            });
+        }
+
+        // Generate a fresh code, reset attempts, extend expiry
+        const verificationCode = crypto.randomInt(100000, 999999).toString();
+        const hashedCode = crypto
+            .createHash("sha256")
+            .update(verificationCode)
+            .digest("hex");
+
+        await connection.query(
+            `
+            UPDATE pendingApplicantRegistrations
+            SET
+                verificationCode = ?,
+                attempts = 0,
+                expiresAt = DATE_ADD(NOW(), INTERVAL ? MINUTE),
+                createdAt = NOW()
+            WHERE applicantRegID = ?
+            `,
+            [hashedCode, CODE_EXPIRY_MINUTES, pending.applicantRegID]
+        );
+
+        await connection.commit();
+
+        // Send the new code outside the transaction
+        await sendVerificationEmail(normalizedEmail, verificationCode);
+
+        return res.status(200).json({
+            message: "A new verification code has been sent to your email",
+            email: normalizedEmail
+        });
+
+    } catch (err) {
+        console.error(err);
+
         if (connection) {
             await connection.rollback();
         }

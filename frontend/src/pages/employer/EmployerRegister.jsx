@@ -17,6 +17,8 @@ export default function EmployerRegister() {
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
 
+    const [isChecked, setIsChecked] = useState(false);
+
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
@@ -111,6 +113,11 @@ export default function EmployerRegister() {
     function handleConfirmPass(e) {
         setShowConfirmPassword(!showConfirmPassword);
     }
+
+    function handleCheckboxChange(event) {
+        const checked = event.target.checked;
+        setIsChecked(checked);
+    };
 
     if (isLoading) {
             return (
@@ -227,7 +234,28 @@ export default function EmployerRegister() {
                             {errors.confirmPass && <p className="text-red-600 text-[13px] mb-4">{errors.confirmPass}</p>}
                         </div>
 
-                        <PrimaryButton type="submit" className="w-full mt-10">Register</PrimaryButton>
+                        <div className="w-full text-[12px] m:text-[13px] lg:text-sm rounded-lg bg-slate-100 p-2 m:p-3 lg:p-5 mb-4">
+                            <h1 className="font-bold mb-1 lg:mb-3 text-gray-800">TERMS AND CONDITIONS</h1>
+                            <p className="font-medium text-gray-700">
+                                <span>By creating a WellMatch account, you agree to our&nbsp;</span>
+                                <Link to="" className="text-blue-600 underline">Terms and Conditions</Link>
+                                <span>&nbsp;and acknowledge our&nbsp;</span>
+                                <Link to="" className="text-blue-600 underline">Privacy Policy</Link>.
+                            </p>
+                        </div>
+
+                        <div className="w-full mb-4 flex items-start gap-2">
+                            <input 
+                                type="checkbox"
+                                id="allow"
+                                checked={isChecked}
+                                onChange={handleCheckboxChange}                   
+                                className="w-4 h-4 lg:w-5 lg:h-5 border border-gray-400 rounded-md"
+                            />
+                            <label htmlFor="allow" className={`text-[12px] text-gray-700 font-medium lg:text-sm cursor-pointer ${isChecked ? " duration-100 ease-out" : undefined}`}>I have read and agree to the Terms and Conditions and Privacy Policy.</label>
+                        </div>                         
+
+                        <PrimaryButton disabled={!isChecked} type="submit" className={`w-full ${!isChecked ? "opacity-60 cursor-not-allowed" : undefined}`}>Register</PrimaryButton>
                     </form>
 
                 </div>

@@ -32,6 +32,9 @@ import JobApplications from './pages/applicant/JobApplications';
 import SavedJobs from './pages/applicant/SavedJobs';
 import ApplicantAccountSettings from './pages/applicant/AccountSettings';
 
+import VerifySignUpEmail from './pages/verification/VerifySignUpEmail';
+import VerifyUpdateEmail from './pages/verification/VerifyUpdateEmail';
+
 import { useEffect } from 'react';
 import { userStore } from './zustand/userState';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
@@ -65,9 +68,11 @@ function App() {
           <Route path='/' element={<ApplicantSignIn />}/>
           <Route path='/applicant/login' element={<ApplicantSignIn />}/>
           <Route path='/applicant/register' element={<ApplicantRegister />} />
+          <Route path='/applicant/register/verify' element={<VerifySignUpEmail user="applicant" />} />
       
           <Route path='/employer/login' element={<EmployerSignIn />}/>
           <Route path='/employer/register' element={<AdminRegister />} />
+          <Route path='/employer/register/verify' element={<VerifySignUpEmail user="employer" />} />
           
         </Route>
         
@@ -77,6 +82,7 @@ function App() {
           <Route path='/employer/jobs' element={<Jobs />} />
           <Route path='/employer/companyProfile' element={<CompanyProfile />} />
           <Route path='/employer/settings' element={<AccountSettings />} />
+          <Route path='/employer/settings/emailUpdate' element={<VerifyUpdateEmail user="employer" />} />
           <Route path='/employer/jobs/viewJob/:jobID' element={<ViewJobDescription />} />
 
 
@@ -99,8 +105,7 @@ function App() {
           {/* <Route path='/employer/companyProfile/invite' element={<InviteEmployer />} /> */}
         </Route>
 
-        
-
+      
         <Route element={
           <ProtectedRoute allowedUserTypes={["applicant"]} redirectTo={"/applicant/login"}/>
         }>
@@ -115,6 +120,7 @@ function App() {
           <Route path='/applicant/jobApplications' element={<JobApplications />} />
           <Route path='/applicant/savedJobs' element={<SavedJobs />} />
           <Route path='/applicant/settings' element={<ApplicantAccountSettings />} />
+          <Route path='/applicant/settings/emailUpdate' element={<VerifyUpdateEmail user="applicant" />} />
         </Route>
         
         <Route path='/employer/register/invite' element={<EmployerRegister />} />        

@@ -4,21 +4,24 @@ import handleApplicantPhotoUpload from "../middlewares/handleApplicantPhotos.js"
 import handleMulterResumeUpload from "../middlewares/handleResumes.js";
 import { skillGapController } from "../controllers/applicant/skillGapController.js";
 import { 
-    changeEmail, 
+    changeEmail,
+    verifyEmailUpdateCode, 
+    resendEmailUpdateCode,
     changePassword,
     deleteAccount
 } from "../controllers/applicant/accountSettings.js";
 
 import { 
-    registerApplicant, 
+    registerApplicant,
+    verifyApplicantCode, 
+    resendApplicantCode,
     loginApplicant,
     logoutApplicant
 } from "../controllers/applicant/authenticateApplicants.js";
 
 import  {
     verifyToken,
-    isApplicant,
-    isEmployer
+    isApplicant
 } from "../middlewares/authorizeUser.js"
 
 import { 
@@ -83,7 +86,7 @@ router.get("/getSavedJobs", verifyToken, isApplicant, getAllSavedJobs)
 router.get("/debug-resume", debugResume)
 
 router.post("/:jobID/:resumeID/skillgap", verifyToken, isApplicant, skillGapController);
-router.post("/register", handleMulterResumeUpload, registerApplicant)
+router.post("/register", registerApplicant)
 router.post("/login", loginApplicant);
 router.post("/logout", logoutApplicant);
 router.post("/uploadResume", verifyToken, isApplicant, handleMulterResumeUpload, uploadAndAddResume)
@@ -92,10 +95,14 @@ router.post("/addCredential", verifyToken, isApplicant, addCredential)
 router.post("/addEducation", verifyToken, isApplicant, addEducation)
 router.post("/submitApplication/:jobID", verifyToken, isApplicant, submitApplication)
 router.post("/saveJob", verifyToken, isApplicant, saveJob)
+router.post("/emailSignUp/verify", verifyApplicantCode)
+router.post("/emailSignUp/resendCode", resendApplicantCode)
+router.post("/changeEmail/resendCode", resendEmailUpdateCode)
 
 router.patch("/editProfileInfo", verifyToken, isApplicant, handleApplicantPhotoUpload, updateInfo)
 router.patch("/resume/makeDefault", verifyToken, isApplicant, makeResumeDefault)
 router.patch("/changeEmail", verifyToken, isApplicant, changeEmail)
+router.patch("/changeEmail/verify", verifyToken, isApplicant, verifyEmailUpdateCode)
 router.patch("/changePassword", verifyToken, isApplicant, changePassword)
 
 

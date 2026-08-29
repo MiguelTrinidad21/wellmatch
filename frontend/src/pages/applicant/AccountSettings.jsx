@@ -32,6 +32,7 @@ export default function AccountSettings() {
     useEffect(() => {
         setApplicantActiveLink("Account Settings");
     }, []);
+
     
     async function logout() {
         try {
@@ -56,7 +57,6 @@ export default function AccountSettings() {
                     openChangeEmail &&
                     <ChangeEmailForm 
                         toggleForm={() => setOpenChangeEmail(false)}
-                        confirmFunc={() => setShowConfirmEmail(true)}
                     />
                 }
 
@@ -76,13 +76,13 @@ export default function AccountSettings() {
                     />
                 }
 
-                {
+                {/* {
                     showConfirmEmail &&
                     <ConfirmatonBox
                         text="Email address updated successfully"
                         onClick={() => setShowConfirmEmail(false)}
                     />
-                }
+                } */}
 
                 {
                     showConfirmPass &&
