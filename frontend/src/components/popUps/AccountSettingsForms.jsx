@@ -137,7 +137,6 @@ export function ChangeEmailForm({ toggleForm }) {
 }
 
 export function ChangePasswordForm({ toggleForm, confirmFunc }) {
-    const { currentUser, handleCurrentUser } = userStore();
     const [isLoading, setIsLoading] = useState(false);
     const [errors, setErrors] = useState({});
     const [showCurrPassword, setShowCurrPassword] = useState(false);
@@ -316,7 +315,8 @@ export function ChangePasswordForm({ toggleForm, confirmFunc }) {
 
 
 export function DeleteAccountForm({ toggleForm, confirmFunc }) {
-    const { currentUser, handleCurrentUser } = userStore();
+    const { logoutUser } = userStore();
+
     const [isLoading, setIsLoading] = useState(false);
     const [errors, setErrors] = useState({});
     const [showPassword, setShowPassword] = useState(false);
@@ -334,7 +334,7 @@ export function DeleteAccountForm({ toggleForm, confirmFunc }) {
 
 
         try {
-            const updated = await api.delete("/applicant/deleteAccount", {
+            await api.delete("/applicant/deleteAccount", {
                 params: {
                     email: credentials.email,
                     password: credentials.password
@@ -342,6 +342,7 @@ export function DeleteAccountForm({ toggleForm, confirmFunc }) {
             }                
             );
 
+            logoutUser();
             toggleForm();
             confirmFunc();
 

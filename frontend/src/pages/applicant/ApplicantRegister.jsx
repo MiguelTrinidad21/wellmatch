@@ -252,6 +252,8 @@ export default function ApplicantRegister() {
                         value={applicantInfo.email}
                         onChange={(e) => setApplicantInfo({...applicantInfo, email: e.target.value})}
                         placeholder="name@example.com"
+                        minLength={5}
+                        maxLength={100}
                         required
                         className={`p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-green-600 ${errors.email ? "border-red-600 focus:border-red-600 mb-1!" : "border-gray-300"}`}
                     />

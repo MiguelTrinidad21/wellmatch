@@ -4,10 +4,18 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs"
 import crypto from "crypto"
 import { sendEmailUpdateCode } from "../../utils/sendVerificationEmail.js";
+import validPassword from "../../utils/validatePassword.js";
 
 const CODE_EXPIRY_MINUTES = 10;
 const RESEND_COOLDOWN_SECONDS = 60;
 const MAX_ATTEMPTS = 5;
+
+
+const cookieOptions = {
+    httpOnly: true,
+    secure: process.env.PROJECT_STATUS === "production",
+    sameSite: process.env.PROJECT_STATUS === "production" ? "None" : "Lax",
+};
 
 
 export async function changeEmail(req, res) {
@@ -64,7 +72,7 @@ export async function changeEmail(req, res) {
         const isPassCorrect = await bcrypt.compare(password, currentUser.password);
 
         if (!isPassCorrect) {
-            return res.status(401).json({
+            return res.status(400).json({
                 message: "Incorrect password",
                 issue: "password"
             });
@@ -182,7 +190,7 @@ export async function verifyEmailUpdateCode(req, res) {
         sameSite: process.env.PROJECT_STATUS === "production" ? "None" : "Lax",
     };
 
-    const { id } = req.user; // trust the authenticated session, not the request body
+    const { id } = req.user;
     const { code } = req.body;
 
     if (!code || typeof code !== "string" || !/^\d{6}$/.test(code.trim())) {
@@ -469,6 +477,29 @@ export async function changePassword(req, res) {
     const { id } = req.user;
     const { currentPassword, newPassword, retypePassword } = req.body;
 
+    if (!currentPassword) {
+        return res.status(400).json({
+            message: "Enter your current password",
+            issue: "incorrectPass"
+        });
+    }
+
+    const validPass = validPassword(newPassword);
+
+    if (!newPassword || !validPass.valid) {
+        return res.status(400).json({
+            message: validPass.message,
+            issue: "invalidPass"
+        });
+    }
+
+    if (!retypePassword || newPassword !== retypePassword) {
+        return res.status(400).json({
+            message: "Password did not match",
+            issue: "notMatch"
+        });
+    }
+
     try {
         const [[applicant]] = await database.query(`
             SELECT password
@@ -482,9 +513,16 @@ export async function changePassword(req, res) {
         const isPassCorrect = await bcrypt.compare(currentPassword, applicant.password);
 
         if (!isPassCorrect) {
-            return res.status(401).json({
+            return res.status(400).json({
                 message: "Incorrect password",
                 issue: "incorrectPass"
+            })
+        }
+
+        if (currentPassword === newPassword) {
+            return res.status(400).json({
+                message: "Pick a new password",
+                issue: "invalidPass"
             })
         }
 
@@ -540,14 +578,14 @@ export async function deleteAccount(req, res) {
         const isPassCorrect = await bcrypt.compare(password, user.password);
 
         if (reqEmail !== userEmail) {
-            return res.status(401).json({
+            return res.status(400).json({
                 message: "Incorrect email address",
                 issue: "email"
             });
         }
 
         if (!isPassCorrect) {
-            return res.status(401).json({
+            return res.status(400).json({
                 message: "Incorrect password",
                 issue: "password"
             });
@@ -638,6 +676,8 @@ export async function deleteAccount(req, res) {
         );
 
         await connection.commit(); // Fix #2
+
+        res.clearCookie("token", cookieOptions);
 
         return res.status(200).json({ // Fix #1
             message: "Account deleted successfully"

@@ -6,14 +6,20 @@ import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { FiEye } from "react-icons/fi";
 import { FiEyeOff } from "react-icons/fi";
+import { BiLoaderAlt } from "react-icons/bi";
 import { useNavigate } from "react-router-dom";
+import { employerVerifyCodeStore } from "../../zustand/codeVerification";
 import api from "../../apis/axios";
-import ConfirmationBox from "../../components/popUps/ConfirmationBox";
-import Translucent from "../../components/overlay/Translucent";
+
 
 export default function AdminRegister() {
     const navigate = useNavigate();
+
+    const { setEmployerEmail } = employerVerifyCodeStore();
+
     const [isChecked, setIsChecked] = useState(false);
+
+    const [isLoading, setIsLoading] = useState(false);
 
     const [adminInfo, setAdminInfo] = useState({
         firstName: "",
@@ -22,9 +28,7 @@ export default function AdminRegister() {
         password: "",
         confirmPassword: "",
         companyName: "",
-        companyLocation: "",
-        role: "",
-        status: ""
+        companyLocation: ""
     });
 
     const [locationSuggestions, setLocationSuggestions] = useState([]);
@@ -34,7 +38,6 @@ export default function AdminRegister() {
     
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-    const [showPopUp, setShowPopUp] = useState(false);
     const [errors, setErrors] = useState({});
     
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[^A-Za-z0-9]).{12,}$/;
@@ -102,10 +105,6 @@ export default function AdminRegister() {
         setShowConfirmPassword(!showConfirmPassword);
     }
 
-    function closePopUp() {
-        setShowPopUp(false);
-        navigate("/employer/login");
-    }
 
     function handleCheckboxChange(event) {
         const checked = event.target.checked;
@@ -124,13 +123,18 @@ export default function AdminRegister() {
         }
 
         if (adminInfo.password !== adminInfo.confirmPassword) {
-            setErrors({ confirmPassword: "Passwords do not match" });
+            setErrors({ confirmPassword: "Password did not match" });
             return;
         }
 
+        setIsLoading(true);
+
         try {
-            await api.post("/employer/register", adminInfo)
-            setShowPopUp(true);
+            await api.post("/employer/register", adminInfo);
+
+            setEmployerEmail(adminInfo.emailAddress);
+
+            navigate("/employer/register/verify");
 
         } catch (error) {
             const issue = error.response?.data?.issue;
@@ -141,6 +145,9 @@ export default function AdminRegister() {
             } else {
                 setErrors({ general: "Unable to connect to the server. Please try again." });
             }
+
+        } finally{
+            setIsLoading(false);
         }
 
         // console.log(adminInfo);
@@ -155,12 +162,12 @@ export default function AdminRegister() {
 
                 {locationSuggestions.length > 0 && <div onClick={() => setLocationSuggestions([])} className="fixed top-0 left-0 w-full h-full"></div>}
 
-                {showPopUp && (
+                {/* {showPopUp && (
                     <>
                         <Translucent />
                         <ConfirmationBox buttonText="Sign in" onClick={closePopUp} text="Account registered successfully" />
                     </>
-                )}
+                )} */}
 
                 <form onSubmit={handleSubmit} className="w-full m-auto bg-white rounded-3xl shadow-lg p-6 md:p-10 md:w-100 lg:w-120" >
                     <h2 className="text-center text-xl font-bold mb-4 md:text-2xl">Create Your Account</h2>
@@ -200,6 +207,8 @@ export default function AdminRegister() {
                         value={adminInfo.emailAddress}
                         onChange={(e) => setAdminInfo({...adminInfo, emailAddress: e.target.value})}
                         placeholder="Enter email address"
+                        minLength={5}
+                        maxLength={100}
                         required
                         className={`p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-green-600 ${errors.email ? 'border-red-600 focus:border-red-600 mb-1!' : 'border-gray-300'}`}
                     />
@@ -213,6 +222,8 @@ export default function AdminRegister() {
                             value={adminInfo.password}
                             onChange={(e) => setAdminInfo({...adminInfo, password: e.target.value})}
                             placeholder="Enter password"
+                            minLength={12}
+                            maxLength={60}
                             required
                             className={`p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-green-600 ${errors.invalidPass ? 'border-red-600 focus:border-red-600 mb-1!' : 'border-gray-300'}`}
                         />
@@ -321,7 +332,16 @@ export default function AdminRegister() {
                         <label htmlFor="allow" className={`text-[12px] text-gray-700 font-medium lg:text-sm cursor-pointer ${isChecked ? " duration-100 ease-out" : undefined}`}>I have read and agree to the Terms and Conditions and Privacy Policy.</label>
                     </div>  
 
-                    <PrimaryButton disabled={!isChecked} type="submit" className={`w-full ${!isChecked ? "opacity-60 cursor-not-allowed" : undefined}`}>Register</PrimaryButton>
+                    <PrimaryButton disabled={isLoading || !isChecked} type="submit" className={`w-full ${!isChecked || isLoading ? "opacity-60 cursor-not-allowed!" : undefined}`}>
+                        {
+                            isLoading ? (
+                                <span className="flex justify-center items-center gap-2">
+                                    Register
+                                    <BiLoaderAlt size={20} className="animate-spin" />
+                                </span>
+                            ) : "Register"
+                        }
+                    </PrimaryButton>
                     {errors.general && <div className="bg-red-100 rounded-md text-red-600 p-3 my-4">{errors.general}</div>}
                 </form>
             </div>

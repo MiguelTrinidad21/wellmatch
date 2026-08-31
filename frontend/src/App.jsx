@@ -7,7 +7,6 @@ import ProtectedRoute from './components/others/ProtectedRoute';
 import ForbiddenAccessPage from './pages/errors/ForbiddenAccessPage';
 import NotFoundPage from './pages/errors/NotFoundPage';
 import CompanyProfile from './pages/employer/CompanyProfile';
-import InviteEmployer from './pages/admin/InviteEmployer';
 import EmployerRegister from './pages/employer/EmployerRegister';
 import CreateJobPost from './pages/employer/CreateJobPost';
 import JobDescription from './pages/employer/JobDescription';
@@ -41,7 +40,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import api from './apis/axios';
 
 function App() {
-  const { currentUser, handleCurrentUser, setAuthChecked } = userStore();
+  const { handleCurrentUser, setAuthChecked } = userStore();
 
   useEffect(() => {
     async function checkAuth() {
@@ -123,7 +122,8 @@ function App() {
           <Route path='/applicant/settings/emailUpdate' element={<VerifyUpdateEmail user="applicant" />} />
         </Route>
         
-        <Route path='/employer/register/invite' element={<EmployerRegister />} />        
+        <Route path='/employer/register/invite' element={<EmployerRegister />} />               
+        <Route path="/employer/register/invite/verify" element={<VerifySignUpEmail user="co-employer" />} />             
         <Route path='*' element={<NotFoundPage />}/>
         <Route path='/forbidden' element={<ForbiddenAccessPage />}/>
       </Routes>

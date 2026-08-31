@@ -555,3 +555,206 @@ export function logoutApplicant(req, res) {
         message: "Logged out successfully"
     });
 }
+
+export async function registerAdmin(req, res) {
+    const {
+        firstName,
+        lastName,
+        emailAddress,
+        password,
+        confirmPassword,
+        companyName,
+        companyLocation,
+    } = req.body;
+
+
+    if (!firstName || firstName.trim().length < 2 || firstName.trim().length > 50) {
+        return res.status(400).json({
+            message: "Enter valid first name",
+            issue: "invalidFName"
+        });
+    }
+
+    if (!lastName || lastName.trim().length < 2 || lastName.trim().length > 50) {
+        return res.status(400).json({
+            message: "Enter valid last name",
+            issue: "invalidLName"
+        });
+    }
+
+    const validPass = validPassword(password);
+
+    if (!password || !validPass.valid) {
+        return res.status(400).json({
+            message: validPass.message,
+            issue: validPass.issue
+        });        
+    }
+
+    if (!confirmPassword || (password !== confirmPassword)) {
+        return res.status(400).json({
+            message: "Password did not match",
+            issue: "confirmPassword"
+        });
+    }
+
+    if (
+        !companyName || 
+        companyName.trim().length < 2 || 
+        companyName.trim().length > 100
+    ) {
+        return res.status(400).json({
+            message: "Enter a valid company name",
+            issue: "invalidCompName"
+        });
+    }
+
+    const trueAddress = validAddress(companyLocation);
+
+    if (!companyLocation || !trueAddress.valid) {
+        return res.status(400).json({
+            message: trueAddress.reason,
+            issue: trueAddress.issue
+        });
+    }
+
+    const normalizedEmail = emailAddress.trim().toLowerCase();
+    const trimmedFirstName = firstName.trim();
+    const trimmedLastName = lastName.trim();
+    const trimmedCompanyName = companyName.trim();
+    const trimmedAddress = companyLocation.trim();
+
+
+    let connection;
+
+    try {
+        const [existingEmployer] = await database.query(
+            `SELECT employerID FROM employers WHERE email = ?`,
+            [normalizedEmail]
+        );
+
+        if (existingEmployer.length > 0) {
+            return res.status(409).json({
+                message: "Email address is already taken",
+                issue: "email"
+            });
+        }
+
+
+        const [existingCompany] = await database.query(
+            `SELECT companyID FROM companies WHERE companyName = ?`,
+            [trimmedCompanyName]
+        )
+
+        if (existingCompany.length > 0) {
+            return res.status(409).json({
+                message: "Company name is already registered",
+                issue: "company"
+            });
+        }
+
+
+        const [pendingRows] = await database.query(
+            `SELECT createdAt FROM pendingEmployerRegistrations WHERE email = ?`,
+            [normalizedEmail]
+        );
+
+        if (pendingRows.length > 0) {
+            const secondsSinceLastSend =
+                (Date.now() - new Date(pendingRows[0].createdAt).getTime()) / 1000;
+
+            if (secondsSinceLastSend < RESEND_COOLDOWN_SECONDS) {
+                return res.status(429).json({
+                    message: `Please wait before requesting another code`,
+                    issue: "cooldown"
+                });
+            }
+        }
+
+
+        const verificationCode = crypto.randomInt(100000, 999999).toString();
+        const hashedCode = crypto
+            .createHash("sha256")
+            .update(verificationCode)
+            .digest("hex");
+
+        const hashedPassword = await bcrypt.hash(password, 10);
+        const role = "Admin Employer";
+
+        connection = await database.getConnection();
+        await connection.beginTransaction();
+
+
+        await connection.query(
+            `
+            INSERT INTO pendingEmployerRegistrations (
+                role, 
+                email,
+                verificationCode,
+                hashedPassword,
+                firstName,
+                lastName,
+                companyName,
+                companyLocation,
+                attempts,
+                expiresAt,
+                createdAt
+            )
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, 0, DATE_ADD(NOW(), INTERVAL ? MINUTE), NOW())
+            ON DUPLICATE KEY UPDATE
+                role             = VALUES(role),
+                verificationCode = VALUES(verificationCode),
+                hashedPassword   = VALUES(hashedPassword),
+                firstName        = VALUES(firstName),
+                lastName         = VALUES(lastName),
+                companyName      = VALUES(companyName),
+                companyLocation  = VALUES(companyLocation),
+                attempts         = 0,
+                expiresAt        = VALUES(expiresAt),
+                createdAt        = NOW()
+            `,
+            [
+                role,
+                normalizedEmail,
+                hashedCode,
+                hashedPassword,
+                trimmedFirstName,
+                trimmedLastName,
+                trimmedCompanyName,
+                trimmedAddress,
+                CODE_EXPIRY_MINUTES
+            ]
+        );
+
+        await connection.commit();
+        
+        await sendVerificationEmail(normalizedEmail, verificationCode);
+
+        return res.status(201).json({
+            message: "Verification code sent to your email",
+            email: normalizedEmail
+        });
+
+
+    } catch (err) {
+        console.error(err);
+
+        if (connection) {
+            try {
+                await connection.rollback();
+            } catch (rollbackError) {
+                console.error("Failed to rollback transaction:", rollbackError);
+            }
+        }
+
+        return res.status(500).json({
+            message: "Unable to connect to the server. Please try again.",
+            error: err.message
+        });
+
+    } finally {
+        if (connection) {
+            connection.release();
+        }
+    }
+}

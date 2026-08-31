@@ -7,12 +7,15 @@ import PrimaryButton from "../../components/buttons/PrimaryButton";
 import api from "../../apis/axios";
 import { applicantVerifyCodeStore, employerVerifyCodeStore } from "../../zustand/codeVerification";
 import { useState, useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { BiLoaderAlt } from "react-icons/bi";
 
 const RESEND_COOLDOWN_SECONDS = 60;
 
 export default function VerifySignUpEmail({ user }) {
+    const [searchParams] = useSearchParams();
+    const token = searchParams.get("token");
+
     const navigate = useNavigate();
     const { applicantEmail } = applicantVerifyCodeStore();
     const { employerEmail } = employerVerifyCodeStore();
@@ -46,6 +49,22 @@ export default function VerifySignUpEmail({ user }) {
         return () => clearInterval(intervalRef.current);
     }, [cooldown === RESEND_COOLDOWN_SECONDS]);
 
+    useEffect(() => {
+        if (isApplicant) {
+            if (!applicantEmail) {
+                navigate("/applicant/register");
+            }
+        } else if (user === "employer") {
+            if (!employerEmail) {
+                navigate("/employer/register");
+            }
+        } else {
+            if (!employerEmail) {
+                navigate(`/employer/register/invite?token=${token}`)
+            }
+        }
+    }, []);
+
     function closePopUp() {
         setShowPopUp(false);
 
@@ -76,8 +95,12 @@ export default function VerifySignUpEmail({ user }) {
         try {
             if (isApplicant) {
                 await api.post("/applicant/emailSignUp/verify", { code, applicantEmail });
-            } else {
+
+            } else if (user === "employer") {
                 await api.post("/employer/emailSignUp/verify", { code, employerEmail });
+
+            } else {
+                await api.post(`/employer/emailSignUp/${token}/verify`, { code, employerEmail })
             }
 
             setShowPopUp(true);
@@ -155,7 +178,7 @@ export default function VerifySignUpEmail({ user }) {
                 <h1 className="text-2xl font-bold mb-2">Enter the confirmation code</h1>
                 <p className="text-gray-800 font-medium mb-5">
                     To confirm your account, enter the 6-digit code we sent to&nbsp;
-                    <span className="font-bold">{currentEmail}</span>
+                    <span className="font-bold wrap-break-word">{currentEmail}</span>
                 </p>
 
                 <form onSubmit={handleSubmit} className="w-full">
