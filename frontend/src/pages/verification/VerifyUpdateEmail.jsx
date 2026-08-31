@@ -49,6 +49,18 @@ export default function VerifyUpdateEmail({ user }) {
         return () => clearInterval(intervalRef.current);
     }, [cooldown === RESEND_COOLDOWN_SECONDS]);
 
+    useEffect(() => {
+        if (isApplicant) {
+            if (!applicantEmail) {
+                navigate("/applicant/settings");
+            }
+        } else {
+            if (!employerEmail) {
+                navigate("/employer/settings");
+            }
+        } 
+    }, []);
+
     function closePopUp() {
         setShowPopUp(false);
 

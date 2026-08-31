@@ -1,11 +1,14 @@
 import express from "express";
 
 import { 
-    registerAdmin, 
+    registerAdmin,
+    verifyEmployerCode,
+    verifyCoEmployerCode, 
     loginEmployer, 
     logoutEmployer,
     verifyInvitationToken,
-    registerCoEmployer
+    registerCoEmployer,
+    resendEmployerCode
 } from "../controllers/employer/authenticateEmployers.js";
 
 import { 
@@ -31,6 +34,8 @@ import {
 
 import { 
     updatePersonalDetails,
+    verifyEmailUpdateCode,
+    resendEmailUpdateCode,
     changePassword,
     deleteAccount
 } from "../controllers/employer/employerAccountSettings.js";
@@ -63,11 +68,15 @@ import { viewResume } from "../controllers/employer/resumeViewer.js";
 const router = express.Router();
 
 router.post("/register", registerAdmin);
+router.post("/emailSignUp/verify", verifyEmployerCode);
+router.post("/emailSignUp/resendCode", resendEmployerCode);
+router.post("/emailSignUp/:token/verify", verifyCoEmployerCode);
 router.post("/registerCoEmployer/:token", registerCoEmployer);
 router.post("/login", loginEmployer);
 router.post("/logout", logoutEmployer);
 router.post("/companyProfile/invite", verifyToken, isAdmin, sendEmployerInvitationEmail)
 router.post("/postJob", verifyToken, isEmployer, postJob)
+router.post("/changeEmail/resendCode", verifyToken, isEmployer, resendEmailUpdateCode)
 
 
 
@@ -90,7 +99,7 @@ router.get("/viewResume/:resumeID", verifyToken, isEmployer, viewResume)
 router.get("/viewJob/:jobID", verifyToken, isEmployer, viewJob)
 router.get("/getEmployerInfo", verifyToken, isAdmin, getEmployerInfo)
 
-router.patch("/editCompany", verifyToken, handleMulterUpload, updateCompanyImages);
+router.patch("/editCompany", verifyToken, isAdmin, handleMulterUpload, updateCompanyImages);
 router.patch("/job/close/:jobID", verifyToken, isEmployer, closeJob)
 router.patch("/job/reOpen/:jobID", verifyToken, isEmployer, reOpenJob)
 router.patch("/updatePersonalDetails", verifyToken, isEmployer, updatePersonalDetails)
@@ -99,6 +108,8 @@ router.patch("/updateApplicationStatus", verifyToken, isEmployer, updateStatus)
 router.patch("/rejectApplicant", verifyToken, isEmployer, rejectApplicant)
 router.patch("/applications/rejectAll", verifyToken, isEmployer, rejectAllApplicants)
 router.patch("/editPermission", verifyToken, isAdmin, changePermission)
+router.patch("/changeEmail/verify", verifyToken, isEmployer, verifyEmailUpdateCode)
+
 
 router.put("/updateJob/:jobID", verifyToken, isEmployer, updateJobInfo)
 

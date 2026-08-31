@@ -3,12 +3,12 @@ import { useEffect, useState } from "react";
 import { BiLoaderAlt } from "react-icons/bi";
 import { FiEye } from "react-icons/fi";
 import { FiEyeOff } from "react-icons/fi";
+import { Link } from "react-router-dom";
+import { employerVerifyCodeStore } from "../../zustand/codeVerification";
 
 import Footer from "../../components/others/Footer";
 import PublicNavBar from "../../components/navBars/PublicNavBar";
 import Overlay from "../../components/overlay/OverlayMobile";
-import Translucent from "../../components/overlay/Translucent";
-import ConfirmationBox from "../../components/popUps/ConfirmationBox";
 import PrimaryButton from "../../components/buttons/PrimaryButton";
 
 import api from "../../apis/axios";
@@ -16,6 +16,7 @@ import api from "../../apis/axios";
 export default function EmployerRegister() {
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
+    const { setEmployerEmail } = employerVerifyCodeStore();
 
     const [isChecked, setIsChecked] = useState(false);
 
@@ -84,12 +85,18 @@ export default function EmployerRegister() {
             return
         }
 
+        setIsLoading(true);
+
         try {
-            await api.post(`/employer/registerCoEmployer/${token}`, employerInfo
-            )
-            setShowPopUp(true);
+            await api.post(`/employer/registerCoEmployer/${token}`, employerInfo);
+
+            setEmployerEmail(employerInfo.emailAddress);
+
+            navigate(`/employer/register/invite/verify?token=${token}`);
 
         } catch (error) {
+            console.log(error);
+
             const issue = error.response?.data?.issue;
             const message = error.response?.data?.message || "An error occurred";
 
@@ -98,13 +105,12 @@ export default function EmployerRegister() {
             } else {
                 setErrors({ general: "Unable to connect to the server. Please try again." });
             }
+
+        } finally {
+            setIsLoading(false);
         }
     }
 
-    function closePopUp() {
-        setShowPopUp(false);
-        navigate("/employer/login");
-    }
 
     function handlePass(e) {
         setShowPassword(!showPassword);
@@ -119,14 +125,6 @@ export default function EmployerRegister() {
         setIsChecked(checked);
     };
 
-    if (isLoading) {
-            return (
-                <div className="w-full h-screen flex justify-center items-center flex-col">
-                    <BiLoaderAlt size={30} className="animate-spin" />
-                    <p className="text-center">Please wait...</p>
-                </div>
-            )
-        }
 
     if (!isTokenVerified) {
         return (
@@ -143,12 +141,12 @@ export default function EmployerRegister() {
                 <PublicNavBar />
                 <Overlay />
 
-                {showPopUp && (
+                {/* {showPopUp && (
                     <>
                         <Translucent />
                         <ConfirmationBox onClick={closePopUp} text="Account registered successfully" />
                     </>
-                )}
+                )} */}
 
                 <div className="w-full p-6">
                     <h1 className="mb-6 text-center text-xl xl:text-2xl xl:mt-6 xl:mb-11 font-bold">You are invited to join {invitation.companyName}</h1>
@@ -206,6 +204,8 @@ export default function EmployerRegister() {
                                     value={employerInfo.password}
                                     onChange={(e) => setEmployerInfo({...employerInfo, password: e.target.value})}
                                     required
+                                    minLength={12}
+                                    maxLength={60}
                                     placeholder="Enter your password" 
                                     className={`p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-green-600 ${errors.invalidPass ? 'border-red-600 focus:border-red-600 mb-1!' : 'border-gray-300'}`} 
                                 />
@@ -217,7 +217,7 @@ export default function EmployerRegister() {
                         </div>
 
                         <div className="w-full relative">
-                            <label className="block" htmlFor="confirmPass">Confirm Password</label>
+                            <label className="block font-semibold" htmlFor="confirmPass">Confirm Password</label>
                             <div className="w-full relative">
                                 <input 
                                     type={showConfirmPassword ? "text" : "password"} 
@@ -225,7 +225,7 @@ export default function EmployerRegister() {
                                     onChange={(e) => setEmployerInfo({...employerInfo, confirmPass: e.target.value})}
                                     required
                                     placeholder="Re-type your password" 
-                                    className={`p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-green-600 ${errors.confirmPass ? 'border-red-600 focus:border-red-600 mb-1!' : 'border-gray-300'}`} 
+                                    className={`p-2 rounded-md block w-full border-2 border-gray-300 mb-5 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-green-600 ${errors.confirmPass ? 'border-red-600 focus:border-red-600 mb-1!' : 'border-gray-300'}`} 
                                 />
                                 <div onClick={handleConfirmPass} className="cursor-pointer absolute top-1/2 -translate-y-1/2 right-2">
                                     {showConfirmPassword ? <FiEyeOff /> : <FiEye />}
@@ -255,7 +255,16 @@ export default function EmployerRegister() {
                             <label htmlFor="allow" className={`text-[12px] text-gray-700 font-medium lg:text-sm cursor-pointer ${isChecked ? " duration-100 ease-out" : undefined}`}>I have read and agree to the Terms and Conditions and Privacy Policy.</label>
                         </div>                         
 
-                        <PrimaryButton disabled={!isChecked} type="submit" className={`w-full ${!isChecked ? "opacity-60 cursor-not-allowed" : undefined}`}>Register</PrimaryButton>
+                        <PrimaryButton disabled={isLoading || !isChecked} type="submit" className={`w-full ${!isChecked || isLoading ? "opacity-60 cursor-not-allowed!" : undefined}`}>
+                            {
+                                isLoading ? (
+                                    <span className="flex justify-center items-center gap-2">
+                                        Register
+                                        <BiLoaderAlt size={20} className="animate-spin" />
+                                    </span>
+                                ) : "Register"
+                            }
+                        </PrimaryButton>
                     </form>
 
                 </div>

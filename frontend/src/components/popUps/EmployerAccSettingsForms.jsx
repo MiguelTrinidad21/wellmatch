@@ -1,17 +1,21 @@
 import PrimaryButton from "../../components/buttons/PrimaryButton";
 import Translucent from "../overlay/Translucent";
-import { useState, useEffect } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useState } from "react";
 import { userStore } from "../../zustand/userState";
 import { IoClose } from "react-icons/io5";
 import { FiEye } from "react-icons/fi";
 import { FiEyeOff } from "react-icons/fi";
 import { BiLoaderAlt } from "react-icons/bi";
+import { useNavigate } from "react-router-dom";
+import { employerVerifyCodeStore } from "../../zustand/codeVerification.js";
 import api from "../../apis/axios.js";
 
 
 export function EditInfoForm({ toggleForm, confirmFunc }) {
+    const navigate = useNavigate();
+
     const { currentUser, handleCurrentUser } = userStore();
+    const { setEmployerEmail } = employerVerifyCodeStore();
     const [isLoading, setIsLoading] = useState(false);
     const [errors, setErrors] = useState({});
     const [showPassword, setShowPassword] = useState(false);
@@ -32,10 +36,17 @@ export function EditInfoForm({ toggleForm, confirmFunc }) {
 
         try {
             const updated = await api.patch("/employer/updatePersonalDetails", credentials);
+            console.log(updated.data.user)
+            if (credentials.prevEmail === credentials.email) {
+    
+                handleCurrentUser(updated.data.user);
+                toggleForm();
+                confirmFunc();
 
-            handleCurrentUser(updated.data.user);
-            toggleForm();
-            confirmFunc();
+            } else {
+                setEmployerEmail(credentials.email)
+                navigate("/employer/settings/emailUpdate");
+            }
 
 
         } catch (error) {
@@ -100,9 +111,10 @@ export function EditInfoForm({ toggleForm, confirmFunc }) {
                         onChange={(e) => setCredentials({...credentials, email: e.target.value})}
                         required
                         placeholder="Enter new email address"
-                        className={`p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-green-600 ${errors.sameEmail ? "focus:border-red-600 border-red-600 mb-1!" : "border-gray-300"}`}
+                        className={`p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-green-600 ${errors.sameEmail || errors.noEmail ? "focus:border-red-600 border-red-600 mb-1!" : "border-gray-300"}`}
                     />
                     {errors.sameEmail && <p className="text-sm text-red-600 mb-5">{errors.sameEmail}</p>}
+                    {errors.noEmail && <p className="text-sm text-red-600 mb-5">{errors.noEmail}</p>}
 
                     <label className="block font-semibold mb-1" htmlFor="password">Password&nbsp;<span className="text-gray-500">(for verification)</span></label>
                     <div className={`w-full relative`}>
@@ -120,21 +132,21 @@ export function EditInfoForm({ toggleForm, confirmFunc }) {
                                 <FiEyeOff 
                                     size={15}
                                     onClick={() => setShowPassword(false)}
-                                    className="absolute top-1/2 -translate-y-1/2 right-3" 
+                                    className="absolute cursor-pointer top-1/2 -translate-y-1/2 right-3" 
                                 />
                             :
                                 <FiEye 
                                     size={15}
                                     onClick={() => setShowPassword(true)}
-                                    className="absolute top-1/2 -translate-y-1/2 right-3" 
+                                    className="absolute cursor-pointer top-1/2 -translate-y-1/2 right-3" 
                                 />                                
                         }
                     </div>
                     {errors.password && <p className="text-sm text-red-600 mb-5">{errors.password}</p>}
 
                     <div className="flex justify-end gap-3">
-                        <PrimaryButton disabled={isLoading} className={`bg-[#F3F4F6] text-black! ${isLoading ? "opacity-50" : undefined}`} onClick={toggleForm}>Cancel</PrimaryButton>
-                        <PrimaryButton disabled={isLoading} type="submit" className={isLoading ? "opacity-50" : undefined}>
+                        <PrimaryButton disabled={isLoading} className={`bg-[#F3F4F6] text-black! ${isLoading ? "opacity-50 cursor-not-allowed!" : undefined}`} onClick={toggleForm}>Cancel</PrimaryButton>
+                        <PrimaryButton disabled={isLoading} type="submit" className={isLoading ? "opacity-50 cursor-progress!" : undefined}>
                             {
                                 isLoading ?
                                     <span className="flex items-center gap-2">
@@ -154,7 +166,6 @@ export function EditInfoForm({ toggleForm, confirmFunc }) {
 
 
 export function ChangePasswordForm({ toggleForm, confirmFunc }) {
-    const { currentUser, handleCurrentUser } = userStore();
     const [isLoading, setIsLoading] = useState(false);
     const [errors, setErrors] = useState({});
     const [showCurrPassword, setShowCurrPassword] = useState(false);
@@ -174,7 +185,7 @@ export function ChangePasswordForm({ toggleForm, confirmFunc }) {
         setIsLoading(true);
         setErrors({})
 
-        const { currentPassword, newPassword, retypePassword } = credentials;
+        const { newPassword, retypePassword } = credentials;
 
         if (!passwordRegex.test(newPassword)) {
             setErrors({
@@ -191,7 +202,7 @@ export function ChangePasswordForm({ toggleForm, confirmFunc }) {
         }
 
         try {
-            const updated = await api.patch("/employer/changePassword", credentials);
+            await api.patch("/employer/changePassword", credentials);
 
             toggleForm();
             confirmFunc();
@@ -229,6 +240,8 @@ export function ChangePasswordForm({ toggleForm, confirmFunc }) {
                             value={credentials.currentPassword}
                             onChange={(e) => setCredentials({...credentials, currentPassword: e.target.value})}
                             required
+                            minLength={12}
+                            maxLength={100}
                             placeholder="Enter current password"
                             className={`p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-green-600 ${errors.incorrectPass ? "focus:border-red-600 border-red-600 mb-1!" : "border-gray-300"}`}
                         />
@@ -237,13 +250,13 @@ export function ChangePasswordForm({ toggleForm, confirmFunc }) {
                                 <FiEyeOff 
                                     size={15}
                                     onClick={() => setShowCurrPassword(false)}
-                                    className="absolute top-1/2 -translate-y-1/2 right-3" 
+                                    className="absolute cursor-pointer top-1/2 -translate-y-1/2 right-3" 
                                 />
                             :
                                 <FiEye 
                                     size={15}
                                     onClick={() => setShowCurrPassword(true)}
-                                    className="absolute top-1/2 -translate-y-1/2 right-3" 
+                                    className="absolute cursor-pointer top-1/2 -translate-y-1/2 right-3" 
                                 />                                
                         }
                     </div>
@@ -258,6 +271,8 @@ export function ChangePasswordForm({ toggleForm, confirmFunc }) {
                             value={credentials.newPassword}
                             onChange={(e) => setCredentials({...credentials, newPassword: e.target.value})}
                             required
+                            minLength={12}
+                            maxLength={100}
                             placeholder="Enter new password"
                             className={`p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-green-600 ${errors.invalidPass ? "focus:border-red-600 border-red-600 mb-1!" : "border-gray-300"}`}
                         />
@@ -266,13 +281,13 @@ export function ChangePasswordForm({ toggleForm, confirmFunc }) {
                                 <FiEyeOff 
                                     size={15}
                                     onClick={() => setShowNewPassword(false)}
-                                    className="absolute top-1/2 -translate-y-1/2 right-3" 
+                                    className="absolute cursor-pointer top-1/2 -translate-y-1/2 right-3" 
                                 />
                             :
                                 <FiEye 
                                     size={15}
                                     onClick={() => setShowNewPassword(true)}
-                                    className="absolute top-1/2 -translate-y-1/2 right-3" 
+                                    className="absolute cursor-pointer top-1/2 -translate-y-1/2 right-3" 
                                 />                                
                         }
                     </div>
@@ -286,6 +301,8 @@ export function ChangePasswordForm({ toggleForm, confirmFunc }) {
                             value={credentials.retypePassword}
                             onChange={(e) => setCredentials({...credentials, retypePassword: e.target.value})}
                             required
+                            minLength={12}
+                            maxLength={100}
                             placeholder="Confirm new password"
                             className={`p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-green-600 ${errors.notMatch ? "focus:border-red-600 border-red-600 mb-1!" : "border-gray-300"}`}
                         />
@@ -294,13 +311,13 @@ export function ChangePasswordForm({ toggleForm, confirmFunc }) {
                                 <FiEyeOff 
                                     size={15}
                                     onClick={() => setShowRetypePassword(false)}
-                                    className="absolute top-1/2 -translate-y-1/2 right-3" 
+                                    className="absolute cursor-pointer top-1/2 -translate-y-1/2 right-3" 
                                 />
                             :
                                 <FiEye 
                                     size={15}
                                     onClick={() => setShowRetypePassword(true)}
-                                    className="absolute top-1/2 -translate-y-1/2 right-3" 
+                                    className="absolute cursor-pointer top-1/2 -translate-y-1/2 right-3" 
                                 />                                
                         }
                     </div>
@@ -330,7 +347,8 @@ export function ChangePasswordForm({ toggleForm, confirmFunc }) {
 
 
 export function DeleteAccountForm({ toggleForm, confirmFunc }) {
-    const { currentUser, handleCurrentUser } = userStore();
+    const { logoutUser } = userStore();
+
     const [isLoading, setIsLoading] = useState(false);
     const [errors, setErrors] = useState({});
     const [showPassword, setShowPassword] = useState(false);
@@ -348,14 +366,14 @@ export function DeleteAccountForm({ toggleForm, confirmFunc }) {
 
 
         try {
-            const updated = await api.delete("/employer/deleteAccount", {
-                params: {
+            await api.delete("/employer/deleteAccount", {
+                data: {
                     email: credentials.email,
                     password: credentials.password
                 }
-            }                
-            );
+            });
 
+            logoutUser();
             toggleForm();
             confirmFunc();
 
@@ -395,6 +413,8 @@ export function DeleteAccountForm({ toggleForm, confirmFunc }) {
                             value={credentials.email}
                             onChange={(e) => setCredentials({...credentials, email: e.target.value})}
                             required
+                            minLength={5}
+                            maxLength={100}
                             placeholder="Enter email address"
                             className={`p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-green-600 ${errors.email ? "border-red-600 focus:border-red-600 mb-1!" : "border-gray-300"}`}
                         />
@@ -410,6 +430,8 @@ export function DeleteAccountForm({ toggleForm, confirmFunc }) {
                             value={credentials.password}
                             onChange={(e) => setCredentials({...credentials, password: e.target.value})}
                             required
+                            minLength={12}
+                            maxLength={100}
                             placeholder="Enter password"
                             className={`p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-green-600 ${errors.password ? "focus:border-red-600 border-red-600 mb-1!" : "border-gray-300"}`}
                         />
@@ -418,13 +440,13 @@ export function DeleteAccountForm({ toggleForm, confirmFunc }) {
                                 <FiEyeOff 
                                     size={15}
                                     onClick={() => setShowPassword(false)}
-                                    className="absolute top-1/2 -translate-y-1/2 right-3" 
+                                    className="absolute cursor-pointer top-1/2 -translate-y-1/2 right-3" 
                                 />
                             :
                                 <FiEye 
                                     size={15}
                                     onClick={() => setShowPassword(true)}
-                                    className="absolute top-1/2 -translate-y-1/2 right-3" 
+                                    className="absolute cursor-pointer top-1/2 -translate-y-1/2 right-3" 
                                 />                                
                         }
                     </div>
@@ -434,8 +456,8 @@ export function DeleteAccountForm({ toggleForm, confirmFunc }) {
 
 
                     <div className="flex justify-end gap-3">
-                        <PrimaryButton disabled={isLoading} className={`bg-[#F3F4F6] text-black! ${isLoading ? "opacity-50" : undefined}`} onClick={toggleForm}>Cancel</PrimaryButton>
-                        <PrimaryButton disabled={isLoading} type="submit" className={`bg-red-600 ${isLoading ? "opacity-50" : undefined}`}>
+                        <PrimaryButton disabled={isLoading} className={`bg-[#F3F4F6] text-black! ${isLoading ? "opacity-50 cursor-not-allowed!" : undefined}`} onClick={toggleForm}>Cancel</PrimaryButton>
+                        <PrimaryButton disabled={isLoading} type="submit" className={`bg-red-600 ${isLoading ? "opacity-50 cursor-progress!" : undefined}`}>
                             {
                                 isLoading ?
                                     <span className="flex items-center gap-2">
