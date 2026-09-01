@@ -298,9 +298,9 @@ export default function ApplicantRegister() {
                         <h1 className="font-bold mb-1 lg:mb-3 text-gray-800">TERMS AND CONDITIONS</h1>
                         <p className="font-medium text-gray-700">
                             <span>By creating a WellMatch account, you agree to our&nbsp;</span>
-                            <Link to="/applicant/terms" className="text-blue-600 underline">Terms and Conditions</Link>
+                            <Link to="/applicant/terms" target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">Terms and Conditions</Link>
                             <span>&nbsp;and acknowledge our&nbsp;</span>
-                            <Link to="/applicant/policies" className="text-blue-600 underline">Privacy Policy</Link>.
+                            <Link to="/applicant/policies" target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">Privacy Policy</Link>.
                         </p>
                     </div>
 
