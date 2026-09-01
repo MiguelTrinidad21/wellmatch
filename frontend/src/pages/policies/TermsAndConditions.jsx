@@ -205,7 +205,7 @@ export default function TermsAndConditions() {
                         {(isDropDown && policyID === 7) &&
                             <div>
                                 <p className="mb-4">
-                                    WellMatch's match score shows how closely the skills identified in an applicant's resume correspond to the skills stated in a job description.
+                                    WellMatch's match score represents the percentage of skills identified by the AI in the applicant's resume that were matched with the skills stated in the job description.
                                 </p>
 
                                 <p className="mb-4">The score does not measure an applicant's actual ability, performance, personality, or overall suitability for a job.</p>
