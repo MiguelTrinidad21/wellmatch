@@ -33,6 +33,8 @@ import ApplicantAccountSettings from './pages/applicant/AccountSettings';
 
 import VerifySignUpEmail from './pages/verification/VerifySignUpEmail';
 import VerifyUpdateEmail from './pages/verification/VerifyUpdateEmail';
+import PrivacyPolicy from './pages/policies/PrivacyPolicy';
+import TermsAndConditions from './pages/policies/TermsAndConditions';
 
 import { useEffect } from 'react';
 import { userStore } from './zustand/userState';
@@ -68,10 +70,14 @@ function App() {
           <Route path='/applicant/login' element={<ApplicantSignIn />}/>
           <Route path='/applicant/register' element={<ApplicantRegister />} />
           <Route path='/applicant/register/verify' element={<VerifySignUpEmail user="applicant" />} />
+          <Route path='/applicant/terms' element={<TermsAndConditions />} />
+          <Route path='/applicant/policies' element={<PrivacyPolicy />} />
       
           <Route path='/employer/login' element={<EmployerSignIn />}/>
           <Route path='/employer/register' element={<AdminRegister />} />
           <Route path='/employer/register/verify' element={<VerifySignUpEmail user="employer" />} />
+          <Route path='/employer/terms' element={<TermsAndConditions />} />
+          <Route path='/employer/policies' element={<PrivacyPolicy />} />
           
         </Route>
         

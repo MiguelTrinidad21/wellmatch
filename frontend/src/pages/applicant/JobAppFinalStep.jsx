@@ -5,8 +5,6 @@ import SecondaryButton from "../../components/buttons/SecondaryButton";
 import ConfirmationBox from "../../components/popUps/ConfirmationBox";
 import Translucent from "../../components/overlay/Translucent";
 import ErrorBox from "../../components/popUps/ErrorBox";
-import defaultCover from "../../assets/defaultCover.jpg"
-import { IoChevronDown } from "react-icons/io5";
 import { useState, useEffect } from "react";
 import { useNavigate, Link, useParams } from "react-router-dom";
 import { sideBarStore } from "../../zustand/stateHandlers";

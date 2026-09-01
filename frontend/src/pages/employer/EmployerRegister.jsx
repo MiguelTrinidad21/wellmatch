@@ -238,9 +238,9 @@ export default function EmployerRegister() {
                             <h1 className="font-bold mb-1 lg:mb-3 text-gray-800">TERMS AND CONDITIONS</h1>
                             <p className="font-medium text-gray-700">
                                 <span>By creating a WellMatch account, you agree to our&nbsp;</span>
-                                <Link to="" className="text-blue-600 underline">Terms and Conditions</Link>
+                                <Link to="/employer/terms" className="text-blue-600 underline">Terms and Conditions</Link>
                                 <span>&nbsp;and acknowledge our&nbsp;</span>
-                                <Link to="" className="text-blue-600 underline">Privacy Policy</Link>.
+                                <Link to="/employer/policies" className="text-blue-600 underline">Privacy Policy</Link>.
                             </p>
                         </div>
 
