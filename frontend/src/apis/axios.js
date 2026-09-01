@@ -6,6 +6,14 @@ const api = axios.create({
   withCredentials: true,
 });
 
+const publicPathPatterns = [
+  '/login',
+  '/register',
+  '/verify',
+  '/terms',
+  '/policies',
+];
+
 api.interceptors.response.use(
   (response) => response,
   (error) => {
@@ -14,10 +22,7 @@ api.interceptors.response.use(
       userStore.getState().setAuthChecked(true);
 
       const currentPath = window.location.pathname;
-      const isPublicPath =
-        currentPath.includes('/login') ||
-        currentPath.includes('/register') ||
-        currentPath.includes('/verify');
+      const isPublicPath = publicPathPatterns.some((p) => currentPath.includes(p));
 
       if (!isPublicPath) {
         const isEmployerPath = currentPath.startsWith('/employer');
