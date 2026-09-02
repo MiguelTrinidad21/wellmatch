@@ -14,7 +14,6 @@ import { TbBriefcase2 } from "react-icons/tb";
 import { TbBriefcaseOff } from "react-icons/tb";
 import { GrLocation } from "react-icons/gr";
 import { MdGroups } from "react-icons/md";
-import { IoPersonOutline } from "react-icons/io5";
 import { IoEllipsisVertical } from "react-icons/io5";
 import { FiCalendar } from "react-icons/fi";
 import { AiOutlineEye } from "react-icons/ai";
@@ -61,32 +60,40 @@ export default function Jobs() {
     const [totalJobs, setTotalJobs] = useState(0);
 
     const jobsPerPage = 6;
+
+    const getJobs = useCallback(async (page = 1) => {
+        try {
+            const allJobs = await api.get("/employer/getJobs", {
+                params: { 
+                    jobStatus,
+                    page,
+                    limit: jobsPerPage
+                }
+            })
+            setListOfJobs(allJobs.data.fetchedJobs);
+            setTotalJobs(allJobs.data?.pagination?.totalJobs || 0);
+            setTotalPages(allJobs.data?.pagination?.totalPages || 0);
+            setCurrentPage(allJobs.data?.pagination?.currentPage || 1);            
+            setApplicantList(allJobs.data.totalApplicants);            
+        } catch (error) {
+           console.log(error); 
+        }
+    }, [jobStatus, jobHasChanged]);
+
+    useEffect(() => {
+        getJobs(1);
+    }, [getJobs]);
  
 
     useEffect(() => {
         setEmployerActiveLink("Jobs")
     }, []);
 
-    useEffect(() => {
-        async function getJobs() {
-
-            try {
-                const allJobs = await api.get("/employer/getJobs", {
-                    params: { 
-                        jobStatus
-                     }
-                })
-
-                setListOfJobs(allJobs.data.fetchedJobs);
-                setApplicantList(allJobs.data.totalApplicants);
-                
-            } catch (error) {
-                console.log(error);
-            }
-        }
-
-        getJobs();
-    }, [jobStatus, jobHasChanged])
+    function handlePageClick(event) {
+        const selectedPage = event.selected + 1;
+        getJobs(selectedPage);
+        window.scrollTo({ top: 0, behavior: "smooth" });
+    }
 
     function formatDate(dateString) {
         return new Date(dateString).toLocaleString("en-PH", {
@@ -280,11 +287,11 @@ export default function Jobs() {
 
                     <div className="md:flex justify-between items-center mb-6">
                         <div>
-                            <h2 className="font-bold text-xl mb-1 md:mb-0" >{jobStatus === "open" ? `Open ${listOfJobs.length > 1 ? "Positions" : "Position"} (${listOfJobs.length})` : `Closed ${listOfJobs.length > 1 ? "Jobs" : "Job"} (${listOfJobs.length})`}</h2>
+                            <h2 className="font-bold text-xl mb-1 md:mb-0" >{jobStatus === "open" ? `Open ${totalJobs > 1 ? "Positions" : "Position"} (${totalJobs})` : `Closed ${totalJobs > 1 ? "Jobs" : "Job"} (${totalJobs})`}</h2>
                             {
                                 jobStatus === "open"
-                                    ? <p className="text-sm xl:text-[1rem] text-gray-500 font-medium mb-0">{`${listOfJobs.length} ${listOfJobs.length > 1 ? "positions" : "position"} currently accepting applications`}</p>
-                                    : <p className="text-sm xl:text-[1rem] text-gray-500 font-medium mb-0">{`${listOfJobs.length} ${listOfJobs.length > 1 ? "positions" : "position"} no longer accepting applications`}</p>                                 
+                                    ? <p className="text-sm xl:text-[1rem] text-gray-500 font-medium mb-0">{`${totalJobs} ${totalJobs > 1 ? "positions" : "position"} currently accepting applications`}</p>
+                                    : <p className="text-sm xl:text-[1rem] text-gray-500 font-medium mb-0">{`${totalJobs} ${totalJobs > 1 ? "positions" : "position"} no longer accepting applications`}</p>                                 
                             }
                             
                         </div>
@@ -300,180 +307,275 @@ export default function Jobs() {
                         </PrimaryButton>                        
                     </div>
                 
-                    {listOfJobs.length === 0 ?
+                    {totalJobs === 0 ?
                         <p className="text-center text-gray-600 font-medium mt-20">There are no current job posts for this section</p>
                     :
-                        <div className="w-full grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 items-stretch">
-                            {
-                                listOfJobs.map((eachJob) => {
-                                    let totalApplicants = 0;
+                        <>
+                            <div className="w-full grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 items-stretch">
+                                {
+                                    listOfJobs.map((eachJob) => {
+                                        let totalApplicants = 0;
 
-                                    if (applicantList.length !== 0) {
-                                        for (const eachApplicant of applicantList) {
-                                            if (eachApplicant.jobID === eachJob.jobID) {
-                                                totalApplicants++;
+                                        if (applicantList.length !== 0) {
+                                            for (const eachApplicant of applicantList) {
+                                                if (eachApplicant.jobID === eachJob.jobID) {
+                                                    totalApplicants++;
+                                                }
                                             }
                                         }
-                                    }
 
-                                    if (jobStatus === "open") {
-                                        return (
-                                            <div key={eachJob.jobID} className="relative w-full h-full flex flex-col rounded-2xl shadow-lg bg-white p-6">
+                                        if (jobStatus === "open") {
+                                            return (
+                                                <div key={eachJob.jobID} className="relative w-full h-full flex flex-col rounded-2xl shadow-lg bg-white p-6">
 
-                                                <div className="flex justify-between items-center mb-4">
-                                                    <div className="rounded-lg bg-[#E7F6EF] flex gap-2 items-center px-2 py-1 w-fit">
-                                                        <div className="w-2 h-2 bg-green-700 rounded-full"></div>
-                                                        <p className="text-sm font-bold text-green-700">OPEN</p>    
-                                                    </div>
-
-                                                    <div data-job-menu className="relative">
-                                                        <IoEllipsisVertical 
-                                                            onClick={() => {
-                                                                setMenuID(eachJob.jobID)
-                                                                setShowMenu(!showMenu)
-                                                            }} 
-                                                            size={20}
-                                                            className="cursor-pointer"
-                                                        /> 
-                                                                                                        
-                                                        <div className={`w-25 bg-slate-100  p-1 absolute top-full right-0 rounded-md shadow-lg transition-opacity duration-150 ease-out ${(showMenu && menuID === eachJob.jobID) ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}>
-                                                            <PrimaryButton 
-                                                                onClick={() => displayJobInfo(
-                                                                    eachJob.jobID,
-                                                                    eachJob.coverPhotoURL,
-                                                                    eachJob.profilePhotoURL,
-                                                                    eachJob.jobTitle,
-                                                                    eachJob.companyName,
-                                                                    eachJob.location,
-                                                                    eachJob.workType,
-                                                                    eachJob.workPlaceOption,
-                                                                    eachJob.minSalary,
-                                                                    eachJob.maxSalary,
-                                                                    eachJob.jobOverview,
-                                                                    eachJob.jobDuties,
-                                                                    eachJob.requiredQualifications,
-                                                                    eachJob.preferredQualifications,
-                                                                    eachJob.workingConditions,
-                                                                    eachJob.jobBenefits
-                                                                )} 
-                                                                className="bg-slate-100 text-gray-600! font-semibold flex items-center gap-2"
-                                                            >
-                                                                <AiOutlineEye />
-                                                                View
-                                                            </PrimaryButton>
-
-                                                            <PrimaryButton to={`/employer/jobs/${eachJob.jobID}/edit`} className="bg-slate-100 text-green-600! font-semibold flex items-center gap-2">
-                                                                <MdEdit />
-                                                                Edit
-                                                            </PrimaryButton>
-
-                                                            <PrimaryButton onClick={() => toggleWarning(eachJob.jobID)} className="bg-slate-100 text-red-600! px-0 font-semibold flex items-center gap-1">
-                                                                <IoClose size={20} />
-                                                                Close
-                                                            </PrimaryButton>
+                                                    <div className="flex justify-between items-center mb-4">
+                                                        <div className="rounded-lg bg-[#E7F6EF] flex gap-2 items-center px-2 py-1 w-fit">
+                                                            <div className="w-2 h-2 bg-green-700 rounded-full"></div>
+                                                            <p className="text-sm font-bold text-green-700">OPEN</p>    
                                                         </div>
-                                                        
-                                                    </div>
-                                                </div>
-                                                
-                                                <h1 className="w-[85%] font-bold text-[1.1rem] text-[#111827] mb-2 ">{eachJob.jobTitle}</h1>
-                                                <p className="flex items-center text-[#374151] gap-3 mb-1 justify-items-start text-sm"><GrLocation className="text-gray-500 w-5 shrink-0" /> {eachJob.location}</p>
-                                                <hr className="border-none h-0.5 bg-gray-200 mt-3 mb-4"/>
 
-                                                <div className="flex items-center text-green-700 bg-[#E7F6EF] rounded-lg text-sm py-1 px-3 w-fit font-bold gap-3 mb-4"><MdGroups size={20} className="text-green-700 w-5 shrink-0" /> {`${totalApplicants} ${totalApplicants > 1 ? "Applicants" : "Applicant"}`}</div>
+                                                        <div data-job-menu className="relative">
+                                                            <IoEllipsisVertical 
+                                                                onClick={() => {
+                                                                    setMenuID(eachJob.jobID)
+                                                                    setShowMenu(!showMenu)
+                                                                }} 
+                                                                size={20}
+                                                                className="cursor-pointer"
+                                                            /> 
+                                                                                                            
+                                                            <div className={`w-25 bg-slate-100  p-1 absolute top-full right-0 rounded-md shadow-lg transition-opacity duration-150 ease-out ${(showMenu && menuID === eachJob.jobID) ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}>
+                                                                <PrimaryButton 
+                                                                    onClick={() => displayJobInfo(
+                                                                        eachJob.jobID,
+                                                                        eachJob.coverPhotoURL,
+                                                                        eachJob.profilePhotoURL,
+                                                                        eachJob.jobTitle,
+                                                                        eachJob.companyName,
+                                                                        eachJob.location,
+                                                                        eachJob.workType,
+                                                                        eachJob.workPlaceOption,
+                                                                        eachJob.minSalary,
+                                                                        eachJob.maxSalary,
+                                                                        eachJob.jobOverview,
+                                                                        eachJob.jobDuties,
+                                                                        eachJob.requiredQualifications,
+                                                                        eachJob.preferredQualifications,
+                                                                        eachJob.workingConditions,
+                                                                        eachJob.jobBenefits
+                                                                    )} 
+                                                                    className="bg-slate-100 text-gray-600! font-semibold flex items-center gap-2"
+                                                                >
+                                                                    <AiOutlineEye />
+                                                                    View
+                                                                </PrimaryButton>
 
-                                                <div className="flex gap-3 items-center mb-2">
-                                                    <FiCalendar className="text-gray-500" />
-                                                    <p className="text-sm text-gray-700 font-medium">{eachJob.updatedAt > eachJob.createdAt ? "Last Updated" : "Job Posted"}</p>
-                                                </div>
-                                                <div className="pl-6.5">
-                                                    <p className="text-gray-500 mb-1 font-medium text-sm">{eachJob.updatedAt > eachJob.createdAt ? `${formatDate(eachJob.updatedAt)}` : `${formatDate(eachJob.createdAt)}`}</p>
-                                                    <p className="text-gray-500 font-medium text-sm">{eachJob.updatedAt > eachJob.createdAt ? `by ${eachJob.updatedByFirstName} ${eachJob.updatedByLastName}` : `by ${eachJob.createdByFirstName} ${eachJob.createdByLastName}`}</p>
-                                                </div>
-                                                
-                                                <div className="w-full mt-auto pt-10">
-                                                    <SecondaryButton className="font-bold! rounded-lg" to={`/employer/jobs/${eachJob.jobID}/applicants`}>View Applicants</SecondaryButton>
-                                                </div>
-                                            </div>
-                                        )
-                                    } else {
-                                        return (
-                                            <div key={eachJob.jobID} className="relative w-full h-full flex flex-col rounded-2xl shadow-md bg-white p-6">
-                                                <div className="flex justify-between items-center mb-4">
-                                                    <div className="rounded-lg bg-red-50 flex gap-2 items-center px-2 py-1 w-fit">
-                                                        <div className="w-2 h-2 bg-red-700 rounded-full"></div>
-                                                        <p className="text-sm font-bold text-red-700">Closed</p>    
-                                                    </div>
+                                                                <PrimaryButton to={`/employer/jobs/${eachJob.jobID}/edit`} className="bg-slate-100 text-green-600! font-semibold flex items-center gap-2">
+                                                                    <MdEdit />
+                                                                    Edit
+                                                                </PrimaryButton>
 
-                                                    <div data-job-menu className="relative">
-                                                        <IoEllipsisVertical 
-                                                            onClick={() => {
-                                                                setMenuID(eachJob.jobID)
-                                                                setShowMenu(!showMenu)
-                                                            }} 
-                                                            size={20}
-                                                            className="cursor-pointer"
-                                                        /> 
-                                                                                                        
-                                                        <div className={`w-35 bg-slate-100  p-1 absolute top-full right-0 rounded-md shadow-lg transition-opacity duration-150 ease-out ${(showMenu && menuID === eachJob.jobID) ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}>
-                                                            <PrimaryButton 
-                                                                onClick={() => displayJobInfo(
-                                                                    eachJob.jobID,
-                                                                    eachJob.coverPhotoURL,
-                                                                    eachJob.profilePhotoURL,
-                                                                    eachJob.jobTitle,
-                                                                    eachJob.companyName,
-                                                                    eachJob.location,
-                                                                    eachJob.workType,
-                                                                    eachJob.workPlaceOption,
-                                                                    eachJob.minSalary,
-                                                                    eachJob.maxSalary,
-                                                                    eachJob.jobOverview,
-                                                                    eachJob.jobDuties,
-                                                                    eachJob.requiredQualifications,
-                                                                    eachJob.preferredQualifications,
-                                                                    eachJob.workingConditions,
-                                                                    eachJob.jobBenefits
-                                                                )} 
-                                                                className="bg-slate-100 text-gray-600! font-semibold flex items-center gap-2"
-                                                            >
-                                                                <AiOutlineEye />
-                                                                View
-                                                            </PrimaryButton>
-
-                                                            <PrimaryButton onClick={() => showReOpenBox(eachJob.jobID)} className="bg-slate-100 text-green-600! font-semibold flex items-center gap-2">
-                                                                <FaCheck />
-                                                                Re-open
-                                                            </PrimaryButton>
+                                                                <PrimaryButton onClick={() => toggleWarning(eachJob.jobID)} className="bg-slate-100 text-red-600! px-0 font-semibold flex items-center gap-1">
+                                                                    <IoClose size={20} />
+                                                                    Close
+                                                                </PrimaryButton>
+                                                            </div>
+                                                            
                                                         </div>
-                                                        
-                                                    </div>                                                
-                                                </div>
+                                                    </div>
+                                                    
+                                                    <h1 className="w-[85%] font-bold text-[1.1rem] text-[#111827] mb-2 ">{eachJob.jobTitle}</h1>
+                                                    <p className="flex items-center text-[#374151] gap-3 mb-1 justify-items-start text-sm"><GrLocation className="text-gray-500 w-5 shrink-0" /> {eachJob.location}</p>
+                                                    <hr className="border-none h-0.5 bg-gray-200 mt-3 mb-4"/>
 
-                                                <h1 className="w-[85%] font-bold text-[1.1rem] text-[#111827] mb-2 ">{eachJob.jobTitle}</h1>
-                                                <p className="flex items-center text-[#374151] gap-3 mb-1 justify-items-start text-sm"><GrLocation className="text-gray-500 w-5 shrink-0" /> {eachJob.location}</p>
-                                                <hr className="border-none h-0.5 bg-gray-200 mt-3 mb-4"/>
+                                                    <div className="flex items-center text-green-700 bg-[#E7F6EF] rounded-lg text-sm py-1 px-3 w-fit font-bold gap-3 mb-4"><MdGroups size={20} className="text-green-700 w-5 shrink-0" /> {`${totalApplicants} ${totalApplicants > 1 ? "Applicants" : "Applicant"}`}</div>
 
-                                                <div className="flex items-center text-green-700 bg-[#E7F6EF] rounded-lg text-sm py-1 px-3 w-fit font-bold gap-3 mb-4"><MdGroups size={20} className="text-green-700 w-5 shrink-0" /> {`${totalApplicants} ${totalApplicants > 1 ? "Applicants" : "Applicant"}`}</div>
+                                                    <div className="flex gap-3 items-center mb-2">
+                                                        <FiCalendar className="text-gray-500" />
+                                                        <p className="text-sm text-gray-700 font-medium">{eachJob.updatedAt > eachJob.createdAt ? "Last Updated" : "Job Posted"}</p>
+                                                    </div>
+                                                    <div className="pl-6.5">
+                                                        <p className="text-gray-500 mb-1 font-medium text-sm">{eachJob.updatedAt > eachJob.createdAt ? `${formatDate(eachJob.updatedAt)}` : `${formatDate(eachJob.createdAt)}`}</p>
+                                                        <p className="text-gray-500 font-medium text-sm">{eachJob.updatedAt > eachJob.createdAt ? `by ${eachJob.updatedByFirstName} ${eachJob.updatedByLastName}` : `by ${eachJob.createdByFirstName} ${eachJob.createdByLastName}`}</p>
+                                                    </div>
+                                                    
+                                                    <div className="w-full mt-auto pt-10">
+                                                        <SecondaryButton className="font-bold! rounded-lg" to={`/employer/jobs/${eachJob.jobID}/applicants`}>View Applicants</SecondaryButton>
+                                                    </div>
+                                                </div>
+                                            )
+                                        } else {
+                                            return (
+                                                <div key={eachJob.jobID} className="relative w-full h-full flex flex-col rounded-2xl shadow-md bg-white p-6">
+                                                    <div className="flex justify-between items-center mb-4">
+                                                        <div className="rounded-lg bg-red-50 flex gap-2 items-center px-2 py-1 w-fit">
+                                                            <div className="w-2 h-2 bg-red-700 rounded-full"></div>
+                                                            <p className="text-sm font-bold text-red-700">Closed</p>    
+                                                        </div>
 
-                                                <div className="flex gap-3 items-center mb-2">
-                                                    <FiCalendar className="text-gray-500" />
-                                                    <p className="text-sm text-gray-700 font-medium">{eachJob.updatedAt > eachJob.createdAt ? "Last Updated" : "Job Posted"}</p>
+                                                        <div data-job-menu className="relative">
+                                                            <IoEllipsisVertical 
+                                                                onClick={() => {
+                                                                    setMenuID(eachJob.jobID)
+                                                                    setShowMenu(!showMenu)
+                                                                }} 
+                                                                size={20}
+                                                                className="cursor-pointer"
+                                                            /> 
+                                                                                                            
+                                                            <div className={`w-35 bg-slate-100  p-1 absolute top-full right-0 rounded-md shadow-lg transition-opacity duration-150 ease-out ${(showMenu && menuID === eachJob.jobID) ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}>
+                                                                <PrimaryButton 
+                                                                    onClick={() => displayJobInfo(
+                                                                        eachJob.jobID,
+                                                                        eachJob.coverPhotoURL,
+                                                                        eachJob.profilePhotoURL,
+                                                                        eachJob.jobTitle,
+                                                                        eachJob.companyName,
+                                                                        eachJob.location,
+                                                                        eachJob.workType,
+                                                                        eachJob.workPlaceOption,
+                                                                        eachJob.minSalary,
+                                                                        eachJob.maxSalary,
+                                                                        eachJob.jobOverview,
+                                                                        eachJob.jobDuties,
+                                                                        eachJob.requiredQualifications,
+                                                                        eachJob.preferredQualifications,
+                                                                        eachJob.workingConditions,
+                                                                        eachJob.jobBenefits
+                                                                    )} 
+                                                                    className="bg-slate-100 text-gray-600! font-semibold flex items-center gap-2"
+                                                                >
+                                                                    <AiOutlineEye />
+                                                                    View
+                                                                </PrimaryButton>
+
+                                                                <PrimaryButton onClick={() => showReOpenBox(eachJob.jobID)} className="bg-slate-100 text-green-600! font-semibold flex items-center gap-2">
+                                                                    <FaCheck />
+                                                                    Re-open
+                                                                </PrimaryButton>
+                                                            </div>
+                                                            
+                                                        </div>                                                
+                                                    </div>
+
+                                                    <h1 className="w-[85%] font-bold text-[1.1rem] text-[#111827] mb-2 ">{eachJob.jobTitle}</h1>
+                                                    <p className="flex items-center text-[#374151] gap-3 mb-1 justify-items-start text-sm"><GrLocation className="text-gray-500 w-5 shrink-0" /> {eachJob.location}</p>
+                                                    <hr className="border-none h-0.5 bg-gray-200 mt-3 mb-4"/>
+
+                                                    <div className="flex items-center text-green-700 bg-[#E7F6EF] rounded-lg text-sm py-1 px-3 w-fit font-bold gap-3 mb-4"><MdGroups size={20} className="text-green-700 w-5 shrink-0" /> {`${totalApplicants} ${totalApplicants > 1 ? "Applicants" : "Applicant"}`}</div>
+
+                                                    <div className="flex gap-3 items-center mb-2">
+                                                        <FiCalendar className="text-gray-500" />
+                                                        <p className="text-sm text-gray-700 font-medium">{eachJob.updatedAt > eachJob.createdAt ? "Last Updated" : "Job Posted"}</p>
+                                                    </div>
+                                                    <div className="pl-6.5">
+                                                        <p className="text-gray-500 mb-1 font-medium text-sm">{eachJob.updatedAt > eachJob.createdAt ? `${formatDate(eachJob.updatedAt)}` : `${formatDate(eachJob.createdAt)}`}</p>
+                                                        <p className="text-gray-500 font-medium text-sm">{eachJob.updatedAt > eachJob.createdAt ? `by ${eachJob.updatedByFirstName} ${eachJob.updatedByLastName}` : `by ${eachJob.createdByFirstName} ${eachJob.createdByLastName}`}</p>
+                                                    </div>
+                                                    
+                                                    <div className="w-full mt-auto pt-10">
+                                                        <SecondaryButton className="w-full rounded-lg font-bold!" onclick={() => viewApplicants(eachJob.jobID)}>View Applicants</SecondaryButton>
+                                                    </div>
                                                 </div>
-                                                <div className="pl-6.5">
-                                                    <p className="text-gray-500 mb-1 font-medium text-sm">{eachJob.updatedAt > eachJob.createdAt ? `${formatDate(eachJob.updatedAt)}` : `${formatDate(eachJob.createdAt)}`}</p>
-                                                    <p className="text-gray-500 font-medium text-sm">{eachJob.updatedAt > eachJob.createdAt ? `by ${eachJob.updatedByFirstName} ${eachJob.updatedByLastName}` : `by ${eachJob.createdByFirstName} ${eachJob.createdByLastName}`}</p>
-                                                </div>
-                                                
-                                                <div className="w-full mt-auto pt-10">
-                                                    <SecondaryButton className="w-full rounded-lg font-bold!" onclick={() => viewApplicants(eachJob.jobID)}>View Applicants</SecondaryButton>
-                                                </div>
-                                            </div>
-                                        )
-                                    }
-                                })
-                            }
-                        </div>
+                                            )
+                                        }
+                                    })
+                                }
+
+                            </div>
+                            {totalPages > 1 && (
+                                <ReactPaginate
+                                    pageCount={totalPages}
+                                    forcePage={currentPage - 1}
+                                    onPageChange={handlePageClick}
+
+                                    previousLabel="<"
+                                    nextLabel=">"
+                                    breakLabel="..."
+
+                                    // Responsive page count
+                                    marginPagesDisplayed={isDesktop ? 2 : 1}
+                                    pageRangeDisplayed={isDesktop ? 3 : 1}
+
+                                    containerClassName="
+                                        flex
+                                        justify-center
+                                        items-center
+                                        gap-1
+                                        sm:gap-2
+                                        my-6
+                                        w-full
+                                    "
+
+                                    pageLinkClassName="
+                                        flex
+                                        items-center
+                                        justify-center
+                                        min-w-9
+                                        h-9
+                                        px-2
+                                        rounded-lg
+                                        text-sm
+                                        sm:min-w-10
+                                        sm:h-10
+                                        sm:px-4
+                                        sm:text-base
+                                        cursor-pointer
+                                        transition-colors
+                                        duration-200
+                                    "
+
+                                    activeLinkClassName="
+                                        bg-[#2B2B2B]
+                                        text-white
+                                    "
+
+                                    previousLinkClassName="
+                                        flex
+                                        items-center
+                                        justify-center
+                                        min-w-9
+                                        h-9
+                                        px-2
+                                        rounded-md
+                                        bg-white
+                                        shadow
+                                        text-sm
+                                        sm:min-w-10
+                                        sm:h-10
+                                        sm:px-4
+                                        sm:text-base
+                                        cursor-pointer
+                                        hover:bg-gray-100
+                                    "
+
+                                    nextLinkClassName="
+                                        flex
+                                        items-center
+                                        justify-center
+                                        min-w-9
+                                        h-9
+                                        px-2
+                                        rounded-md
+                                        bg-white
+                                        shadow
+                                        text-sm
+                                        sm:min-w-10
+                                        sm:h-10
+                                        sm:px-4
+                                        sm:text-base
+                                        cursor-pointer
+                                        hover:bg-gray-100
+                                    "
+
+                                    disabledClassName="
+                                        opacity-40
+                                        pointer-events-none
+                                    "
+                                />
+                            )}                            
+                        
+                        </>
                     }
                 </div>
 

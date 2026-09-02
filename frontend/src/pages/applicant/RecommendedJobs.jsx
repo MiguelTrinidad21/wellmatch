@@ -19,11 +19,10 @@ import { AiOutlineLaptop } from "react-icons/ai"
 import { TbBuildingCommunity } from "react-icons/tb";
 import { FaRegFileAlt } from "react-icons/fa";
 
-import { userStore } from "../../zustand/userState";
 import { jobSearchStore } from "../../zustand/jobSearching";
 import { sideBarStore, jobInfoStore, locationStore } from "../../zustand/stateHandlers";
 import { useState, useEffect, useCallback, useRef } from "react";
-import { useNavigate, Link, useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import useIsDesktop from "../../hooks/useIsDesktop"; 
 import useLockBodyScroll from "../../hooks/useLockBodyScroll";
 import api from "../../apis/axios";
@@ -44,7 +43,6 @@ export default function RecommendedJobs() {
     }, []);
 
     const navigate = useNavigate();
-    const { currentUser } = userStore();
     const { setPrevLocation } = locationStore();
     const { setApplicantActiveLink, sideBarStatus } = sideBarStore();
 
@@ -60,7 +58,6 @@ export default function RecommendedJobs() {
     } = jobInfoStore();
 
     const { 
-        jobSearchResults, 
         setJobSearchResults, 
         jobSearch, 
         setJobSearch
@@ -346,7 +343,7 @@ export default function RecommendedJobs() {
             setTotalPages(response.data?.pagination?.totalPages || 0);
             setCurrentPage(response.data?.pagination?.currentPage || 1);
         } catch (error) {
-            console.error("Fetching recommended jobs failed:", error);
+            console.log("Fetching recommended jobs failed:", error);
         }
     }, []);
 
@@ -454,13 +451,23 @@ export default function RecommendedJobs() {
                     }
 
                     {(resumeStatus === "missing") &&
-                        <div className="text-gray-500 mt-5 ">
-                            <FaRegFileAlt className="h-10 w-10 m-auto mb-5"/>
-                            <p className="mb-5 text-gray-600 text-center font-medium">
-                                Upload your resume first to get personalized job recommendations.
-                            </p>
+                        <div className="w-full">
+                            {isSearchingJob ?
+                                <div className="w-full min-h-full flex flex-col justify-center items-center">
+                                    <BiLoaderAlt size={25} className="animate-spin mb-3" />
+                                    <p className="animate-pulse font-bold text-md">Finding relevant jobs</p>
+                                </div>
+                            :
+                                <div className="text-gray-500 mt-5 ">
+                                    <FaRegFileAlt className="h-10 w-10 m-auto mb-5"/>
+                                    <p className="mb-5 text-gray-600 text-center font-medium">
+                                        Upload your resume first to get personalized job recommendations.
+                                    </p>
 
-                            <PrimaryButton to="/applicant/myProfile" className="m-auto w-fit md:w-50">Go to profile</PrimaryButton>
+                                    <PrimaryButton to="/applicant/myProfile" className="m-auto w-fit md:w-50">Go to profile</PrimaryButton>
+                                </div>
+                            }
+
                         </div>
                     }
 

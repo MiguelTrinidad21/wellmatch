@@ -95,7 +95,10 @@ export async function postJob(req, res) {
 
 export async function getJobs(req, res) {
     const { companyID } = req.user;
-    const { jobStatus } = req.query;
+    const { jobStatus, page = 1, limit = 5 } = req.query;
+
+    const currentPage = Math.max(Number(page) || 1, 1);
+    const pageLimit = Math.min(Math.max(Number(limit) || 5, 1), 20);
 
     try {
         const [fetchedJobs] = await database.query(`
@@ -153,7 +156,38 @@ export async function getJobs(req, res) {
             FROM applications`
         );
 
-        return res.status(200).json({ fetchedJobs, totalApplicants });
+        if (fetchedJobs.length === 0) {
+            return res.status(200).json({
+                fetchedJobs,
+                totalApplicants,
+                pagination: {
+                    totalJobs: 0,
+                    totalPages: 0,
+                    currentPage,
+                    limit: pageLimit                    
+                }
+
+            });
+        }
+
+        const totalJobs = fetchedJobs.length;
+        const totalPages = Math.ceil(totalJobs / pageLimit);
+
+        const startIndex = (currentPage - 1) * pageLimit;
+        const endIndex = startIndex + pageLimit;
+
+        const paginatedJobs = fetchedJobs.slice(startIndex, endIndex);
+
+        return res.status(200).json({ 
+            fetchedJobs: paginatedJobs, 
+            totalApplicants,
+            pagination: {
+                totalJobs,
+                totalPages,
+                currentPage,
+                limit: pageLimit                    
+            }
+         });
         
     } catch (error) {
         console.error(error);
