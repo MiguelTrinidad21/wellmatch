@@ -7,7 +7,6 @@ import CredentialsForm from "../../components/popUps/CredentialsForm";
 import ApplicantInfoForm from "../../components/popUps/ApplicantInfoForm";
 import EducationForm from "../../components/popUps/EducationForm";
 import AddResumeForm from "../../components/popUps/AddResumeForm"
-import Translucent from "../../components/overlay/Translucent";
 import DeleteItemBox from "../../components/popUps/DeleteItemBox"
 
 import defaultProfile from "../../assets/defaultProfile.jpg"
@@ -15,14 +14,13 @@ import { MdOutlineEmail } from "react-icons/md";
 import { SlLocationPin } from "react-icons/sl";
 import { FaCheck } from "react-icons/fa6";
 import { MdEdit } from "react-icons/md";
-import { FiDownload } from "react-icons/fi";
 import { IoMdAdd } from "react-icons/io";
 import { FaTrashCan } from "react-icons/fa6";
 import { FaEllipsisVertical } from "react-icons/fa6";
 import { userStore } from "../../zustand/userState";
 import { sideBarStore } from "../../zustand/stateHandlers";
 import { useState, useEffect } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import api from "../../apis/axios";
 import useLockBodyScroll from "../../hooks/useLockBodyScroll";
 
@@ -320,8 +318,12 @@ export default function MyProfile() {
                         <div className="w-14 h-14 shrink-0 md:w-30 md:h-30 xl:w-40 xl:h-40">
                             <img className="w-full h-full rounded-full object-cover" src={`${currentUser.profilePhoto ? currentUser.profilePhoto : defaultProfile}`} alt="" />
                         </div>
-                        <div className="flex flex-col min-w-0 max-w-40 m:max-w-50 md:max-w-78 md:gap-4 ">
-                            <h1 className="text-[15px] font-bold wrap-break-word md:text-3xl">{`${currentUser.firstName} ${currentUser.lastName}`}</h1>
+                        <div className="flex flex-col min-w-0 w-full md:gap-4 ">
+                            <div className="w-42 m:w-55 md:w-82 lg:w-90">
+                                <h1 className="text-[15px] font-bold wrap-break-word md:text-3xl">
+                                    {`${currentUser.firstName} ${currentUser.lastName}`}
+                                </h1>
+                            </div>
                             <div className="relative w-full text-gray-700 font-medium">
                                 <MdOutlineEmail className=" absolute top-0.5 md:top-1/2 md:-translate-y-1/2 left-0 md:w-6 md:h-6" />
                                 <p className="text-sm pl-6 wrap-break-word md:pl-10 md:text-xl">{currentUser.email}</p>
