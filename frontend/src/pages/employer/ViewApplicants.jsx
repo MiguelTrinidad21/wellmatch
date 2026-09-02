@@ -69,7 +69,7 @@ export default function ViewApplicants() {
                     limit: applicantsPerPage
                 }
             });
-            console.log(res?.data?.allApplicants)
+            // console.log(res?.data?.allApplicants)
             setJobTitle(res?.data?.jobTitle);
             setApplicantList(res?.data?.allApplicants);
             setTotalApplicants(res?.data?.pagination?.totalApplicants);

@@ -71,7 +71,7 @@ export default function JobApplications() {
                     limit: applicationsPerPage
                 }
             })
-            console.log(allApplications.data.applications)
+            // console.log(allApplications.data.applications)
             setJobs(allApplications.data.applications);
             setTotalApplications(allApplications?.data?.pagination?.totalApplications);
             setTotalPages(allApplications?.data?.pagination?.totalPages);

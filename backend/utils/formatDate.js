@@ -5,7 +5,8 @@ export default function formatDate(date) {
         month: 'long', 
         day: 'numeric', 
         hour: "numeric",
-        minute: "2-digit"
+        minute: "2-digit",
+        timeZone: "Asia/Manila"
     };
 
     return new Date(date).toLocaleDateString('en-US', dateFormat);

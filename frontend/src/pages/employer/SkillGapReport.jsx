@@ -95,7 +95,7 @@ export default function SkillGapReport() {
                         applicantID
                     }
                 });
-                console.log(res.data.skillGapReport)
+                // console.log(res.data.skillGapReport)
                 setSkillGapAnalysis(res.data.skillGapReport);
                 setSkillGapLoaded(true);
             } catch (error) {

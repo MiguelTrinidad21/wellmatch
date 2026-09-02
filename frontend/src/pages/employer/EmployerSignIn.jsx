@@ -30,7 +30,7 @@ export default function EmployerSignIn() {
             const signedToken = await api.post("/employer/login", employerCredentials)
 
             const loggedEmployer = signedToken.data.user;
-            console.log(loggedEmployer)
+            // console.log(loggedEmployer)
             handleCurrentUser(loggedEmployer);
             // console.log(currentUser)
 

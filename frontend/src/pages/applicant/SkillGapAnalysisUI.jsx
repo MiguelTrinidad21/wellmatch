@@ -103,7 +103,7 @@ export default function SkillGapAnalysisUI() {
                 const skillGapReport = await api.post(
                     `/applicant/${jobID}/${resumeID}/skillgap`
                 );                    
-                console.log(skillGapReport.data.skillGapReport);
+                // console.log(skillGapReport.data.skillGapReport);
 
                 setSkillGapAnalysis(skillGapReport.data.skillGapReport);
             } catch (error) {

@@ -21,7 +21,7 @@ export default function JobAppInitialStep() {
     useLockBodyScroll(sideBarStatus);
 
     const { prevLocation } = locationStore();
-    console.log(prevLocation)
+    // console.log(prevLocation)
     const { currentUser } = userStore();
     const {
         resumeToAnalyze,

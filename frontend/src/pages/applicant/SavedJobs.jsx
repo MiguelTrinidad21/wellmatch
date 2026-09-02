@@ -43,7 +43,7 @@ export default function SavedJobs() {
     useEffect(() => {
         async function fetchSavedJobs() {
             const res = await api.get("/applicant/getSavedJobs");
-            console.log(res.data.savedJobs)
+            // console.log(res.data.savedJobs)
             setSavedJobs(res.data.savedJobs);
         }
 

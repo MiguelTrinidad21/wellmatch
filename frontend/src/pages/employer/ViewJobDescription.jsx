@@ -31,7 +31,7 @@ export default function ViewJobDescription() {
                 const jobDesc = await api.get(`/employer/viewJob/${jobID}`)
 
                 setSelectedJob(jobDesc.data);
-                console.log(jobDesc.data)
+                // console.log(jobDesc.data)
             } catch (error) {
                 console.log(error)
             }

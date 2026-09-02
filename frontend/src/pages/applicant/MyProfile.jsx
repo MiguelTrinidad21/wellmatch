@@ -77,7 +77,7 @@ export default function MyProfile() {
 
     async function handleWorkExpDeletion(workExpID) {
         try {
-            console.log(workExpID)
+            // console.log(workExpID)
             await api.delete("/applicant/delete/workExp", {
                 params: { workExpID }
             });

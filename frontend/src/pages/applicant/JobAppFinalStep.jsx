@@ -63,7 +63,7 @@ export default function JobAppFinalStep() {
                 const allWorkExps = await api.get("/applicant/getWorkExp", {
                     params: {applicantID: currentUser.id}
                 });
-                console.log(allWorkExps.data.workExperiences)
+                // console.log(allWorkExps.data.workExperiences)
                 setWorkExp(allWorkExps.data.workExperiences);
 
             } catch (error) {

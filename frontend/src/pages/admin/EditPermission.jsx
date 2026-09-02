@@ -71,7 +71,7 @@ export default function EditPermission(req, res) {
 
     async function editPermission() {
         try {
-            console.log(role)
+            // console.log(role)
             await api.patch("/employer/editPermission", 
                 {memberID, role}
             );

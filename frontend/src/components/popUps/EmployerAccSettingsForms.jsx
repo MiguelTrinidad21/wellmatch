@@ -36,7 +36,7 @@ export function EditInfoForm({ toggleForm, confirmFunc }) {
 
         try {
             const updated = await api.patch("/employer/updatePersonalDetails", credentials);
-            console.log(updated.data.user)
+            // console.log(updated.data.user)
             if (credentials.prevEmail === credentials.email) {
     
                 handleCurrentUser(updated.data.user);
