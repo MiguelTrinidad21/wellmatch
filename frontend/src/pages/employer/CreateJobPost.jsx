@@ -9,6 +9,7 @@ import { jobCreationStore, sideBarStore } from "../../zustand/stateHandlers";
 import { userStore } from "../../zustand/userState";
 import api from "../../apis/axios";
 import useLockBodyScroll from "../../hooks/useLockBodyScroll";
+import validAddress from "../../utils/validAddress.js";
 
 export default function CreateJobPost({ mode = "create" }) {
     const { jobID } = useParams();
@@ -28,7 +29,7 @@ export default function CreateJobPost({ mode = "create" }) {
     const [lastSelectedLocation, setLastSelectedLocation] = useState(createdJob.location);
     const [shouldSearchLocation, setShouldSearchLocation] = useState(false);
     
-    const [salaryError, setSalaryError] = useState("")
+    const [errors, setErrors] = useState({})
 
 
     useEffect(() => {
@@ -111,12 +112,23 @@ export default function CreateJobPost({ mode = "create" }) {
     function handleNext(e) {
         e.preventDefault();
 
-        if (Number(createdJob.payRangeFrom) > Number(createdJob.payRangeTo)) {
-            setSalaryError("Expected maximum salary must be higher than minimum salary");
+        setErrors({});
+        const trueAddress = validAddress(createdJob.location);
+
+        if (!createdJob.location || (!trueAddress.valid)) {
+            setErrors({
+                invalidAddress: trueAddress.reason
+            });
+
+            return;
+        }        
+
+        if (Number(createdJob.payRangeFrom) >= Number(createdJob.payRangeTo)) {
+            setErrors({salary: "Expected maximum salary must be higher than minimum salary"});
             return;
         }
 
-        setSalaryError("");
+
 
         if (isEditMode) {
             navigate(`/employer/jobs/${jobID}/edit/description`);
@@ -185,6 +197,8 @@ export default function CreateJobPost({ mode = "create" }) {
                                     type="text"
                                     id="jobTitle"
                                     placeholder="Enter job title"
+                                    minLength={2}
+                                    maxLength={100}
                                     value={createdJob.jobTitle}
                                     onChange={(e) => setCreatedJob({jobTitle: e.target.value})}
                                     required                             
@@ -194,17 +208,21 @@ export default function CreateJobPost({ mode = "create" }) {
                                 <label className="block font-semibold text-lg mb-2" htmlFor="location">Location</label>
                                 <div ref={locationFieldRef} className="relative">
                                     <input 
-                                        className="p-2 lg:px-4 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-green-600"
                                         type="text"
                                         id="location"
                                         placeholder="Enter city or municipality"
+                                        minLength={5}
+                                        maxLength={100}
                                         value={createdJob.location}
                                         onChange={(e) => {
                                             setShouldSearchLocation(true);
                                             setCreatedJob({location: e.target.value});
                                         }}
                                         required                             
+                                        className={`p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-green-600 ${errors.invalidAddress ? 'border-red-600 focus:border-red-600 mb-1!' : 'border-gray-300'}`}
                                     />
+
+                                    {errors.invalidAddress && <p className="xl:absolute xl:top-full xl:left-0 mt-1 text-xs text-red-600 mb-4">{errors.invalidAddress}</p>}
 
                                     {isSearchingLocation && (
                                         <p className="absolute top-full left-0 mt-1 text-xs text-gray-500">
@@ -288,7 +306,7 @@ export default function CreateJobPost({ mode = "create" }) {
                                     type="number"
                                     id="from"
                                     value={createdJob.payRangeFrom}
-                                    min="0"
+                                    min="1"
                                     max="999999999"
                                     onChange={(e) => setCreatedJob({payRangeFrom: e.target.value})}
                                     required                             
@@ -301,14 +319,14 @@ export default function CreateJobPost({ mode = "create" }) {
                                     type="number"
                                     id="to"
                                     value={createdJob.payRangeTo}
-                                    min="0"
+                                    min="1"
                                     max="999999999"
                                     onChange={(e) => setCreatedJob({payRangeTo: e.target.value})}
                                     required                            
                                 />                       
                             </div>
                         </div>
-                        {salaryError && <p className="text-[13px] text-red-600 mb-3">{salaryError}</p>}
+                        {errors.salary && <p className="text-[13px] text-red-600 mb-3">{errors.salary}</p>}
 
                         <div className="flex justify-between w-full mt-8">
                             <PrimaryButton onClick={cancelJobCreation} className="bg-white text-black! border-2 border-gray-400 text-sm md:text-[1rem]! md:px-5">Cancel</PrimaryButton>
