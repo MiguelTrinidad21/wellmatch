@@ -335,7 +335,7 @@ export default function JobApplications() {
                                         <thead>
                                             <tr className="bg-gray-300/60">
                                                 <th className="px-6 py-4 text-center font-bold text-black w-48 max-w-48">Job</th>
-                                                <th className="px-6 py-4 text-center font-bold text-black whitespace-nowrap">Company</th>
+                                                <th className="px-6 py-4 text-center font-bold text-black w-35 max-w-48">Company</th>
                                                 <th className="whitespace-nowrap px-6 py-4 text-center font-bold text-black">Submitted on</th>                                                
                                                 {
                                                     status === "hired" ? 
@@ -364,7 +364,7 @@ export default function JobApplications() {
                                                 jobs?.map((item) => (
                                                     <tr key={item.applicationID} className="border-t-2 border-gray-200 text-sm">
                                                         <td className="px-6 py-5 text-center w-48 max-w-48 wrap-break-word font-semibold">{item.jobTitle}</td>
-                                                        <td className="whitespace-nowrap px-6 py-5 text-center">{item.companyName}</td>
+                                                        <td className="px-6 py-5 text-center w-40 max-w-35 wrap-break-word">{item.companyName}</td>
                                                         <td className="whitespace-nowrap px-6 py-5 text-center">{new Date(item.applicationDate).toLocaleDateString('en-US', dateFormat)}</td>
                                                         {
                                                             status === "hired" ?
