@@ -336,6 +336,7 @@ export default function JobApplications() {
                                             <tr className="bg-gray-300/60">
                                                 <th className="px-6 py-4 text-center font-bold text-black w-48 max-w-48">Job</th>
                                                 <th className="px-6 py-4 text-center font-bold text-black whitespace-nowrap">Company</th>
+                                                <th className="whitespace-nowrap px-6 py-4 text-center font-bold text-black">Submitted on</th>                                                
                                                 {
                                                     status === "hired" ? 
                                                         <>
@@ -364,10 +365,11 @@ export default function JobApplications() {
                                                     <tr key={item.applicationID} className="border-t-2 border-gray-200 text-sm">
                                                         <td className="px-6 py-5 text-center w-48 max-w-48 wrap-break-word font-semibold">{item.jobTitle}</td>
                                                         <td className="whitespace-nowrap px-6 py-5 text-center">{item.companyName}</td>
+                                                        <td className="whitespace-nowrap px-6 py-5 text-center">{new Date(item.applicationDate).toLocaleDateString('en-US', dateFormat)}</td>
                                                         {
                                                             status === "hired" ?
                                                                 <>
-                                                                    
+                                    
                                                                     <td className="whitespace-nowrap px-6 py-5 text-center">{item.workType}</td>
                                                                     <td className="whitespace-nowrap px-6 py-5 text-center"><PrimaryButton to={`/applicant/viewJob/${item.jobID}/${item.resumeID}/skillGapReport`} className="rounded-md w-fit m-auto text-sm text-black! bg-green-300">See Report</PrimaryButton></td>
                                                                 </>

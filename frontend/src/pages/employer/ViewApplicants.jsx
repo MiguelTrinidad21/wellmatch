@@ -479,10 +479,8 @@ export default function ViewApplicants() {
                                                         <th className="px-6 py-4 text-center font-bold text-black w-48 max-w-48">Submitted on</th>
                                                         <th className="px-6 py-4 text-center font-bold text-black w-48 max-w-48">Match Score</th>
                                                         <th className="px-6 py-4 text-center font-bold text-black w-48 max-w-48">Skill Gap Analysis</th>
-                                                        {
-                                                            status === "not selected" ? <th className="px-6 py-4 text-center font-bold text-black w-48 max-w-48">Status</th>
-                                                          : <th className="px-6 py-4 text-center font-bold text-black w-48 max-w-48">Actions</th>
-                                                        }
+                                                        {(status !== "hired" && status !== "not selected") && <th className="px-6 py-4 text-center font-bold text-black w-48 max-w-48">Actions</th>}
+                                                        {status === "not selected" && <th className="px-6 py-4 text-center font-bold text-black w-48 max-w-48">Status</th>}
                                                     </tr>
                                                 </thead>
                                                 
