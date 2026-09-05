@@ -124,7 +124,7 @@ export default function ApplicantRegister() {
         }
 
         if (applicantInfo.password !== applicantInfo.confirmPass) {
-            setErrors({ confirmPassword: "Passwords did not match" });
+            setErrors({ confirmPassword: "Password did not match" });
             return;
         }
 
