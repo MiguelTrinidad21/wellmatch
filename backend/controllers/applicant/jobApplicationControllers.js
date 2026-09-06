@@ -186,7 +186,6 @@ export async function fetchApplications(req, res) {
 }
 
 export async function withdrawApplication(req, res) {
-    const { id } = req.user;
     const { applicationID } = req.params;
 
     try {
@@ -196,10 +195,54 @@ export async function withdrawApplication(req, res) {
             WHERE applicationID = ?
         `, [applicationID]);
 
-        return res.status(200).json({ message: "Successfully withdrew application" });
+        const [[application]] = await database.query(`
+            SELECT 
+                a.applicationID,
+                a.applicationDate,
+                a.jobID,
+                ap.firstName,
+                ap.email,
+                j.jobTitle,
+                c.companyName
+            FROM applications a
+            INNER JOIN applicants ap
+                ON a.applicantID = ap.applicantID
+            INNER JOIN jobs j
+                ON a.jobID = j.jobID
+            INNER JOIN companies c
+                ON j.companyID = c.companyID
+            WHERE a.applicationID = ?
+        `, [applicationID]);
+
+        await brevo.transactionalEmails.sendTransacEmail({
+            sender: {
+                name: process.env.BREVO_SENDER_NAME,
+                email: process.env.BREVO_SENDER_EMAIL
+            },
+            to: [
+                {
+                    email: application.email
+                }
+            ],
+            templateId: 10,
+            params: {
+                applicantName: application.firstName,
+                jobTitle: application.jobTitle,
+                companyName: application.companyName,
+                applicationDate: formatDate(application.applicationDate),
+                withdrawalDate: formatDate(new Date())
+            }
+        });
+
+        return res.status(200).json({
+            message: "Successfully withdrew application"
+        });
 
     } catch (error) {
         console.error(error);
-        return res.status(500).json({ message: "Faile to withdraw job application" });
+
+        return res.status(500).json({
+            message: "Failed to withdraw job application"
+        });
     }
 }

@@ -28,7 +28,7 @@ export default function JobDescription({ mode = "create" }) {
     const [errors, setErrors] = useState({
         issue: "",
         message: ""
-    })
+    });
 
     useEffect(() => {
         function handleClickOutside(event) {
@@ -80,6 +80,7 @@ export default function JobDescription({ mode = "create" }) {
 
 
         if (isEditMode) {
+            // console.log(createdJob);
             navigate(`/employer/jobs/${jobID}/edit/description/years`);
         } else {
             navigate("/employer/createJob/description/years");

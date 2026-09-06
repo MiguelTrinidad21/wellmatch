@@ -67,6 +67,8 @@ export default function YearsRequired({ mode = "create" }) {
 
         setIsPosting(true);
 
+        console.log(createdJob)
+
         try {
             if (isEditMode) {
                 await api.put(`/employer/updateJob/${jobID}`, createdJob);
@@ -158,7 +160,7 @@ export default function YearsRequired({ mode = "create" }) {
                             <PrimaryButton disabled={isPosting} to={isEditMode ? `/employer/jobs/${jobID}/edit/description` : "/employer/createJob/description"} className={`bg-white text-black! border-2 border-gray-400 text-sm md:text-[1rem]! md:px-6 ${isPosting && "opacity-50"}`}>
                                 <span className="flex items-center justify-center gap-2"><FaArrowLeftLong />Back</span>
                             </PrimaryButton>
-                            <PrimaryButton disabled={isPosting} className={`${isPosting && "opacity-50"} text-sm px-5! md:text-[1rem]! md:px-6`} type="submit">
+                            <PrimaryButton disabled={isPosting} className={`${isPosting && "opacity-50"} text-sm ${!isEditMode && "px-5!"} md:text-[1rem]! md:px-6`} type="submit">
                                 {isPosting ? (
                                     <>
                                         <BiLoaderAlt className="animation-spin mr-3 inline" />

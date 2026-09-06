@@ -497,11 +497,18 @@ export default function ViewApplicants() {
                                                                       (item.firstName === "Deleted" && item.overallScore === null) ?
                                                                         <td className="px-6 py-5 text-center w-48 max-w-48 wrap-break-word font-semibold">Not Applicable</td>
                                                                     :
-                                                                        <td className="px-6 py-5 text-center w-48 max-w-48 wrap-break-word font-semibold">Awaiting review</td>
+                                                                        <td className="px-6 py-5 text-center w-48 max-w-48 wrap-break-word font-semibold">Awaiting Review</td>
                                                                 }
+                                                                
                                                                 <td className="px-6 py-5 text-center w-48 max-w-48 wrap-break-word font-semibold ">
-                                                                    <PrimaryButton to={`/employer/applications/skillGapReport/${item.applicantID}/${item.jobID}/${item.resumeID}`} className="m-auto rounded-md text-sm">See Report</PrimaryButton>
+                                                                    {
+                                                                       (item.concatJobSkills === null && item.overallScore === null) ?
+                                                                            <PrimaryButton disabled={true} className="m-auto cursor-progress! opacity-60 rounded-md text-sm">Preparing Analysis...</PrimaryButton>
+                                                                        :   
+                                                                            <PrimaryButton dis to={`/employer/applications/skillGapReport/${item.applicantID}/${item.jobID}/${item.resumeID}`} className="m-auto rounded-md text-sm">See Report</PrimaryButton>
+                                                                    }
                                                                 </td>
+
                                                                 {status === "submitted" &&
                                                                     <td className="px-6 py-5 text-center w-48 max-w-48">
                                                                         <div className="flex items-center justify-center gap-5">

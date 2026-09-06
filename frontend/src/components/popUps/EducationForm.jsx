@@ -95,7 +95,7 @@ export default function EducationForm({ toggleForm, refresh }) {
                             onChange={handleCheckboxChange}                   
                             className="w-4 h-4 border border-gray-400 rounded-md"
                         />
-                        <label htmlFor="option" className={isChecked ? "font-semibold duration-100 ease-out" : undefined}>Qaulification Complete</label>
+                        <label htmlFor="option" className={isChecked ? "font-semibold duration-100 ease-out" : undefined}>Qualification Complete</label>
                     </div>
 
 

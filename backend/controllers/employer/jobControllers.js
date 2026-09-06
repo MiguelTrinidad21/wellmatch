@@ -239,12 +239,18 @@ export async function updateJobInfo(req, res) {
         payRangeTo,
         jobOverview,
         jobDuties,
+        prevRequiredQualifications,
         requiredQualifications,
+        prevPreferredQualifications,
         preferredQualifications,
         workingConditions,
         jobBenefits,
         yearsRequired
     } = req.body;
+
+    const reExtractSkills = 
+        (prevRequiredQualifications !== requiredQualifications) || 
+        (prevPreferredQualifications !== preferredQualifications);
 
     let connection;
 
@@ -267,73 +273,120 @@ export async function updateJobInfo(req, res) {
         connection = await database.getConnection();
         await connection.beginTransaction();
 
-        await connection.query(`
-            DELETE from jobSkillEmbeddings
-            WHERE jobID = ?
-            `,
-            [jobID]
-        );
+        
+        if (reExtractSkills) {
+            await connection.query(`
+                DELETE from jobSkillEmbeddings
+                WHERE jobID = ?
+                `,
+                [jobID]
+            );
+    
+    
+            await connection.query(`
+                DELETE from skillGapAnalysis
+                WHERE jobID = ?
+                `,
+                [jobID]
+            );
 
+            await connection.query(`
+                UPDATE jobs
+                SET
+                    updatedByCompMemID = ?,
+                    jobTitle = ?,
+                    location = ?,
+                    workPlaceOption = ?,
+                    workType = ?,
+                    minSalary = ?,
+                    maxSalary = ?,
+                    jobOverview = ?,
+                    jobDuties = ?,
+                    requiredQualifications = ?,
+                    preferredQualifications = ?,
+                    workingConditions = ?,
+                    jobBenefits = ?,
+                    requiredYearsExp = ?,
+                    updatedAt = NOW(),
+                    extractedJobSkills = NULL,
+                    concatJobSkills = NULL,
+                    concatJobSkillsEmbedding = NULL,
+                    jobSearchText = NULL,
+                    jobTitleEmbedding = NULL
+                WHERE jobID = ?
+                AND companyID = ?
+                `,
+                [
+                    compMemID,
+                    jobTitle,
+                    location,
+                    workplaceOption,
+                    workType,
+                    minSalary,
+                    maxSalary,
+                    jobOverview,
+                    jobDuties,
+                    requiredQualifications,
+                    preferredQualifications,
+                    workingConditions,
+                    jobBenefits,
+                    yearsRequired,
+                    jobID,
+                    companyID
+                ]
+            );
 
-        await connection.query(`
-            DELETE from skillGapAnalysis
-            WHERE jobID = ?
-            `,
-            [jobID]
-        );
+            await connection.commit();
+    
+            processJob(jobID).catch((error) => {
+                console.error("Job processing failed:", error);
+            });
 
+        } else {
+            await connection.query(`
+                UPDATE jobs
+                SET
+                    updatedByCompMemID = ?,
+                    jobTitle = ?,
+                    location = ?,
+                    workPlaceOption = ?,
+                    workType = ?,
+                    minSalary = ?,
+                    maxSalary = ?,
+                    jobOverview = ?,
+                    jobDuties = ?,
+                    requiredQualifications = ?,
+                    preferredQualifications = ?,
+                    workingConditions = ?,
+                    jobBenefits = ?,
+                    requiredYearsExp = ?,
+                    updatedAt = NOW()
+                WHERE jobID = ?
+                AND companyID = ?
+                `,
+                [
+                    compMemID,
+                    jobTitle,
+                    location,
+                    workplaceOption,
+                    workType,
+                    minSalary,
+                    maxSalary,
+                    jobOverview,
+                    jobDuties,
+                    requiredQualifications,
+                    preferredQualifications,
+                    workingConditions,
+                    jobBenefits,
+                    yearsRequired,
+                    jobID,
+                    companyID
+                ]
+            );
 
-        await connection.query(`
-            UPDATE jobs
-            SET
-                updatedByCompMemID = ?,
-                jobTitle = ?,
-                location = ?,
-                workPlaceOption = ?,
-                workType = ?,
-                minSalary = ?,
-                maxSalary = ?,
-                jobOverview = ?,
-                jobDuties = ?,
-                requiredQualifications = ?,
-                preferredQualifications = ?,
-                workingConditions = ?,
-                jobBenefits = ?,
-                requiredYearsExp = ?,
-                updatedAt = NOW(),
-                extractedJobSkills = NULL,
-                concatJobSkills = NULL,
-                concatJobSkillsEmbedding = NULL,
-                jobSearchText = NULL,
-                jobTitleEmbedding = NULL
-            WHERE jobID = ?
-            AND companyID = ?
-            `,
-            [
-                compMemID,
-                jobTitle,
-                location,
-                workplaceOption,
-                workType,
-                minSalary,
-                maxSalary,
-                jobOverview,
-                jobDuties,
-                requiredQualifications,
-                preferredQualifications,
-                workingConditions,
-                jobBenefits,
-                yearsRequired,
-                jobID,
-                companyID
-            ]
-        );
+        }
 
-        await connection.commit();
-
-        processJob(jobID).catch((error) => {
-            console.error("Job processing failed:", error);
-        });
+        
 
         return res.status(200).json({message: "job updated successfully"});
 
@@ -368,6 +421,7 @@ export async function closeJob(req, res) {
             WHERE jobID = ?
             AND companyID = ?
             `,
+            
             [compMemID, jobID, companyID]
         );
 

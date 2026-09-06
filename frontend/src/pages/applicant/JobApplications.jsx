@@ -56,6 +56,8 @@ export default function JobApplications() {
     const [totalPages, setTotalPages] = useState(0);
     const [totalApplications, setTotalApplications] = useState(0);
 
+    const [isLoading, setIsLoading] = useState(false);
+
     const dateFormat = { year: 'numeric', month: 'long', day: 'numeric' };
     const activeStatus = ["submitted", "shortlisted", "interview"]
 
@@ -99,12 +101,18 @@ export default function JobApplications() {
 
     async function withdrawApplication(applicationID) {
         try {
-            await api.delete(`/applicant/withdrawApplication/${applicationID}`)
+            setIsLoading(true);
+
+            await api.delete(`/applicant/withdrawApplication/${applicationID}`);
+
             setShowWarning(false);
             setOpenConfirm(true);
             setUpdated(!updated);
+
         } catch (error) {
             console.log(error);
+        } finally {
+            setIsLoading(false);
         }
     }
 
@@ -169,6 +177,7 @@ export default function JobApplications() {
                         bodyText="Are you sure you want to withdraw this application?"
                         toggleFunction={() => setShowWarning(false)}
                         deleteFunction={() => withdrawApplication(appToWithdraw)}
+                        isLoading={isLoading}
                     />
                 }
                 {
