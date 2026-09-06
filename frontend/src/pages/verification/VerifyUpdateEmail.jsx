@@ -1,4 +1,4 @@
-import PublicNavBar from "../../components/navBars/PublicNavBar";
+import AuthNavBar from "../../components/navBars/AuthNavBar";
 import Footer from "../../components/others/Footer";
 import ConfirmationBox from "../../components/popUps/ConfirmationBox";
 import Translucent from "../../components/overlay/Translucent";
@@ -15,8 +15,8 @@ const RESEND_COOLDOWN_SECONDS = 60;
 
 export default function VerifyUpdateEmail({ user }) {
     const navigate = useNavigate();
-    const { applicantEmail } = applicantVerifyCodeStore();
-    const { employerEmail } = employerVerifyCodeStore();
+    const { applicantEmail, setApplicantEmail } = applicantVerifyCodeStore();
+    const { employerEmail, setEmployerEmail } = employerVerifyCodeStore();
     const { handleCurrentUser } = userStore();
 
     const isApplicant = user === "applicant";
@@ -59,6 +59,16 @@ export default function VerifyUpdateEmail({ user }) {
                 navigate("/employer/settings");
             }
         } 
+    }, []);
+
+    useEffect(() => {
+        return () => {
+            if (isApplicant) {
+                setApplicantEmail("");
+            } else {
+                setEmployerEmail("");
+            }
+        };
     }, []);
 
     function closePopUp() {
@@ -159,8 +169,6 @@ export default function VerifyUpdateEmail({ user }) {
 
     return (
         <main className="w-full min-h-screen bg-[#F3F4F6] relative p-6 md:p-15">
-            <PublicNavBar />
-            <Overlay />
 
             {showPopUp && (
                 <>

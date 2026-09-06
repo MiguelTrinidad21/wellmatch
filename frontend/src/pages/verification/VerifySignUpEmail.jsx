@@ -17,8 +17,8 @@ export default function VerifySignUpEmail({ user }) {
     const token = searchParams.get("token");
 
     const navigate = useNavigate();
-    const { applicantEmail } = applicantVerifyCodeStore();
-    const { employerEmail } = employerVerifyCodeStore();
+    const { applicantEmail, setApplicantEmail } = applicantVerifyCodeStore();
+    const { employerEmail, setEmployerEmail } = employerVerifyCodeStore();
     const isApplicant = user === "applicant";
     const currentEmail = isApplicant ? applicantEmail : employerEmail;
 
@@ -63,6 +63,16 @@ export default function VerifySignUpEmail({ user }) {
                 navigate(`/employer/register/invite?token=${token}`)
             }
         }
+    }, []);
+
+    useEffect(() => {
+        return () => {
+            if (isApplicant) {
+                setApplicantEmail("");
+            } else {
+                setEmployerEmail("");
+            }
+        };
     }, []);
 
     function closePopUp() {
