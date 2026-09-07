@@ -180,35 +180,42 @@ export async function rejectAllApplicants(req, res) {
             `,
             [jobID, currentStatus]
         );
-        
-        const emailResults = await Promise.allSettled(
-            applicants.map(row =>
-                brevo.transactionalEmails.sendTransacEmail({
-                    sender: {
-                        name: process.env.BREVO_SENDER_NAME,
-                        email: process.env.BREVO_SENDER_EMAIL
-                    },
-                    to: [{ email: row.email }],
-                    templateId: 5, // your rejected template ID
-                    params: {
-                        applicantFirstName: row.firstName,
-                        jobTitle: row.jobTitle,
-                        companyName: row.companyName
-                    }
-                })
-            )
-        );
 
-        const failed = emailResults.filter(r => r.status === "rejected");
-        if (failed.length > 0) {
-            console.error(`${failed.length}/${applicants.length} rejection emails failed`, failed);
-        }
 
-        return res.status(200).json({ message: "All job applications rejected successfully" });
-        
+        res.status(200).json({ message: "All job applications rejected successfully" });
+
+        sendRejectionEmails(applicants, jobID).catch(error => {
+            console.error(`Unexpected error sending rejection emails for job ${jobID}`, error);
+        });
+
     } catch (error) {
         console.error(error);
         return res.status(500).json({ message: "Rejecting all job applications failed" });
+    }
+}
+
+async function sendRejectionEmails(applicants, jobID) {
+    const emailResults = await Promise.allSettled(
+        applicants.map(row =>
+            brevo.transactionalEmails.sendTransacEmail({
+                sender: {
+                    name: process.env.BREVO_SENDER_NAME,
+                    email: process.env.BREVO_SENDER_EMAIL
+                },
+                to: [{ email: row.email }],
+                templateId: 5,
+                params: {
+                    applicantFirstName: row.firstName,
+                    jobTitle: row.jobTitle,
+                    companyName: row.companyName
+                }
+            })
+        )
+    );
+
+    const failed = emailResults.filter(r => r.status === "rejected");
+    if (failed.length > 0) {
+        console.error(`${failed.length}/${applicants.length} rejection emails failed for job ${jobID}`, failed);
     }
 }
 
