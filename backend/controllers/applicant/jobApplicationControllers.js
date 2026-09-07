@@ -150,6 +150,7 @@ export async function fetchApplications(req, res) {
                 j.workType,
                 j.minSalary,
                 j.maxSalary,
+                j.status,
                 j.concatJobSkills,
                 c.companyName,
                 c.profilePhotoURL,

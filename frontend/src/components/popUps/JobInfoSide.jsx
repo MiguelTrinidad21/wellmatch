@@ -36,6 +36,7 @@ export default function JobInfoSide({ display }) {
         workPlaceOption,
         minSalary,
         maxSalary,
+        status,
         jobOverview,
         jobDuties,
         requiredQualifications,
@@ -115,7 +116,7 @@ export default function JobInfoSide({ display }) {
                             className="w-25 object-cover rounded-sm md:rounded-xl md:w-30"
                         />
                         {
-                            currentUser.userType === "applicant" &&
+                            (currentUser.userType === "applicant" && status !== "deleted") &&
                             <PrimaryButton onClick={() => goToAnalysis(jobID)} className="absolute top-0 font-bold! px-5 right-0 rounded-md bg-green-300! hover:bg-green-400 transition-colors duration-200 ease-in text-gray-800! text-sm">View Skill Gap Analysis</PrimaryButton>
                         }
                     </div>
@@ -143,7 +144,7 @@ export default function JobInfoSide({ display }) {
                         </div>
                     </div>
                     {
-                        currentUser.userType === "applicant" &&
+                        (currentUser.userType === "applicant" && status !== "deleted") &&
                         <div className="flex gap-2">
                             <PrimaryButton onClick={() => goNext(jobID)} className="w-full">Apply Now</PrimaryButton>
                             {
