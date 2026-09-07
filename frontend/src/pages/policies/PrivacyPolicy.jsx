@@ -85,8 +85,8 @@ export default function PrivacyPolicy() {
                                         <li>First and last name</li>
                                         <li>Address and email address</li>
                                         <li>Password and account information</li>
-                                        <li>Profile picture and personal summary</li>
-                                        <li>Skills, education, work experience, licenses, and certifications</li>
+                                        <li>Profile picture</li>
+                                        <li>Education, work experience, licenses, and certifications</li>
                                         <li>Resume</li>
                                         <li>Years of experience provided when applying for a job</li>
                                         <li>Job applications and application status</li>
@@ -139,7 +139,7 @@ export default function PrivacyPolicy() {
                                     <li>identify matched and missing skills;</li>
                                     <li>provide skill-gap and upskilling recommendations;</li>
                                     <li>help employers review applicants;</li>
-                                    <li>send account, invitation, and system notifications; and</li>
+                                    <li>send account creation invitation, and system notifications; and</li>
                                     <li>maintain the security and proper operation of WellMatch.</li>
                                 </ul>                            
                             </div>
