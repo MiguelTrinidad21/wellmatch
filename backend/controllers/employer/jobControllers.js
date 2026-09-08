@@ -239,18 +239,12 @@ export async function updateJobInfo(req, res) {
         payRangeTo,
         jobOverview,
         jobDuties,
-        prevRequiredQualifications,
         requiredQualifications,
-        prevPreferredQualifications,
         preferredQualifications,
         workingConditions,
         jobBenefits,
         yearsRequired
     } = req.body;
-
-    const reExtractSkills = 
-        (prevRequiredQualifications !== requiredQualifications) || 
-        (prevPreferredQualifications !== preferredQualifications);
 
     let connection;
 
@@ -260,6 +254,25 @@ export async function updateJobInfo(req, res) {
         preferredQualifications = normalizeQuillContent(preferredQualifications);
         workingConditions= normalizeQuillContent(workingConditions);
         jobBenefits = normalizeQuillContent(jobBenefits);
+
+        const [qualifications] = await database.query(`
+            SELECT requiredQualifications, preferredQualifications
+            FROM jobs
+            WHERE jobID = ?
+            `,
+            [jobID]
+        );
+
+        if (qualifications.length === 0) {
+            return res.status(404).json({ message: "Job not found" });
+        }
+
+        const prevRequiredQualifications = qualifications[0].requiredQualifications;
+        const prevPreferredQualifications = qualifications[0].preferredQualifications;
+
+        const reExtractSkills = 
+            (prevRequiredQualifications !== requiredQualifications) || 
+            (prevPreferredQualifications !== preferredQualifications);        
 
         const minSalary = payRangeFrom ? Number(payRangeFrom) : null;
         const maxSalary = payRangeTo ? Number(payRangeTo) : null;
@@ -342,6 +355,8 @@ export async function updateJobInfo(req, res) {
                 console.error("Job processing failed:", error);
             });
 
+            return res.status(200).json({message: "job updated successfully with new skill gap"});
+
         } else {
             await connection.query(`
                 UPDATE jobs
@@ -384,11 +399,13 @@ export async function updateJobInfo(req, res) {
                 ]
             );
 
+            await connection.commit();
+
+            return res.status(200).json({message: "job updated successfully"});
         }
 
         
 
-        return res.status(200).json({message: "job updated successfully"});
 
     } catch (error) {
         if (connection) {

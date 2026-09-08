@@ -13,14 +13,35 @@ export function normalizeQuillContent(html) {
         return null;
     }
 
-    const text =
-        new JSDOM(html).window.document.body.textContent?.trim() || "";
+    const dom = new JSDOM(html);
+    const document = dom.window.document;
+
+    const text = document.body.textContent?.trim() || "";
 
     if (!text) {
         return null;
     }
 
-    return html.trim();
+    // Canonicalize inline style attribute ordering so semantically identical
+    // content always serializes to the same string, regardless of the order
+    // Quill happens to emit CSS properties in on a given save.
+    const styledElements = document.body.querySelectorAll("[style]");
+
+    styledElements.forEach((el) => {
+        const style = el.getAttribute("style");
+        if (!style) return;
+
+        const normalizedStyle = style
+            .split(";")
+            .map((rule) => rule.trim())
+            .filter(Boolean)
+            .sort((a, b) => a.localeCompare(b))
+            .join("; ");
+
+        el.setAttribute("style", normalizedStyle ? `${normalizedStyle};` : "");
+    });
+
+    return document.body.innerHTML.trim();
 }
 
 function addPunctuation(html) {

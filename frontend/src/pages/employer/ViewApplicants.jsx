@@ -20,7 +20,7 @@ import { MdGroups } from "react-icons/md";
 import { RiGroupLine } from "react-icons/ri";
 import { FaUsersSlash } from "react-icons/fa";
 import { FiCalendar } from "react-icons/fi";
-import { formatDistanceToNow } from 'date-fns';
+import { BiLoaderAlt } from "react-icons/bi";
 
 import ReactPaginateModule from "react-paginate";
 import api from "../../apis/axios";
@@ -57,7 +57,8 @@ export default function ViewApplicants() {
     
     const applicantsPerPage = 5;
 
-    async function fetchApplicants(page = 1, status) {
+    async function fetchApplicants(page = 1, status, options = {}) {
+        const { silent = false } = options;
         setStatus(status);
 
         try {
@@ -69,7 +70,6 @@ export default function ViewApplicants() {
                     limit: applicantsPerPage
                 }
             });
-            // console.log(res?.data?.allApplicants)
             setJobTitle(res?.data?.jobTitle);
             setApplicantList(res?.data?.allApplicants);
             setTotalApplicants(res?.data?.pagination?.totalApplicants);
@@ -77,7 +77,9 @@ export default function ViewApplicants() {
             setCurrentPage(res?.data?.pagination?.currentPage);
         } catch (error) {
             console.log(error);
-            navigate("/forbidden");
+            if (!silent) {
+                navigate("/forbidden");
+            }
         }
     }
 
@@ -146,6 +148,25 @@ export default function ViewApplicants() {
     useEffect(() => {
         fetchApplicants(1, "submitted"); 
     }, []);
+
+    // Poll for updates while any applicant is still awaiting skill-gap analysis.
+    // Stops automatically once every visible applicant has a result.
+    useEffect(() => {
+        const hasPendingAnalysis = applicantList?.some(
+            (item) =>
+                item.concatJobSkills === null &&
+                item.overallScore === null &&
+                item.firstName !== "Deleted"
+        );
+
+        if (!hasPendingAnalysis) return;
+
+        const intervalId = setInterval(() => {
+            fetchApplicants(currentPage, status, { silent: true });
+        }, 5000);
+
+        return () => clearInterval(intervalId);
+    }, [applicantList, currentPage, status]);
 
 
     return (
@@ -392,8 +413,17 @@ export default function ViewApplicants() {
                                                     <p className="text-gray-500 mb-10 text-sm flex items-center gap-2"><FiCalendar size={18} />{`Submitted on ${new Date(item.applicationDate).toLocaleDateString('en-US', dateFormat)}`}</p>
                                                     
             
-                                                    <div className="flex justify-between text-sm">
-                                                        <PrimaryButton to={`/employer/applications/skillGapReport/${item.applicantID}/${item.jobID}/${item.resumeID}`} className="text-[14px]!" >View Profile</PrimaryButton>
+                                                    <div className="flex justify-between text-sm flex-wrap">
+                                                        {
+                                                            (item.concatJobSkills === null && item.overallScore === null) ?
+                                                                <PrimaryButton disabled={true} className="opacity-60 text-[14px]! flex justify-center items-center gap-2">
+                                                                    <BiLoaderAlt className="animate-spin"/>
+                                                                    Preparing&nbsp;Analysis
+                                                                </PrimaryButton>
+                                                            :   
+                                                                <PrimaryButton to={`/employer/applications/skillGapReport/${item.applicantID}/${item.jobID}/${item.resumeID}`} className="text-[14px]!">View Profile</PrimaryButton>
+                                                        }
+                                                        
                                                         {
                                                             status === "submitted" &&
                                                             <div className="flex gap-4">
@@ -503,9 +533,12 @@ export default function ViewApplicants() {
                                                                 <td className="px-6 py-5 text-center w-48 max-w-48 wrap-break-word font-semibold ">
                                                                     {
                                                                        (item.concatJobSkills === null && item.overallScore === null) ?
-                                                                            <PrimaryButton disabled={true} className="m-auto cursor-progress! opacity-60 rounded-md text-sm">Preparing Analysis...</PrimaryButton>
+                                                                            <PrimaryButton disabled={true} className="m-auto cursor-progress! opacity-60 rounded-md text-sm flex items-center justify-center gap-2">
+                                                                                <BiLoaderAlt className="animate-spin"/>
+                                                                                Preparing&nbsp;Analysis
+                                                                            </PrimaryButton>
                                                                         :   
-                                                                            <PrimaryButton dis to={`/employer/applications/skillGapReport/${item.applicantID}/${item.jobID}/${item.resumeID}`} className="m-auto rounded-md text-sm">See Report</PrimaryButton>
+                                                                            <PrimaryButton to={`/employer/applications/skillGapReport/${item.applicantID}/${item.jobID}/${item.resumeID}`} className="m-auto rounded-md text-sm">See Report</PrimaryButton>
                                                                     }
                                                                 </td>
 
