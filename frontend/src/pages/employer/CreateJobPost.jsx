@@ -75,39 +75,6 @@ export default function CreateJobPost({ mode = "create" }) {
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, []);
 
-    useEffect(() => {
-        async function fetchJobForEdit() {
-            if (!isEditMode) return;
-
-            try {
-                const response = await api.get(`/employer/jobs/${jobID}`);
-
-                const job = response.data.jobToEdit;
-                setShouldSearchLocation(false);
-
-                setCreatedJob({
-                    jobTitle: job.jobTitle,
-                    location: job.location,
-                    workplaceOption: job.workPlaceOption,
-                    workType: job.workType,
-                    payRangeFrom: job.minSalary,
-                    payRangeTo: job.maxSalary,
-                    jobOverview: job.jobOverview,
-                    jobDuties: job.jobDuties,
-                    requiredQualifications: job.requiredQualifications || "",
-                    preferredQualifications: job.preferredQualifications || "",
-                    workingConditions: job.workingConditions || "",
-                    jobBenefits: job.jobBenefits || "",
-                    yearsRequired: String(job.requiredYearsExp)
-                });
-            } catch (error) {
-                console.error(error);
-                navigate("/forbidden");
-            }
-        }
-
-        fetchJobForEdit();
-    }, [isEditMode, jobID]);
 
     function handleNext(e) {
         e.preventDefault();

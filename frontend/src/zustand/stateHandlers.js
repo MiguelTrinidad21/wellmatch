@@ -99,6 +99,10 @@ export const jobCreationStore = create(
                 yearsRequired: "0"
             },
 
+            // NEW — tracks which job's data is currently loaded into createdJob.
+            // Deliberately excluded from persistence (see partialize below).
+            loadedJobId: null,
+
             setCreatedJob: (newData) =>
                 set((state) => ({
                     createdJob: {
@@ -106,6 +110,9 @@ export const jobCreationStore = create(
                         ...newData
                     }
                 })),
+
+            // NEW
+            setLoadedJobId: (jobID) => set({ loadedJobId: jobID }),
 
             clearCreatedJob: () =>
                 set({
@@ -122,13 +129,16 @@ export const jobCreationStore = create(
                         preferredQualifications: "",
                         workingConditions: "",
                         jobBenefits: "",
+                        jobBenefits: "",
                         yearsRequired: "0",
                     },
+                    loadedJobId: null, // NEW — reset so a future edit session refetches
                 }),
         }),
         {
             name: "wellmatch-job-creation",
             storage: createJSONStorage(() => localStorage),
+            // unchanged — loadedJobId is intentionally NOT persisted
             partialize: (state) => ({
                 createdJob: state.createdJob,
             })

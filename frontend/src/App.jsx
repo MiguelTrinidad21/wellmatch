@@ -11,6 +11,7 @@ import EmployerRegister from './pages/employer/EmployerRegister';
 import CreateJobPost from './pages/employer/CreateJobPost';
 import JobDescription from './pages/employer/JobDescription';
 import YearsRequired from './pages/employer/YearsRequired';
+import EditJobLayout from './pages/employer/EditJobLayout';
 import AccountSettings from './pages/employer/AccountSettings';
 import ViewApplicants from './pages/employer/ViewApplicants';
 import SkillGapReport from './pages/employer/SkillGapReport';
@@ -95,9 +96,13 @@ function App() {
           <Route path="/employer/createJob/description" element={<JobDescription mode="create" />} />
           <Route path="/employer/createJob/description/years" element={<YearsRequired mode="create" />} />
 
-          <Route path="/employer/jobs/:jobID/edit" element={<CreateJobPost mode="edit" />} />
-          <Route path="/employer/jobs/:jobID/edit/description" element={<JobDescription mode="edit" />} />
-          <Route path="/employer/jobs/:jobID/edit/description/years" element={<YearsRequired mode="edit" />} />
+
+          <Route path="/employer/jobs/:jobID/edit" element={<EditJobLayout />}>
+            <Route index element={<CreateJobPost mode="edit" />} />
+            <Route path="description" element={<JobDescription mode="edit" />} />
+            <Route path="description/years" element={<YearsRequired mode="edit" />} />
+          </Route>
+
           <Route path="/employer/jobs/:jobID/applicants" element={<ViewApplicants />} />
           <Route path="/employer/applications/skillGapReport/:applicantID/:jobID/:resumeID" element={<SkillGapReport />} />
 
