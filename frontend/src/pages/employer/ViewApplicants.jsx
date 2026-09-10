@@ -414,7 +414,7 @@ export default function ViewApplicants() {
                                                     
             
                                                     <div className="flex justify-between text-sm flex-wrap">
-                                                        {
+                                                        {/* {
                                                             (item.concatJobSkills === null && item.overallScore === null) ?
                                                                 <PrimaryButton disabled={true} className="opacity-60 text-[14px]! flex justify-center items-center gap-2">
                                                                     <BiLoaderAlt className="animate-spin"/>
@@ -422,7 +422,8 @@ export default function ViewApplicants() {
                                                                 </PrimaryButton>
                                                             :   
                                                                 <PrimaryButton to={`/employer/applications/skillGapReport/${item.applicantID}/${item.jobID}/${item.resumeID}`} className="text-[14px]!">View Profile</PrimaryButton>
-                                                        }
+                                                        } */}
+                                                        <PrimaryButton to={`/employer/applications/skillGapReport/${item.applicantID}/${item.jobID}/${item.resumeID}`} className="text-[14px]!">View Profile</PrimaryButton>
                                                         
                                                         {
                                                             status === "submitted" &&
@@ -531,7 +532,7 @@ export default function ViewApplicants() {
                                                                 }
                                                                 
                                                                 <td className="px-6 py-5 text-center w-48 max-w-48 wrap-break-word font-semibold ">
-                                                                    {
+                                                                    {/* {
                                                                        (item.concatJobSkills === null && item.overallScore === null) ?
                                                                             <PrimaryButton disabled={true} className="m-auto cursor-progress! opacity-60 rounded-md text-sm flex items-center justify-center gap-2">
                                                                                 <BiLoaderAlt className="animate-spin"/>
@@ -539,7 +540,8 @@ export default function ViewApplicants() {
                                                                             </PrimaryButton>
                                                                         :   
                                                                             <PrimaryButton to={`/employer/applications/skillGapReport/${item.applicantID}/${item.jobID}/${item.resumeID}`} className="m-auto rounded-md text-sm">See Report</PrimaryButton>
-                                                                    }
+                                                                    } */}
+                                                                    <PrimaryButton to={`/employer/applications/skillGapReport/${item.applicantID}/${item.jobID}/${item.resumeID}`} className="m-auto rounded-md text-sm">See Report</PrimaryButton>
                                                                 </td>
 
                                                                 {status === "submitted" &&

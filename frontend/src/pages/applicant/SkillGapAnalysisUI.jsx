@@ -240,8 +240,8 @@ export default function SkillGapAnalysisUI() {
                                                 <GoInfo className="h-5 w-5"/>
                                             </div>
                                             <div>
-                                                <h1 className="font-bold text-lg mb-1">Skill gap analysis not available for this job post</h1>
-                                                <p className="text-sm">This job post doesn't specify any required skills or experience, so there's nothing to compare against the applicant's resume. Review the job requirements and resume directly to assess fit.</p>
+                                                <h1 className="font-bold text-lg mb-1">Skill gap analysis is not available for this job post</h1>
+                                                <p className="text-sm">This job post doesn't specify any required technical/hard skills or experience, so there's nothing to compare against the applicant's resume. Review the job requirements and resume directly to assess fit.</p>
                                             </div>
                                         </div>
 
