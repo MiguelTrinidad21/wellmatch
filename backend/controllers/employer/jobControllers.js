@@ -296,12 +296,12 @@ export async function updateJobInfo(req, res) {
             );
     
     
-            await connection.query(`
-                DELETE from skillGapAnalysis
-                WHERE jobID = ?
-                `,
-                [jobID]
-            );
+            // await connection.query(`
+            //     DELETE from skillGapAnalysis
+            //     WHERE jobID = ?
+            //     `,
+            //     [jobID]
+            // );
 
             await connection.query(`
                 UPDATE jobs
