@@ -529,7 +529,7 @@ export default function RecommendedJobs() {
                                                                     </div>
                                                                     <h1 className="text-xl font-bold wrap-break-word xl:w-62 ">{job.jobTitle}</h1>
                                                                     <p className="text-md font-medium text-gray-500 mb-5">{job.companyName}</p>
-                                                                    <div className="relative w-full mb-2">
+                                                                    <div className="relative flex w-full mb-2">
                                                                         <MdOutlineLocationOn size={20} className="absolute top-1/2 -translate-y-1/2" />
                                                                         <span className="pl-7">{job.location}</span>
                                                                     </div>
@@ -537,7 +537,7 @@ export default function RecommendedJobs() {
                                                                         <LuBriefcase size={20} className="absolute top-1/2 -translate-y-1/2" />
                                                                         <span className="pl-7">{job.workType}</span>
                                                                     </div>
-                                                                    <div className="relative w-full mb-5">
+                                                                    <div className="relative flex w-full mb-5">
                                                                         <PiMoneyWavy size={20} className="absolute top-1/2 -translate-y-1/2" />
                                                                         <span className="pl-7">{`${job.minSalary.toLocaleString()} - ${job.maxSalary.toLocaleString()} per month`}</span>
                                                                     </div>
