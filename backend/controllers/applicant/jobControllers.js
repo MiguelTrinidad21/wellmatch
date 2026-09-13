@@ -271,7 +271,7 @@ export async function searchJobs(req, res) {
                     matchPercentage: Math.round(similarityScore * 100)
                 };
             })
-            .filter((job) => job.matchPercentage >= 50)
+            .filter((job) => job.matchPercentage >= 45)
             .sort((a, b) => b.similarityScore - a.similarityScore);
 
         const totalJobs = sortedRelatedJobs.length;
