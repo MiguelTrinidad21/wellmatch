@@ -4,9 +4,9 @@ import { JSDOM } from "jsdom";
 import cleanEvidence from "../utils/cleanEvidence.js";
 
 
-function htmlToText(html) {
-    return new JSDOM(html).window.document.body.textContent || "";
-}
+// function htmlToText(html) {
+//     return new JSDOM(html).window.document.body.textContent || "";
+// }
 
 export function normalizeQuillContent(html) {
     if (!html) {
@@ -59,11 +59,10 @@ function addPunctuation(html) {
             return;
         }
 
-        if (!/[.!?:;)]$/.test(text)) {
+        if (!/[.!?:;]$/.test(text)) {
             text += ".";
         }
 
-        // lines.push(`• ${text}`);
         lines.push(text);
     });
 
