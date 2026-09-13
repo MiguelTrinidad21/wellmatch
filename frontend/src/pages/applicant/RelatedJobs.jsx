@@ -659,7 +659,7 @@ export default function RelatedJobs() {
                                                             <h1 className="text-lg font-bold text-center mb-2">Job Desciption</h1>
                                                             <p className="text-justify indent-8 text-[15px] mb-3">{jobInfo.jobOverview}</p>
 
-                                                            <h2 className="font-bold">Job Responsibilities</h2>
+                                                            <h2 className="font-bold text-xl mt-8">Job Responsibilities</h2>
                                                             <div
                                                                 className="prose max-w-none text-[15px] [&_ul]:list-disc [&_ul]:pl-6 [&_li]:text-black [&_li::marker]:text-black"
                                                                 dangerouslySetInnerHTML={{
@@ -667,7 +667,7 @@ export default function RelatedJobs() {
                                                                 }}
                                                             />
 
-                                                            <h2 className="font-bold">Required Qualifications</h2>
+                                                            <h2 className="font-bold text-xl mt-8">Required Qualifications</h2>
                                                             <div
                                                                 className="prose max-w-none text-[15px] [&_ul]:list-disc [&_ul]:pl-6 [&_li]:text-black [&_li::marker]:text-black"
                                                                 dangerouslySetInnerHTML={{
@@ -677,7 +677,7 @@ export default function RelatedJobs() {
 
                                                             {jobInfo.preferredQualifications &&
                                                                 <>
-                                                                    <h2 className="font-bold">Preferred Qualifications</h2>
+                                                                    <h2 className="font-bold text-xl mt-8">Preferred Qualifications</h2>
                                                                     <div
                                                                         className="prose max-w-none text-[15px] [&_ul]:list-disc [&_ul]:pl-6 [&_li]:text-black [&_li::marker]:text-black"
                                                                         dangerouslySetInnerHTML={{
@@ -689,7 +689,7 @@ export default function RelatedJobs() {
 
                                                             {jobInfo.workingConditions &&
                                                                 <>
-                                                                    <h2 className="font-bold">Working Conditions</h2>
+                                                                    <h2 className="font-bold text-xl mt-8">Working Conditions</h2>
                                                                     <div
                                                                         className="prose max-w-none text-[15px] [&_ul]:list-disc [&_ul]:pl-6 [&_li]:text-black [&_li::marker]:text-black"
                                                                         dangerouslySetInnerHTML={{
@@ -701,7 +701,7 @@ export default function RelatedJobs() {
 
                                                             {jobInfo.jobBenefits &&
                                                                 <>
-                                                                    <h2 className="font-bold">Job Benefits</h2>
+                                                                    <h2 className="font-bold text-xl mt-8">Job Benefits</h2>
                                                                     <div
                                                                         className="prose max-w-none text-[15px] [&_ul]:list-disc [&_ul]:pl-6 [&_li]:text-black [&_li::marker]:text-black"
                                                                         dangerouslySetInnerHTML={{
