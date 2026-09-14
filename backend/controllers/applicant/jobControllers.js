@@ -183,7 +183,7 @@ export async function searchJobs(req, res) {
             limit = 5
         } = req.query;
 
-        const trimmedJobTitle = jobTitle.trim();
+        const trimmedJobTitle = jobTitle.trim().toLowerCase();
         const trimmedLocation = location.trim();
 
         const currentPage = Math.max(Number(page) || 1, 1);
