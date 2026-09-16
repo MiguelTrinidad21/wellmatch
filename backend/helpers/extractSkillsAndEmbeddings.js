@@ -361,7 +361,7 @@ async function generateJobTitleEmbedding(jobID) {
 
         const embeddingResponse = await openai.embeddings.create({
             model: "text-embedding-3-large",
-            input: job.jobTitle.toLowerCase(),
+            input: job.jobTitle,
             dimensions: 1024
         });
 
