@@ -43,28 +43,30 @@ export async function getEmployerInfo(req, res) {
 
 export async function changePermission(req, res) {
     const { memberID, role } = req.body;
-    console.log(role)
+    const { companyID } = req.user;
 
     try {
-        await database.query(`
+        const [result] = await database.query(`
             UPDATE companyMembers
             SET role = ?
-            WHERE compMemID = ?
-            `,
-            [role, memberID]
-        );
+            WHERE compMemID = ? AND companyID = ?
+        `, [role, memberID, companyID]);
+
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ message: "Member not found in your company" });
+        }
 
         return res.status(200).json({ message: "Role updated successfully" });
-        
     } catch (error) {
         console.error(error);
-        return res.status(500).json({ message: "Fetching employer info failed" })
+        return res.status(500).json({ message: "Updating role failed" });
     }
 }
 
 
 export async function removeEmployer(req, res) {
-    const { memberID, companyID } = req.query;
+    const { memberID } = req.query;
+    const { companyID } = req.user;
 
     let connection;
 
@@ -72,18 +74,35 @@ export async function removeEmployer(req, res) {
         connection = await database.getConnection();
         await connection.beginTransaction();
 
+        const [[member]] = await connection.query(`
+            SELECT compMemID, employerID
+            FROM companyMembers
+            WHERE compMemID = ? AND companyID = ?
+        `, [memberID, companyID]);
+
+        if (!member) {
+            await connection.rollback();
+            return res.status(404).json({ message: "Member not found in your company" });
+        }
+
+
+        if (member.employerID === req.user.id) {
+            await connection.rollback();
+            return res.status(400).json({ message: "You cannot remove your own account" });
+        }
+
         await connection.query(`
             DELETE FROM invitations
             WHERE invitedByEmployerID = ?
                 AND status = 'pending'
-            `, [memberID]
+            `, [member.employerID]
         );
 
        await connection.query(`
             UPDATE companyMembers
             SET status = 'inactive'
             WHERE compMemID = ? AND companyID = ?
-            `, [memberID, companyID]
+            `, [member.compMemID, companyID]
         );
 
         const invalidHash = await bcrypt.hash(crypto.randomUUID(), 10);
@@ -96,7 +115,7 @@ export async function removeEmployer(req, res) {
                 lastName = 'User',
                 status = 'deleted'
             WHERE employerID = ?
-            `, [invalidHash, memberID]
+            `, [invalidHash, mmember.employerID]
         );
 
         await connection.commit();

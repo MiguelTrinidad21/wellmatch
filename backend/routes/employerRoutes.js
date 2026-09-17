@@ -114,7 +114,7 @@ router.patch("/changeEmail/verify", verifyToken, isEmployer, verifyEmailUpdateCo
 router.put("/updateJob/:jobID", verifyToken, isEmployer, updateJobInfo)
 
 router.delete("/deleteAccount", verifyToken, isEmployer, deleteAccount)
-router.delete("/removeEmployer", verifyToken, isEmployer, removeEmployer)
+router.delete("/removeEmployer", verifyToken, isAdmin, removeEmployer)
 
 
 
