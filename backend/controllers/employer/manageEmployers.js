@@ -45,7 +45,26 @@ export async function changePermission(req, res) {
     const { memberID, role } = req.body;
     const { companyID } = req.user;
 
+    const adminLimit = 2;
+
     try {
+        if (role === "Admin Employer") {
+            const [allAdmins] = await database.query(`
+                SELECT employerID
+                FROM companyMembers
+                WHERE role = "Admin Employer"
+                AND companyID = ?
+                `,
+                [companyID]            
+            );
+
+            if (allAdmins.length > adminLimit) {
+                return res.status(409).json({ 
+                    message: `Maximum number of admin accounts reached (${adminLimit} max). Remove an existing admin to assign this role.`
+                });
+            }
+        }
+
         const [result] = await database.query(`
             UPDATE companyMembers
             SET role = ?

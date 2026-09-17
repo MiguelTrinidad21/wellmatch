@@ -4,6 +4,7 @@ import EmployerSideBar from "../../components/navBars/EmployerSideBar";
 import Loading from "../../components/others/Loading"
 import ConfirmationBox from "../../components/popUps/ConfirmationBox";
 import NotFoundPage from "../errors/NotFoundPage.jsx";
+import ErrorBox from "../../components/popUps/ErrorBox.jsx";
 import { FaCheck } from "react-icons/fa6";
 import { userStore } from "../../zustand/userState";
 import { sideBarStore } from "../../zustand/stateHandlers.js";
@@ -13,7 +14,7 @@ import api from "../../apis/axios.js"
 import PrimaryButton from "../../components/buttons/PrimaryButton";
 import useLockBodyScroll from "../../hooks/useLockBodyScroll.js";
 
-export default function EditPermission(req, res) {
+export default function EditPermission() {
     const navigate = useNavigate();
     const { currentUser } = userStore();
     const { memberID } = useParams();
@@ -23,6 +24,8 @@ export default function EditPermission(req, res) {
     const [role, setRole] = useState("Employer");
 
     const [showConfirm, setShowConfirm] = useState(false);
+
+    const [error, setError] = useState("");
     
     const { sideBarStatus } = sideBarStore();
     useLockBodyScroll(sideBarStatus);
@@ -80,6 +83,15 @@ export default function EditPermission(req, res) {
             
         } catch (error) {
             console.log(error);
+
+            if (error.response) {
+                const statusCode = error.response.status;
+                const serverMessage = error.response.data.message;
+
+                if (statusCode === 409) {
+                    setError(serverMessage);
+                }
+            }
         }
     }
 
@@ -145,6 +157,16 @@ export default function EditPermission(req, res) {
                         }}
                     />
                 }
+
+
+                {
+                    error && 
+                    <ErrorBox 
+                        heading="Admin limit reached"
+                        text={error}
+                        onClick={() => setError("")}
+                    />
+                }               
 
                 <div className="w-full p-6 md:py-10 md:px-15 xl:px-30">
                     <h1 className="font-bold text-2xl mb-4">Individual Details</h1>
