@@ -428,10 +428,10 @@ export default function SkillGapAnalysisUI() {
                                             score={skillGapAnalysis.scoresBreakdown.coreSkillScore}
                                             className="w-24! h-24! md:25! md:h-25!"    
                                         />
-                                        <p className="text-[12px] font-semibold mt-2">Required Skills</p>
+                                        <p className="text-[12px] xl:text-sm  font-semibold mt-2">Required Skills</p>
                                         {
                                             (selectedJob.preferredQualifications && skillGapAnalysis.scoresBreakdown.secondarySkillScore !== null) && 
-                                            <p className="text-[12px]">Weighted 80%</p>
+                                            <p className="text-[12px] xl:text-sm ">Weighted 80%</p>
                                         }
                                     </div>
 
@@ -443,8 +443,8 @@ export default function SkillGapAnalysisUI() {
                                                 score={skillGapAnalysis.scoresBreakdown.secondarySkillScore}
                                                 className="w-24! h-24! md:25! md:h-25!"    
                                             />
-                                                <p className="text-[12px] font-semibold mt-2">Preferred Skills</p>
-                                                <p className="text-[12px]">Weighted 20%</p>
+                                                <p className="text-[12px] xl:text-sm font-semibold mt-2">Preferred Skills</p>
+                                                <p className="text-[12px] xl:text-sm">Weighted 20%</p>
                                         </div>                                    
                                     }
                                 </div>
