@@ -251,13 +251,15 @@ export async function getAllResumes(req, res) {
 
 export async function viewResume(req, res) {
     const resumeID = req.params.resumeID;
+    const { id } = req.user;
 
     try {
         const [[rows]] = await database.query(`
             SELECT cloudinaryPublicID, origFileName
             FROM resumes
             WHERE resumeID = ?
-            `, [resumeID]
+            AND applicantID = ?
+            `, [resumeID, id]
         );
 
         if (!rows) {

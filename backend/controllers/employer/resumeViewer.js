@@ -5,13 +5,18 @@ import axios from "axios";
 
 export async function viewResume(req, res) {
     const resumeID = req.params.resumeID;
+    const { companyID } = req.user;
 
     try {
         const [[rows]] = await database.query(`
-            SELECT cloudinaryPublicID, origFileName
-            FROM resumes
-            WHERE resumeID = ?
-            `, [resumeID]
+            SELECT r.cloudinaryPublicID, r.origFileName
+            FROM resumes r
+            INNER JOIN applications a ON a.resumeID = r.resumeID
+            INNER JOIN jobs j ON j.jobID = a.jobID
+            WHERE r.resumeID = ?
+                AND j.companyID = ?
+            LIMIT 1
+            `, [resumeID, companyID]
         );
 
         if (!rows) {
