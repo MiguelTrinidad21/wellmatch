@@ -37,7 +37,6 @@ import {
     getAllResumes, 
     uploadAndAddResume, 
     viewResume,
-    debugResume,
     makeResumeDefault,
     deleteResume
 } from "../controllers/applicant/resumeControllers.js";
@@ -82,8 +81,6 @@ router.get("/getEducation", verifyToken, isApplicant, getEducation)
 router.get("/applications", verifyToken, isApplicant, fetchApplications)
 router.get("/getSavedJobs", verifyToken, isApplicant, getAllSavedJobs)
 
-
-router.get("/debug-resume", debugResume)
 
 router.post("/:jobID/:resumeID/skillgap", verifyToken, isApplicant, skillGapController);
 router.post("/register", registerApplicant)
