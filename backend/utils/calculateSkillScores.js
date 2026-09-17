@@ -23,15 +23,38 @@ export default function calculateSkillScores(matchedSkills, skillGapResult) {
         }
     }
 
-    const coreSkillScore = Math.trunc((totalMatchedCoreSkills/totalCoreSkills) * 100);
-    const secondarySkillScore = Math.trunc((totalMatchedSecondarySkills/totalSecondarySkills) * 100);
-    const overAllScore = Math.trunc((((totalMatchedCoreSkills * 0.8) + (totalMatchedSecondarySkills * 0.2)) / ((totalCoreSkills * 0.8) + (totalSecondarySkills * 0.2))) * 100);
+    const coreSkillScore = totalCoreSkills > 0
+        ? Math.trunc((totalMatchedCoreSkills / totalCoreSkills) * 100)
+        : null;
+
+    const secondarySkillScore = totalSecondarySkills > 0
+        ? Math.trunc((totalMatchedSecondarySkills / totalSecondarySkills) * 100)
+        : null;
+
+    const REQUIRED_WEIGHT  = 0.8;
+    const PREFERRED_WEIGHT = 0.2;
+
+    let overAllScore;
+
+    if (totalCoreSkills > 0 && totalSecondarySkills > 0) {
+        overAllScore = Math.trunc(
+            (
+                REQUIRED_WEIGHT  * (totalMatchedCoreSkills / totalCoreSkills) +
+                PREFERRED_WEIGHT * (totalMatchedSecondarySkills / totalSecondarySkills)
+            ) * 100
+        );
+    } else if (totalCoreSkills > 0) {
+        overAllScore = coreSkillScore;
+    } else if (totalSecondarySkills > 0) {
+        overAllScore = secondarySkillScore;
+    } else {
+        overAllScore = 0;
+    }
     
     let interpretation;
-
-    if (overAllScore >= 80) interpretation = "Excellent Match"
-    else if (overAllScore >= 60 && overAllScore <= 79) interpretation = "Good Match"
-    else interpretation = "Low Match"
+    if (overAllScore >= 80) interpretation = "Excellent Match";
+    else if (overAllScore >= 60) interpretation = "Good Match";
+    else interpretation = "Low Match";
 
     return {
         totalCoreSkills,
@@ -42,5 +65,5 @@ export default function calculateSkillScores(matchedSkills, skillGapResult) {
         secondarySkillScore,
         overAllScore,
         interpretation
-    }
+    };
 }

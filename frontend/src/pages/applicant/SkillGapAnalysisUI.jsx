@@ -429,7 +429,10 @@ export default function SkillGapAnalysisUI() {
                                             className="w-24! h-24! md:25! md:h-25!"    
                                         />
                                         <p className="text-[12px] font-semibold mt-2">Required Skills</p>
-                                        <p className="text-[12px]">Weighted 80%</p>
+                                        {
+                                            (selectedJob.preferredQualifications && skillGapAnalysis.scoresBreakdown.secondarySkillScore !== null) && 
+                                            <p className="text-[12px]">Weighted 80%</p>
+                                        }
                                     </div>
 
                                     {
