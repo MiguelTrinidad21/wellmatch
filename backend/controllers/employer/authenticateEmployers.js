@@ -5,6 +5,7 @@ import crypto from "crypto";
 import jwt from "jsonwebtoken";
 import validAddress from "../../utils/validateAddress.js";
 import validPassword from "../../utils/validatePassword.js";
+import validateEmail from "../../utils/validateEmailAddress.js";
 import { sendVerificationEmail } from "../../utils/sendVerificationEmail.js";
 
 dotenv.config();
@@ -40,14 +41,14 @@ export async function registerAdmin(req, res) {
 
     if (!lastName || lastName.trim().length < 2 || lastName.trim().length > 50) {
         return res.status(400).json({
-            message: "Enter valid last name",
+            message: "Please enter valid last name",
             issue: "invalidLName"
         });
     }
 
-    if (!emailAddress || emailAddress.trim().length < 5 || emailAddress.trim().length > 100) {
+    if (!emailAddress || emailAddress.trim().length < 5 || emailAddress.trim().length > 100 || !validateEmail(emailAddress.trim())) {
         return res.status(400).json({
-            message: "Enter valid email address",
+            message: "Please enter valid email address",
             issue: "email"
         });
     }
@@ -135,7 +136,7 @@ export async function registerAdmin(req, res) {
 
             if (secondsSinceLastSend < RESEND_COOLDOWN_SECONDS) {
                 return res.status(429).json({
-                    message: `Please wait before requesting another code`,
+                    message: `Too many requests. Please wait 1 minute and try again.`,
                     issue: "cooldown"
                 });
             }
@@ -1008,9 +1009,9 @@ export async function registerCoEmployer(req, res) {
         });
     }
 
-    if (!emailAddress || emailAddress.trim().length < 5 || emailAddress.trim().length > 100) {
+    if (!emailAddress || emailAddress.trim().length < 5 || emailAddress.trim().length > 100 || !validateEmail(emailAddress.trim())) {
         return res.status(400).json({
-            message: "Enter valid email address",
+            message: "Please enter valid email address",
             issue: "email"
         });
     }
@@ -1075,7 +1076,7 @@ export async function registerCoEmployer(req, res) {
 
             if (secondsSinceLastSend < RESEND_COOLDOWN_SECONDS) {
                 return res.status(429).json({
-                    message: `Please wait before requesting another code`,
+                    message: `Too many requests. Please wait 1 minute and try again.`,
                     issue: "cooldown"
                 });
             }

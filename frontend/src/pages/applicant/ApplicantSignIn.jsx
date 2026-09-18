@@ -21,7 +21,7 @@ export default function ApplicantSignIn() {
     const [errors, setErrors] = useState({});
     const [showPassword, setShowPassword] = useState(false);
 
-    function handlePass(e) {
+    function handlePass() {
         setShowPassword(!showPassword);
     }
 
@@ -41,11 +41,20 @@ export default function ApplicantSignIn() {
         } catch (error) {
             const issue = error.response?.data?.issue;
             const message = error.response?.data?.message || "An error occurred";
+            const status = error.response?.status
 
-            if (issue) {
-                setErrors({ [issue]: message }); 
+            if (status === 429) {
+                setErrors({
+                    rateLimit: message
+                });
+            } else if (issue) {
+                setErrors({
+                    [issue]: message
+                });
             } else {
-                setErrors({ general: "Unable to connect to the server. Please try again." });
+                setErrors({
+                    general: "Unable to connect to the server. Please try again."
+                });
             }
         }
     }
@@ -90,7 +99,7 @@ export default function ApplicantSignIn() {
                                     required
                                     className={`p-2 rounded-md block w-full border-2 mb-4 md:mb-6 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-green-600 ${errors.email ? 'border-red-600 focus:border-red-600 mb-1!' : 'border-gray-300'}`}
                                 />
-                                {errors.email && <p className="text-red-600 text-[13px] mb-4">* {errors.email}</p>}
+                                {errors.email && <p className="text-red-600 text-[13px] mb-4">{errors.email}</p>}
 
                                 <label className="block mb-1 font-medium text-gray-700" htmlFor="password">Password</label>
                                 <div className="relative">
@@ -107,7 +116,8 @@ export default function ApplicantSignIn() {
                                         {showPassword ? <FiEyeOff /> : <FiEye />}
                                     </div>                        
                                 </div>
-                                {errors.password && <p className="text-red-600 text-[13px] mb-4">* {errors.password}</p>}
+                                {errors.password && <p className="text-red-600 text-[13px] mb-4">{errors.password}</p>}
+                                {errors.rateLimit && <p className="text-red-600 text-[13px] mb-4 text-center">{errors.rateLimit}</p>}
 
                                 <PrimaryButton type="submit" className="w-full mb-6">Sign in</PrimaryButton>
 

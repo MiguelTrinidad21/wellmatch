@@ -1,5 +1,7 @@
 import express from "express";
 
+import { authLimiter,generalLimiter } from "../middlewares/rateLimiter.js";
+
 import { 
     registerAdmin,
     verifyEmployerCode,
@@ -67,14 +69,14 @@ import { viewResume } from "../controllers/employer/resumeViewer.js";
 
 const router = express.Router();
 
-router.post("/register", registerAdmin);
+router.post("/register", generalLimiter, registerAdmin);
 router.post("/emailSignUp/verify", verifyEmployerCode);
 router.post("/emailSignUp/resendCode", resendEmployerCode);
 router.post("/emailSignUp/:token/verify", verifyCoEmployerCode);
-router.post("/registerCoEmployer/:token", registerCoEmployer);
-router.post("/login", loginEmployer);
+router.post("/registerCoEmployer/:token", generalLimiter, registerCoEmployer);
+router.post("/login", authLimiter, loginEmployer);
 router.post("/logout", logoutEmployer);
-router.post("/companyProfile/invite", verifyToken, isAdmin, sendEmployerInvitationEmail)
+router.post("/companyProfile/invite", verifyToken, isAdmin, generalLimiter, sendEmployerInvitationEmail)
 router.post("/postJob", verifyToken, isEmployer, postJob)
 router.post("/changeEmail/resendCode", verifyToken, isEmployer, resendEmailUpdateCode)
 

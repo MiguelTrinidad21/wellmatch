@@ -140,11 +140,20 @@ export default function ApplicantRegister() {
         } catch (error) {
             const issue = error.response?.data?.issue;
             const message = error.response?.data?.message || "An error occurred";
+            const status = error.response?.status
 
-            if (issue) {
-                setErrors({ [issue]: message }); 
+            if (status === 429) {
+                setErrors({
+                    rateLimit: message
+                });
+            } else if (issue) {
+                setErrors({
+                    [issue]: message
+                });
             } else {
-                setErrors({ general: "Unable to connect to the server. Please try again." });
+                setErrors({
+                    general: "Unable to connect to the server. Please try again."
+                });
             }
 
         } finally {
@@ -313,8 +322,12 @@ export default function ApplicantRegister() {
                             className="w-4 h-4 lg:w-5 lg:h-5 border border-gray-400 rounded-md"
                         />
                         <label htmlFor="allow" className={`text-[12px] text-gray-700 font-medium lg:text-sm cursor-pointer ${isChecked ? " duration-100 ease-out" : undefined}`}>I have read and agree to the Terms and Conditions and Privacy Policy.</label>
-                    </div>                    
+                    </div>   
 
+                    {errors.rateLimit && <p className="text-red-600 text-[13px] mb-4 text-center">{errors.rateLimit}</p>}
+                    {errors.cooldown && <p className="text-red-600 my-2 text-sm text-center">{errors.cooldown}</p>}
+                    {errors.general && <p className="text-red-600 my-2 text-sm text-center">{errors.general}</p>}
+                    
                     <PrimaryButton disabled={isLoading || !isChecked} type="submit" className={`w-full ${isLoading ? "opacity-60 cursor-progress" : undefined} ${!isChecked ? "opacity-60 cursor-not-allowed" : undefined}`}>
                         {isLoading ? 
                             <span className="flex items-center justify-center gap-2">
@@ -324,7 +337,8 @@ export default function ApplicantRegister() {
                         : "Register"
                         }
                     </PrimaryButton>
-                    {errors.general && <p className="text-red-600 my-2 text-sm text-center">{errors.general}</p>}
+                    
+        
                 </form>
             </div>
             {/* <Footer /> */}

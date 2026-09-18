@@ -1,6 +1,7 @@
 import brevo from "../../configs/brevo.js";
 import crypto from "crypto";
 import database from "../../configs/database.js";
+import validateEmail from "../../utils/validateEmailAddress.js";
 import "dotenv/config"
 
 export async function sendEmployerInvitationEmail(req, res) {
@@ -8,18 +9,18 @@ export async function sendEmployerInvitationEmail(req, res) {
 
     const { companyID, id } = req.user;
 
+    if (!email || email.trim().length < 5 || email.trim().length > 100 || !validateEmail(email.trim())) {
+        return res.status(400).json({
+            message: "Please enter valid email address",
+            issue: "email"
+        });
+    }
+    
     const normalizedEmail = email.trim().toLowerCase();
-
     let connection;
     let transactionStarted = false;
 
     try {
-        if (!email) {
-            return res.status(400).json({
-                message: "Employer email is required",
-                issue: "missingEmail"
-            });
-        }
 
         connection = await database.getConnection();
 

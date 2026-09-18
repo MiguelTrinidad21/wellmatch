@@ -3,6 +3,12 @@ import express from "express";
 import handleApplicantPhotoUpload from "../middlewares/handleApplicantPhotos.js";
 import handleMulterResumeUpload from "../middlewares/handleResumes.js";
 import { skillGapController } from "../controllers/applicant/skillGapController.js";
+
+import { 
+    authLimiter, 
+    generalLimiter
+ } from "../middlewares/rateLimiter.js";
+
 import { 
     changeEmail,
     verifyEmailUpdateCode, 
@@ -83,10 +89,10 @@ router.get("/getSavedJobs", verifyToken, isApplicant, getAllSavedJobs)
 
 
 router.post("/:jobID/:resumeID/skillgap", verifyToken, isApplicant, skillGapController);
-router.post("/register", registerApplicant)
-router.post("/login", loginApplicant);
+router.post("/register", generalLimiter, registerApplicant)
+router.post("/login", authLimiter, loginApplicant);
 router.post("/logout", logoutApplicant);
-router.post("/uploadResume", verifyToken, isApplicant, handleMulterResumeUpload, uploadAndAddResume)
+router.post("/uploadResume", verifyToken, isApplicant, generalLimiter, handleMulterResumeUpload, uploadAndAddResume)
 router.post("/addWorkExp", verifyToken, isApplicant, addWorkExp)
 router.post("/addCredential", verifyToken, isApplicant, addCredential)
 router.post("/addEducation", verifyToken, isApplicant, addEducation)

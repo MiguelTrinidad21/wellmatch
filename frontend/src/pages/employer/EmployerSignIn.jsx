@@ -39,11 +39,20 @@ export default function EmployerSignIn() {
         } catch (error) {
             const issue = error.response?.data?.issue;
             const message = error.response?.data?.message || "An error occurred";
+            const status = error.response?.status
 
-            if (issue) {
-                setErrors({ [issue]: message }); 
+            if (status === 429) {
+                setErrors({
+                    rateLimit: message
+                });
+            } else if (issue) {
+                setErrors({
+                    [issue]: message
+                });
             } else {
-                setErrors({ general: "Unable to connect to the server. Please try again." });
+                setErrors({
+                    general: "Unable to connect to the server. Please try again."
+                });
             }
         }
     }
@@ -99,11 +108,12 @@ export default function EmployerSignIn() {
                                         required
                                         className={`p-2 rounded-md block w-full border-2 mb-4 md:mb-6 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-green-600 ${errors.password ? 'border-red-600 focus:border-red-600 mb-1!' : 'border-gray-300'}`}
                                     />
-                                    <div onClick={handlePass} className="absolute top-1/2 -translate-y-1/2 right-2">
+                                    <div onClick={handlePass} className="cursor-pointer absolute top-1/2 -translate-y-1/2 right-2">
                                         {showPassword ? <FiEyeOff /> : <FiEye />}
                                     </div>                        
                                 </div>
                                 {errors.password && <p className="text-red-600 text-[13px] mb-4">{errors.password}</p>}
+                                {errors.rateLimit && <p className="text-red-600 text-[13px] mb-4 text-center">{errors.rateLimit}</p>}
 
                                 <PrimaryButton type="submit" className="w-full">Sign in</PrimaryButton>
 

@@ -37,12 +37,17 @@ export default function AddResumeForm({ toggleForm, refresh }) {
             console.log(error);
 
             const message = error.response?.data?.message || "An error occurred";
+            const status = error.response?.status;
 
-            if (message) {
+            if (status === 429) {
+                setErrors({ rateLimit: message });
+
+            } else if (message) {
                 setErrors({ message: message }); 
             } else {
                 setErrors({ message: "Unable to connect to the server. Please try again." });
             }
+
         } finally {
             setIsLoading(false);
         }
@@ -88,6 +93,7 @@ export default function AddResumeForm({ toggleForm, refresh }) {
                     </label>
 
                     {errors.message && <p className="text-red-600 text-[13px]   mt-3">{errors.message}</p>}
+                    {errors.rateLimit && <p className="text-red-600 text-[13px] mt-3">{errors.rateLimit}</p>}
 
                 </div>
 

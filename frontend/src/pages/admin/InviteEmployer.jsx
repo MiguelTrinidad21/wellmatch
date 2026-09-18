@@ -5,7 +5,7 @@ import { userStore } from "../../zustand/userState";
 import { BiLoaderAlt } from "react-icons/bi";
 import { MdMailOutline } from "react-icons/md";
 import api from "../../apis/axios";
-import ConfirmationBox from "../../components/popUps/ConfirmationBox";
+// import ConfirmationBox from "../../components/popUps/ConfirmationBox";
 import Translucent from "../../components/overlay/Translucent";
 
 export default function InviteEmployer({ cancelFunc, setInviteSent }) {
@@ -16,7 +16,7 @@ export default function InviteEmployer({ cancelFunc, setInviteSent }) {
         email: ""
     });
     const [isSending, setIsSending] = useState(false);
-    const [error, setError] = useState("");
+    const [errors, setErrors] = useState("");
 
     
     async function handleSubmit(e) {
@@ -37,9 +37,23 @@ export default function InviteEmployer({ cancelFunc, setInviteSent }) {
         } catch (error) {
             setIsSending(false);
 
-            const backendMessage = error.response?.data?.message;
+            const issue = error.response?.data?.issue;
+            const message = error.response?.data?.message || "An error occurred";
+            const status = error.response?.status
 
-            setError(backendMessage)
+            if (status === 429) {
+                setErrors({
+                    rateLimit: message
+                });
+            } else if (issue) {
+                setErrors({
+                    [issue]: message
+                });
+            } else {
+                setErrors({
+                    general: "Unable to connect to the server. Please try again."
+                });
+            }
         }
     }
 
@@ -67,13 +81,14 @@ export default function InviteEmployer({ cancelFunc, setInviteSent }) {
                             ...employerToInvite,
                             email: e.target.value})}
                         required
-                        className={`p-2 lg:px-4 rounded-md block w-full border-2 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out ${error ? "border-red-600 focus:border-red-600" : "border-gray-300 focus:border-green-600"}`} 
+                        className={`p-2 lg:px-4 rounded-md block w-full border-2 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out ${errors.email ? "border-red-600 focus:border-red-600" : "border-gray-300 focus:border-green-600"}`} 
                     />
-                    {error &&
+                    {errors.email &&
                         <p className="text-red-600 text-[13px] text-center mb-3">
-                            {error}
+                            {errors.email}
                         </p>
                     }
+                    {errors.rateLimit && <p className="text-red-600 text-[13px] mb-4 text-center">{errors.rateLimit}</p>}
 
                     <PrimaryButton className={`w-full mb-5 ${isSending && "opacity-50"}`} type="submit" disabled={isSending}>
                         {isSending ? 
