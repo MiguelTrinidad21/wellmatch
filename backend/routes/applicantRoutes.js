@@ -38,8 +38,7 @@ import {
     uploadAndAddResume, 
     viewResume,
     makeResumeDefault,
-    deleteResume,
-    authenticateResume
+    deleteResume
 } from "../controllers/applicant/resumeControllers.js";
 
 
@@ -97,7 +96,6 @@ router.post("/emailSignUp/verify", verifyApplicantCode)
 router.post("/emailSignUp/resendCode", resendApplicantCode)
 router.post("/changeEmail/resendCode", resendEmailUpdateCode)
 
-router.post("/resume/authenticate", authenticateResume)
 
 router.patch("/editProfileInfo", verifyToken, isApplicant, handleApplicantPhotoUpload, updateInfo)
 router.patch("/resume/makeDefault", verifyToken, isApplicant, makeResumeDefault)
