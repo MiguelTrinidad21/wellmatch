@@ -378,38 +378,48 @@ export async function deleteResume(req, res) {
 }
 
 export async function authenticateResume(req, res) {
-    // let connection;
-
     try {
-        // const [allResumePublicIDs] = await database.query(`
-        //     SELECT cloudinaryPublicID FROM resumes WHERE cloudinaryPublicID != 'null'`
-        // );
+        const [allResumePublicIDs] = await database.query(`
+            SELECT cloudinaryPublicID
+            FROM resumes
+            WHERE cloudinaryPublicID IS NOT NULL
+            AND cloudinaryPublicID != 'null'
+            AND cloudinaryPublicID != 'wellmatch/applicant/resume/Introduction_1786039241858.pdf'
+        `);
 
-        // allResumePublicIDs.forEach(currentID => {
-            
-        // });
+        for (const resume of allResumePublicIDs) {
+            try {
+                await cloudinary.uploader.rename(
+                    resume.cloudinaryPublicID,
+                    resume.cloudinaryPublicID,
+                    {
+                        resource_type: "raw",
+                        type: "upload",
+                        to_type: "authenticated"
+                    }
+                );
 
-        // connection = await database.getConnection();
-        // await connection.beginTransaction();
+                console.log(
+                    `Successfully authenticated: ${resume.cloudinaryPublicID}`
+                );
 
-        const resumePublicID = "wellmatch/applicant/resume/Introduction_1786039241858.pdf";
-
-        const result = await cloudinary.uploader.rename(
-            resumePublicID,
-            resumePublicID,
-            {
-                resource_type: "raw",
-                type: "upload",
-                to_type: "authenticated"
+            } catch (error) {
+                console.error(
+                    `Failed to authenticate: ${resume.cloudinaryPublicID}`,
+                    error
+                );
             }
-        );
+        }
 
-        console.log(result);
-        return res.status(200).json({ message: "Resume updated to authenticated" })
+        return res.status(200).json({
+            message: "Resume authentication migration completed"
+        });
 
     } catch (error) {
         console.error(error);
 
-        return res.status(500).json({ message: "Failed to authenticate resume" });
+        return res.status(500).json({
+            message: "Failed to retrieve resumes"
+        });
     }
 }
