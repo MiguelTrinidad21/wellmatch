@@ -21,7 +21,7 @@ export function uploadToCloudinary(fileBuffer, folder) {
 
 export function uploadResume(fileBuffer, folder, originalName) {
     return new Promise((resolve, reject) => {
-        const extension = path.extname(originalName); // .pdf or .docx
+        const extension = path.extname(originalName);
         const baseName = path.basename(originalName, extension);
 
         const safeBaseName = baseName
@@ -34,6 +34,7 @@ export function uploadResume(fileBuffer, folder, originalName) {
             {
                 folder,
                 resource_type: "raw",
+                type: "authenticated",
                 public_id: publicId,
                 filename_override: originalName
             },

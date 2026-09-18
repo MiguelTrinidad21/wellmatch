@@ -270,7 +270,7 @@ export async function viewResume(req, res) {
 
         const cloudinaryResource = await cloudinary.api.resource(cloudinaryPublicID, {
             resource_type: 'raw',
-            type: 'upload',
+            type: 'authenticated',
         });
 
         const fileUrl = cloudinaryResource.secure_url;
@@ -374,5 +374,42 @@ export async function deleteResume(req, res) {
     } catch (error) {
         console.error(error);
         return res.status(500).json({ message: "Failed to delete resume" });
+    }
+}
+
+export async function authenticateResume(req, res) {
+    // let connection;
+
+    try {
+        // const [allResumePublicIDs] = await database.query(`
+        //     SELECT cloudinaryPublicID FROM resumes WHERE cloudinaryPublicID != 'null'`
+        // );
+
+        // allResumePublicIDs.forEach(currentID => {
+            
+        // });
+
+        // connection = await database.getConnection();
+        // await connection.beginTransaction();
+
+        const resumePublicID = "wellmatch/applicant/resume/Introduction_1786039241858.pdf";
+
+        const result = await cloudinary.uploader.rename(
+            resumePublicID,
+            resumePublicID,
+            {
+                resource_type: "raw",
+                type: "upload",
+                to_type: "authenticated"
+            }
+        );
+
+        console.log(result);
+        return res.status(200).json({ message: "Resume updated to authenticated" })
+
+    } catch (error) {
+        console.error(error);
+
+        return res.status(500).json({ message: "Failed to authenticate resume" });
     }
 }

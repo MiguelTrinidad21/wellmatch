@@ -25,16 +25,16 @@ export async function viewResume(req, res) {
 
         const { cloudinaryPublicID, origFileName } = rows;
 
-        // ✅ Use Cloudinary Admin API to get the actual secure_url with version
+
         const cloudinaryResource = await cloudinary.api.resource(cloudinaryPublicID, {
             resource_type: 'raw',
-            type: 'upload',
+            type: 'authenticated',
         });
 
         const fileUrl = cloudinaryResource.secure_url;
         console.log("Streaming from:", fileUrl);
 
-        // ✅ Backend fetches from Cloudinary
+
         const fileResponse = await axios.get(fileUrl, { responseType: 'stream' });
 
         const isDocx = origFileName?.toLowerCase().endsWith('.docx');
@@ -46,7 +46,7 @@ export async function viewResume(req, res) {
             : 'application/pdf'
         );
 
-        // ✅ Stream directly to frontend — URL never exposed
+
         fileResponse.data.pipe(res);
 
     } catch (error) {
