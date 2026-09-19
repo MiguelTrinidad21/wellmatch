@@ -1,5 +1,5 @@
 import database from "../../configs/database.js";
-import { processJob, normalizeQuillContent } from "../../helpers/extractSkillsAndEmbeddings.js";
+import { processJob, normalizeQuillContent } from "../../services/extractSkillsAndEmbeddings.js";
 
 
 

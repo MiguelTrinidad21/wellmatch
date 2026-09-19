@@ -1,7 +1,7 @@
 import database from "../../configs/database.js";
 import cloudinary from "../../configs/cloudinary.js";
 import { uploadResume } from "../../helpers/uploadToCloudinary.js";
-import { processResume, generateFileHash } from "../../helpers/resumeExtractor.js";
+import { processResume, generateFileHash } from "../../services/resumeExtractor.js"
 import axios from "axios";
 
 export async function uploadAndAddResume(req, res) {
