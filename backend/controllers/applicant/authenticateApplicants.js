@@ -476,7 +476,6 @@ export async function resendApplicantCode(req, res) {
 
 export async function loginApplicant(req, res) {
     const { email, password } = req.body;
-    const normalizedEmail = email.trim().toLowerCase();
 
     if (!email) {
         return res.status(400).json({
@@ -492,11 +491,13 @@ export async function loginApplicant(req, res) {
         });        
     }
 
+    const normalizedEmail = email.trim().toLowerCase();
+
     try {
         const [result] = await database.query(`
         SELECT *
         FROM applicants
-        WHERE email = ?
+        WHERE LOWER(email) = ?
         AND status = 'active'
         LIMIT 1`, [normalizedEmail]);
         
