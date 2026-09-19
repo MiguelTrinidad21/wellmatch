@@ -5,6 +5,7 @@ import Overlay from "../../components/overlay/OverlayMobile.jsx";
 import PrimaryButton from "../../components/buttons/PrimaryButton.jsx";
 import ForgotPassword from "../verification/ForgotPassword.jsx";
 import ConfirmationBox from "../../components/popUps/ConfirmationBox.jsx";
+import useLockBodyScroll from "../../hooks/useLockBodyScroll.js";
 import api from "../../apis/axios.js";
 import { userStore } from "../../zustand/userState.js";
 import { FiEye } from "react-icons/fi";
@@ -24,7 +25,8 @@ export default function ApplicantSignIn() {
     const [showForgotPassword, setShowForgotPassword] = useState(false);
     const [passwordReset, setPasswordReset] = useState(false);
 
-
+    useLockBodyScroll(showForgotPassword);
+    useLockBodyScroll(passwordReset);
 
 
     function handlePass() {
@@ -147,11 +149,11 @@ export default function ApplicantSignIn() {
                                 <PrimaryButton onClick={() => setShowForgotPassword(true)} className="mb-3 text-black! bg-white m-auto">Forgot Password?</PrimaryButton>
 
                             
-                                <p className="text-center text-sm mt-5 lg:text-[1rem]">
+                                {/* <p className="text-center text-sm mt-5 lg:text-[1rem]">
                                     <Link to="/applicant/register">Don't have an account?
                                         <span className="font-bold text-[#10B981]">&nbsp;&nbsp;Register here</span>
                                     </Link>
-                                </p>
+                                </p> */}
 
                             </div>
 

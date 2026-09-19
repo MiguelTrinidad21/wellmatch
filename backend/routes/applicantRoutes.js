@@ -68,7 +68,7 @@ import {
     withdrawApplication
 } from "../controllers/applicant/jobApplicationControllers.js";
 
-import { forgotPassword, verifyPasswordCode, resetPassword } from "../controllers/publicControllers/forgotPassword.js";
+import { forgotPassword, verifyPasswordCode, resetPassword } from "../controllers/publicControllers/applicantForgotPassword.js";
 
 
 const router = express.Router();
@@ -94,8 +94,8 @@ router.get("/getSavedJobs", verifyToken, isApplicant, getAllSavedJobs)
 router.post("/:jobID/:resumeID/skillgap", verifyToken, isApplicant, skillGapController);
 router.post("/register", generalLimiter, registerApplicant);
 router.post("/forgotPassword", passwordResetLimiter, forgotPassword);
-router.post("/forgotPassword/verifyCode", verifyPasswordCode);
-router.post("/forgotPassword/verifyCode/resetPassword", resetPassword);
+router.post("/forgotPassword/verifyCode", passwordResetLimiter, verifyPasswordCode);
+router.post("/forgotPassword/verifyCode/resetPassword", passwordResetLimiter, resetPassword);
 router.post("/login", authLimiter, loginApplicant);
 router.post("/logout", logoutApplicant);
 router.post("/uploadResume", verifyToken, isApplicant, generalLimiter, handleMulterResumeUpload, uploadAndAddResume)

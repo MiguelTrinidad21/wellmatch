@@ -1,6 +1,6 @@
 import express from "express";
 
-import { authLimiter,generalLimiter } from "../middlewares/rateLimiter.js";
+import { authLimiter,generalLimiter, passwordResetLimiter } from "../middlewares/rateLimiter.js";
 
 import { 
     registerAdmin,
@@ -60,6 +60,12 @@ import {
     removeEmployer
 } from "../controllers/employer/manageEmployers.js"
 
+import { 
+    forgotPassword, 
+    verifyPasswordCode, 
+    resetPassword 
+} from "../controllers/publicControllers/employerForgotPassword.js";
+
 import handleMulterUpload from "../middlewares/handleCompanyPhotos.js";
 import updateCompanyImages from "../controllers/employer/updateCompany.js";
 import { sendEmployerInvitationEmail } from "../controllers/employer/inviteEmployer.js";
@@ -70,6 +76,9 @@ import { viewResume } from "../controllers/employer/resumeViewer.js";
 const router = express.Router();
 
 router.post("/register", generalLimiter, registerAdmin);
+router.post("/forgotPassword", passwordResetLimiter, forgotPassword);
+router.post("/forgotPassword/verifyCode", passwordResetLimiter, verifyPasswordCode);
+router.post("/forgotPassword/verifyCode/resetPassword", passwordResetLimiter, resetPassword);
 router.post("/emailSignUp/verify", verifyEmployerCode);
 router.post("/emailSignUp/resendCode", resendEmployerCode);
 router.post("/emailSignUp/:token/verify", verifyCoEmployerCode);
