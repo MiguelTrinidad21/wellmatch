@@ -38,3 +38,23 @@ export async function sendEmailUpdateCode(email, verificationCode) {
         }
     });   
 }
+
+
+export async function sendPasswordResetCode(email, verificationCode) {
+    await brevo.transactionalEmails.sendTransacEmail({
+        sender: {
+            name: process.env.BREVO_SENDER_NAME,
+            email: process.env.BREVO_SENDER_EMAIL
+        },
+        to: [
+            {
+                email
+            }
+        ],
+        templateId: 11,
+        params: {
+            email,
+            verificationCode
+        }
+    });   
+}

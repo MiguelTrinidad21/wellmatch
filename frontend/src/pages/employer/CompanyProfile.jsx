@@ -1,5 +1,4 @@
 import PrimaryButton from "../../components/buttons/PrimaryButton";
-import SecondaryButton from "../../components/buttons/SecondaryButton";
 import AuthNavBar from "../../components/navBars/AuthNavBar";
 import SideBarOverlay from "../../components/overlay/SideBarOverlay";
 import EmployerSideBar from "../../components/navBars/EmployerSideBar";
@@ -11,7 +10,6 @@ import InviteEmployer from "../admin/InviteEmployer";
 import defaultCover from "../../assets/defaultCover.jpg"
 import { IoMdAdd } from "react-icons/io";
 import { IoPersonRemove } from "react-icons/io5";
-import { MdClose } from "react-icons/md";
 import { LuEllipsisVertical } from "react-icons/lu";
 import { FiEdit } from "react-icons/fi";
 import { SlLocationPin } from "react-icons/sl";
@@ -30,7 +28,6 @@ export default function CompanyProfile() {
     const { setEmployerActiveLink, sideBarStatus } = sideBarStore();
     useLockBodyScroll(sideBarStatus);
     
-    const navigate = useNavigate();
 
     const [companyMembers, setCompanyMembers] = useState([]);
     const [editCompany, setEditCompany] = useState(false);
@@ -41,11 +38,11 @@ export default function CompanyProfile() {
     const [isRemoved, setIsRemoved] = useState(false);
     const [memberID, setMemberID] = useState(null);
     const [showMenu, setShowMenu] = useState(false);
-    const [errors, setErrors] = useState("");
 
     const [showInvite, setShowInvite] = useState(false);
     const [inviteSent, setInviteSent] = useState(false);
 
+    useLockBodyScroll(showInvite);
 
     useEffect(() => {
         setEmployerActiveLink("Company Profile");
@@ -216,7 +213,7 @@ export default function CompanyProfile() {
                         </div>
                     </div>
 
-                        {/* <hr className="mt-10 mb-9 border-t-2 border-gray-300" /> */}
+                    
                     <div className="w-full p-5 m-auto md:w-100 lg:w-140 xl:w-170 xl:p-8 bg-white rounded-2xl shadow-md">
                         <div className=" w-full mb-5">
                             <div className="w-full mb-2">

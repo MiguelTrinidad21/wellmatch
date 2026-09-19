@@ -19,5 +19,15 @@ export const generalLimiter = rateLimit({
 });
 
 
+export const passwordResetLimiter = rateLimit({
+    windowMs: 60 * 1000,
+    max: 2,                          
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: { message: "Too many attempts. Please try again in 15 minutes." }
+});
+
+
+
 
 
