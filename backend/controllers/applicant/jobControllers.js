@@ -98,9 +98,45 @@ export async function getRecommendedJobs(req, res) {
 
         const resumeEmbedding = JSON.parse(resume.concatResumeSkillsEmbedding);
 
-        const [jobRows] = await database.query(
-            `
-            SELECT
+        const [jobRows] = await database.query(`
+            SELECT j.jobID, j.concatJobSkillsEmbedding
+            FROM jobs j
+            WHERE j.status = 'open' 
+            AND j.concatJobSkillsEmbedding IS NOT NULL
+        `);
+
+        const scored = jobRows
+            .map(job => ({
+                jobID: job.jobID,
+                similarityScore: cosineSimilarity(resumeEmbedding, JSON.parse(job.concatJobSkillsEmbedding))
+            }))
+            .filter(j => Math.round(j.similarityScore * 100) >= 50)
+            .sort((a, b) => b.similarityScore - a.similarityScore);
+
+        const startIndex = (currentPage - 1) * pageLimit;
+        const endIndex = startIndex + pageLimit;
+
+        const totalJobs = scored.length;
+        const totalPages = Math.ceil(totalJobs / pageLimit);
+
+        const pageSlice = scored.slice(startIndex, endIndex);
+        const pageJobIDs = pageSlice.map(j => j.jobID);
+
+        if (pageJobIDs.length === 0) {
+            return res.status(200).json({
+                resumeStatus: "active",
+                sortedRecommendedJobs: [],
+                pagination: {
+                    totalJobs,
+                    totalPages,
+                    currentPage,
+                    limit: pageLimit
+                }
+            });
+        }
+
+        const [jobDetails] = await database.query(`
+            SELECT 
                 j.jobID,
                 j.companyID,
                 c.companyName,
@@ -118,41 +154,22 @@ export async function getRecommendedJobs(req, res) {
                 j.workType,
                 j.minSalary,
                 j.maxSalary,
-                j.requiredYearsExp,
-                j.concatJobSkillsEmbedding
+                j.requiredYearsExp
             FROM jobs j
-            INNER JOIN companies c
-            ON j.companyID = c.companyID
-            WHERE j.status = 'open'
-                AND j.concatJobSkillsEmbedding IS NOT NULL
-            `
+            INNER JOIN companies c 
+                ON j.companyID = c.companyID
+            WHERE j.jobID IN (?)
+        `, [pageJobIDs]);
+
+        const jobDetailsMap = new Map(
+            jobDetails.map(job => [job.jobID, job])
         );
 
-        const sortedRecommendedJobs = jobRows
-            .map((job) => {
-                const jobEmbedding = JSON.parse(job.concatJobSkillsEmbedding);
-
-                const similarityScore = cosineSimilarity(
-                    resumeEmbedding,
-                    jobEmbedding
-                );
-
-                return {
-                    ...job,
-                    similarityScore,
-                    matchPercentage: Math.round(similarityScore * 100)
-                };
-            })
-            .filter((job) => job.matchPercentage >= 50)
-            .sort((a, b) => b.similarityScore - a.similarityScore);
-        
-        const totalJobs = sortedRecommendedJobs.length;
-        const totalPages = Math.ceil(totalJobs / pageLimit);
-
-        const startIndex = (currentPage - 1) * pageLimit;
-        const endIndex = startIndex + pageLimit;
-
-        const paginatedJobs = sortedRecommendedJobs.slice(startIndex, endIndex);
+        const paginatedJobs = pageSlice.map(job => ({
+            ...jobDetailsMap.get(job.jobID),
+            similarityScore: job.similarityScore,
+            matchPercentage: Math.round(job.similarityScore * 100)
+        }));
 
         return res.status(200).json({
             resumeStatus: "active",
@@ -166,7 +183,7 @@ export async function getRecommendedJobs(req, res) {
         });
 
     } catch (error) {
-        console.error("Getting recommended jobs failed:", error);
+        console.error(error);
 
         return res.status(500).json({
             message: "Internal server error"
@@ -195,15 +212,18 @@ export async function searchJobs(req, res) {
             });
         }
 
+
         const embeddingResponse = await openai.embeddings.create({
             model: "text-embedding-3-large",
             input: trimmedJobTitle,
             dimensions: 1024
         });
 
-        const jobSearchTitleEmbedding = embeddingResponse.data[0].embedding;
+        const jobSearchTitleEmbedding =
+            embeddingResponse.data[0].embedding;
 
-        let allJobs;
+        
+        let jobRows;
 
         if (trimmedLocation) {
             const cityOrRegion = trimmedLocation
@@ -211,16 +231,12 @@ export async function searchJobs(req, res) {
                 .split(",")[0]
                 .trim();
 
-            [allJobs] = await database.query(
+            [jobRows] = await database.query(
                 `
-                SELECT 
-                    j.*, 
-                    c.companyName, 
-                    c.profilePhotoURL, 
-                    c.coverPhotoURL
+                SELECT
+                    j.jobID,
+                    j.jobTitleEmbedding
                 FROM jobs j
-                INNER JOIN companies c
-                    ON j.companyID = c.companyID
                 WHERE j.status = 'open'
                     AND LOWER(j.location) LIKE ?
                     AND j.jobTitleEmbedding IS NOT NULL
@@ -228,23 +244,19 @@ export async function searchJobs(req, res) {
                 [`%${cityOrRegion}%`]
             );
         } else {
-            [allJobs] = await database.query(
+            [jobRows] = await database.query(
                 `
-                SELECT 
-                    j.*, 
-                    c.companyName, 
-                    c.profilePhotoURL, 
-                    c.coverPhotoURL
+                SELECT
+                    j.jobID,
+                    j.jobTitleEmbedding
                 FROM jobs j
-                INNER JOIN companies c
-                    ON j.companyID = c.companyID
                 WHERE j.status = 'open'
                     AND j.jobTitleEmbedding IS NOT NULL
                 `
             );
         }
 
-        if (allJobs.length === 0) {
+        if (jobRows.length === 0) {
             return res.status(200).json({
                 relatedJobs: [],
                 pagination: {
@@ -256,7 +268,8 @@ export async function searchJobs(req, res) {
             });
         }
 
-        const sortedRelatedJobs = allJobs
+        
+        const sortedRelatedJobs = jobRows
             .map((job) => {
                 const jobEmbedding = JSON.parse(job.jobTitleEmbedding);
 
@@ -266,7 +279,7 @@ export async function searchJobs(req, res) {
                 );
 
                 return {
-                    ...job,
+                    jobID: job.jobID,
                     similarityScore,
                     matchPercentage: Math.round(similarityScore * 100)
                 };
@@ -274,13 +287,84 @@ export async function searchJobs(req, res) {
             .filter((job) => job.matchPercentage >= 45)
             .sort((a, b) => b.similarityScore - a.similarityScore);
 
+       
         const totalJobs = sortedRelatedJobs.length;
         const totalPages = Math.ceil(totalJobs / pageLimit);
 
         const startIndex = (currentPage - 1) * pageLimit;
         const endIndex = startIndex + pageLimit;
 
-        const paginatedJobs = sortedRelatedJobs.slice(startIndex, endIndex);
+        const pageSlice = sortedRelatedJobs.slice(
+            startIndex,
+            endIndex
+        );
+
+        const pageJobIDs = pageSlice.map((job) => job.jobID);
+
+        
+        if (pageJobIDs.length === 0) {
+            return res.status(200).json({
+                relatedJobs: [],
+                pagination: {
+                    totalJobs,
+                    totalPages,
+                    currentPage,
+                    limit: pageLimit
+                }
+            });
+        }
+
+        
+        const [jobDetails] = await database.query(
+            `
+            SELECT
+                j.jobID,
+                j.companyID,
+                c.companyName,
+                c.profilePhotoURL,
+                c.coverPhotoURL,
+                j.jobTitle,
+                j.jobOverview,
+                j.jobDuties,
+                j.requiredQualifications,
+                j.preferredQualifications,
+                j.workingConditions,
+                j.jobBenefits,
+                j.location,
+                j.workPlaceOption,
+                j.workType,
+                j.minSalary,
+                j.maxSalary,
+                j.requiredYearsExp
+            FROM jobs j
+            INNER JOIN companies c
+                ON j.companyID = c.companyID
+            WHERE j.jobID IN (?)
+            `,
+            [pageJobIDs]
+        );
+
+    
+        const jobDetailsMap = new Map(
+            jobDetails.map((job) => [job.jobID, job])
+        );
+
+        
+        const paginatedJobs = pageSlice
+            .map((job) => {
+                const details = jobDetailsMap.get(job.jobID);
+
+                if (!details) {
+                    return null;
+                }
+
+                return {
+                    ...details,
+                    similarityScore: job.similarityScore,
+                    matchPercentage: job.matchPercentage
+                };
+            })
+            .filter(Boolean);
 
         return res.status(200).json({
             relatedJobs: paginatedJobs,
