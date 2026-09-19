@@ -2,11 +2,11 @@ import rateLimit from "express-rate-limit";
 
 
 export const authLimiter = rateLimit({
-    windowMs: 10 * 60 * 1000,
+    windowMs: 15 * 60 * 1000,
     max: 5,                          
     standardHeaders: true,
     legacyHeaders: false,
-    message: { message: "Too many attempts. Please try again in 10 minutes." }
+    message: { message: "Too many attempts. Please try again in 15 minutes." }
 });
 
 
@@ -20,11 +20,11 @@ export const generalLimiter = rateLimit({
 
 
 export const passwordResetLimiter = rateLimit({
-    windowMs: 60 * 1000,
-    max: 2,                          
+    windowMs: 60 * 60 * 1000,
+    max: 5,                          
     standardHeaders: true,
     legacyHeaders: false,
-    message: { message: "Too many attempts. Please try again in 15 minutes." }
+    message: { message: "Too many attempts. Please try again after an hour." }
 });
 
 

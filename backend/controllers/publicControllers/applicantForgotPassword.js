@@ -33,7 +33,7 @@ export async function forgotPassword(req, res) {
 
         if (existingApplicant.length === 0) {
             return res.status(409).json({
-                message: "If that email exists, a code was sent",
+                message: "User account not found",
                 issue: "email"
             });
         }

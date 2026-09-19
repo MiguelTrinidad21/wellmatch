@@ -1,10 +1,12 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import PublicNavBar from "../../components/navBars/PublicNavBar.jsx";
 import Overlay from "../../components/overlay/OverlayMobile.jsx";
 import PrimaryButton from "../../components/buttons/PrimaryButton.jsx";
-import Footer from "../../components/others/Footer.jsx";
+import ForgotPassword from "../verification/ForgotPassword.jsx";
+import ConfirmationBox from "../../components/popUps/ConfirmationBox.jsx";
 import api from "../../apis/axios.js";
+import useLockBodyScroll from "../../hooks/useLockBodyScroll.js"
 import { userStore } from "../../zustand/userState.js";
 import { FiEye } from "react-icons/fi";
 import { FiEyeOff } from "react-icons/fi";
@@ -12,11 +14,17 @@ import employerBanner from "../../assets/employerBanner.jpg"
 
 export default function EmployerSignIn() {
     const navigate = useNavigate();
-    const { currentUser, handleCurrentUser } = userStore();
+    const { handleCurrentUser } = userStore();
 
     const [employerCredentials, setEmployerCredentials] = useState({email: "", password: ""});
     const [errors, setErrors] = useState({});
     const [showPassword, setShowPassword] = useState(false);
+
+    const [showForgotPassword, setShowForgotPassword] = useState(false);
+    const [passwordReset, setPasswordReset] = useState(false);
+
+    useLockBodyScroll(showForgotPassword);
+    useLockBodyScroll(passwordReset);
 
     function handlePass(e) {
         setShowPassword(!showPassword);
@@ -62,6 +70,23 @@ export default function EmployerSignIn() {
             <div className="w-full min-h-dvh flex flex-col relative bg-[#F3F4F6]">
                 <PublicNavBar />
                 <Overlay />
+               
+                {
+                    showForgotPassword &&
+                    <ForgotPassword 
+                        userType="employer"
+                        cancelFunc={() => setShowForgotPassword(false)}
+                        setPasswordReset={() => setPasswordReset(true)}
+                    />
+                }
+
+                {
+                    passwordReset &&
+                    <ConfirmationBox
+                        text="Password reset successfully. Please login with your new password."
+                        onClick={() => setPasswordReset(false)}
+                    />
+                }
 
                 <div className="w-full flex-1 flex justify-center items-center p-6 md:px-15 md:py-10 lg:px-20 min-h-0">
                     <div className="flex flex-col min-h-0 w-full lg:flex-row lg:w-240 lg:h-140 lg:overflow-hidden lg:rounded-3xl lg:shadow-xl">
@@ -80,7 +105,7 @@ export default function EmployerSignIn() {
                             </div>
                         </div>
 
-                        <form onSubmit={handleSubmit} className="m-auto flex items-center w-full h-full min-h-0 overflow-y-auto bg-white rounded-3xl shadow-lg p-6 md:w-100 lg:w-1/2 lg:rounded-tl-none lg:shadow-none lg:rounded-bl-none lg:p-15">
+                        <form onSubmit={handleSubmit} className="m-auto flex items-center w-full h-full min-h-0 overflow-y-auto bg-white rounded-2xl shadow-lg p-6 md:w-100 lg:w-1/2 lg:rounded-tl-none lg:shadow-none lg:rounded-bl-none lg:px-15 lg:py:12">
                             <div className="w-full">
                                 <h2 className="text-left text-gray-900 mb-2 font-bold text-2xl lg:text-3xl lg:mb-4 ">Welcome back</h2>
                                 <p className="text-gray-500 font-semibold text-[17px] mb-10">Sign in to manage job postings, review applicants, and hire with confidence.</p>
@@ -115,11 +140,12 @@ export default function EmployerSignIn() {
                                 {errors.password && <p className="text-red-600 text-[13px] mb-4">{errors.password}</p>}
                                 {errors.rateLimit && <p className="text-red-600 text-[13px] mb-4 text-center">{errors.rateLimit}</p>}
 
-                                <PrimaryButton type="submit" className="w-full">Sign in</PrimaryButton>
+                                <PrimaryButton type="submit" className="w-full mb-3">Sign in</PrimaryButton>
+                                <PrimaryButton onClick={() => setShowForgotPassword(true)} className="mb-3 text-black! bg-white m-auto">Forgot Password?</PrimaryButton>
 
-                                <p className="text-center text-sm mt-5 lg:text-[1rem]">Don't have an account? 
+                                {/* <p className="text-center text-sm mt-5 lg:text-[1rem]">Don't have an account? 
                                     <Link to="/employer/register"><span className="font-bold text-[#10B981]">&nbsp;&nbsp;Register here</span></Link>
-                                </p>
+                                </p> */}
 
                             </div>
                         </form>

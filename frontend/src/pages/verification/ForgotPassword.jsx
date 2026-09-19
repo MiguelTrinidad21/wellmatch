@@ -201,6 +201,8 @@ export default function ForgotPassword({ userType, cancelFunc, setPasswordReset 
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 required
+                                minLength={5}
+                                maxLength={100}
                                 className={`p-2 lg:px-4 rounded-md block w-full border-2 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out ${errors.email ? "border-red-600 focus:border-red-600" : "border-gray-300 focus:border-green-600"}`} 
                             />
                             {errors.email && <p className="text-red-600 text-[13px] text-center mb-3">{errors.email}</p>}
@@ -274,6 +276,8 @@ export default function ForgotPassword({ userType, cancelFunc, setPasswordReset 
                                     onChange={(e) => setNewPassword(e.target.value)}
                                     placeholder="Enter new password"
                                     required
+                                    minLength={12}
+                                    maxLength={72}
                                     className={`p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-green-600 ${errors.invalidPass ? "focus:border-red-600 border-red-600 mb-1!" : "border-gray-300"}`}
                                 />
                                 <div onClick={() => setShowPassword(!showPassword)} className="absolute top-1/2 -translate-y-1/2 right-2 cursor-pointer">
