@@ -74,7 +74,8 @@ export default function ApplicantSignIn() {
 
                 {
                     showForgotPassword &&
-                    <ForgotPassword 
+                    <ForgotPassword
+                        userType="applicant" 
                         cancelFunc={() => setShowForgotPassword(false)}
                         setPasswordReset={() => setPasswordReset(true)}
                     />
