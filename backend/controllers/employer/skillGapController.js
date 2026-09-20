@@ -57,7 +57,7 @@ export async function getSkillGapReport(req, res) {
     try {
 
         const [[applicant]] = await database.query(`
-            SELECT applicantID, status
+            SELECT *
             FROM applicants
             WHERE applicantID = ?
             LIMIT 1
@@ -87,6 +87,20 @@ export async function getSkillGapReport(req, res) {
         );
 
         if (existingReport.length > 0) {
+            const [[resumeSkills]] = await database.query(`
+                SELECT concatResumeSkills FROM resumes WHERE resumeID = ?`,
+                [existingReport[0].resumeID]
+            );
+            
+            if (resumeSkills.concatResumeSkills === "") {
+                return res.status(200).json({
+                    message: "Existing skill gap report detected (no resume skills)",
+                    issue: "noResumeSkills",
+                    skillGapReport: formatReport(existingReport[0])
+                });
+
+            }
+
             return res.status(200).json({
                 message: "Existing skill gap report detected",
                 skillGapReport: formatReport(existingReport[0])
@@ -103,13 +117,40 @@ export async function getSkillGapReport(req, res) {
         );
 
         if (resumeSkills.concatResumeSkills === "") {
-            return res.status(404).json({
-                message: "No skills extracted from this resume.",
-                issue: "noResumeSkills"
+            await database.query(`
+                INSERT IGNORE INTO skillGapAnalysis (resumeID, jobID)
+                VALUES (?, ?)`,
+                [resumeID, jobID]
+            );
+
+            const [finalReport] = await database.query(`
+                SELECT 
+                    s.*, 
+                    a.firstName, 
+                    a.lastName,
+                    a.email, 
+                    a.address, 
+                    a.profilePhotoURL
+                FROM skillGapAnalysis s
+                JOIN resumes r
+                    ON s.resumeID = r.resumeID
+                JOIN applicants a
+                    ON r.applicantID = a.applicantID
+                WHERE s.resumeID = ?
+                AND s.jobID = ?
+                LIMIT 1
+                `,
+                [resumeID, jobID]
+            );
+    
+            return res.status(200).json({
+                message: "New skill gap report ready (no resume skills)",
+                issue: "noResumeSkills",
+                skillGapReport: formatReport(finalReport[0])
             });
+            
         }
 
-        console.log
         const skillGapResult = await skillGapService(resumeID, jobID);
 
         if (Object.keys(skillGapResult.scoreBreakdown).length > 0) {

@@ -45,7 +45,8 @@ export default function SkillGapReport() {
     const [ activeMatchEvidenceIndex, setActiveMatchEvidenceIndex] = useState(null);
     const [ activeMissingEvidenceIndex, setActiveMissingEvidenceIndex] = useState(null);
 
-    const [skillGapIssue, setSkillGapIssue] = useState("");
+    const [noSkillGapReport, setNoSkillGapReport] = useState(false);
+    const [noResumeSkills, setNoResumeSkills] = useState(false);
 
     const [skillGapLoaded, setSkillGapLoaded] = useState(false);
     const [showResumeViewer, setShowResumeViewer] = useState(false);
@@ -96,19 +97,20 @@ export default function SkillGapReport() {
                     }
                 });
                 // console.log(res.data.skillGapReport)
+
+                const issue = res.data?.issue;
+                console.log(issue)
+
+                if (issue) setNoResumeSkills(true);
+
                 setSkillGapAnalysis(res.data.skillGapReport);
                 setSkillGapLoaded(true);
 
             } catch (error) {
                 console.log(error);
-                const issue = error.response?.data?.issue;
                 
-                if (issue === "noResumeSkills") {
-                    setSkillGapIssue("noResumeSkills");
-                } else {
-                    setSkillGapIssue("noSkillGapReport");
-                    
-                }
+                setNoSkillGapReport(true);
+
             }
         }
 
@@ -151,11 +153,17 @@ export default function SkillGapReport() {
         getJob()
     }, [jobID])
 
+    if (loading) {
+        return <SkillGapLoader />
+    }
 
-    if (skillGapIssue === "noSkillGapReport") {
+
+    if (noSkillGapReport) {
         return <NoSkillGapReport />
 
-    } else if (skillGapIssue === "noResumeSkills") {
+    } 
+    
+    if (noResumeSkills) {
         return (
             <div className="lg:flex relative w-full">
                 <SideBarOverlay />
@@ -174,18 +182,6 @@ export default function SkillGapReport() {
                             />
                         </>
                     }
-
-                    {
-                        showEvidence &&
-                        <JobSkillEvidence
-                            status={evidenceStatus}
-                            resumeSkill={resumeSkill}
-                            resumeEvidence={resumeEvidence}
-                            jobSkill={jobSkill}
-                            jobEvidence={jobEvidence}
-                            toggleFunc={() => setShowEvidence(false)} 
-                        />     
-                    }    
 
                     <div className="w-full min-h-[calc(100vh-64px)] p-6 md:py-10 md:px-15 lg:px-10 xl:px-30">
 
@@ -241,7 +237,7 @@ export default function SkillGapReport() {
                                             </div>
                                             <div>
                                                 <h1 className="font-bold md:text-lg mb-1">Skill gap analysis is not available for this applicant</h1>
-                                                <p className="text-sm">There were no skills extracted from the applicants resume. Please review the applicant's informaton and resume to assess fit in this job role.</p>
+                                                <p className="text-sm">There were no skills extracted from the applicant's resume. Please review the applicant's informaton and resume to assess fit in this job role.</p>
                                             </div>
                                         </div>
 
@@ -340,12 +336,6 @@ export default function SkillGapReport() {
     }
 
 
-    if (loading) {
-        return <SkillGapLoader />
-    }
-
-
-
     if (
         skillGapAnalysis.matchedSkills === null &&
         skillGapAnalysis.missingSkills === null &&
@@ -370,19 +360,7 @@ export default function SkillGapReport() {
                             user="employer"
                             />
                         </>
-                    }
-
-                    {
-                        showEvidence &&
-                        <JobSkillEvidence
-                            status={evidenceStatus}
-                            resumeSkill={resumeSkill}
-                            resumeEvidence={resumeEvidence}
-                            jobSkill={jobSkill}
-                            jobEvidence={jobEvidence}
-                            toggleFunc={() => setShowEvidence(false)} 
-                        />     
-                    }    
+                    }  
 
                     <div className="w-full min-h-[calc(100vh-64px)] p-6 md:py-10 md:px-15 lg:px-10 xl:px-30">
 
