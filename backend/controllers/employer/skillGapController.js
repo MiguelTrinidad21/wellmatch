@@ -97,7 +97,7 @@ export async function getSkillGapReport(req, res) {
             return res.status(404).json({ message: "Skill gap report is not available for this deleted applicant." });
         }
 
-        const [[resumeSkills]] = database.query(`
+        const [[resumeSkills]] = await database.query(`
             SELECT concatResumeSkills FROM resumes WHERE resumeID = ?`,
             [resumeID]
         );
@@ -109,6 +109,7 @@ export async function getSkillGapReport(req, res) {
             });
         }
 
+        console.log
         const skillGapResult = await skillGapService(resumeID, jobID);
 
         if (Object.keys(skillGapResult.scoreBreakdown).length > 0) {
