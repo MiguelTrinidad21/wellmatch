@@ -68,7 +68,7 @@ export default function AddResumeForm({ toggleForm, refresh }) {
                 
                 <div className="mb-3 p-2 w-full h-50 flex flex-col justify-center items-center border-2 border-gray-500 border-dashed rounded-2xl ">
                     {resumeFileName && (
-                        <p className="mb-2 text-sm font-medium text-gray-700">
+                        <p className="mb-2 w-full px-2 text-sm font-medium text-gray-700 break-all text-center">
                             {resumeFileName}
                         </p>
                     )}    
