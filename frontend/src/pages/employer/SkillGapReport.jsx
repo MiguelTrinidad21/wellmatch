@@ -99,18 +99,17 @@ export default function SkillGapReport() {
                 // console.log(res.data.skillGapReport)
 
                 const issue = res.data?.issue;
-                console.log(issue)
 
                 if (issue) setNoResumeSkills(true);
 
                 setSkillGapAnalysis(res.data.skillGapReport);
-                setSkillGapLoaded(true);
 
             } catch (error) {
-                console.log(error);
-                
+                console.log(error);                
                 setNoSkillGapReport(true);
 
+            } finally {
+                setSkillGapLoaded(true);
             }
         }
 

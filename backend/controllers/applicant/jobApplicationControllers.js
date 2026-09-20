@@ -138,6 +138,7 @@ export async function fetchApplications(req, res) {
         const [rows] = await database.query(`
             SELECT
                 a.*,
+                r.concatResumeSkills,
                 j.jobTitle,
                 j.jobOverview,
                 j.jobDuties,
@@ -157,6 +158,8 @@ export async function fetchApplications(req, res) {
                 s.overallScore,
                 s.scoresBreakdown
             FROM applications a
+            INNER JOIN resumes r
+                ON a.resumeID = r.resumeID
             INNER JOIN jobs j
                 ON a.jobID = j.jobID
             INNER JOIN companies c

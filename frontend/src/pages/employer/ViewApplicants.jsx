@@ -398,9 +398,10 @@ export default function ViewApplicants() {
                                                                 <h2 className="font-bold text-[16px] text-right">{`${item.overallScore}% Match`}</h2>
                                                             </div>  
                                                         : (item.concatJobSkills === null && item.overallScore === null) ||
-                                                          (item.firstName === "Deleted" && item.overallScore === null) ?
+                                                          (item.firstName === "Deleted" && item.overallScore === null) ||
+                                                          (!item.concatResumeSkills) ?
                                                             <div className={`ml-auto w-fit p-1 rounded-md max-h-fit border bg-slate-100 border-slate-300`}>
-                                                                <h2 className="font-bold text-sm text-gray-800 text-right">Not Applicable</h2>
+                                                                <h2 className="font-bold text-sm text-gray-800 text-right">No Match Score</h2>
                                                             </div>  
                                                         :
                                                             <div className={`ml-auto p-1 rounded-md w-fit border bg-slate-100 border-slate-300`}>
@@ -525,8 +526,9 @@ export default function ViewApplicants() {
                                                                     item.overallScore !== null ?
                                                                         <td className="px-6 py-5 text-center w-48 max-w-48 wrap-break-word font-semibold">{`${item.overallScore}%`}</td>
                                                                     : (item.concatJobSkills === null && item.overallScore === null) ||
-                                                                      (item.firstName === "Deleted" && item.overallScore === null) ?
-                                                                        <td className="px-6 py-5 text-center w-48 max-w-48 wrap-break-word font-semibold">Not Applicable</td>
+                                                                      (item.firstName === "Deleted" && item.overallScore === null) || 
+                                                                      (!item.concatResumeSkills) ?
+                                                                        <td className="px-6 py-5 text-center w-48 max-w-48 wrap-break-word font-semibold">No Match Score</td>
                                                                     :
                                                                         <td className="px-6 py-5 text-center w-48 max-w-48 wrap-break-word font-semibold">Awaiting Review</td>
                                                                 }
@@ -541,7 +543,7 @@ export default function ViewApplicants() {
                                                                         :   
                                                                             <PrimaryButton to={`/employer/applications/skillGapReport/${item.applicantID}/${item.jobID}/${item.resumeID}`} className="m-auto rounded-md text-sm">See Report</PrimaryButton>
                                                                     } */}
-                                                                    <PrimaryButton to={`/employer/applications/skillGapReport/${item.applicantID}/${item.jobID}/${item.resumeID}`} className="m-auto rounded-md text-sm">See Report</PrimaryButton>
+                                                                    <PrimaryButton to={`/employer/applications/skillGapReport/${item.applicantID}/${item.jobID}/${item.resumeID}`} className="m-auto rounded-md text-sm">View Profile</PrimaryButton>
                                                                 </td>
 
                                                                 {status === "submitted" &&

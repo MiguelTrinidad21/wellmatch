@@ -57,6 +57,8 @@ export default function SkillGapAnalysisUI() {
     const [jobLoaded, setJobLoaded] = useState(false);
     const loading = !skillGapLoaded || !jobLoaded;
 
+    const [noResumeSkills, setNoResumeSkills] = useState(false);
+    
     const [selectedJob, setSelectedJob] = useState(null);
     const [skillGapAnalysis, setSkillGapAnalysis] = useState(null);
 
@@ -104,8 +106,11 @@ export default function SkillGapAnalysisUI() {
                     `/applicant/${jobID}/${resumeID}/skillgap`
                 );                    
                 // console.log(skillGapReport.data.skillGapReport);
+                const issue = skillGapReport.data?.issue;
+                if (issue) setNoResumeSkills(true);
 
                 setSkillGapAnalysis(skillGapReport.data.skillGapReport);
+
             } catch (error) {
                 console.log(error);
                 
@@ -151,6 +156,137 @@ export default function SkillGapAnalysisUI() {
                 <p className="text-gray-600 text-sm text-center">Something went wrong. Please refresh and try again.</p>
             </div>
         );
+    }
+
+    if (noResumeSkills) {
+        return (
+            <div className="lg:flex relative w-full">
+                <ApplicantSideBar />
+                <SideBarOverlay />
+
+                <div className="w-full min-h-screen bg-[#F3F4F6] relative">
+                    <AuthNavBar />
+
+                    {
+                        jobIsDeleted &&
+                        <ConfirmationBox
+                            text="This job is no longer available because the company has been removed from WellMatch."
+                            onClick={() => setJobIsDeleted(false)}
+                        />
+                    }
+
+                    {showResumeViewer &&
+                        <>
+                            <Translucent />
+                            <ResumeViewerModal
+                            resumeID={resumeID}
+                            onClose={() => setShowResumeViewer(false)}
+                            user="applicant"
+                            />
+                        </>
+                    }
+
+                    <div className="w-full min-h-[calc(100vh-64px)] p-6 md:p-15 lg:p-10 xl:px-30">                    
+                        <div className="w-full grid grid-cols-1 gap-4 md:grid-cols-2 md:items-start xl:flex">
+
+                            <div ref={leftColRef} className="w-full flex flex-col gap-4 xl:w-100">
+                                <section className="rounded-2xl shadow-sm bg-white p-4 border-2 border-[#E8ECEF]">
+                                    <div className="hidden lg:flex gap-2 mb-4">
+                                        <div className="w-19 h-19 shrink-0">
+                                            <img className="w-full h-full rounded-full object-cover" src={`${currentUser.profilePhoto ? currentUser.profilePhoto : defaultProfile}`} alt="" />
+                                        </div>
+                                        <div className="flex-1 min-w-0">
+                                            <h1 className="text-lg font-bold wrap-break-word">{`${currentUser.firstName} ${currentUser.lastName}`}</h1>
+                                            <div className="flex items-start gap-2 w-full">
+                                                <MdOutlineEmail className="shrink-0 mt-1" />
+                                                <p className="wrap-break-word min-w-0">{currentUser.email}</p>
+                                            </div>
+                                            {
+                                                currentUser.address &&
+                                                <div className="flex items-start gap-2 w-full">
+                                                    <SlLocationPin className="shrink-0 mt-1" />
+                                                    <p className="wrap-break-word min-w-0">{currentUser.address}</p>
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                    <div className="flex flex-col items-center gap-1 mb-4 lg:hidden">
+                                        <div className="w-19 h-19 shrink-0">
+                                            <img className="w-full h-full rounded-full object-cover" src={`${currentUser.profilePhoto ? currentUser.profilePhoto : defaultProfile}`} alt="" />
+                                        </div>
+                                        <div className="w-full border-b border-gray-300 pb-1">
+                                            <h1 className="text-center text-lg font-bold wrap-break-word">{`${currentUser.firstName} ${currentUser.lastName}`}</h1>
+                                        </div>
+                                        <div className="w-full">
+                                            <div className="flex items-start gap-2 w-full">
+                                                <MdOutlineEmail className="shrink-0 mt-1" />
+                                                <p className="text-[15px] wrap-break-word min-w-0">{currentUser.email}</p>
+                                            </div>
+                                            {
+                                                currentUser.address &&
+                                                <div className="flex items-start gap-2 w-full">
+                                                    <SlLocationPin className="shrink-0 mt-1" />
+                                                    <p className="text-[15px] wrap-break-word min-w-0">{currentUser.address}</p>
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>                                    
+
+                                    <div className="flex flex-col w-full items-center justify-center gap-4">
+                                        <div className="flex items-start gap-4 rounded-2xl bg-[#2A1F54] w-full m:w-65 p-4 text-white">
+                                            <div className="w-5">
+                                                <GoInfo className="h-5 w-5"/>
+                                            </div>
+                                            <div>
+                                                <h1 className="font-bold text-lg mb-1">Skill gap analysis is not available</h1>
+                                                <p className="text-sm">There were no skills extracted from your resume. For better job matching, please use an ATS-friendly resume format.</p>
+                                            </div>
+                                        </div>
+
+                                        <PrimaryButton onClick={() => setShowResumeViewer(true)} className="w-full md:w-65 hover:bg-green-600 transition-colors duration-200 ease-in" >View Resume</PrimaryButton>
+                                    </div>
+
+                                </section>
+
+                            </div>
+
+                            <div style={leftColHeight ? { maxHeight: `${leftColHeight}px` } : undefined} className="w-full flex flex-col gap-4 md:overflow-y-auto md:pr-1 xl:flex-1">
+                                <section className="rounded-2xl shadow-sm bg-white p-4 w-full border-2 border-[#E8ECEF]">
+                                    <p className="text-sm text-gray-600 font-semibold">APPLYING FOR</p>
+                                    <p className="font-bold text-lg xl:text-xl">{selectedJob.jobTitle}</p>
+                                </section>
+
+                                <section className="rounded-2xl shadow-sm bg-white p-4 w-full border-2 border-[#E8ECEF]">
+                                    <h1 className="font-bold text-lg">Job Requirements</h1>
+
+                                    <h2 className="font-semibold">Required</h2>
+                                    <div
+                                        className="prose max-w-none text-[15px] [&_ul]:list-disc [&_ul]:pl-6 [&_li]:text-black [&_li::marker]:text-black"
+                                        dangerouslySetInnerHTML={{
+                                            __html: selectedJob.requiredQualifications?.replace(/&nbsp;/g, ' ')
+                                        }}
+                                    />
+
+                                    {selectedJob.preferredQualifications &&
+                                        <>
+                                            <h2 className="font-semibold mt-4">Preferred</h2>
+                                            <div
+                                                className="prose max-w-none text-[15px] [&_ul]:list-disc [&_ul]:pl-6 [&_li]:text-black [&_li::marker]:text-black"
+                                                dangerouslySetInnerHTML={{
+                                                    __html: selectedJob.preferredQualifications?.replace(/&nbsp;/g, ' ')
+                                                }}
+                                            />  
+                                        </>
+                                    }
+                                </section>                         
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>            
+        )
     }
 
     if (
@@ -235,7 +371,7 @@ export default function SkillGapAnalysisUI() {
                                     </div>                                    
 
                                     <div className="flex flex-col w-full items-center justify-center gap-4">
-                                        <div className="flex items-start gap-4 rounded-2xl bg-[#2A1F54] w-65 p-4 text-white">
+                                        <div className="flex items-start gap-4 rounded-2xl bg-[#2A1F54] w-full m:w-65 p-4 text-white">
                                             <div className="w-5">
                                                 <GoInfo className="h-5 w-5"/>
                                             </div>

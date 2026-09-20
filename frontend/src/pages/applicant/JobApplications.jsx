@@ -389,8 +389,8 @@ export default function JobApplications() {
                                                                     {
                                                                         item.overallScore !== null ?
                                                                             <td className="whitespace-nowrap px-6 py-5 text-center">{item.overallScore}%</td>
-                                                                        : item.concatJobSkills === null ?
-                                                                            <td className="whitespace-nowrap px-6 py-5 text-center">Not Applicable</td>
+                                                                        : item.concatJobSkills === null || !item.concatResumeSkills ?
+                                                                            <td className="whitespace-nowrap px-6 py-5 text-center">Not Available</td>
                                                                         :   
                                                                             <td className="whitespace-nowrap px-6 py-5 text-center">Pending Analysis</td>
                                                                     }

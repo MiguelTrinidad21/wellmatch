@@ -58,7 +58,13 @@ export async function fetchApplicants(req, res) {
 
     if (status === "not selected") {
         [allApplicants] = await database.query(`
-            SELECT a.*, s.overallScore, ap.firstName, ap.lastName, j.concatJobSkills
+            SELECT 
+                a.*, 
+                r.concatResumeSkills,
+                s.overallScore, 
+                ap.firstName, 
+                ap.lastName, 
+                j.concatJobSkills
             FROM applications a
             LEFT JOIN skillGapAnalysis s
                 ON a.jobID = s.jobID
@@ -67,18 +73,25 @@ export async function fetchApplicants(req, res) {
                 ON a.applicantID = ap.applicantID
             INNER JOIN jobs j
                 ON a.jobID = j.jobID
+            INNER JOIN resumes r
+                ON a.resumeID = r.resumeID
             WHERE a.jobID = ?
                 AND a.status IN ('not selected', 'withdraw')
             ORDER BY
-                (a.yearsExp >= ?) DESC,
-                s.overallScore DESC
+                a.applicationDate DESC
             `,
             [jobID, yearsRequired]
         );
 
     } else {
         [allApplicants] = await database.query(`
-            SELECT a.*, s.overallScore, ap.firstName, ap.lastName, j.concatJobSkills
+            SELECT 
+                a.*, 
+                r.concatResumeSkills,
+                s.overallScore, 
+                ap.firstName, 
+                ap.lastName, 
+                j.concatJobSkills
             FROM applications a
             LEFT JOIN skillGapAnalysis s
                 ON a.jobID = s.jobID
@@ -87,6 +100,8 @@ export async function fetchApplicants(req, res) {
                 ON a.applicantID = ap.applicantID
             INNER JOIN jobs j
                 ON a.jobID = j.jobID
+            INNER JOIN resumes r
+                ON a.resumeID = r.resumeID            
             WHERE a.jobID = ?
                 AND a.status = ?
             ORDER BY
