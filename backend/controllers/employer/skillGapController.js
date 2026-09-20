@@ -102,7 +102,7 @@ export async function getSkillGapReport(req, res) {
             [resumeID]
         );
 
-        if (!resumeSkills.concatResumeSkills) {
+        if (resumeSkills.concatResumeSkills === "") {
             return res.status(404).json({
                 message: "No skills extracted from this resume.",
                 issue: "noResumeSkills"
