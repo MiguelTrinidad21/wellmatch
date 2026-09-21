@@ -14,6 +14,13 @@ export async function uploadAndAddResume(req, res) {
         });
     }
 
+    if (resume.originalname.length > 200) {
+        return res.status(400).json({
+            message: "File name is too long",
+            issue: "longFileName"
+        });
+    }
+
     const fileHash = generateFileHash(resume.buffer);
     const { id } = req.user;
 
@@ -38,7 +45,7 @@ export async function uploadAndAddResume(req, res) {
 
         if (existingResume?.resumeStatus === "active") {
             return res.status(409).json({
-                message: "Resume already uploaded",
+                message: "This resume has already been uploaded.",
                 issue: "existingResume"
             });
         }
@@ -53,7 +60,7 @@ export async function uploadAndAddResume(req, res) {
             [id]
         );
 
-        if (allActiveResumes.length === 5) {
+        if (allActiveResumes.length >= 5) {
             return res.status(403).json({
                 message: "Uploaded resumes should not exceed five files",
                 issue: "fileLimit"
