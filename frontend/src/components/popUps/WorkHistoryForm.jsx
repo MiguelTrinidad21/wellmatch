@@ -39,23 +39,29 @@ export default function WorkHistoryForm({ toggleForm, refresh }) {
         e.preventDefault();
         const { startMonth, startYear, endMonth, endYear } = workInfo;
 
-        if (!startMonth || !startYear || !endMonth || !endYear) {
+        if (!startMonth || !startYear) {
             setErrors({
-                incompleteYear: "Please fill out all blank fields"
+                incompleteYear: "Please fill out Start Date completely"
             });
             return;
         }
 
 
         const start = new Date(startYear, startMonth);
-        const end = new Date(endYear, endMonth);
 
-        if (start >= end) {
-            setErrors({
-                invalidDate: "Start date must be before end date"
-            });
-            return;
+        let end;
+
+        if (endYear) {
+            end = new Date(endYear, endMonth);
+
+            if (start >= end) {
+                setErrors({
+                    invalidDate: "Start date must be before end date"
+                });
+                return;
+            }
         }
+
 
         try {
             await api.post("/applicant/addWorkExp", workInfo)
@@ -132,7 +138,7 @@ export default function WorkHistoryForm({ toggleForm, refresh }) {
                     </div>
 
                     <div className="w-full mb-4">
-                        <p className="font-medium mb-1">End Date</p>
+                        <p className="font-medium mb-1">End Date&nbsp;<span className="font-medium text-gray-500">(optional)</span></p>
                         <div className="grid grid-cols-2 gap-3">
                             <MonthSelector onChange={(value, label) => setWorkInfo((prev) => ({
                                 ...prev, 
@@ -143,8 +149,8 @@ export default function WorkHistoryForm({ toggleForm, refresh }) {
                         </div>      
                     </div>
 
-                    {errors.invalidDate && <p className="text-red-600 text-[13px] mb-4">{errors.invalidDate}</p>}
-                    {errors.incompleteYear && <p className="text-red-600 text-[13px] mb-4">{errors.incompleteYear}</p>}
+                    {errors.invalidDate && <p className="text-red-600 text-center text-[13px] mb-4">{errors.invalidDate}</p>}
+                    {errors.incompleteYear && <p className="text-red-600 text-center text-[13px] mb-4">{errors.incompleteYear}</p>}
 
                     <div className="w-full flex flex-col">
                         <PrimaryButton type="submit" className="w-full">Add</PrimaryButton>

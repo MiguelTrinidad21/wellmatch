@@ -27,6 +27,14 @@ export async function addWorkExp(req, res) {
             issue: "invalidCompany"
         });
     }
+
+    let endDate;
+
+    if (!endMonthLabel || !endYear) {
+        endDate = "Present"
+    } else {
+        endDate = `${endMonthLabel} ${endYear}`
+    }
     
 
     try {
@@ -46,7 +54,7 @@ export async function addWorkExp(req, res) {
                 jobTitle,
                 companyName,
                 `${startMonthLabel} ${startYear}`,
-                `${endMonthLabel} ${endYear}`
+                endDate
             ]
         );
 
