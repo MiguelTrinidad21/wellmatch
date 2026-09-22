@@ -46,6 +46,17 @@ export async function submitApplication(req, res) {
             return res.status(409).json({ message: "You still have an active application for this job post" })
         }
 
+        const [[isActiveJob]] = await database.query(`
+            SELECT status FROM jobs WHERE jobID = ? LIMIT 1`,
+            [jobID]
+        );
+
+        if (isActiveJob.status !== "open") {
+            return res.status(400).json({
+                message: "Application submission failed. This job post is already closed."
+            });
+        }
+
         await database.query(`
             INSERT INTO applications (
                 applicantID,

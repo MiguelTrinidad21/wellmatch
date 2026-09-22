@@ -503,6 +503,7 @@ export async function getAllSavedJobs(req, res) {
             INNER JOIN companies c
                 ON j.companyID = c.companyID
             WHERE s.applicantID = ?
+                AND j.status = 'open'
             `,
             [id]
         )
