@@ -134,7 +134,7 @@ export async function removeEmployer(req, res) {
                 lastName = 'User',
                 status = 'deleted'
             WHERE employerID = ?
-            `, [invalidHash, mmember.employerID]
+            `, [invalidHash, member.employerID]
         );
 
         await connection.commit();
