@@ -218,7 +218,7 @@ export default function CompanyProfile() {
                         <div className=" w-full mb-5">
                             <div className="w-full mb-2">
                                 <div className="flex items-center justify-between">
-                                    <h1 className="font-bold text-[1.1rem] md:text-xl">Company employers</h1>
+                                    <h1 className="font-bold text-[1.1rem] md:text-xl">Company Employers</h1>
                                     {currentUser.role === "Admin Employer" && 
                                         <PrimaryButton onClick={() => setShowInvite(true)} className="flex items-center gap-1 text-[0.80rem] font-semibold md:text-[1rem] rounded-lg"><IoMdAdd size={18} />Invite</PrimaryButton>
                                     }

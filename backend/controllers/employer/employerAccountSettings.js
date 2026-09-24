@@ -4,6 +4,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import crypto from "crypto";
 import validPassword from "../../utils/validatePassword.js";
+import validateEmail from "../../utils/validateEmailAddress.js";
 import { sendEmailUpdateCode } from "../../utils/sendVerificationEmail.js";
 
 const cookieOptions = {
@@ -47,10 +48,10 @@ export async function updatePersonalDetails(req, res) {
         });
     }
 
-    if (!email) {
+    if (!email || email.trim().length < 5 || email.trim().length > 100 || !validateEmail(email.trim())) {
         return res.status(400).json({
-            message: "Enter a valid email address",
-            issue: "noEmail"
+            message: "Please enter valid email address",
+            issue: "email"
         });
     }
 
@@ -125,6 +126,7 @@ export async function updatePersonalDetails(req, res) {
                 });
             }
         }
+        
 
         connection = await database.getConnection();
         await connection.beginTransaction();

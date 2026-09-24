@@ -115,6 +115,7 @@ export function ChangeEmailForm({ toggleForm }) {
                         }
                     </div>
                     {errors.password && <p className="text-sm text-red-600 mb-5">{errors.password}</p>}
+                    {errors.cooldown && <p className="text-sm text-center text-red-600 mb-5">{errors.cooldown}</p>}
 
                     <div className="flex justify-end gap-3">
                         <PrimaryButton disabled={isLoading} onClick={toggleForm} className={`bg-[#F3F4F6] text-black! ${isLoading ? "opacity-50 cursor-not-allowed" : undefined}`} >Cancel</PrimaryButton>

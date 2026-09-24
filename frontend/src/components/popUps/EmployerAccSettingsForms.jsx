@@ -111,10 +111,10 @@ export function EditInfoForm({ toggleForm, confirmFunc }) {
                         onChange={(e) => setCredentials({...credentials, email: e.target.value})}
                         required
                         placeholder="Enter new email address"
-                        className={`p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-green-600 ${errors.sameEmail || errors.noEmail ? "focus:border-red-600 border-red-600 mb-1!" : "border-gray-300"}`}
+                        className={`p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-green-600 ${errors.sameEmail || errors.email ? "focus:border-red-600 border-red-600 mb-1!" : "border-gray-300"}`}
                     />
                     {errors.sameEmail && <p className="text-sm text-red-600 mb-5">{errors.sameEmail}</p>}
-                    {errors.noEmail && <p className="text-sm text-red-600 mb-5">{errors.noEmail}</p>}
+                    {errors.email && <p className="text-sm text-red-600 mb-5">{errors.email}</p>}
 
                     <label className="block font-semibold mb-1" htmlFor="password">Password&nbsp;<span className="text-gray-500">(for verification)</span></label>
                     <div className={`w-full relative`}>
@@ -143,6 +143,8 @@ export function EditInfoForm({ toggleForm, confirmFunc }) {
                         }
                     </div>
                     {errors.password && <p className="text-sm text-red-600 mb-5">{errors.password}</p>}
+
+                    {errors.cooldown && <p className="text-sm text-center text-red-600 mb-5">{errors.cooldown}</p>}
 
                     <div className="flex justify-end gap-3">
                         <PrimaryButton disabled={isLoading} className={`bg-[#F3F4F6] text-black! ${isLoading ? "opacity-50 cursor-not-allowed!" : undefined}`} onClick={toggleForm}>Cancel</PrimaryButton>

@@ -5,6 +5,7 @@ import bcrypt from "bcryptjs"
 import crypto from "crypto"
 import { sendEmailUpdateCode } from "../../utils/sendVerificationEmail.js";
 import validPassword from "../../utils/validatePassword.js";
+import validateEmail from "../../utils/validateEmailAddress.js";
 
 const CODE_EXPIRY_MINUTES = 10;
 const RESEND_COOLDOWN_SECONDS = 60;
@@ -22,7 +23,7 @@ export async function changeEmail(req, res) {
     const { id } = req.user;
     const { email, prevEmail, password } = req.body;
 
-    if (!email || typeof email !== "string") {
+    if (!email || typeof email !== "string" || !validateEmail(email.trim())) {
         return res.status(400).json({
             message: "Enter a valid email address",
             issue: "email"
