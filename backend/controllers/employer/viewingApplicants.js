@@ -105,8 +105,8 @@ export async function fetchApplicants(req, res) {
             WHERE a.jobID = ?
                 AND a.status = ?
             ORDER BY
-                (a.yearsExp >= ?) DESC,
                 s.overallScore DESC
+                (a.yearsExp >= ?) DESC
             `,
             [jobID, status, yearsRequired]
         );
