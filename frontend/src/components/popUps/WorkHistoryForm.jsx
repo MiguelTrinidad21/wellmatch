@@ -145,7 +145,7 @@ export default function WorkHistoryForm({ toggleForm, refresh }) {
                                 endMonth: value,
                                 endMonthLabel: label})
                             )}/>
-                            <YearSelector isChecked={true} onChange={(endYear) => setWorkInfo((prev) => ({ ...prev, endYear }))} />
+                            <YearSelector isChecked={false} onChange={(endYear) => setWorkInfo((prev) => ({ ...prev, endYear }))} />
                         </div>      
                     </div>
 
