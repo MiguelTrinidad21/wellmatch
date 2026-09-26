@@ -1,6 +1,6 @@
 export default function classifySkillStatus(skillScore, evidenceScore) {
 
-    const skillThreshold = 0.56;
+    const skillThreshold = 0.59;
     const evidenceThreshold = 0.61;
 
     
