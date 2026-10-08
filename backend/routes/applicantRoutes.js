@@ -7,7 +7,8 @@ import { skillGapController } from "../controllers/applicant/skillGapController.
 import { 
     authLimiter, 
     generalLimiter,
-    passwordResetLimiter
+    passwordResetLimiter,
+    aiLimiter
  } from "../middlewares/rateLimiter.js";
 
 import { 
@@ -91,14 +92,14 @@ router.get("/applications", verifyToken, isApplicant, fetchApplications)
 router.get("/getSavedJobs", verifyToken, isApplicant, getAllSavedJobs)
 
 
-router.post("/:jobID/:resumeID/skillgap", verifyToken, isApplicant, skillGapController);
+router.post("/:jobID/:resumeID/skillgap", verifyToken, isApplicant, aiLimiter, skillGapController);
 router.post("/register", generalLimiter, registerApplicant);
 router.post("/forgotPassword", passwordResetLimiter, forgotPassword);
 router.post("/forgotPassword/verifyCode", passwordResetLimiter, verifyPasswordCode);
 router.post("/forgotPassword/verifyCode/resetPassword", passwordResetLimiter, resetPassword);
 router.post("/login", authLimiter, loginApplicant);
 router.post("/logout", logoutApplicant);
-router.post("/uploadResume", verifyToken, isApplicant, generalLimiter, handleMulterResumeUpload, uploadAndAddResume)
+router.post("/uploadResume", verifyToken, isApplicant, aiLimiter, generalLimiter, handleMulterResumeUpload, uploadAndAddResume)
 router.post("/addWorkExp", verifyToken, isApplicant, addWorkExp)
 router.post("/addCredential", verifyToken, isApplicant, addCredential)
 router.post("/addEducation", verifyToken, isApplicant, addEducation)

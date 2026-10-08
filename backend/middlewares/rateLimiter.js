@@ -1,4 +1,4 @@
-import rateLimit from "express-rate-limit";
+import rateLimit, { ipKeyGenerator } from "express-rate-limit";
 
 
 export const authLimiter = rateLimit({
@@ -31,6 +31,15 @@ export const passwordResetLimiter = rateLimit({
 });
 
 
-
+export const aiLimiter = rateLimit({
+    windowMs: 60 * 60 * 1000,               // 1 hour
+    limit: 20,
+    standardHeaders: true,
+    legacyHeaders: false,
+    keyGenerator: (req) => req.user?.id
+        ? `user-${req.user.id}`
+        : ipKeyGenerator(req.ip),
+    message: { message: "You've reached the hourly limit. Please try again later." }
+});
 
 
