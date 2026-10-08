@@ -45,7 +45,13 @@ export async function changePermission(req, res) {
     const { memberID, role } = req.body;
     const { companyID } = req.user;
 
-    const adminLimit = 2;
+    const ALLOWED_ROLES = ["Admin Employer", "Employer"];
+
+    if (!ALLOWED_ROLES.includes(role)) {
+        return res.status(400).json({ message: "Invalid role" });
+    }
+
+    const adminLimit = 3;
 
     try {
         if (role === "Admin Employer") {
@@ -53,13 +59,15 @@ export async function changePermission(req, res) {
                 SELECT employerID
                 FROM companyMembers
                 WHERE role = "Admin Employer"
-                AND companyID = ?
+                    AND companyID = ?
+                    AND status = 'active'
+                    AND compMemID <> ?
                 `,
-                [companyID]            
+                [companyID, memberID]            
             );
 
-            if (allAdmins.length > adminLimit) {
-                return res.status(409).json({ 
+            if (allAdmins.length >= adminLimit) {
+                return res.status(409).json({
                     message: `Maximum number of admin accounts reached (${adminLimit} max). Remove an existing admin to assign this role.`
                 });
             }
