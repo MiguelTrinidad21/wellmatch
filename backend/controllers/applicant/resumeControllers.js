@@ -278,6 +278,8 @@ export async function viewResume(req, res) {
         const cloudinaryResource = await cloudinary.api.resource(cloudinaryPublicID, {
             resource_type: 'raw',
             type: 'authenticated',
+            sign_url: true,
+            secure: true
         });
 
         const fileUrl = cloudinaryResource.secure_url;
