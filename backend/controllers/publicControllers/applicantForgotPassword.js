@@ -33,7 +33,7 @@ export async function forgotPassword(req, res) {
 
         if (existingApplicant.length === 0) {
             return res.status(409).json({
-                message: "User account not found",
+                message: "If an account exists for this email, a verification code has been sent.",
                 issue: "email"
             });
         }
@@ -81,6 +81,7 @@ export async function forgotPassword(req, res) {
                 email            = VALUES(email),
                 verificationCode = VALUES(verificationCode),
                 attempts         = 0,
+                verified         = 0,
                 expiresAt        = VALUES(expiresAt),
                 createdAt        = NOW()
             `,
@@ -97,7 +98,7 @@ export async function forgotPassword(req, res) {
         await sendPasswordResetCode(normalizedEmail, verificationCode);
 
         return res.status(201).json({
-            message: "Verification code has been sent to your email",
+            message: "If an account exists for this email, a verification code has been sent.",
             email: normalizedEmail
         });
 
@@ -151,7 +152,7 @@ export async function verifyPasswordCode(req, res) {
 
         if (!user) {
             return res.status(400).json({
-                message: "User account does not exist",
+                message: "If an account exists for this email, a verification code has been sent.",
                 issue: "invalid"
             });
         }
@@ -297,7 +298,7 @@ export async function resetPassword(req, res) {
 
         if (!user) {
             return res.status(404).json({
-                message: "No account found for this email.",
+                message: "If an account exists for this email, a verification code has been sent.",
                 issue: "email"
             });
         }
@@ -308,6 +309,26 @@ export async function resetPassword(req, res) {
 
         connection = await database.getConnection();
         await connection.beginTransaction();
+
+        const [[pending]] = await connection.query(`
+            SELECT id
+            FROM passwordResets
+            WHERE userID = ?
+            AND userType = 'applicant'
+            AND verified = 1
+            AND expiresAt > NOW()
+            FOR UPDATE
+            `,
+            [userID]
+        );
+
+        if (!pending) {
+            await connection.rollback();
+            return res.status(403).json({
+                message: "Your reset session has expired. Please request a new code.",
+                issue: "invalid"
+            });
+        }
 
         await connection.query(`
             UPDATE applicants SET password = ? WHERE applicantID = ?`,
