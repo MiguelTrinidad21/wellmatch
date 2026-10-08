@@ -2,11 +2,32 @@ import database from "../../configs/database.js";
 import brevo from "../../configs/brevo.js";
 import "dotenv/config";
 
+async function applicationBelongsToCompany(applicationID, companyID) {
+    const [[row]] = await database.query(`
+        SELECT 1 AS ok
+        FROM applications ap
+        INNER JOIN jobs j ON ap.jobID = j.jobID
+        WHERE ap.applicationID = ?
+          AND j.companyID = ?
+        LIMIT 1
+    `, [applicationID, companyID]);
+    return Boolean(row);
+}
+
 export async function updateStatus(req, res) {
     const { applicationID, nextStatus } = req.body;
-    const toHire = nextStatus === "hired"
+    const { companyID } = req.user;
+
+    const ALLOWED_STATUSES = ["shortlisted", "interview", "hired"];
+    if (!ALLOWED_STATUSES.includes(nextStatus)) {
+        return res.status(400).json({ message: "Invalid status" });
+    }
 
     try {
+        if (!(await applicationBelongsToCompany(applicationID, companyID))) {
+            return res.status(404).json({ message: "Application not found" });
+        }
+
         const [[row]] = await database.query(`
             SELECT a.firstName, a.email, j.jobTitle, c.companyName
             FROM applications ap
@@ -100,8 +121,12 @@ export async function updateStatus(req, res) {
 
 export async function rejectApplicant(req, res) {
     const { applicationID } = req.body;
+    const { companyID } = req.user;
 
     try {
+        if (!(await applicationBelongsToCompany(applicationID, companyID))) {
+            return res.status(404).json({ message: "Application not found" });
+        }
 
         const [[row]] = await database.query(`
             SELECT a.firstName, a.email, j.jobTitle, c.companyName
@@ -155,6 +180,7 @@ export async function rejectApplicant(req, res) {
 
 export async function rejectAllApplicants(req, res) {
     const { jobID, currentStatus } = req.body;
+    const { companyID } = req.user;
 
     try {
         const [applicants] = await database.query(`
@@ -168,8 +194,9 @@ export async function rejectAllApplicants(req, res) {
                 ON j.companyID = c.companyID
             WHERE ap.jobID = ?
                 AND ap.status = ?
+                AND j.companyID = ? 
             `,
-            [jobID, currentStatus]
+            [jobID, currentStatus, companyID]
         );
 
         if (applicants.length === 0) {
@@ -177,13 +204,13 @@ export async function rejectAllApplicants(req, res) {
         }
 
         await database.query(`
-            UPDATE applications
-            SET status = 'not selected'
-            WHERE jobID = ?
-                AND status = ?
-            `,
-            [jobID, currentStatus]
-        );
+            UPDATE applications ap
+            INNER JOIN jobs j ON ap.jobID = j.jobID
+            SET ap.status = 'not selected'
+            WHERE ap.jobID = ?
+              AND ap.status = ?
+              AND j.companyID = ?
+        `, [jobID, currentStatus, companyID]);
 
 
         res.status(200).json({ message: "All job applications rejected successfully" });
