@@ -29,6 +29,8 @@ export async function updateStatus(req, res) {
             [nextStatus, applicationID]
         );
 
+        res.status(200).json({ message: `Application status updated to ${nextStatus}` });
+
         if (nextStatus === "shortlisted") {
             await brevo.transactionalEmails.sendTransacEmail({
                 sender: {
@@ -87,7 +89,7 @@ export async function updateStatus(req, res) {
             });
         }
 
-        return res.status(200).json({ message: `Application status updated to ${nextStatus}` });
+        // return res.status(200).json({ message: `Application status updated to ${nextStatus}` });
         
     } catch (error) {
         console.error(error);
@@ -123,6 +125,8 @@ export async function rejectApplicant(req, res) {
             [applicationID]
         );
 
+        res.status(200).json({ message: "Job application rejected successfully" });
+
         await brevo.transactionalEmails.sendTransacEmail({
             sender: {
                 name: process.env.BREVO_SENDER_NAME,
@@ -141,7 +145,7 @@ export async function rejectApplicant(req, res) {
             }
         });
 
-        return res.status(200).json({ message: "Job application rejected successfully" });
+        // return res.status(200).json({ message: "Job application rejected successfully" });
         
     } catch (error) {
         console.error(error);
