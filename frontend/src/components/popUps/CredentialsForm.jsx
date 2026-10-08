@@ -136,7 +136,7 @@ export default function CredentialsForm({ toggleForm, refresh }) {
                                 endMonth: value,
                                 endMonthLabel: label})
                             )}/>
-                            <YearSelector isChecked={true} onChange={(endYear) => setCredentialInfo((prev) => ({ ...prev, endYear }))} />
+                            <YearSelector onChange={(endYear) => setCredentialInfo((prev) => ({ ...prev, endYear }))} />
                         </div>      
                     </div>
                     
