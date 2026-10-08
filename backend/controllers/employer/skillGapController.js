@@ -22,6 +22,7 @@ function formatReport(report) {
 
 export async function getJobInfo(req, res) {
     const { jobID } = req.query;
+    const { companyID } = req.user;
 
     try {
         const [[jobInfo]] = await database.query(`
@@ -31,9 +32,10 @@ export async function getJobInfo(req, res) {
                 preferredQualifications
             FROM jobs
             WHERE jobID = ?
+                AND companyID = ?
             LIMIT 1
             `,
-            [jobID]
+            [jobID, companyID]
         );
 
         return res.status(200).json(jobInfo)
@@ -46,6 +48,7 @@ export async function getJobInfo(req, res) {
 
 export async function getSkillGapReport(req, res) {
     const { jobID, resumeID, applicantID } = req.query;
+    const { companyID } = req.user;  
 
     if (!resumeID || !jobID) {
         return res.status(400).json({
@@ -55,6 +58,19 @@ export async function getSkillGapReport(req, res) {
 
 
     try {
+        const [[allowed]] = await database.query(`
+            SELECT 1 AS ok
+            FROM applications ap
+            INNER JOIN jobs j ON ap.jobID = j.jobID
+            WHERE ap.resumeID = ?
+              AND ap.jobID = ?
+              AND j.companyID = ?
+            LIMIT 1
+        `, [resumeID, jobID, companyID]);
+
+        if (!allowed) {
+            return res.status(404).json({ message: "Skill gap report not found" });
+        }
 
         const [[applicant]] = await database.query(`
             SELECT *
@@ -252,17 +268,29 @@ export async function getSkillGapReport(req, res) {
     } catch (error) {
         console.error(error);
         return res.status(500).json({ 
-            message: "Fetching skill gap report failed",
-            debug: error.message,
-            stack: error.stack
+            message: "Fetching skill gap report failed"
         })
     }
 }
 
 export async function getCandidateHistory(req, res) {
     const { applicantID } = req.query;
+    const { companyID } = req.user;   
 
     try {
+        const [[allowed]] = await database.query(`
+            SELECT 1 AS ok
+            FROM applications ap
+            INNER JOIN jobs j ON ap.jobID = j.jobID
+            WHERE ap.applicantID = ?
+              AND j.companyID = ?
+            LIMIT 1
+        `, [applicantID, companyID]);
+
+        if (!allowed) {
+            return res.status(404).json({ message: "Candidate not found" });
+        }
+
         const [workExp] = await database.query(`
             SELECT *
             FROM workExperiences

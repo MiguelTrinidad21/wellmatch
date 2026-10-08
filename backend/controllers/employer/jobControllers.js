@@ -259,8 +259,9 @@ export async function updateJobInfo(req, res) {
             SELECT requiredQualifications, preferredQualifications
             FROM jobs
             WHERE jobID = ?
+                AND companyID = ?
             `,
-            [jobID]
+            [jobID, companyID]
         );
 
         if (qualifications.length === 0) {
