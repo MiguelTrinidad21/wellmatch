@@ -202,13 +202,19 @@ export async function fetchApplications(req, res) {
 
 export async function withdrawApplication(req, res) {
     const { applicationID } = req.params;
+    const { id } = req.user;  
 
     try {
-        await database.query(`
+        const [result] = await database.query(`
             UPDATE applications
             SET status = 'withdraw'
             WHERE applicationID = ?
-        `, [applicationID]);
+                AND applicantID = ?
+        `, [applicationID, id]);
+
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ message: "Application not found" });
+        }
 
         const [[application]] = await database.query(`
             SELECT 
