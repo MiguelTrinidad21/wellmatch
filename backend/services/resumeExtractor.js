@@ -19,9 +19,6 @@ export async function extractResumeSkills(file, applicant = {}) {
 
     try {
         let resumeText;
-
-        const safeResumeText = redactContactInfo(resumeText, applicant)
-            .slice(0, MAX_RESUME_CHARS);
     
         if (file.mimetype === "application/pdf") {
             const parser = new PDFParse({
@@ -40,6 +37,11 @@ export async function extractResumeSkills(file, applicant = {}) {
         } else {
             throw new Error("Unsupported file type");
         }
+
+        const safeResumeText = redactContactInfo(resumeText, applicant)
+            .slice(0, MAX_RESUME_CHARS);
+
+        console.log(safeResumeText)
     
         const response = await openai.responses.create({
             model: "gpt-5.4-mini",

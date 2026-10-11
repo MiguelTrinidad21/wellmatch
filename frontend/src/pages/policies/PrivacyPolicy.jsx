@@ -202,7 +202,7 @@ export default function PrivacyPolicy() {
 
                                 <p className="mb-4">WellMatch uses OpenAI services for these functions, including GPT-5.4 mini for skill extraction and recommendations and text-embedding-3-large for semantic similarity comparison.</p>
                                 
-                                <p className="mb-4">When you upload a resume, its text is processed by OpenAI to identify your skills. Your name, email address, phone number and social media links are removed before the text is sent.</p>
+                                <p className="mb-4">When you upload a resume, its text is processed by OpenAI to identify your skills. Your name, email address, and phone number are removed before the text is sent.</p>
 
                                 <p className="mb-4">AI results depend on the information submitted to WellMatch. Incomplete information, unclear job descriptions, resume formatting, or limitations of AI may affect the results.</p>
 
