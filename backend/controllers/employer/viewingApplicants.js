@@ -80,7 +80,7 @@ export async function fetchApplicants(req, res) {
             ORDER BY
                 a.applicationDate DESC
             `,
-            [jobID, yearsRequired]
+            [jobID]
         );
 
     } else {

@@ -110,8 +110,7 @@ export async function forgotPassword(req, res) {
         }
 
         return res.status(500).json({
-            message: "Unable to connect to the server. Please try again.",
-            error: error.message
+            message: "Unable to connect to the server. Please try again."
         });
 
     } finally {
@@ -253,8 +252,7 @@ export async function verifyPasswordCode(req, res) {
         }
 
         return res.status(500).json({
-            message: "Unable to connect to the server. Please try again.",
-            error: err.message
+            message: "Unable to connect to the server. Please try again."
         });
 
     } finally {
@@ -356,8 +354,7 @@ export async function resetPassword(req, res) {
         }
 
         return res.status(500).json({
-            message: "Unable to connect to the server. Please try again.",
-            error: err.message
+            message: "Unable to connect to the server. Please try again."
         });
 
     } finally {

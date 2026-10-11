@@ -222,8 +222,7 @@ export async function uploadAndAddResume(req, res) {
         // Fix 3: Guard with res.headersSent to prevent double response (ECONNRESET)
         if (!res.headersSent) {
             return res.status(500).json({
-                message: "Unable to connect to the server. Please try again.",
-                error: error.message
+                message: "Unable to connect to the server. Please try again."
             });
         }
 
@@ -321,7 +320,7 @@ export async function viewResume(req, res) {
 export async function makeResumeDefault(req, res) {
     const { id } = req.user;
     const { resumeID } = req.query;
-    console.log(resumeID)
+    // console.log(resumeID)
 
     let connection;
 

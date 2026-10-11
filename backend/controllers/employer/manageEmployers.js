@@ -4,7 +4,7 @@ import crypto from "crypto"
 
 export async function getEmployerInfo(req, res) {
     const { memberID } = req.query;
-    const { id, companyID } = req.user;
+    const { companyID } = req.user;
 
     try {
         const [[employerInfo]] = await database.query(`
@@ -20,9 +20,14 @@ export async function getEmployerInfo(req, res) {
             INNER JOIN companyMembers c
                 ON e.employerID = c.employerID
             WHERE c.compMemID = ?
+                AND c.companyID = ?
             `,
-            [memberID]
+            [memberID, companyID]
         );
+
+        if (!employerInfo) {
+            return res.status(404).json({ message: "Member not found" });
+        }
 
         if (employerInfo.status === "inactive") {
             return res.status(410).json({ message: "User is deleted permanently" });
