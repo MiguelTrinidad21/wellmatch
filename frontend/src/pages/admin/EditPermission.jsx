@@ -75,9 +75,17 @@ export default function EditPermission() {
     async function editPermission() {
         try {
             // console.log(role)
-            await api.patch("/employer/editPermission", 
+            const res = await api.patch("/employer/editPermission", 
                 {memberID, role}
             );
+
+            const resMessage = res.data.message;
+            console.log(resMessage)
+
+            if (resMessage === "No permission update occured.") {
+                navigate("/employer/companyProfile")
+                return
+            }
 
             setShowConfirm(true);
             

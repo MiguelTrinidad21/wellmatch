@@ -78,6 +78,19 @@ export async function changePermission(req, res) {
             }
         }
 
+        const [[member]] = await database.query(`
+            SELECT role
+            FROM companyMembers
+            WHERE compMemID = ?
+                AND companyID = ?
+            `,
+            [memberID, companyID]
+        );
+
+        if (member.role === role) {
+            return res.status(200).json({ message: "No permission update occured." })
+        }
+
         const [result] = await database.query(`
             UPDATE companyMembers
             SET role = ?
