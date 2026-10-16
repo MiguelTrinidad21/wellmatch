@@ -25,6 +25,8 @@ export default function MonthSelector({ onChange }) {
       placeholder="Month"
       onChange={(option) => onChange?.(option?.value, option?.label)}
       menuPlacement="top"
+      isSearchable={false}
+      isClearable
     />
   );
 }

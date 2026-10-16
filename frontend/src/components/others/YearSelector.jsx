@@ -1,7 +1,7 @@
 import Select from "react-select";
 
 
-export default function YearSelector({ onChange, isChecked }) {
+export default function YearSelector({ value, onChange, isChecked }) {
     const qualiCompleted = isChecked;
 
     let CURRENT_YEAR;
@@ -23,13 +23,17 @@ export default function YearSelector({ onChange, isChecked }) {
         })
     );
 
+    const selectedOption = options.find((opt) => opt.value === value) ?? null;
 
   return (
     <Select
       options={options}
+      value={selectedOption}
       placeholder="Year"
-      onChange={(option) => onChange?.(option?.value)}
+      onChange={(option) => onChange?.(option?.value ?? null)}
       menuPlacement="top"
+      isClearable
+      isSearchable={false}
     />
   );
 }

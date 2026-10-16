@@ -90,7 +90,7 @@ export async function getAllWorkExp(req, res) {
 export async function deleteWorkExp(req, res) {
     const { id } = req.user;
     const { workExpID } = req.query;
-    console.log(workExpID)
+
 
     try {
         await database.query(`

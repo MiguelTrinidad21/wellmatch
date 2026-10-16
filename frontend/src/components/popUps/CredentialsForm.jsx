@@ -124,7 +124,7 @@ export default function CredentialsForm({ toggleForm, refresh }) {
                                 startMonth: value,
                                 startMonthLabel: label})
                             )}/>
-                            <YearSelector isChecked={true} onChange={(startYear) => setCredentialInfo((prev) => ({ ...prev, startYear }))} />
+                            <YearSelector value={credentialInfo.startYear} isChecked={true} onChange={(startYear) => setCredentialInfo((prev) => ({ ...prev, startYear }))} />
                         </div>      
                     </div>
 
@@ -136,12 +136,12 @@ export default function CredentialsForm({ toggleForm, refresh }) {
                                 endMonth: value,
                                 endMonthLabel: label})
                             )}/>
-                            <YearSelector onChange={(endYear) => setCredentialInfo((prev) => ({ ...prev, endYear }))} />
+                            <YearSelector value={credentialInfo.endYear} onChange={(endYear) => setCredentialInfo((prev) => ({ ...prev, endYear }))} />
                         </div>      
                     </div>
                     
-                    {errors.invalidDate && <p className="text-red-600 text-[13px] mb-4"> {errors.invalidDate}</p>}
-                    {errors.startDate && <p className="text-red-600 text-[13px] mb-4"> {errors.startDate}</p>}
+                    {errors.invalidDate && <p className="text-red-600 text-[13px] mb-4 text-center"> {errors.invalidDate}</p>}
+                    {errors.startDate && <p className="text-red-600 text-[13px] mb-4 text-center"> {errors.startDate}</p>}
                     <div className="w-full flex flex-col">
                         <PrimaryButton type="submit" className="w-full">Add</PrimaryButton>
                         <PrimaryButton onClick={toggleForm} className="w-full text-black! bg-[#F3F4F6]!">Cancel</PrimaryButton>

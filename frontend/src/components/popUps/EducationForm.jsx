@@ -21,7 +21,7 @@ export default function EducationForm({ toggleForm, refresh }) {
     function handleCheckboxChange(event) {
         const checked = event.target.checked;
         setIsChecked(checked);
-        setEducationInfo({...educationInfo, qualiComplete: checked})
+        setEducationInfo({...educationInfo, year:null, qualiComplete: checked})
     };
 
     
@@ -102,7 +102,7 @@ export default function EducationForm({ toggleForm, refresh }) {
                     <div className="flex flex-col w-full mb-4">
                         <div className="">
                             <p className="font-medium">{isChecked ? "Finished " : "Expected to finish " }<span className="text-gray-500">(optional)</span></p>
-                            <YearSelector isChecked={isChecked} onChange={(year) => setEducationInfo((prev) => ({ ...prev, year }))} />
+                            <YearSelector value={educationInfo.year} isChecked={isChecked} onChange={(year) => setEducationInfo((prev) => ({ ...prev, year }))} />
                         </div>
                     </div>
 
