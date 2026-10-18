@@ -9,7 +9,7 @@ import ResumeViewerModal from "../../components/others/ResumeViewerModal";
 import NoSkillGapReport from "../../components/others/NoSkillGapReport";
 import Translucent from "../../components/overlay/Translucent";
 import { useState, useEffect, useRef } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { sideBarStore } from "../../zustand/stateHandlers";
 import defaultCover from "../../assets/defaultProfile.jpg"
 import { MdOutlineEmail } from "react-icons/md";
@@ -25,7 +25,7 @@ import useLockBodyScroll from "../../hooks/useLockBodyScroll";
 
 
 export default function SkillGapReport() {
-
+    const navigate = useNavigate();
     const { applicantID, jobID, resumeID } = useParams();
     const { sideBarStatus } = sideBarStore();
     useLockBodyScroll(sideBarStatus);    
@@ -102,7 +102,14 @@ export default function SkillGapReport() {
                 setSkillGapAnalysis(res.data.skillGapReport);
 
             } catch (error) {
-                console.log(error);                
+                console.log(error);
+                
+                const issue = error.response?.data?.issue;
+
+                if (issue === "notAllowed") {
+                    navigate("/forbidden")
+                }
+                
                 setNoSkillGapReport(true);
 
             } finally {

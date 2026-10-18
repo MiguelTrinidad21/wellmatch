@@ -69,7 +69,10 @@ export async function getSkillGapReport(req, res) {
         `, [resumeID, jobID, companyID]);
 
         if (!allowed) {
-            return res.status(404).json({ message: "Skill gap report not found" });
+            return res.status(404).json({ 
+                message: "Skill gap report not found",
+                issue: "notAllowed"
+            });
         }
 
         const [[applicant]] = await database.query(`
