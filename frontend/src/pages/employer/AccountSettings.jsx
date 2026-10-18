@@ -2,24 +2,20 @@ import AuthNavBar from "../../components/navBars/AuthNavBar";
 import SideBarOverlay from "../../components/overlay/SideBarOverlay";
 import EmployerSideBar from "../../components/navBars/EmployerSideBar";
 import PrimaryButton from "../../components/buttons/PrimaryButton";
-import Translucent from "../../components/overlay/Translucent"
 import { EditInfoForm, ChangePasswordForm, DeleteAccountForm } from "../../components/popUps/EmployerAccSettingsForms";
 import ConfirmationBox from "../../components/popUps/ConfirmationBox";
 import { userStore } from "../../zustand/userState";
 import { sideBarStore } from "../../zustand/stateHandlers";
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import { IoPersonSharp } from "react-icons/io5";
 import { GoShieldLock } from "react-icons/go";
 import { VscWarning } from "react-icons/vsc";
-import api from "../../apis/axios";
 import useLockBodyScroll from "../../hooks/useLockBodyScroll.js";
 
 export default function AccountSettings() {
     const { currentUser, logoutUser } = userStore();
     const { setEmployerActiveLink, sideBarStatus } = sideBarStore();
     useLockBodyScroll(sideBarStatus);
-    const navigate = useNavigate();
 
     const [openUpdateInfo, setOpenUpdateInfo] = useState(false);
     const [openChangePassword, setOpenChangePassword] = useState(false);

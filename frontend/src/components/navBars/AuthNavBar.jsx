@@ -1,7 +1,4 @@
 import { IoMdMenu } from "react-icons/io";
-import { IoChevronDown } from "react-icons/io5";
-import { IoChevronUp } from "react-icons/io5";
-import { FaPlus } from "react-icons/fa6";
 import webLogo from '../../assets/WellMatch_Logo.png'
 import { Link } from "react-router-dom";
 import EmployerSideMenu from "./EmployerSideMenu";
@@ -10,12 +7,11 @@ import { sideBarStore } from "../../zustand/stateHandlers";
 import { userStore } from "../../zustand/userState";
 import { companyStore } from "../../zustand/stateHandlers";
 import defaultProfile from "../../assets/defaultProfile.jpg"
-import PrimaryButton from "../buttons/PrimaryButton";
 
 export default function AuthNavBar() {
     const { sideBarStatus, toggleSideBar, applicantActiveLink, employerActiveLink } = sideBarStore();
     const { currentUser } = userStore();
-    const { companyInfo, setCompanyInfo } = companyStore();
+    const { companyInfo } = companyStore();
     
 
     return (

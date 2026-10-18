@@ -24,7 +24,6 @@ export default function EmployerRegister() {
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const [isTokenVerified, setIsTokenVerified] = useState(false);
-    const [showPopUp, setShowPopUp] = useState(false);
     const [invitation, setInvitation] = useState({});
     const [errors, setErrors] = useState({});
     const [employerInfo, setEmployerInfo] = useState({

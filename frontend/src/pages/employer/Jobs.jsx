@@ -30,7 +30,6 @@ import useLockBodyScroll from "../../hooks/useLockBodyScroll";
 export default function Jobs() {
     const ReactPaginate = ReactPaginateModule.default || ReactPaginateModule;
 
-    const { currentUser } = userStore();
     const { displayJob, setDisplayJob, setJobInfo } = jobInfoStore();
     const { clearCreatedJob } = jobCreationStore();
     const { setEmployerActiveLink, sideBarStatus } = sideBarStore();

@@ -1,4 +1,3 @@
-import Translucent from "../overlay/Translucent"
 import { IoClose } from "react-icons/io5";
 import { jobInfoStore } from "../../zustand/stateHandlers";
 import { locationStore } from "../../zustand/stateHandlers";
@@ -9,11 +8,10 @@ import SecondaryButton from "../../components/buttons/SecondaryButton"
 import { LuBriefcase } from "react-icons/lu";
 import { MdOutlineLocationOn } from "react-icons/md";
 import { PiMoneyWavy } from "react-icons/pi";
-import { FaRegBookmark } from "react-icons/fa";
 import { FaRegBuilding } from "react-icons/fa6";
 import { AiOutlineLaptop } from "react-icons/ai";
 import { TbBuildingCommunity } from "react-icons/tb"
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import api from "../../apis/axios";
 
@@ -27,7 +25,6 @@ export default function JobInfoSide({ display }) {
     const { currentUser } = userStore();
     const {
         jobID,
-        coverPhotoURL,
         profilePhotoURL,
         jobTitle,
         companyName,

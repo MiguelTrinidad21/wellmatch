@@ -291,18 +291,6 @@ export default function RecommendedJobs() {
         window.scrollTo({ top: 0, behavior: "smooth" });
     }
 
-    function goNext(jobID) {
-        setPrevLocation(location.pathname);
-        navigate(`/applicant/viewJob/${jobID}/apply`);
-        setDisplayJob();
-    }
-
-    function goToAnalysis(jobID) {
-        setPrevLocation(previousLocation.pathname);
-        navigate(`/applicant/viewJob/${jobID}/chooseFile`);
-        setDisplayJob();
-    }
-
 
     async function handleSubmit(e) {
         try {

@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { IoMdInformationCircleOutline } from "react-icons/io";
 import { tooltipStore } from "../../zustand/stateHandlers";
 

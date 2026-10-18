@@ -11,7 +11,7 @@ import Translucent from "../../components/overlay/Translucent";
 import defaultProfile from "../../assets/defaultProfile.jpg"
 
 import { useState, useEffect, useRef } from "react";
-import { useNavigate, Link, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { userStore } from "../../zustand/userState";
 import { sideBarStore } from "../../zustand/stateHandlers";
 import { resumeStore } from "../../zustand/skillGapResume";
@@ -36,7 +36,6 @@ export default function SkillGapAnalysisUI() {
     const { sideBarStatus } = sideBarStore();
     useLockBodyScroll(sideBarStatus);
     
-    const { resumeToAnalyze, selectedOption } = resumeStore();
     const { currentUser } = userStore();
     const { jobID, resumeID } = useParams();
 

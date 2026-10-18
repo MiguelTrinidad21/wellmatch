@@ -5,7 +5,7 @@ import PrimaryButton from "../../components/buttons/PrimaryButton";
 import ConfirmatonBox from "../../components/popUps/ConfirmationBox"
 import { ChangeEmailForm, ChangePasswordForm, DeleteAccountForm } from "../../components/popUps/AccountSettingsForms";
 import { useState, useEffect } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { userStore } from "../../zustand/userState";
 import { sideBarStore } from "../../zustand/stateHandlers";
 import api from "../../apis/axios";
@@ -24,7 +24,6 @@ export default function AccountSettings() {
     const [openChangePassword, setOpenChangePassword] = useState(false);
     const [openDelAccount, setOpenDelAccount] = useState(false);
 
-    const [showConfirmEmail, setShowConfirmEmail] = useState(false);
     const [showConfirmPass, setShowConfirmPass] = useState(false);
     const [showConfirmDelete, setShowConfirmDelete] = useState(false);
 

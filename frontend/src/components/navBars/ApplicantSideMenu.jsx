@@ -5,17 +5,14 @@ import { FaList } from "react-icons/fa";
 import { VscGear } from "react-icons/vsc";
 import { MdOutlineLogout } from "react-icons/md";
 import { IoClose } from "react-icons/io5";
-import { sideBarStore, jobCreationStore } from "../../zustand/stateHandlers";
+import { sideBarStore } from "../../zustand/stateHandlers";
 import { userStore } from "../../zustand/userState";
 import { Link, useNavigate } from "react-router-dom";
-import { useEffect } from "react";
-import PrimaryButton from "../buttons/PrimaryButton";
 import defaultProfile from "../../assets/defaultProfile.jpg"
 import api from "../../apis/axios.js";
 
 export default function ApplicantSideMenu({ status }) {
     const { toggleSideBar, applicantActiveLink, setApplicantActiveLink } = sideBarStore();
-    const { clearCreatedJob } = jobCreationStore();
     const { currentUser, logoutUser } = userStore();
     const navigate = useNavigate();
     

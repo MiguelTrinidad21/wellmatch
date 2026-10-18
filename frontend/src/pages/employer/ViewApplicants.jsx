@@ -5,10 +5,9 @@ import PrimaryButton from "../../components/buttons/PrimaryButton";
 import ConfirmationDialog from "../../components/popUps/ConfirmationDialog";
 import WarningBox from "../../components/popUps/DeleteItemBox";
 
-import { userStore } from "../../zustand/userState";
 import { sideBarStore } from "../../zustand/stateHandlers";
 import { useState, useEffect } from "react";
-import { useNavigate, Link, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import { FaUserPlus } from "react-icons/fa6";;
 import { FaListCheck } from "react-icons/fa6";
@@ -20,7 +19,6 @@ import { MdGroups } from "react-icons/md";
 import { RiGroupLine } from "react-icons/ri";
 import { FaUsersSlash } from "react-icons/fa";
 import { FiCalendar } from "react-icons/fi";
-import { BiLoaderAlt } from "react-icons/bi";
 
 import ReactPaginateModule from "react-paginate";
 import api from "../../apis/axios";
@@ -33,7 +31,6 @@ export default function ViewApplicants() {
 
     const navigate = useNavigate();
     const { jobID } = useParams();
-    const { currentUser } = userStore();
     const { setEmployerActiveLink, sideBarStatus } = sideBarStore();
     useLockBodyScroll(sideBarStatus);
 

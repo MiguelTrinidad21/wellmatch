@@ -10,7 +10,6 @@ import { MdOutlineLocationOn } from "react-icons/md";
 import { PiMoneyWavy } from "react-icons/pi";
 import { FaRegBookmark } from "react-icons/fa";
 import { FaBookmark } from "react-icons/fa";
-import { IoSearchSharp } from "react-icons/io5";
 import { LuSearchX } from "react-icons/lu";
 import { BiLoaderAlt } from "react-icons/bi";
 import { FaRegBuilding } from "react-icons/fa6";
@@ -22,7 +21,7 @@ import { jobInfoStore, locationStore } from "../../zustand/stateHandlers";
 import { jobSearchStore } from "../../zustand/jobSearching";
 import { sideBarStore } from "../../zustand/stateHandlers";
 import { useState, useEffect, useCallback, useRef } from "react";
-import { useNavigate, Link, useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import api from "../../apis/axios";
 import ReactPaginateModule from "react-paginate";
 import JobInfoSide from "../../components/popUps/JobInfoSide";
@@ -42,7 +41,6 @@ export default function RelatedJobs() {
     }, []);    
 
     const navigate = useNavigate();
-    const { currentUser } = userStore();
     const { setPrevLocation } = locationStore();
     const { setApplicantActiveLink, sideBarStatus } = sideBarStore();
     useLockBodyScroll(sideBarStatus);
@@ -207,13 +205,6 @@ export default function RelatedJobs() {
     function goNext(jobID) {
         setPrevLocation(location.pathname);
         navigate(`/applicant/viewJob/${jobID}/apply`);
-        setDisplayJob();
-    }
-
-    function goToAnalysis(jobID) {
-        setPrevLocation(previousLocation.pathname);
-        navigate(`/applicant/viewJob/${jobID}/chooseFile`);
-        setDisplayJob();
     }
 
 

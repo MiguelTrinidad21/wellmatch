@@ -7,7 +7,7 @@ import ConfirmationBox from "../../components/popUps/ConfirmationBox"
 import { userStore } from "../../zustand/userState";
 import { jobInfoStore, sideBarStore } from "../../zustand/stateHandlers";
 import { useState, useEffect } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { FaPaperPlane } from "react-icons/fa6";
 import { FaListCheck } from "react-icons/fa6";
 import { HiMiniVideoCamera } from "react-icons/hi2";
@@ -29,17 +29,13 @@ export default function JobApplications() {
     const ReactPaginate = ReactPaginateModule.default || ReactPaginateModule;
     const navigate = useNavigate();
 
-    const { currentUser } = userStore();
     const { setApplicantActiveLink, sideBarStatus } = sideBarStore();
     useLockBodyScroll(sideBarStatus);
     
     const { 
         displayJob, 
-        setDisplayJob, 
-        jobInfo, 
-        setJobInfo, 
-        savedJobIDs, 
-        setSavedJobIDs
+        setDisplayJob,
+        setJobInfo
     } = jobInfoStore();    
 
 

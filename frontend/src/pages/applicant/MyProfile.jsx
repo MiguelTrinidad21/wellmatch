@@ -26,8 +26,7 @@ import useLockBodyScroll from "../../hooks/useLockBodyScroll";
 
 
 export default function MyProfile() {
-    const navigate = useNavigate();
-    const { currentUser, handleCurrentUser } = userStore();
+    const { currentUser } = userStore();
     const { setApplicantActiveLink, sideBarStatus } = sideBarStore();
     useLockBodyScroll(sideBarStatus);
     
@@ -39,9 +38,6 @@ export default function MyProfile() {
     const [refreshEducation, setRefreshEducation] = useState(false);
     const [resumes, setResumes] = useState([]);
     const [refreshResumes, setRefreshResumes] = useState(false);
-
-    const [refreshUser, setRefreshUser] = useState(false);
-    const [showWarning, setShowWarning] = useState(false);
 
     const [openWorkForm, setOpenWorkForm] = useState(false);
     const [openCredentialForm, setOpenCredentialForm] = useState(false);
@@ -60,8 +56,6 @@ export default function MyProfile() {
     const [credID, setCredID] = useState(null);
     const [educID, setEducID] = useState(null);
     const [resumeID, setResumeID] = useState(null);
-
-    const dateOptions = {month: "short", day: "numeric", year: "numeric"};
 
     function toggleForm(stateFunction) {
         stateFunction(prev => !prev);

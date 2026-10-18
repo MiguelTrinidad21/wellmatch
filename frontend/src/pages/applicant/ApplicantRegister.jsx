@@ -32,7 +32,7 @@ export default function ApplicantRegister() {
 
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-    // const [showPopUp, setShowPopUp] = useState(false);
+
     const [errors, setErrors] = useState({});
     const [isLoading, setIsLoading] = useState(false);
 
@@ -101,10 +101,6 @@ export default function ApplicantRegister() {
         setShowConfirmPassword(!showConfirmPassword);
     }
 
-    // function closePopUp() {
-    //     setShowPopUp(false);
-    //     navigate("/applicant/login");
-    // }
 
     function handleCheckboxChange(event) {
         const checked = event.target.checked;
@@ -173,12 +169,6 @@ export default function ApplicantRegister() {
 
                 {locationSuggestions.length > 0 && <div onClick={() => setLocationSuggestions([])} className="fixed top-0 left-0 w-full h-full"></div>}
 
-                {/* {showPopUp && (
-                    <>
-                        <Translucent />
-                        <ConfirmationBox onClick={closePopUp} buttonText="Sign in" text="Account registered successfully" />
-                    </>
-                )} */}
 
                 <form onSubmit={handleSubmit} className="m-auto w-full bg-white rounded-3xl shadow-lg p-6 md:w-100 lg:w-120">
                     <h2 className="text-center text-xl font-bold mb-5 md:text-2xl">Create your Account</h2>

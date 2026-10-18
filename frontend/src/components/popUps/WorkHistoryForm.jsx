@@ -22,19 +22,6 @@ export default function WorkHistoryForm({ toggleForm, refresh }) {
 
     const [errors, setErrors] = useState({});
 
-    function cancelForm() {
-        setWorkInfo({
-            jobTitle: "",
-            companyName: "",
-            startMonth: null,
-            startYear: null,
-            endMonth: null,
-            endYear: null
-        })
-
-        toggleForm();
-    }
-
     async function handleSubmit(e) {
         e.preventDefault();
         const { startMonth, startYear, endMonth, endYear } = workInfo;

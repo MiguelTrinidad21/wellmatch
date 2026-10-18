@@ -10,7 +10,6 @@ import TextEditor from "../../components/others/TextEditor"
 import { useState, useEffect } from "react";
 import { userStore } from "../../zustand/userState";
 import { tooltipStore, sideBarStore } from "../../zustand/stateHandlers";
-import api from "../../apis/axios";
 import useLockBodyScroll from "../../hooks/useLockBodyScroll";
 
 export default function JobDescription({ mode = "create" }) {
@@ -18,7 +17,6 @@ export default function JobDescription({ mode = "create" }) {
     const isEditMode = mode === "edit";
 
     const { createdJob, setCreatedJob } = jobCreationStore();
-    const { currentUser } = userStore();
     const { setShowTip } = tooltipStore();
     const { sideBarStatus } = sideBarStore();
     useLockBodyScroll(sideBarStatus);

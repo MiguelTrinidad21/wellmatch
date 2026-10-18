@@ -4,13 +4,12 @@ import ApplicantSideBar from "../../components/navBars/ApplicantSideBar";
 import PrimaryButton from "../../components/buttons/PrimaryButton";
 import Tooltip from "../../components/others/Tooltip";
 
-import { IoMdInformationCircleOutline } from "react-icons/io";
 import { IoChevronDown } from "react-icons/io5";
 import { FiUpload } from "react-icons/fi";
 import { BiLoaderAlt } from "react-icons/bi";
 
 import { useState, useEffect, useRef } from "react";
-import { useNavigate, Link, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { userStore } from "../../zustand/userState";
 import { resumeStore } from "../../zustand/skillGapResume";
 import { locationStore, tooltipStore, sideBarStore } from "../../zustand/stateHandlers";
@@ -27,11 +26,9 @@ export default function SkillGapFileUploader() {
     const { sideBarStatus } = sideBarStore();
     useLockBodyScroll(sideBarStatus);
         
-    const { currentUser } = userStore();
-    const { setShowTip, textToCompare } = tooltipStore();
+    const { setShowTip } = tooltipStore();
     const { prevLocation } = locationStore();
     const {
-        resumeToAnalyze,
         selectedOption,
         setSelectedOption,
         setResumeToAnalyze

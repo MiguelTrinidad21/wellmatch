@@ -17,7 +17,6 @@ export default function CreateJobPost({ mode = "create" }) {
     const isEditMode = mode === "edit";
 
     const { createdJob, setCreatedJob, clearCreatedJob } = jobCreationStore();
-    const { currentUser } = userStore();
     const { sideBarStatus } = sideBarStore();
     useLockBodyScroll(sideBarStatus);
         

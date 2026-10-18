@@ -1,6 +1,5 @@
 import { RxAvatar } from "react-icons/rx";
 import { FiBriefcase } from "react-icons/fi";
-import { FaPlus } from "react-icons/fa6";
 import { FaList } from "react-icons/fa";
 import { VscGear } from "react-icons/vsc";
 import { MdOutlineLogout } from "react-icons/md";

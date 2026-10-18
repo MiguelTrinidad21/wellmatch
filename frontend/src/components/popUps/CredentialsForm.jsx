@@ -21,21 +21,6 @@ export default function CredentialsForm({ toggleForm, refresh }) {
     })
 
     const [errors, setErrors] = useState({});
-
-    function cancelForm() {
-        setCredentialInfo({
-            credentialTitle: "",
-            issuedBy: "",
-            startMonth: null,        
-            startMonthLabel: null,   
-            startYear: null,
-            endMonth: null,          
-            endMonthLabel: null,     
-            endYear: null
-        })
-
-        toggleForm();
-    }
     
     async function handleSubmit(e) {
         e.preventDefault();

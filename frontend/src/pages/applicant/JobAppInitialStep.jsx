@@ -2,11 +2,10 @@ import AuthNavBar from "../../components/navBars/AuthNavBar";
 import SideBarOverlay from "../../components/overlay/SideBarOverlay";
 import ApplicantSideBar from "../../components/navBars/ApplicantSideBar";
 import PrimaryButton from "../../components/buttons/PrimaryButton";
-import defaultCover from "../../assets/defaultCover.jpg"
 import { IoChevronDown } from "react-icons/io5";
 import { HiOutlineBriefcase } from "react-icons/hi2";
 import { useState, useEffect } from "react";
-import { useNavigate, Link, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { userStore } from "../../zustand/userState";
 import { locationStore, sideBarStore } from "../../zustand/stateHandlers";
 import { resumeStore } from "../../zustand/skillGapResume";

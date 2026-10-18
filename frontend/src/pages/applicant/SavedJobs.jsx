@@ -5,7 +5,7 @@ import PrimaryButton from "../../components/buttons/PrimaryButton";
 import DeleteItemBox from "../../components/popUps/DeleteItemBox"
 import JobInfoSide from "../../components/popUps/JobInfoSide";
 import { useState, useEffect } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { userStore } from "../../zustand/userState";
 import { jobInfoStore } from "../../zustand/stateHandlers";
 import { sideBarStore } from "../../zustand/stateHandlers";
@@ -19,7 +19,6 @@ import api from "../../apis/axios";
 export default function SavedJobs() {
     const isDesktop = useIsDesktop();
     const navigate = useNavigate();
-    const { currentUser } = userStore();
     const { setApplicantActiveLink, sideBarStatus } = sideBarStore();
     useLockBodyScroll(sideBarStatus);
 
@@ -30,13 +29,10 @@ export default function SavedJobs() {
 
     const { 
         displayJob, 
-        setDisplayJob, 
-        jobInfo, 
+        setDisplayJob,
         isJobSaved,
         setJobInfo, 
-        setIsJobSaved,
-        savedJobIDs, 
-        setSavedJobIDs
+        setIsJobSaved
     } = jobInfoStore();
 
 

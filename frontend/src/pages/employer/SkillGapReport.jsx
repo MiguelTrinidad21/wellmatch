@@ -9,8 +9,7 @@ import ResumeViewerModal from "../../components/others/ResumeViewerModal";
 import NoSkillGapReport from "../../components/others/NoSkillGapReport";
 import Translucent from "../../components/overlay/Translucent";
 import { useState, useEffect, useRef } from "react";
-import { useNavigate, Link, useParams } from "react-router-dom";
-import { userStore } from "../../zustand/userState";
+import { useParams } from "react-router-dom";
 import { sideBarStore } from "../../zustand/stateHandlers";
 import defaultCover from "../../assets/defaultProfile.jpg"
 import { MdOutlineEmail } from "react-icons/md";
@@ -27,9 +26,7 @@ import useLockBodyScroll from "../../hooks/useLockBodyScroll";
 
 export default function SkillGapReport() {
 
-    const navigate = useNavigate();
     const { applicantID, jobID, resumeID } = useParams();
-    const { currentUser } = userStore();
     const { sideBarStatus } = sideBarStore();
     useLockBodyScroll(sideBarStatus);    
 

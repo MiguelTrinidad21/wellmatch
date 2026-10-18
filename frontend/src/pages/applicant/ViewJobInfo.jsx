@@ -7,14 +7,13 @@ import defaultPhoto from "../../assets/defaultCover.jpg"
 import { LuBriefcase } from "react-icons/lu";
 import { MdOutlineLocationOn } from "react-icons/md";
 import { PiMoneyWavy } from "react-icons/pi";
-import { FaRegBookmark } from "react-icons/fa";
 import { FaRegBuilding } from "react-icons/fa6";
 import { AiOutlineLaptop } from "react-icons/ai";
 import { TbBuildingCommunity } from "react-icons/tb";
 import { userStore } from "../../zustand/userState";
 import { locationStore, jobInfoStore, sideBarStore } from "../../zustand/stateHandlers";
 import { useState, useEffect } from "react";
-import { useNavigate, Link, useParams, useLocation } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import api from "../../apis/axios";
 import useLockBodyScroll from "../../hooks/useLockBodyScroll";
 
@@ -23,7 +22,6 @@ export default function ViewJobInfo() {
     const navigate = useNavigate();
     const { jobID } = useParams();
 
-    const { currentUser } = userStore();
     const { isJobSaved, setIsJobSaved } = jobInfoStore();
     const { setPrevLocation } = locationStore();
     const { sideBarStatus } = sideBarStore();
