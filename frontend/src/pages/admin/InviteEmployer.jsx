@@ -84,6 +84,7 @@ export default function InviteEmployer({ cancelFunc, setInviteSent }) {
                     }
                     {errors.rateLimit && <p className="text-red-600 text-[13px] mb-4 text-center">{errors.rateLimit}</p>}
                     {errors.isExisting && <p className="text-red-600 text-[13px] mb-4 text-center">{errors.isExisting}</p>}
+                    {errors.activeInvitation && <p className="text-red-600 text-[13px] mb-4 text-center">{errors.activeInvitation}</p>}
 
                     <PrimaryButton className={`w-full mb-5 ${isSending && "opacity-50"}`} type="submit" disabled={isSending}>
                         {isSending ? 
