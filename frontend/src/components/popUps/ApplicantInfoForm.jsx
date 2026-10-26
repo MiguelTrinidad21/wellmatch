@@ -202,18 +202,18 @@ export default function ApplicantInfoForm({ toggleForm }) {
                                 required
                                 minLength={5}
                                 maxLength={60}
-                                className={`p-2 rounded-md block w-full border-2 border-gray-300 mb-4 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-green-600 ${errors.invalidAddress ? "border-red-600 focus:border-red-600 mb-1!" : "border-gray-300"}`}
+                                className={`p-2 rounded-md block w-full border-2 border-gray-300 mb-2 bg-[#F9FAFB] outline-none transition-colors duration-200 ease-in-out focus:border-green-600 ${errors.invalidAddress ? "border-red-600 focus:border-red-600 mb-1!" : "border-gray-300"}`}
                             />
                             {errors.invalidAddress && <p className="text-red-600 text-[13px] mb-4">{errors.invalidAddress}</p>}
 
                             {isSearchingLocation && (
-                                <p className="mt-1 text-xs text-gray-500">
+                                <p className="absolute text-xs text-gray-500">
                                     Searching locations...
                                 </p>
                             )}
 
                             {locationSuggestions.length > 0 && (
-                                <ul className="absolute left-0 z-30 mt-1 max-h-60 w-full overflow-y-auto rounded-lg border bg-white shadow-lg">
+                                <ul className="absolute m-auto z-30 mt-1 max-h-60 w-[86%] overflow-y-auto rounded-lg border bg-white shadow-lg">
                                     {locationSuggestions.map((place) => (
                                         <li
                                             key={place.placeId}
